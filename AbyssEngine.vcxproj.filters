@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Script">
+      <UniqueIdentifier>{0205570b-519e-45c7-be40-44d968e5f639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Source">
+      <UniqueIdentifier>{9b88d3a1-ad1f-4949-8f76-04a287bfea98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Header">
+      <UniqueIdentifier>{03fff33c-533c-44e9-bd10-f242b2cdc97a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code">
+      <UniqueIdentifier>{1bda3ceb-2dcf-43c4-a510-fe113f5c2768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Core">
+      <UniqueIdentifier>{e09be943-93c5-4835-8066-9917cf460ac9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Code\main.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DxSystem.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Code\DxSystem.h">
+      <Filter>Code\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
