@@ -1,10 +1,14 @@
 #include <Windows.h>
-#include <memory>
-#include <cassert>
-#include <winsdkver.h>
-#define _WIN32_WINNT 0x0A00
-#include <sdkddkver.h>
-#include <wrl.h>
+#include <Windows.Foundation.h>
+#include <wrl\wrappers\corewrappers.h>
+#include <wrl\client.h>
+#include <stdio.h>
+
+#include "DXSystem.h"
+
+using namespace ABI::Windows::Foundation;
+using namespace Microsoft::WRL;
+using namespace Microsoft::WRL::Wrappers;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -66,7 +70,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 
 	ShowWindow(hwnd, nCmdShow);
 
-	Microsoft::WRL::Wrappers::RoInitializeWrapper initialize(RO_INIT_MULTITHREADED);
+	RoInitializeWrapper initialize(RO_INIT_MULTITHREADED);
 
 
 	//ÉÅÉCÉìÉãÅ[Év

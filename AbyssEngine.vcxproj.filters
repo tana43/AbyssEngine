@@ -1,17 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Code">
+      <UniqueIdentifier>{acf9fd63-0e04-4837-ac5a-bed64e5197f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Script">
+      <UniqueIdentifier>{4d877c55-5d37-4ec1-8180-b72d93e1ef24}</UniqueIdentifier>
     </Filter>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Script\Header">
+      <UniqueIdentifier>{1c085e9f-d426-4631-a196-28069d8968a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script\Source">
+      <UniqueIdentifier>{5e1786c5-a53c-45b5-94f0-9fe93d13330c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Core">
+      <UniqueIdentifier>{1bc8d2c3-a829-4ed1-9d95-5c4bd8bdaf62}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Code\DxSystem.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\main.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Code\DxSystem.h">
+      <Filter>Code\Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

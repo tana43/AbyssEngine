@@ -22,7 +22,9 @@ namespace AbyssEngine
 	enum class RS_State {Cull_Back,Cull_Front,Cull_None,Standard,Wire};
 	//BlendState
 	enum class BS_State { off, Alpha, Alpha_Test, Transparent, Add, Subtract, Replace, Multiply };
-	class DX_System
+
+
+	class DXSystem
 	{
 	public:
 		
