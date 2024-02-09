@@ -18,16 +18,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\DxSystem.cpp">
-      <Filter>Code\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\main.cpp">
-      <Filter>Code\Core</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Code\DxSystem.h">
+    <ClInclude Include="Code\Header\Misc.h">
       <Filter>Code\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\DxSystem.h">
+      <Filter>Code\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Engine.h">
+      <Filter>Code\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Code\Source\DxSystem.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Main.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Engine.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

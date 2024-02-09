@@ -1,1 +1,3 @@
-﻿  AbyssEngine.vcxproj -> C:\Users\2220097\Desktop\AbyssEngine\x64\Debug\AbyssEngine.exe
+﻿  DxSystem.cpp
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\DxSystem.cpp(87,19): warning C4552: '!=': 式の結果が使用されていません
+  AbyssEngine.vcxproj -> C:\Users\2220097\Desktop\AbyssEngine\x64\Debug\AbyssEngine.exe
