@@ -19,14 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Header\Component.h" />
     <ClInclude Include="Code\Header\DxSystem.h" />
     <ClInclude Include="Code\Header\Engine.h" />
     <ClInclude Include="Code\Header\Misc.h" />
+    <ClInclude Include="Code\Header\Object.h" />
+    <ClInclude Include="Code\Header\RenderManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Source\Component.cpp" />
     <ClCompile Include="Code\Source\DxSystem.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
     <ClCompile Include="Code\Source\Main.cpp" />
+    <ClCompile Include="Code\Source\Object.cpp" />
+    <ClCompile Include="Code\Source\RenderManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

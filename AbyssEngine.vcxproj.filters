@@ -16,6 +16,12 @@
     <Filter Include="Code\Core">
       <UniqueIdentifier>{1bc8d2c3-a829-4ed1-9d95-5c4bd8bdaf62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Header">
+      <UniqueIdentifier>{cf246bee-7e26-4035-b2ee-20438b188541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source">
+      <UniqueIdentifier>{e4786142-42c4-4437-a037-9055c7352823}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Misc.h">
@@ -27,6 +33,15 @@
     <ClInclude Include="Code\Header\Engine.h">
       <Filter>Code\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\RenderManager.h">
+      <Filter>Code\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Component.h">
+      <Filter>Code\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Object.h">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\DxSystem.cpp">
@@ -37,6 +52,15 @@
     </ClCompile>
     <ClCompile Include="Code\Source\Engine.cpp">
       <Filter>Code\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\RenderManager.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Component.cpp">
+      <Filter>Code\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Object.cpp">
+      <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
