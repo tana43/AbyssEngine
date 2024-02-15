@@ -1,5 +1,5 @@
 #pragma once
-#include "DxSystem.h"
+#include "DXSystem.h"
 #include <memory>
 
 namespace AbyssEngine

@@ -19,20 +19,30 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Header\Actor.h" />
+    <ClInclude Include="Code\Header\Asset.h" />
+    <ClInclude Include="Code\Header\AssetManager.h" />
     <ClInclude Include="Code\Header\Component.h" />
-    <ClInclude Include="Code\Header\DxSystem.h" />
+    <ClInclude Include="Code\Header\DXSystem.h" />
     <ClInclude Include="Code\Header\Engine.h" />
     <ClInclude Include="Code\Header\Misc.h" />
-    <ClInclude Include="Code\Header\Object.h" />
     <ClInclude Include="Code\Header\RenderManager.h" />
+    <ClInclude Include="Code\Header\Shader.h" />
+    <ClInclude Include="Code\Header\SpriteRenderer.h" />
+    <ClInclude Include="Code\Header\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Source\Actor.cpp" />
+    <ClCompile Include="Code\Source\Asset.cpp" />
+    <ClCompile Include="Code\Source\AssetManager.cpp" />
     <ClCompile Include="Code\Source\Component.cpp" />
-    <ClCompile Include="Code\Source\DxSystem.cpp" />
+    <ClCompile Include="Code\Source\DXSystem.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
     <ClCompile Include="Code\Source\Main.cpp" />
-    <ClCompile Include="Code\Source\Object.cpp" />
     <ClCompile Include="Code\Source\RenderManager.cpp" />
+    <ClCompile Include="Code\Source\Shader.cpp" />
+    <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
+    <ClCompile Include="Code\Source\Texture.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -122,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;.\External\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,7 +150,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;.\External;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>

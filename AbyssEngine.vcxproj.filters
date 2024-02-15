@@ -13,54 +13,83 @@
     <Filter Include="Script\Source">
       <UniqueIdentifier>{5e1786c5-a53c-45b5-94f0-9fe93d13330c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Core">
-      <UniqueIdentifier>{1bc8d2c3-a829-4ed1-9d95-5c4bd8bdaf62}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Header">
       <UniqueIdentifier>{cf246bee-7e26-4035-b2ee-20438b188541}</UniqueIdentifier>
     </Filter>
     <Filter Include="Code\Source">
       <UniqueIdentifier>{e4786142-42c4-4437-a037-9055c7352823}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Header\Core">
+      <UniqueIdentifier>{1bc8d2c3-a829-4ed1-9d95-5c4bd8bdaf62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source\Core">
+      <UniqueIdentifier>{b82f3cfa-d8aa-46dd-aa82-16aa8be98c01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Header\Misc.h">
-      <Filter>Code\Core</Filter>
+    <ClInclude Include="Code\Header\Texture.h">
+      <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\DxSystem.h">
-      <Filter>Code\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Engine.h">
-      <Filter>Code\Core</Filter>
+    <ClInclude Include="Code\Header\SpriteRenderer.h">
+      <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\RenderManager.h">
-      <Filter>Code\Core</Filter>
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Misc.h">
+      <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Component.h">
-      <Filter>Code\Core</Filter>
+      <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Object.h">
-      <Filter>Code</Filter>
+    <ClInclude Include="Code\Header\Actor.h">
+      <Filter>Code\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\DXSystem.h">
+      <Filter>Code\Header\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Engine.h">
+      <Filter>Code\Header\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Shader.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\AssetManager.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Asset.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Source\DxSystem.cpp">
-      <Filter>Code\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Main.cpp">
-      <Filter>Code\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Engine.cpp">
-      <Filter>Code\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\RenderManager.cpp">
-      <Filter>Code\Core</Filter>
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Actor.cpp">
+      <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Component.cpp">
-      <Filter>Code\Core</Filter>
+      <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Object.cpp">
-      <Filter>Code</Filter>
+    <ClCompile Include="Code\Source\SpriteRenderer.cpp">
+      <Filter>Code\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\Texture.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Main.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Engine.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\DXSystem.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\AssetManager.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Shader.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Asset.cpp" />
   </ItemGroup>
 </Project>

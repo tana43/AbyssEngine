@@ -1,5 +1,5 @@
 #include <initguid.h>
-#include "DxSystem.h"
+#include "DXSystem.h"
 
 #include <DirectXMath.h>
 #include "Misc.h"
