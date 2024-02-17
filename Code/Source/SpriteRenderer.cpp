@@ -1,5 +1,6 @@
 #include "SpriteRenderer.h"
 #include "DXSystem.h"
+#include "Texture.h"
 
 using namespace AbyssEngine;
 using namespace DirectX;
@@ -30,6 +31,10 @@ void SpriteRenderer::Initialize()
     //テクスチャ読み込み
     if (filePath_.empty())
     {
-        //デフォルトテクスチャ
+        _ASSERT_EXPR(false, L"ファイルパスが空です");
+    }
+    else
+    {
+        texture_ = Texture::Load(filePath_ + fileName_);
     }
 }

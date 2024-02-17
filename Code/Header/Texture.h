@@ -1,10 +1,11 @@
 #pragma once
 #include "Shader.h"
+#include "Asset.h"
 
 namespace AbyssEngine
 {
     //テクスチャ
-    class Texture
+    class Texture : public Asset
     {
     public:
         //テクスチャをファイルを指定し読み込む
@@ -28,7 +29,7 @@ namespace AbyssEngine
 
     private:
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView_ = nullptr;
-        Microsoft::WRL::ComPtr<ID3D11SamplerState> sample_ = nullptr;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_ = nullptr;
         D3D11_TEXTURE2D_DESC texture2dDesc_ = {}; //テクスチャ情報
         std::string path_;
     };

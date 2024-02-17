@@ -1,14 +1,21 @@
 #include "Engine.h"
+#include "AssetManager.h"
 
 using namespace AbyssEngine;
+using namespace std;
+
+unique_ptr<AssetManager> Engine::assetManager_;
 
 Engine::Engine()
 {
+    //各マネージャーの生成
+    assetManager_ = make_unique<AssetManager>();
 }
 
 Engine::~Engine()
 {
     DXSystem::Release();
+    assetManager_.reset();
 }
 
 void Engine::Update()

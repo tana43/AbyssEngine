@@ -4,6 +4,8 @@
 
 namespace AbyssEngine
 {
+    class AssetManager;
+
     class Engine
     {
     public:
@@ -14,6 +16,9 @@ namespace AbyssEngine
 
         //メインウィンドウのハンドルを取得する
         static void GetHandle(UINT msg, WPARAM wParam, LPARAM lParam);
+
+
+        static std::unique_ptr<AssetManager> assetManager_;
     };
 
     class Time

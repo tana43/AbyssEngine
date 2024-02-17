@@ -1,3 +1,14 @@
-﻿  DxSystem.cpp
-C:\Users\2220097\Desktop\AbyssEngine\Code\Source\DxSystem.cpp(87,19): warning C4552: '!=': 式の結果が使用されていません
-  AbyssEngine.vcxproj -> C:\Users\2220097\Desktop\AbyssEngine\x64\Debug\AbyssEngine.exe
+﻿  Actor.cpp
+  Asset.cpp
+  AssetManager.cpp
+  Component.cpp
+  DXSystem.cpp
+  Engine.cpp
+  Main.cpp
+  RenderManager.cpp
+  Shader.cpp
+  SpriteRenderer.cpp
+  Texture.cpp
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\DXSystem.cpp(87,19): warning C4552: '!=': 式の結果が使用されていません
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Texture.cpp(39,13): error C2374: 'hr': 再定義されています。2 回以上初期化されています。
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Texture.cpp(21,13): message : 'hr' の宣言を確認してください
