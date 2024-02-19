@@ -25,11 +25,14 @@
     <ClInclude Include="Code\Header\Component.h" />
     <ClInclude Include="Code\Header\DXSystem.h" />
     <ClInclude Include="Code\Header\Engine.h" />
+    <ClInclude Include="Code\Header\MathHelper.h" />
     <ClInclude Include="Code\Header\Misc.h" />
+    <ClInclude Include="Code\Header\Renderer.h" />
     <ClInclude Include="Code\Header\RenderManager.h" />
     <ClInclude Include="Code\Header\Shader.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
     <ClInclude Include="Code\Header\Texture.h" />
+    <ClInclude Include="Code\Header\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp" />
@@ -39,10 +42,13 @@
     <ClCompile Include="Code\Source\DXSystem.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
     <ClCompile Include="Code\Source\Main.cpp" />
+    <ClCompile Include="Code\Source\MathHelper.cpp" />
+    <ClCompile Include="Code\Source\Renderer.cpp" />
     <ClCompile Include="Code\Source\RenderManager.cpp" />
     <ClCompile Include="Code\Source\Shader.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />
+    <ClCompile Include="Code\Source\Transform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

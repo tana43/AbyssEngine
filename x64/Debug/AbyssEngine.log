@@ -1,14 +1,24 @@
 ﻿  Actor.cpp
-  Asset.cpp
-  AssetManager.cpp
   Component.cpp
-  DXSystem.cpp
-  Engine.cpp
-  Main.cpp
-  RenderManager.cpp
-  Shader.cpp
+  Renderer.cpp
   SpriteRenderer.cpp
   Texture.cpp
-C:\Users\2220097\Desktop\AbyssEngine\Code\Source\DXSystem.cpp(87,19): warning C4552: '!=': 式の結果が使用されていません
+  Transform.cpp
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Component.cpp(9,44): error C2027: 認識できない型 'AbyssEngine::Actor' が使われています。
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(7,11): message : 'AbyssEngine::Actor' の宣言を確認してください
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(18,28): message : コンパイラでのこの診断により関数 'std::shared_ptr<_Ty> AbyssEngine::Component::GetComponent(void)' が生成されました。 (ソース ファイルをコンパイルしています Code\Source\Component.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Actor.cpp(12,17): error C2672: 'std::dynamic_pointer_cast': 一致するオーバーロードされた関数が見つかりませんでした。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2042,29): message : 'std::shared_ptr<_Ty> std::dynamic_pointer_cast(std::shared_ptr<_Ty0> &&) noexcept' の可能性があります (ソース ファイルをコンパイルしています Code\Source\Actor.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Actor.cpp(12,17): message : 'std::shared_ptr<_Ty> std::dynamic_pointer_cast(std::shared_ptr<_Ty0> &&) noexcept': 1 引数が必要です - 0 が指定されました
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2030,29): message : または 'std::shared_ptr<_Ty> std::dynamic_pointer_cast(const std::shared_ptr<_Ty0> &) noexcept' (ソース ファイルをコンパイルしています Code\Source\Actor.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Actor.cpp(12,17): message : 'std::shared_ptr<_Ty> std::dynamic_pointer_cast(const std::shared_ptr<_Ty0> &) noexcept': 1 引数が必要です - 0 が指定されました
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Actor.cpp(13,2): error C2143: 構文エラー: ';' が '}' の前にありません。
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\SpriteRenderer.h(15,5): error C2059: 構文エラー: '{' (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(67,20): warning C4269: 'pos': コンパイラが生成した既定のコンストラクターでの 'const' 自動データ初期化は信頼性のない結果を生じます。
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(67,20): error C2737: 'pos': const オブジェクトを初期化する必要があります
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(68,20): warning C4269: 'scale': コンパイラが生成した既定のコンストラクターでの 'const' 自動データ初期化は信頼性のない結果を生じます。
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(68,20): error C2737: 'scale': const オブジェクトを初期化する必要があります
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(69,20): warning C4269: 'scaledSize': コンパイラが生成した既定のコンストラクターでの 'const' 自動データ初期化は信頼性のない結果を生じます。
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(69,20): error C2737: 'scaledSize': const オブジェクトを初期化する必要があります
 C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Texture.cpp(39,13): error C2374: 'hr': 再定義されています。2 回以上初期化されています。
 C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Texture.cpp(21,13): message : 'hr' の宣言を確認してください

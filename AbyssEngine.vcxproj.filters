@@ -25,21 +25,21 @@
     <Filter Include="Code\Source\Core">
       <UniqueIdentifier>{b82f3cfa-d8aa-46dd-aa82-16aa8be98c01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Header\Component">
+      <UniqueIdentifier>{8f5e01c4-be7a-4a53-96ba-ffa02e645c6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source\Component">
+      <UniqueIdentifier>{bdf22065-0501-492a-b319-fb980772cbe2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Texture.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\SpriteRenderer.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\RenderManager.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Misc.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Component.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Actor.h">
@@ -58,18 +58,25 @@
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Asset.h" />
+    <ClInclude Include="Code\Header\MathHelper.h" />
+    <ClInclude Include="Code\Header\Component.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SpriteRenderer.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Transform.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Renderer.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\RenderManager.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Actor.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Component.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\SpriteRenderer.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Texture.cpp">
@@ -91,5 +98,18 @@
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Asset.cpp" />
+    <ClCompile Include="Code\Source\MathHelper.cpp" />
+    <ClCompile Include="Code\Source\Renderer.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Transform.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SpriteRenderer.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Component.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -38,3 +38,33 @@ void SpriteRenderer::Initialize()
         texture_ = Texture::Load(filePath_ + fileName_);
     }
 }
+
+void SpriteRenderer::Render()
+{
+    //非表示の場合処理しない
+    if (!visibility_)return;
+
+    //頂点バッファの指定
+    constexpr UINT stride = sizeof(Vertex);
+    constexpr UINT offset = 0;
+    DXSystem::deviceContext_->IASetVertexBuffers(0, 1, vertexBuffer_.GetAddressOf(), &stride, &offset);
+
+    //テクスチャの設定
+    texture_->Set(1, Shader_Type::Pixel);
+
+    //描画
+    DXSystem::deviceContext_->Draw(4, 0);
+}
+
+void SpriteRenderer::RecalculateFrame()
+{
+    //表示切替
+    if (!visibility_)return;
+
+    //頂点データ設定
+    Vertex data[4];
+
+    const XMFLOAT3 pos;
+    const XMFLOAT3 scale;
+    const XMFLOAT2 scaledSize;
+}
