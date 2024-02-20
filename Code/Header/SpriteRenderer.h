@@ -4,6 +4,7 @@
 #include <wrl.h>
 #include <d3d11.h>
 #include <string>
+#include "Renderer.h"
 
 namespace AbyssEngine
 {
@@ -11,7 +12,7 @@ namespace AbyssEngine
     class Material;
 
     //スプライトレンダラーコンポーネント
-    class SpriteRenderer : public 
+    class SpriteRenderer : public Renderer
     {
     private:
         struct Vertex

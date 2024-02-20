@@ -22,7 +22,7 @@ namespace AbyssEngine
         std::shared_ptr<T> AddComponent();                                      
 
         //Actorにコンポーネントをアタッチする（クラス名版）
-        std::shared_ptr<Component> AddComponent(const std::string& className_); 
+        //std::shared_ptr<Component> AddComponent(const std::string& className_); 
 
     protected:
         virtual void SetActive(bool value) {};//アクティブ状態を切り替える
