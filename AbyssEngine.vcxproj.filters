@@ -57,8 +57,6 @@
     <ClInclude Include="Code\Header\AssetManager.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Asset.h" />
-    <ClInclude Include="Code\Header\MathHelper.h" />
     <ClInclude Include="Code\Header\Component.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
@@ -71,6 +69,17 @@
     <ClInclude Include="Code\Header\Renderer.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\SystemFunction.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\MathHelper.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Asset.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SceneManager.h" />
+    <ClInclude Include="Code\Header\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\RenderManager.cpp">
@@ -97,8 +106,6 @@
     <ClCompile Include="Code\Source\Shader.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Asset.cpp" />
-    <ClCompile Include="Code\Source\MathHelper.cpp" />
     <ClCompile Include="Code\Source\Renderer.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
@@ -111,5 +118,16 @@
     <ClCompile Include="Code\Source\Component.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\Asset.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\MathHelper.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SystemFunction.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SceneManager.cpp" />
+    <ClCompile Include="Code\Source\Scene.cpp" />
   </ItemGroup>
 </Project>

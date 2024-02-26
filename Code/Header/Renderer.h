@@ -22,6 +22,8 @@ namespace AbyssEngine
         virtual void Render(const int subsetNumber = 0) {}          //描画実行
         virtual void RenderShadow(const int subsetNumber = 0) {}    //シャドウマップ描画実行
         virtual void RecalculateFrame() {};                         //頂点データを再計算
+
+        friend class RenderManager;
     };
 }
 

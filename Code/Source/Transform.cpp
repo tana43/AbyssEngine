@@ -10,3 +10,8 @@ Matrix Transform::CalcWorldMatrix()
 
     return S * R * T;
 }
+
+Vector3 Transform::GetEulerAngles() const 
+{
+    return rotation_.To_Euler();
+}

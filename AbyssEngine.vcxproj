@@ -29,8 +29,11 @@
     <ClInclude Include="Code\Header\Misc.h" />
     <ClInclude Include="Code\Header\Renderer.h" />
     <ClInclude Include="Code\Header\RenderManager.h" />
+    <ClInclude Include="Code\Header\Scene.h" />
+    <ClInclude Include="Code\Header\SceneManager.h" />
     <ClInclude Include="Code\Header\Shader.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
+    <ClInclude Include="Code\Header\SystemFunction.h" />
     <ClInclude Include="Code\Header\Texture.h" />
     <ClInclude Include="Code\Header\Transform.h" />
   </ItemGroup>
@@ -45,8 +48,11 @@
     <ClCompile Include="Code\Source\MathHelper.cpp" />
     <ClCompile Include="Code\Source\Renderer.cpp" />
     <ClCompile Include="Code\Source\RenderManager.cpp" />
+    <ClCompile Include="Code\Source\Scene.cpp" />
+    <ClCompile Include="Code\Source\SceneManager.cpp" />
     <ClCompile Include="Code\Source\Shader.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
+    <ClCompile Include="Code\Source\SystemFunction.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />
     <ClCompile Include="Code\Source\Transform.cpp" />
   </ItemGroup>

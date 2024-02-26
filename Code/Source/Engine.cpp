@@ -1,26 +1,33 @@
 #include "Engine.h"
 #include "AssetManager.h"
+#include "RenderManager.h"
 
 using namespace AbyssEngine;
 using namespace std;
 
-unique_ptr<AssetManager> Engine::assetManager_;
+unique_ptr<AssetManager>    Engine::assetManager_;
+unique_ptr<RenderManager>   Engine::renderManager_;
 
 Engine::Engine()
 {
     //各マネージャーの生成
     assetManager_ = make_unique<AssetManager>();
+    renderManager_ = make_unique<RenderManager>();
 }
 
 Engine::~Engine()
 {
     DXSystem::Release();
     assetManager_.reset();
+    renderManager_.reset();
 }
 
 void Engine::Update()
 {
     DXSystem::Clear();
+
+
+    renderManager_->Render();
 
     DXSystem::Flip();
 }

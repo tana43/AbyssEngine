@@ -100,7 +100,7 @@ void SpriteRenderer::RecalculateFrame()
 	data[2].pos_.x -= mx; data[2].pos_.y -= my;
 	data[3].pos_.x -= mx; data[3].pos_.y -= my;
 
-	const float z = transform_->Get_Euler_Angles().z;
+	const float z = transform_->GetEulerAngles().z;
 	const float cos = cosf(XMConvertToRadians(z));
 	const float sin = sinf(XMConvertToRadians(z));
 
@@ -133,43 +133,42 @@ void SpriteRenderer::RecalculateFrame()
 	// 正規化デバイス座標系
 	for (auto& i : data)
 	{
-		i.pos_.x = 2.0f * i.pos_.x / Engine::render_manager->game_texture->screen_x - 1.0f;
-		i.pos_.y = 1.0f - 2.0f * i.pos_.y / Engine::render_manager->game_texture->screen_y;
+		i.pos_.x = 2.0f * i.pos_.x / 1920.0f - 1.0f;
+		i.pos_.y = 1.0f - 2.0f * i.pos_.y / 1080.0f;
 		i.pos_.z = 0.0f;
 	}
 
 	//テクスチャ座標設定
-	data[0].tex.x = uv_origin.x;
-	data[0].tex.y = uv_origin.y;
-	data[1].tex.x = uv_origin.x + uv_size.x;
-	data[1].tex.y = uv_origin.y;
-	data[2].tex.x = uv_origin.x;
-	data[2].tex.y = uv_origin.y + uv_size.y;
-	data[3].tex.x = uv_origin.x + uv_size.x;
-	data[3].tex.y = uv_origin.y + uv_size.y;
+	data[0].tex_.x = uvOrigin_.x;
+	data[0].tex_.y = uvOrigin_.y;
+	data[1].tex_.x = uvOrigin_.x + uvSize_.x;
+	data[1].tex_.y = uvOrigin_.y;
+	data[2].tex_.x = uvOrigin_.x;
+	data[2].tex_.y = uvOrigin_.y + uvSize_.y;
+	data[3].tex_.x = uvOrigin_.x + uvSize_.x;
+	data[3].tex_.y = uvOrigin_.y + uvSize_.y;
 
 	//UV座標
-	const float w = static_cast<float>(texture->Get_Width());
-	const float h = static_cast<float>(texture->Get_Height());
+	const float w = static_cast<float>(texture_->GetWidth());
+	const float h = static_cast<float>(texture_->GetHeight());
 	for (auto& i : data)
 	{
-		i.tex.x = i.tex.x / w;
-		i.tex.y = i.tex.y / h;
+		i.tex_.x = i.tex_.x / w;
+		i.tex_.y = i.tex_.y / h;
 	}
 	//頂点カラー
-	data[0].color = color;
-	data[1].color = color;
-	data[2].color = color;
-	data[3].color = color;
+	data[0].color_ = color_;
+	data[1].color_ = color_;
+	data[2].color_ = color_;
+	data[3].color_ = color_;
 
 
 	constexpr UINT subresourceIndex = 0;
 	D3D11_MAPPED_SUBRESOURCE mapped;
-	const auto hr = DxSystem::device_context->Map(vertex_buffer.Get(), subresourceIndex, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+	const auto hr = DXSystem::deviceContext_->Map(vertexBuffer_.Get(), subresourceIndex, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 	if (SUCCEEDED(hr))
 	{
 		memcpy(mapped.pData, data, sizeof(data));
-		DxSystem::device_context->Unmap(vertex_buffer.Get(), subresourceIndex);
+		DXSystem::deviceContext_->Unmap(vertexBuffer_.Get(), subresourceIndex);
 	}
-}
 }

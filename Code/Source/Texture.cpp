@@ -36,8 +36,6 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     ComPtr<ID3D11Resource> resource;
     auto texture = make_shared<Texture>();
 
-    HRESULT hr{ S_OK };
-
     ComPtr<ID3D11ShaderResourceView> shaderResourceView;
 
     filesystem::path ddsFilename(texturePath);

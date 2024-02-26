@@ -1,6 +1,7 @@
 #pragma once
 #include "MathHelper.h"
 #include "Actor.h"
+#include "Component.h"
 
 namespace AbyssEngine
 {
@@ -34,9 +35,11 @@ namespace AbyssEngine
         void SetScaleZ(const float& z) { scale_.z = z; }
         void SetScaleFactor(const float& scale) { scaleFactor_ = scale; }
 
+        Vector3 GetEulerAngles() const;
+
     private:
         Vector3 position_ = { 0,0,0 };
-        Vector4 rotation_ = { 0,0,0,1 };
+        Quaternion rotation_ = { 0,0,0,1 };
         Vector3 scale_ = { 1,1,1 };
         float scaleFactor_ = 1.0f;
     };

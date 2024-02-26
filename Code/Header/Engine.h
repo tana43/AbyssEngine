@@ -5,6 +5,7 @@
 namespace AbyssEngine
 {
     class AssetManager;
+    class RenderManager;
 
     class Engine
     {
@@ -19,6 +20,8 @@ namespace AbyssEngine
 
 
         static std::unique_ptr<AssetManager> assetManager_;
+        static std::unique_ptr<RenderManager> renderManager_;
+
     };
 
     class Time
