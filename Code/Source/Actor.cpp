@@ -1,6 +1,5 @@
 #include "Actor.h"
 #include "Engine.h"
-#include "Component.h"
 #include "Transform.h"
 
 using namespace AbyssEngine;

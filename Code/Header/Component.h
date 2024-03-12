@@ -1,6 +1,4 @@
 #pragma once
-#include <memory>
-#include <string>
 #include "Actor.h"
 
 namespace AbyssEngine
@@ -33,7 +31,7 @@ namespace AbyssEngine
         virtual bool CanMultiple() { return true; }
 
         //‰Šú‰»
-        virtual bool Initialize(const std::shared_ptr<Actor>& actor) {}
+		virtual bool Initialize(const std::shared_ptr<Actor>& actor) { return true; }
 
         //ImGui•\¦—p‚Ì‹¤’ÊŠÖ”
         virtual bool DrawImGui() { return true; }

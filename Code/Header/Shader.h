@@ -1,7 +1,5 @@
 #pragma once
 
-#include <d3d11.h>
-#include <wrl.h>
 #include <memory>
 #include <unordered_map>
 #include <string>
@@ -43,19 +41,6 @@ namespace AbyssEngine
         }
     };
 
-    template <class T>
-    HRESULT Create(const Blob& cso, T** pixelShader);
-    template <>
-    HRESULT Create<ID3D11PixelShader>(const Blob& cso,ID3D11PixelShader** shader);
-    template <>
-    HRESULT Create<ID3D11HullShader>(const Blob& cso, ID3D11HullShader** shader);
-    template <>
-    HRESULT Create<ID3D11DomainShader>(const Blob& cso, ID3D11DomainShader** shader);
-    template <>
-    HRESULT Create<ID3D11GeometryShader>(const Blob& cso, ID3D11GeometryShader** shader);
-    template <>
-    HRESULT Create<ID3D11ComputeShader>(const Blob& cso, ID3D11ComputeShader** shader);
-
     //各種シェーダークラス
     template <class T>
     class Shader
@@ -91,9 +76,67 @@ namespace AbyssEngine
         static HRESULT AutoGenerateInputLayout(const char* name, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElemetDesc, size_t numElements);
 
         static void Exterminate();
-        
     };
-    
+
+    template<>
+    class Shader<ID3D11PixelShader>
+    {
+    public:
+        static HRESULT Create(const Blob& cso, ID3D11PixelShader** pixelShader);
+    };
+
+    template<>
+    class Shader<ID3D11HullShader>
+    {
+    public:
+        static HRESULT Create(const Blob& cso, ID3D11HullShader** hullShader);
+    };
+
+    template<>
+    class Shader<ID3D11DomainShader>
+    {
+    public:
+        static HRESULT Create(const Blob& cso, ID3D11DomainShader** domainShader);
+    };
+
+    template<>
+    class Shader<ID3D11GeometryShader>
+    {
+    public:
+        static HRESULT Create(const Blob& cso, ID3D11GeometryShader** geometryShader);
+    };
+
+    template<>
+    class Shader<ID3D11ComputeShader>
+    {
+    public:
+        static HRESULT Create(const Blob& cso, ID3D11ComputeShader** computeShader);
+    };
+
+    inline HRESULT Shader<ID3D11PixelShader>::Create(const Blob& cso, ID3D11PixelShader** pixelShader)
+    {
+        return DXSystem::device_->CreatePixelShader(cso.data_.get(),cso.size_,NULL,pixelShader);
+    }
+
+    inline HRESULT Shader<ID3D11HullShader>::Create(const Blob& cso, ID3D11HullShader** hullShader)
+    {
+        return DXSystem::device_->CreateHullShader(cso.data_.get(),cso.size_,NULL,hullShader);
+    }
+
+    inline HRESULT Shader<ID3D11DomainShader>::Create(const Blob& cso, ID3D11DomainShader** domainShader)
+    {
+        return DXSystem::device_->CreateDomainShader(cso.data_.get(), cso.size_, NULL, domainShader);
+    }
+
+    inline HRESULT Shader<ID3D11GeometryShader>::Create(const Blob& cso, ID3D11GeometryShader** geometryShader)
+    {
+        return DXSystem::device_->CreateGeometryShader(cso.data_.get(),cso.size_,NULL,geometryShader);
+    }
+
+    inline HRESULT Shader<ID3D11ComputeShader>::Create(const Blob& cso, ID3D11ComputeShader** computeShader)
+    {
+        return DXSystem::device_->CreateComputeShader(cso.data_.get(),cso.size_,NULL,computeShader);
+    }
 }
 
 

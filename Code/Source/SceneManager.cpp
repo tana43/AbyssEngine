@@ -1,1 +1,56 @@
 #include "SceneManager.h"
+#include "Engine.h"
+#include "Scene.h"
+
+#include "TestScene.h"
+#include "RenderManager.h"
+
+using namespace std;
+using namespace AbyssEngine;
+
+SceneManager::SceneManager()
+{
+    AddScene(new TestScene,"test");
+
+}
+
+void SceneManager::Exit() const
+{
+    if (activeScene_)activeScene_->Reset();
+}
+
+void SceneManager::Update()
+{
+    if (run)
+    {
+        ChangeScene();
+
+        if(activeScene_)activeScene_->Update();
+    }
+}
+
+void SceneManager::AddScene(Scene* scene, string name)
+{
+    sceneMap_[name].reset(scene);
+}
+
+void SceneManager::SetNextScene(std::string name)
+{
+    nextSceneName_ = name;
+}
+
+Scene& SceneManager::GetActiveScene()
+{
+    return *activeScene_;
+}
+
+void SceneManager::ChangeScene()
+{
+    if (nextSceneName_.empty())return;
+
+    if (activeScene_)activeScene_->Finalize();
+
+    activeScene_ = sceneMap_[nextSceneName_].get();
+
+    activeScene_->Initialize();
+}

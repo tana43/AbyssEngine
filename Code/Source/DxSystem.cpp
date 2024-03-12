@@ -84,7 +84,7 @@ HRESULT DXSystem::CreateDevice()
     UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if _DEBUG
     //デバッグレイヤー設定
-    creationFlags != D3D11_CREATE_DEVICE_DEBUG;
+    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif // _DEBUG
 
     //デバイス生成

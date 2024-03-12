@@ -1,10 +1,10 @@
 #include "AssetManager.h"
-#include "Asset.h"
+#include "Object.h"
 #include <assert.h>
 
 using namespace AbyssEngine;
 
-void AssetManager::RegistrationAsset(std::shared_ptr<Asset> asset)
+void AssetManager::RegistrationAsset(std::shared_ptr<Object> asset)
 {
     //アセットのIDをハッシュにしてキャッシュ
     cacheAsset_[asset->GetInstanceId()] = asset;
@@ -16,10 +16,10 @@ void AbyssEngine::AssetManager::EraseAsset(const std::string& id)
     assert(it != 0);
 }
 
-std::weak_ptr<Asset> AbyssEngine::AssetManager::GetAssetFromId(const std::string& id)
+std::weak_ptr<Object> AbyssEngine::AssetManager::GetAssetFromId(const std::string& id)
 {
     //IDからアセットを取得（多分つかわん？？）
-    std::weak_ptr<Asset>  asset;
+    std::weak_ptr<Object>  asset;
     if (const auto it = cacheAsset_.find(id);it != cacheAsset_.end())
     {
         return it->second;

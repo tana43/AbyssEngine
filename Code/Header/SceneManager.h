@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+#include <unordered_map>
+#include <string>
 
 namespace AbyssEngine
 {
@@ -10,7 +12,7 @@ namespace AbyssEngine
     public:
         SceneManager();
 
-        std::unique_ptr<Scene>& GetActiveScene(); //現在アクティブなシーンを取得
+        Scene& GetActiveScene(); //現在アクティブなシーンを取得
 
         bool run = false;   //再生中
         bool pose = false;  //ポーズ中
@@ -19,8 +21,22 @@ namespace AbyssEngine
         void Exit() const;
         void Update(); //更新
 
-        std::unique_ptr<Scene> sctiveScene_; //現在アクティブなシーン
+        //シーンの追加
+        void AddScene(Scene* scene,std::string name);
 
+        //シーンの変更
+        void SetNextScene(std::string name);
+
+    private:
+
+        //シーンの変更があった場合の更新処理
+        void ChangeScene();
+
+        std::unordered_map<std::string, std::unique_ptr<Scene>> sceneMap_;
+        Scene* activeScene_;//現在アクティブなシーン
+        std::string nextSceneName_; //次のシーン
+
+        friend class Engine;
     };
 
 }

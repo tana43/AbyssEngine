@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h" />
-    <ClInclude Include="Code\Header\Asset.h" />
+    <ClInclude Include="Code\Header\Object.h" />
     <ClInclude Include="Code\Header\AssetManager.h" />
     <ClInclude Include="Code\Header\Component.h" />
     <ClInclude Include="Code\Header\DXSystem.h" />
@@ -34,12 +34,13 @@
     <ClInclude Include="Code\Header\Shader.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
     <ClInclude Include="Code\Header\SystemFunction.h" />
+    <ClInclude Include="Code\Header\TestScene.h" />
     <ClInclude Include="Code\Header\Texture.h" />
     <ClInclude Include="Code\Header\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp" />
-    <ClCompile Include="Code\Source\Asset.cpp" />
+    <ClCompile Include="Code\Source\Object.cpp" />
     <ClCompile Include="Code\Source\AssetManager.cpp" />
     <ClCompile Include="Code\Source\Component.cpp" />
     <ClCompile Include="Code\Source\DXSystem.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="Code\Source\Shader.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
     <ClCompile Include="Code\Source\SystemFunction.cpp" />
+    <ClCompile Include="Code\Source\TestScene.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />
     <ClCompile Include="Code\Source\Transform.cpp" />
   </ItemGroup>

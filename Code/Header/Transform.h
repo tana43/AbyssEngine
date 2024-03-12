@@ -1,6 +1,5 @@
 #pragma once
 #include "MathHelper.h"
-#include "Actor.h"
 #include "Component.h"
 
 namespace AbyssEngine

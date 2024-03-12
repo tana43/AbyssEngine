@@ -1,8 +1,5 @@
 #include "SpriteRenderer.h"
-#include "DXSystem.h"
 #include "Texture.h"
-#include "MathHelper.h"
-#include "Actor.h"
 #include "Transform.h"
 #include "Engine.h"
 
@@ -11,11 +8,11 @@ using namespace DirectX;
 
 void SpriteRenderer::Initialize()
 {
-    constexpr Vertex v[] = {
-        XMFLOAT3(-0.5f,0.5f,0),XMFLOAT2(0,0),XMFLOAT4(1,1,1,1), //左上
-        XMFLOAT3(0.5f,0.5f,0),XMFLOAT2(1,0),XMFLOAT4(1,1,1,1), //右上
-        XMFLOAT3(-0.5f,-0.5f,0),XMFLOAT2(0,1),XMFLOAT4(1,1,1,1), //左下
-        XMFLOAT3(0.5f,-0.5f,0),XMFLOAT2(0,0),XMFLOAT4(1,1,1,1), //右下
+    const Vertex v[] = {
+        Vector3(-0.5f, 0.5f,0),	Vector2(0,0),Vector4(1,1,1,1), //左上
+        Vector3( 0.5f, 0.5f,0),	Vector2(1,0),Vector4(1,1,1,1), //右上
+        Vector3(-0.5f,-0.5f,0),	Vector2(0,1),Vector4(1,1,1,1), //左下
+        Vector3( 0.5f,-0.5f,0),	Vector2(0,0),Vector4(1,1,1,1), //右下
     };
 
     //頂点バッファ作成

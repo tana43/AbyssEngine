@@ -1,5 +1,4 @@
 #include "Texture.h"
-#include "DXSystem.h"
 #include "Engine.h"
 #include "AssetManager.h"
 #include "Misc.h"

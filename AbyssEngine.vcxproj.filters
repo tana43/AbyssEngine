@@ -31,6 +31,12 @@
     <Filter Include="Code\Source\Component">
       <UniqueIdentifier>{bdf22065-0501-492a-b319-fb980772cbe2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Header\Scene">
+      <UniqueIdentifier>{e4ce46fd-77b9-4569-b43e-0cb0a5933285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source\Scene">
+      <UniqueIdentifier>{7802bf43-1a39-4730-848e-2cf685fb3f06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Texture.h">
@@ -75,11 +81,18 @@
     <ClInclude Include="Code\Header\MathHelper.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Asset.h">
+    <ClInclude Include="Code\Header\Object.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\SceneManager.h" />
-    <ClInclude Include="Code\Header\Scene.h" />
+    <ClInclude Include="Code\Header\TestScene.h">
+      <Filter>Code\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Scene.h">
+      <Filter>Code\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SceneManager.h">
+      <Filter>Code\Header\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\RenderManager.cpp">
@@ -118,7 +131,7 @@
     <ClCompile Include="Code\Source\Component.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Asset.cpp">
+    <ClCompile Include="Code\Source\Object.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -127,7 +140,14 @@
     <ClCompile Include="Code\Source\SystemFunction.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\SceneManager.cpp" />
-    <ClCompile Include="Code\Source\Scene.cpp" />
+    <ClCompile Include="Code\Source\TestScene.cpp">
+      <Filter>Code\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SceneManager.cpp">
+      <Filter>Code\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Scene.cpp">
+      <Filter>Code\Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

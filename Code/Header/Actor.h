@@ -1,17 +1,15 @@
 #pragma once
-#include <memory>
 #include <vector>
+#include "Object.h"
+
 namespace AbyssEngine
 {
     class Component;
     class Transform;
 
-    class Actor : public std::enable_shared_from_this<Actor>
+    class Actor final : public Object
     {
     public:
-        Actor();
-        ~Actor();
-
         std::shared_ptr<Transform> transform_;                  //アタッチされているTransform
         std::vector<std::shared_ptr<Component>> componentList_; //アタッチされているコンポーネントのリスト
 
@@ -19,7 +17,6 @@ namespace AbyssEngine
         std::shared_ptr<T> GetComponent();//アタッチされているコンポーネントを検索し、返す（存在しない場合nullptr）
         template<class T>
         std::shared_ptr<T> AddComponent();//コンポーネントをアタッチする
-
         
         [[nodiscard]] bool GetActive() const { return active_; };   //アクターがアクティブかどうか
         void SetActive(const bool active) { active_ = active; }
@@ -32,6 +29,8 @@ namespace AbyssEngine
     private:
         bool active_ = true;    //アクティブ状態
         bool activeOld_ = true; //変更時トリガー用キャッシュ
+
+        friend class Scene;
     };
 }
 

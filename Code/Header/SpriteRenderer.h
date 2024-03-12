@@ -1,9 +1,6 @@
 #pragma once
-#include <DirectXMath.h>
-#include <memory>
 #include <wrl.h>
 #include <d3d11.h>
-#include <string>
 #include "Renderer.h"
 
 namespace AbyssEngine
@@ -17,9 +14,9 @@ namespace AbyssEngine
     private:
         struct Vertex
         {
-            DirectX::XMFLOAT3 pos_;     //位置
-            DirectX::XMFLOAT2 tex_;     //UV位置
-            DirectX::XMFLOAT4 color_;   //頂点色
+            Vector3 pos_;     //位置
+            Vector2 tex_;     //UV位置
+            Vector4 color_;   //頂点色
         };
 
     private:
@@ -32,10 +29,10 @@ namespace AbyssEngine
         void RecalculateFrame();//表示座標を計算する
 
     private:
-        DirectX::XMFLOAT2 size_ = { 100,100 };   //表示サイズ
-        DirectX::XMFLOAT2 uvOrigin_ = { 0,0 };   //テクスチャのUV原点
-        DirectX::XMFLOAT2 uvSize_ = { 100,100 }; //テクスチャから切り出すサイズ（UV原点基準）
-        DirectX::XMFLOAT4 color_ = { 1,1,1,1 };  //テクスチャカラー
+        Vector2 size_ = { 100,100 };   //表示サイズ
+        Vector2 uvOrigin_ = { 0,0 };   //テクスチャのUV原点
+        Vector2 uvSize_ = { 100,100 }; //テクスチャから切り出すサイズ（UV原点基準）
+        Vector4 color_ = { 1,1,1,1 };  //テクスチャカラー
         std::shared_ptr<Texture> texture_;       //描画するテクスチャ
 
         Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer_;
