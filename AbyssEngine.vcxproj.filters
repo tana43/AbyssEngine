@@ -39,115 +39,115 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Header\Texture.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\RenderManager.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Misc.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\Actor.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\DXSystem.h">
-      <Filter>Code\Header\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Engine.h">
-      <Filter>Code\Header\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Shader.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\AssetManager.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Component.h">
-      <Filter>Code\Header\Component</Filter>
+      <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\SpriteRenderer.h">
-      <Filter>Code\Header\Component</Filter>
+    <ClInclude Include="Code\Header\DXSystem.h">
+      <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Transform.h">
-      <Filter>Code\Header\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Renderer.h">
-      <Filter>Code\Header\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\SystemFunction.h">
+    <ClInclude Include="Code\Header\Engine.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\MathHelper.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\Misc.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
     <ClInclude Include="Code\Header\Object.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\TestScene.h">
-      <Filter>Code\Header\Scene</Filter>
+    <ClInclude Include="Code\Header\Renderer.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\RenderManager.h">
+      <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Scene.h">
-      <Filter>Code\Header\Scene</Filter>
+      <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\SceneManager.h">
-      <Filter>Code\Header\Scene</Filter>
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Shader.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SpriteRenderer.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SystemFunction.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\TestScene.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Texture.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Transform.h">
+      <Filter>Code\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Source\RenderManager.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\Actor.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Texture.cpp">
+    <ClCompile Include="Code\Source\AssetManager.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Component.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\DXSystem.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Engine.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Main.cpp">
-      <Filter>Code\Source\Core</Filter>
+      <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Engine.cpp">
-      <Filter>Code\Source\Core</Filter>
+    <ClCompile Include="Code\Source\MathHelper.cpp">
+      <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\DXSystem.cpp">
-      <Filter>Code\Source\Core</Filter>
+    <ClCompile Include="Code\Source\Object.cpp">
+      <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\AssetManager.cpp">
+    <ClCompile Include="Code\Source\Renderer.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\RenderManager.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Scene.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SceneManager.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Shader.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Renderer.cpp">
-      <Filter>Code\Source\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Transform.cpp">
-      <Filter>Code\Source\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\SpriteRenderer.cpp">
-      <Filter>Code\Source\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Component.cpp">
-      <Filter>Code\Source\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Object.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\MathHelper.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\SystemFunction.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\TestScene.cpp">
-      <Filter>Code\Source\Scene</Filter>
+      <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\SceneManager.cpp">
-      <Filter>Code\Source\Scene</Filter>
+    <ClCompile Include="Code\Source\Texture.cpp">
+      <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Scene.cpp">
-      <Filter>Code\Source\Scene</Filter>
+    <ClCompile Include="Code\Source\Transform.cpp">
+      <Filter>Code\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

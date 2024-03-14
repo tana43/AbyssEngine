@@ -11,6 +11,10 @@ namespace AbyssEngine
     //スプライトレンダラーコンポーネント
     class SpriteRenderer : public Renderer
     {
+    public:
+        SpriteRenderer() {}
+        ~SpriteRenderer() {}
+
     private:
         struct Vertex
         {
@@ -24,10 +28,12 @@ namespace AbyssEngine
 
     public:
         //仮実装
-        void Initialize();
-        void Render();      //描画実行
+        void Initialize(const std::shared_ptr<Actor>& actor)override;
+        void Render()override;      //描画実行
         void RecalculateFrame();//表示座標を計算する
 
+    private:
+        void SetActive(const bool value)override;//アクティブ状態を設定する
     private:
         Vector2 size_ = { 100,100 };   //表示サイズ
         Vector2 uvOrigin_ = { 0,0 };   //テクスチャのUV原点

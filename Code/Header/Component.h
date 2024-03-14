@@ -1,11 +1,11 @@
 #pragma once
-#include "Actor.h"
+#include "Object.h"
 
 namespace AbyssEngine
 {
     class Transform;
 
-    class Component
+    class Component : public Object
     {
     public:
         std::shared_ptr<Actor> actor_; //アタッチしているActor
@@ -27,11 +27,12 @@ namespace AbyssEngine
         Component() = default;
 
     private:
+
         //同じコンポーネントを複数アタッチ可能か
         virtual bool CanMultiple() { return true; }
 
         //初期化
-		virtual bool Initialize(const std::shared_ptr<Actor>& actor) { return true; }
+		virtual void Initialize(const std::shared_ptr<Actor>& actor) {}
 
         //ImGui表示用の共通関数
         virtual bool DrawImGui() { return true; }

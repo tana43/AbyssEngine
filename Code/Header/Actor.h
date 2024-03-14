@@ -1,10 +1,9 @@
 #pragma once
 #include <vector>
-#include "Object.h"
+#include "Component.h"
 
 namespace AbyssEngine
 {
-    class Component;
     class Transform;
 
     class Actor final : public Object
@@ -37,7 +36,7 @@ namespace AbyssEngine
 template<class T>
 inline std::shared_ptr<T> AbyssEngine::Actor::GetComponent()
 {
-    for (std::shared_ptr<Component> com : componentList_)
+    for (std::shared_ptr<Component>& com : componentList_)
     {
         std::shared_ptr<T> buff = std::dynamic_pointer_cast<T>(com);
         if (buff != nullptr)

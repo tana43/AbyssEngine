@@ -1,6 +1,6 @@
 #include "RenderManager.h"
 #include "DXSystem.h"
-#include "Renderer.h"
+#include "SpriteRenderer.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -28,14 +28,13 @@ void RenderManager::Reset()
 	{
 		if (const auto& rend = r.lock())
 		{
-			rend->enabledOld_ = false;
 			rend->isCalled_ = false;
 		}
 	}
 	renderer2DList_.clear();
 }
 
-void RenderManager::Add(const std::shared_ptr<SpriteRender>& mRend)
+void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)
 {
 	renderer2DList_.emplace_back(mRend);
 }

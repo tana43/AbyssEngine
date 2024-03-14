@@ -2,12 +2,18 @@
 #include "Texture.h"
 #include "Transform.h"
 #include "Engine.h"
+#include "RenderManager.h"
 
+using namespace std;
 using namespace AbyssEngine;
 using namespace DirectX;
 
-void SpriteRenderer::Initialize()
+void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
 {
+	//マネージャーの登録と初期化
+	actor_ = actor;
+	transform_ = actor->transform_;
+
     const Vertex v[] = {
         Vector3(-0.5f, 0.5f,0),	Vector2(0,0),Vector4(1,1,1,1), //左上
         Vector3( 0.5f, 0.5f,0),	Vector2(1,0),Vector4(1,1,1,1), //右上
@@ -38,6 +44,10 @@ void SpriteRenderer::Initialize()
     {
         texture_ = Texture::Load(filePath_ + fileName_);
     }
+
+	canRender_ = true;
+
+	SetActive(GetEnabled());
 }
 
 void SpriteRenderer::Render()
@@ -167,5 +177,17 @@ void SpriteRenderer::RecalculateFrame()
 	{
 		memcpy(mapped.pData, data, sizeof(data));
 		DXSystem::deviceContext_->Unmap(vertexBuffer_.Get(), subresourceIndex);
+	}
+}
+
+void SpriteRenderer::SetActive(const bool value)
+{
+	if (value)
+	{
+		if (!isCalled_)
+		{
+			Engine::renderManager_->Add(static_pointer_cast<SpriteRenderer>(shared_from_this()));
+			isCalled_ = true;
+		}
 	}
 }

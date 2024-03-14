@@ -2,11 +2,11 @@
 
 #include <vector>
 #include "MathHelper.h"
+#include "Renderer.h"
 
 namespace AbyssEngine
 {
-    class Renderer;
-    class SpriteRender;
+    class SpriteRenderer;
 
     class RenderManager
     {
@@ -14,7 +14,7 @@ namespace AbyssEngine
         RenderManager();
 
         void Reset();
-        void Add(const std::shared_ptr<SpriteRender>& mRend);//マネージャーにレンダラー登録する
+        void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラー登録する
 
         void Render(); //描画実行
 

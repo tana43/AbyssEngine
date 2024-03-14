@@ -10,7 +10,7 @@ void Actor::Initialize()
     //各コンポーネントの初期化を呼ぶ
 	for (const auto& c : componentList_)
 	{
-		c->Initialize(dynamic_pointer_cast<Actor>(shared_from_this()));
+		//c->Initialize(dynamic_pointer_cast<Actor>(shared_from_this()));
 	}
 	//子に対しても行う
 	/*for (int i = 0; i < transform_->GetChildCount(); i++)

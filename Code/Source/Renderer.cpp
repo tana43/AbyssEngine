@@ -4,10 +4,9 @@ using namespace AbyssEngine;
 
 void Renderer::SetEnable(bool value)
 {
-	if (value != enabledOld_)
+	if (value)
 	{
 		enabled_ = value;
-		enabledOld_ = value;
 
 		//各レンダラーごとの処理を行う
 		SetActive(value);

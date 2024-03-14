@@ -8,91 +8,72 @@
   SpriteRenderer.cpp
   TestScene.cpp
   Transform.cpp
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(2096,9): error C2079: 'std::_Wrap<_Ty>::_Value' が 未定義の class 'AbyssEngine::Transform' で使用しています。
-          with
-          [
-              _Ty=AbyssEngine::Transform
-          ] (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2105,1): message : コンパイル対象の クラス テンプレート インスタンス化 'std::_Wrap<_Ty>' のリファレンスを確認してください
-          with
-          [
-              _Ty=AbyssEngine::Transform
-          ] (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2764): message : コンパイル対象の クラス テンプレート インスタンス化 'std::_Ref_count_obj2<AbyssEngine::Transform>' のリファレンスを確認してください (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Actor.h(54,36): message : コンパイル対象の関数 テンプレート インスタンス化 'std::shared_ptr<AbyssEngine::Transform> std::make_shared<AbyssEngine::Transform,>(void)' のリファレンスを確認してください (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Users\2220097\Desktop\AbyssEngine\Code\Source\Scene.cpp(24,10): message : コンパイル対象の関数 テンプレート インスタンス化 'std::shared_ptr<AbyssEngine::Transform> AbyssEngine::Actor::AddComponent<AbyssEngine::Transform>(void)' のリファレンスを確認してください
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2032,23): error C2681: 'AbyssEngine::Transform *': dynamic_cast の式の型が無効です。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Actor.h(57,14): message : コンパイル対象の関数 テンプレート インスタンス化 'std::shared_ptr<AbyssEngine::Component> std::dynamic_pointer_cast<AbyssEngine::Component,AbyssEngine::Transform>(const std::shared_ptr<AbyssEngine::Transform> &) noexcept' のリファレンスを確認してください (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2032,16): error C2737: '_Ptr': const オブジェクトを初期化する必要があります (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2030): error C3536: '_Ptr': 初期化前に使用することはできません (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2035,32): error C2440: '<function-style-cast>': 'initializer list' から 'std::shared_ptr<AbyssEngine::Component>' に変換できません。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2035,32): message : コンストラクターはソース型を持てません、またはコンストラクターのオーバーロードの解決があいまいです。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2030): error C2680: 'AbyssEngine::Transform *': dynamic_cast のターゲット型が無効です。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2030): message : 'AbyssEngine::Transform': dynamic_cast で使用する前にクラスを定義してください。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Actor.h(68,41): message : コンパイル対象の関数 テンプレート インスタンス化 'std::shared_ptr<AbyssEngine::Transform> std::dynamic_pointer_cast<AbyssEngine::Transform,AbyssEngine::Component>(const std::shared_ptr<AbyssEngine::Component> &) noexcept' のリファレンスを確認してください (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2035,32): error C2440: '<function-style-cast>': 'initializer list' から 'std::shared_ptr<AbyssEngine::Transform>' に変換できません。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(2035,32): message : コンストラクターはソース型を持てません、またはコンストラクターのオーバーロードの解決があいまいです。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,49): error C2665: 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr': オーバーロードされた関数ですべての引数の型を変換できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3036,5): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<AbyssEngine::Renderer> &&) noexcept' の可能性があります (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,49): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<AbyssEngine::Renderer> &&) noexcept': 引数 1 を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'std::weak_ptr<AbyssEngine::Renderer> &&' へ変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,71): message : 理由: 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'std::weak_ptr<AbyssEngine::Renderer>' へは変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,71): message : この変換を実行可能なユーザー定義変換演算子がないか、または演算子を呼び出せません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3012,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<AbyssEngine::Renderer> &) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,49): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<AbyssEngine::Renderer> &) noexcept': 引数 1 を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'const std::weak_ptr<AbyssEngine::Renderer> &' へ変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,71): message : 理由: 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'const std::weak_ptr<AbyssEngine::Renderer>' へは変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,71): message : この変換を実行可能なユーザー定義変換演算子がないか、または演算子を呼び出せません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3010,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(void) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,49): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr': 関数に 1 個の引数を指定できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3041,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<_Ty2> &&) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,49): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<_Ty2> &&) noexcept': 'std::weak_ptr<_Ty2> &&' の テンプレート 引数を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から推測できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3022,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<_Ty2> &) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,49): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<_Ty2> &) noexcept': 'const std::weak_ptr<_Ty2> &' の テンプレート 引数を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から推測できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3017,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::shared_ptr<_Ty2> &) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::shared_ptr<_Ty2> &) noexcept': '__formal' の テンプレート 引数を推測できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xutility(251,49): message : 引数リスト '(const std::shared_ptr<AbyssEngine::SpriteRender>)' を一致させようとしているとき (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(673,18): message : コンパイル対象の関数 テンプレート インスタンス化 '_Ty *std::construct_at<_Objty,const std::shared_ptr<AbyssEngine::SpriteRender>&,0x0>(_Ty *const ,const std::shared_ptr<AbyssEngine::SpriteRender> &) noexcept(<expr>)' のリファレンスを確認してください
-          with
-          [
-              _Ty=std::weak_ptr<AbyssEngine::Renderer>,
-              _Objty=std::weak_ptr<AbyssEngine::Renderer>
-          ] (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\vector(798,27): message : コンパイル対象の関数 テンプレート インスタンス化 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,const std::shared_ptr<AbyssEngine::SpriteRender>&>(_Alloc &,_Objty *const ,const std::shared_ptr<AbyssEngine::SpriteRender> &)' のリファレンスを確認してください
-          with
-          [
-              _Alloc=std::allocator<std::weak_ptr<AbyssEngine::Renderer>>,
-              _Ty=std::weak_ptr<AbyssEngine::Renderer>,
-              _Objty=std::weak_ptr<AbyssEngine::Renderer>
-          ] (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\vector(780,20): message : コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_back_with_unused_capacity<const std::shared_ptr<AbyssEngine::SpriteRender>&>(const std::shared_ptr<AbyssEngine::SpriteRender> &)' のリファレンスを確認してください
-          with
-          [
-              _Ty=std::weak_ptr<AbyssEngine::Renderer>
-          ] (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\vector(862,24): message : コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_one_at_back<const std::shared_ptr<AbyssEngine::SpriteRender>&>(const std::shared_ptr<AbyssEngine::SpriteRender> &)' のリファレンスを確認してください
-          with
-          [
-              _Ty=std::weak_ptr<AbyssEngine::Renderer>
-          ] (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Users\2220097\Desktop\AbyssEngine\Code\Source\RenderManager.cpp(40,17): message : コンパイル対象の関数 テンプレート インスタンス化 '_Ty &std::vector<_Ty,std::allocator<_Ty>>::emplace_back<const std::shared_ptr<AbyssEngine::SpriteRender>&>(const std::shared_ptr<AbyssEngine::SpriteRender> &)' のリファレンスを確認してください
-          with
-          [
-              _Ty=std::weak_ptr<AbyssEngine::Renderer>
-          ]
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,47): error C2665: 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr': オーバーロードされた関数ですべての引数の型を変換できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3036,5): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<AbyssEngine::Renderer> &&) noexcept' の可能性があります (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,47): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<AbyssEngine::Renderer> &&) noexcept': 引数 1 を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'std::weak_ptr<AbyssEngine::Renderer> &&' へ変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,68): message : 理由: 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'std::weak_ptr<AbyssEngine::Renderer>' へは変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,68): message : この変換を実行可能なユーザー定義変換演算子がないか、または演算子を呼び出せません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3012,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<AbyssEngine::Renderer> &) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,47): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<AbyssEngine::Renderer> &) noexcept': 引数 1 を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'const std::weak_ptr<AbyssEngine::Renderer> &' へ変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,68): message : 理由: 'const std::shared_ptr<AbyssEngine::SpriteRender>' から 'const std::weak_ptr<AbyssEngine::Renderer>' へは変換できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,68): message : この変換を実行可能なユーザー定義変換演算子がないか、または演算子を呼び出せません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3010,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(void) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,47): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr': 関数に 1 個の引数を指定できません。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3041,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<_Ty2> &&) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,47): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(std::weak_ptr<_Ty2> &&) noexcept': 'std::weak_ptr<_Ty2> &&' の テンプレート 引数を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から推測できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3022,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<_Ty2> &) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,47): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::weak_ptr<_Ty2> &) noexcept': 'const std::weak_ptr<_Ty2> &' の テンプレート 引数を 'const std::shared_ptr<AbyssEngine::SpriteRender>' から推測できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(3017,5): message : または 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::shared_ptr<_Ty2> &) noexcept' (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(670): message : 'std::weak_ptr<AbyssEngine::Renderer>::weak_ptr(const std::shared_ptr<_Ty2> &) noexcept': '__formal' の テンプレート 引数を推測できませんでした (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\xmemory(677,47): message : 引数リスト '(const std::shared_ptr<AbyssEngine::SpriteRender>)' を一致させようとしているとき (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\Renderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\Renderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Renderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\Renderer.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Renderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\Component.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\Component.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Component.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\Component.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Component.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Scene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\TestScene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\TestScene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\TestScene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\TestScene.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\TestScene.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\Actor.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\Actor.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Actor.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\Actor.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Actor.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\Transform.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\Transform.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Transform.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\Transform.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Transform.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\SceneManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\SceneManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\SceneManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\SceneManager.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\SceneManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\RenderManager.cpp(59,13): error C2675: 単項演算子 '->': 'std::shared_ptr' は、この演算子または定義済の演算子に適切な型への変換の定義を行いません。(新しい動作; ヘルプを参照)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1762,22): message : '_Ty2 *std::shared_ptr<_Ty>::operator ->(void) noexcept const' の可能性があります (ソース ファイルをコンパイルしています Code\Source\RenderManager.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\RenderManager.cpp(59): message : '_Ty2 *std::shared_ptr<_Ty>::operator ->(void) noexcept const': '__formal' の テンプレート 引数を推測できませんでした
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\RenderManager.cpp(59,23): error C2039: 'GetActiveInHierarchy': 'std::shared_ptr' のメンバーではありません
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): error C2065: 'Actor': 定義されていない識別子です。 (ソース ファイルをコンパイルしています Code\Source\Engine.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,14): error C2923: 'std::shared_ptr': 'Actor' は、パラメーター '_Ty' の有効な テンプレート 型引数ではありません (ソース ファイルをコンパイルしています Code\Source\Engine.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,25): message : 'Actor' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Engine.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(11,32): error C2955: 'std::shared_ptr': クラス テンプレート を使用するには テンプレート 引数リストが必要です (ソース ファイルをコンパイルしています Code\Source\Engine.cpp)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください (ソース ファイルをコンパイルしています Code\Source\Engine.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(15,20): error C2027: 認識できない型 'AbyssEngine::Actor' が使われています。
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(30,22): message : 'AbyssEngine::Actor' の宣言を確認してください
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(15,22): error C2039: 'transform_': 'std::shared_ptr<AbyssEngine::Actor>' のメンバーではありません
+C:\Users\2220097\Desktop\AbyssEngine\Code\Header\Component.h(36,38): message : 'std::shared_ptr<AbyssEngine::Actor>' の宣言を確認してください
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(82,30): error C2675: 単項演算子 '->': 'std::shared_ptr' は、この演算子または定義済の演算子に適切な型への変換の定義を行いません。(新しい動作; ヘルプを参照)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1762,22): message : '_Ty2 *std::shared_ptr<_Ty>::operator ->(void) noexcept const' の可能性があります (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(82,36): message : '_Ty2 *std::shared_ptr<_Ty>::operator ->(void) noexcept const': '__formal' の テンプレート 引数を推測できませんでした
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(82,38): error C2039: 'transform_': 'std::shared_ptr' のメンバーではありません
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(83,32): error C2675: 単項演算子 '->': 'std::shared_ptr' は、この演算子または定義済の演算子に適切な型への変換の定義を行いません。(新しい動作; ヘルプを参照)
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1762,22): message : '_Ty2 *std::shared_ptr<_Ty>::operator ->(void) noexcept const' の可能性があります (ソース ファイルをコンパイルしています Code\Source\SpriteRenderer.cpp)
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(83,38): message : '_Ty2 *std::shared_ptr<_Ty>::operator ->(void) noexcept const': '__formal' の テンプレート 引数を推測できませんでした
+C:\Users\2220097\Desktop\AbyssEngine\Code\Source\SpriteRenderer.cpp(83,40): error C2039: 'transform_': 'std::shared_ptr' のメンバーではありません
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1555,1): message : 'std::shared_ptr' の宣言を確認してください
