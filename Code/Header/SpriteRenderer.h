@@ -41,12 +41,12 @@ namespace AbyssEngine
         Vector4 color_ = { 1,1,1,1 };  //テクスチャカラー
         std::shared_ptr<Texture> texture_;       //描画するテクスチャ
 
-        Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer_;
-
-        std::string fileName_;
-        std::string filePath_;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>        vertexBuffer_;
+        Microsoft::WRL::ComPtr<ID3D11VertexShader>  vertexShader_;
+        Microsoft::WRL::ComPtr<ID3D11PixelShader>   pixelShader_;
+        Microsoft::WRL::ComPtr<ID3D11InputLayout>   inputLayout_;
         
-        bool visibility_ = false;//表示切り替え
+        bool visibility_ = true;//表示切り替え(trueなら表示、falseなら非表示)
     };
 }
 

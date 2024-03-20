@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "MathHelper.h"
+#include "Shader.h"
 
 namespace AbyssEngine
 {
@@ -11,6 +12,9 @@ namespace AbyssEngine
         Renderer() {}
         ~Renderer() {}
 
+    public:
+        void SetFilePath(const char* path) { filePath_ = path; }
+
         void SetEnable(bool value);
         [[nodiscard]] bool GetEnabled() const { return enabled_; }
 
@@ -19,6 +23,7 @@ namespace AbyssEngine
         bool enabled_ = true;       //描画するか
         bool canRender_ = false;    //レンダリング可能か（データが入っていないか)
 
+        std::string filePath_;
 
         //int subsetCount_ = 0; //サブセットの数
     private:

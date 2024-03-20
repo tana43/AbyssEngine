@@ -1,6 +1,8 @@
 #include "RenderManager.h"
 #include "DXSystem.h"
 #include "SpriteRenderer.h"
+#include "Actor.h"
+#include "Misc.h"
 
 using namespace AbyssEngine;
 using namespace std;

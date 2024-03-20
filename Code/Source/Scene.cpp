@@ -21,7 +21,7 @@ shared_ptr<Actor> Scene::InstanceActor(const std::string& name)
 {
     //オブジェクトを生成して登録する
     auto actor = make_shared<Actor>();
-    actor->AddComponent<Transform>();
+    actor->transform_ = actor->AddComponent<Transform>();
     actor->name_ = name;
     actorList_.emplace_back(actor);
 
@@ -49,16 +49,16 @@ void Scene::DestroyComponent(const std::shared_ptr<Component>& component)
     const auto itrEnd = actorList_.end();
     for (auto itr = actorList_.begin(); itr != itrEnd; ++itr)
     {
-        if ((*itr) == component->actor_)
+        if ((*itr) == component->GetActor())
         {
-            const auto itrCompEnd = (*itr)->componentList_.end();
-            for (auto itrComp = (*itr)->componentList_.begin();itrComp != itrCompEnd;++itr)
+            const auto itrCompEnd = (*itr)->GetComponentList().end();
+            for (auto itrComp = (*itr)->GetComponentList().begin();itrComp != itrCompEnd;++itr)
             {
                 if (typeid(*(*itrComp)) == typeid(*component))
                 {
-                    (*itrComp)->actor_.reset();
-                    (*itrComp)->transform_.reset();
-                    (*itr)->componentList_.erase(itrComp);
+                    (*itrComp)->GetActor().reset();
+                    (*itrComp)->GetTransform().reset();
+                    (*itr)->GetComponentList().erase(itrComp);
                     return;
                 }
             }

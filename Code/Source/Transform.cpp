@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Component.h"
 
 using namespace AbyssEngine;
 

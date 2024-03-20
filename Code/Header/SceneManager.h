@@ -14,7 +14,7 @@ namespace AbyssEngine
 
         Scene& GetActiveScene(); //現在アクティブなシーンを取得
 
-        bool run = false;   //再生中
+        bool run = true;   //再生中
         bool pose = false;  //ポーズ中
 
     private:

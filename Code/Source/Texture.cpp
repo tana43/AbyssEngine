@@ -50,7 +50,6 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
         _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
     }
 
-    texture->shaderResourceView_->GetResource(resource.GetAddressOf());
 
     //テクスチャ情報取得
     ComPtr<ID3D11Texture2D> texture2d;

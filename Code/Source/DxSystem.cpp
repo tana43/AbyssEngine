@@ -37,6 +37,7 @@ bool DXSystem::Initialize(HWND hWnd, int width, int height)
     InitializeRenderTarget();
     CreateRasterizerState();
     CreateBlendState();
+
     return true;
 }
 
@@ -52,12 +53,17 @@ void DXSystem::Clear()
     float clearColor[4] = { 0.1f,0.1f,0.1f,1 };
     deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), clearColor);
     deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
+
+    
 }
 
 void DXSystem::Flip(int n)
 {
     //ƒtƒŠƒbƒvˆ—
     swapChain_->Present(n, 0);
+
+    auto hr = AbyssEngine::DXSystem::device_->GetDeviceRemovedReason();
+    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 }
 
 void DXSystem::SetViewport(int width, int height, int num)

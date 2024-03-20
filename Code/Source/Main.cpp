@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <sstream>
 
+#include "Misc.h"
 #include "Engine.h"
 
 using namespace ABI::Windows::Foundation;
@@ -62,7 +63,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 		szWindowClass,
 		szWindowClass,
 		WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		0, 0, AbyssEngine::DXSystem::GetScreenWidth(),
+		0, 0, 
+		AbyssEngine::DXSystem::GetScreenWidth(),
 		AbyssEngine::DXSystem::GetScreenHeight(),
 		nullptr,
 		nullptr,

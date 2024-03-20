@@ -11,7 +11,7 @@ using namespace AbyssEngine;
 SceneManager::SceneManager()
 {
     AddScene(new TestScene,"test");
-
+    SetNextScene("test");
 }
 
 void SceneManager::Exit() const

@@ -3,6 +3,7 @@
 #include "RenderManager.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "Misc.h"
 
 using namespace AbyssEngine;
 using namespace std;

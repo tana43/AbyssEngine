@@ -37,6 +37,9 @@
     <Filter Include="Code\Source\Scene">
       <UniqueIdentifier>{7802bf43-1a39-4730-848e-2cf685fb3f06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{33dddc01-9a92-4627-9935-87557705fac1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -149,5 +152,13 @@
     <ClCompile Include="Code\Source\Transform.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\SpritePS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SpriteVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

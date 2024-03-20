@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "Engine.h"
 #include "RenderManager.h"
+#include "Actor.h"
 
 using namespace std;
 using namespace AbyssEngine;
@@ -12,28 +13,41 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
 {
 	//マネージャーの登録と初期化
 	actor_ = actor;
-	transform_ = actor->transform_;
+	transform_ = actor->GetTransfrom();
 
     const Vertex v[] = {
         Vector3(-0.5f, 0.5f,0),	Vector2(0,0),Vector4(1,1,1,1), //左上
         Vector3( 0.5f, 0.5f,0),	Vector2(1,0),Vector4(1,1,1,1), //右上
         Vector3(-0.5f,-0.5f,0),	Vector2(0,1),Vector4(1,1,1,1), //左下
-        Vector3( 0.5f,-0.5f,0),	Vector2(0,0),Vector4(1,1,1,1), //右下
+        Vector3( 0.5f,-0.5f,0),	Vector2(1,1),Vector4(1,1,1,1), //右下
     };
 
     //頂点バッファ作成
     D3D11_BUFFER_DESC bd;
     ZeroMemory(&bd, sizeof(bd));
-    bd.Usage = D3D11_USAGE_DYNAMIC;
     bd.ByteWidth = sizeof(v);
+    bd.Usage = D3D11_USAGE_DYNAMIC;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
+	bd.MiscFlags = 0;
+	bd.StructureByteStride = 0;
     D3D11_SUBRESOURCE_DATA res;
     ZeroMemory(&res, sizeof(res));
     res.pSysMem = v;
+	res.SysMemPitch = 0;
+	res.SysMemSlicePitch = 0;
+    auto hr = DXSystem::device_->CreateBuffer(&bd, &res, vertexBuffer_.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    
+	D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
 
-    DXSystem::device_->CreateBuffer(&bd, &res, vertexBuffer_.GetAddressOf());
+	vertexShader_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/SpriteVS.cso", inputLayout_.GetAddressOf(),inputElementDesc, _countof(inputElementDesc));
+	pixelShader_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/SpritePS.cso");
 
     //テクスチャ読み込み
     if (filePath_.empty())
@@ -42,7 +56,7 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
     }
     else
     {
-        texture_ = Texture::Load(filePath_ + fileName_);
+        texture_ = Texture::Load(filePath_);
     }
 
 	canRender_ = true;
@@ -65,6 +79,9 @@ void SpriteRenderer::Render()
     //テクスチャの設定
     texture_->Set(1, Shader_Type::Pixel);
 
+	DXSystem::deviceContext_->VSSetShader(vertexShader_.Get(), nullptr, 0);
+	DXSystem::deviceContext_->PSSetShader(pixelShader_.Get(), nullptr, 0);
+
     //描画
     DXSystem::deviceContext_->Draw(4, 0);
 }
@@ -79,8 +96,8 @@ void SpriteRenderer::RecalculateFrame()
     //頂点データ設定
     Vertex data[4];
 
-    const Vector3 transPos = actor_->transform_->GetPosition();
-    const Vector3 transScale = actor_->transform_->GetScale();
+    const Vector3 transPos = actor_->GetTransfrom()->GetPosition();
+    const Vector3 transScale = actor_->GetTransfrom()->GetScale();
     const Vector2 scaledSize = size_ * Vector2(transScale.x,transScale.y);
 
     data[0].pos_.x = transPos.x;

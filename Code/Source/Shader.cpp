@@ -9,33 +9,6 @@ std::unordered_map<std::string, Microsoft::WRL::ComPtr<T>> Shader<T>::shaders_;
 template <class T>
 std::mutex Shader<T>::mutex_;
 
-template<class T>
-Microsoft::WRL::ComPtr<T> Shader<T>::Emplace(const char* name)
-{
-    Microsoft::WRL::ComPtr<T> shader;
-    if (shaders_.find(name) != shaders_.end())
-    {
-        shader = shaders_.at(name);
-    }
-    else
-    {
-        Blob cso(name);
-        HRESULT hr = Create<T>(DXSystem::device_, cso, shader.GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
-
-        std::lock_guard<std::mutex> lock(mutex_);
-        shaders_.emplace(std::make_pair(name, shader));
-    }
-    return shader;
-}
-
-template<class T>
-void Shader<T>::Exterminate()
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    shaders_.clear();
-}
-
 Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(const char* name, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements)
 {
     Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader_;
@@ -154,4 +127,30 @@ void Shader<ID3D11VertexShader>::Exterminate()
     std::lock_guard<std::mutex> lock(mutex_);
     inputLayouts_.clear();
     vertexShaders_.clear();
+}
+
+template <>
+HRESULT AbyssEngine::CreateShader<ID3D11PixelShader>(ID3D11Device* device, const Blob& cso, ID3D11PixelShader** shader)
+{
+    return device->CreatePixelShader(cso.data_.get(), cso.size_, NULL, shader);
+}
+template <>
+HRESULT AbyssEngine::CreateShader<ID3D11HullShader>(ID3D11Device* device, const Blob& cso, ID3D11HullShader** shader)
+{
+    return device->CreateHullShader(cso.data_.get(), cso.size_, NULL, shader);
+}
+template <>
+HRESULT AbyssEngine::CreateShader<ID3D11DomainShader>(ID3D11Device* device, const Blob& cso, ID3D11DomainShader** shader)
+{
+    return device->CreateDomainShader(cso.data_.get(), cso.size_, NULL, shader);
+}
+template <>
+HRESULT AbyssEngine::CreateShader<ID3D11GeometryShader>(ID3D11Device* device, const Blob& cso, ID3D11GeometryShader** shader)
+{
+    return device->CreateGeometryShader(cso.data_.get(), cso.size_, NULL, shader);
+}
+template <>
+HRESULT AbyssEngine::CreateShader<ID3D11ComputeShader>(ID3D11Device* device, const Blob& cso, ID3D11ComputeShader** shader)
+{
+    return device->CreateComputeShader(cso.data_.get(), cso.size_, NULL, shader);
 }

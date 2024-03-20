@@ -41,6 +41,20 @@ namespace AbyssEngine
         }
     };
 
+    //各種シェーダーの生成関数
+    template <class T>
+    HRESULT CreateShader(ID3D11Device* device, const Blob& cso, T** pixel_shader);
+    template <>
+    HRESULT CreateShader<ID3D11PixelShader>(ID3D11Device* device, const Blob& cso, ID3D11PixelShader** shader);
+    template <>
+    HRESULT CreateShader<ID3D11HullShader>(ID3D11Device* device, const Blob& cso, ID3D11HullShader** shader);
+    template <>
+    HRESULT CreateShader<ID3D11DomainShader>(ID3D11Device* device, const Blob& cso, ID3D11DomainShader** shader);
+    template <>
+    HRESULT CreateShader<ID3D11GeometryShader>(ID3D11Device* device, const Blob& cso, ID3D11GeometryShader** shader);
+    template <>
+    HRESULT CreateShader<ID3D11ComputeShader>(ID3D11Device* device, const Blob& cso, ID3D11ComputeShader** shader);
+
     //各種シェーダークラス
     template <class T>
     class Shader
@@ -52,11 +66,31 @@ namespace AbyssEngine
     public:
 
         //マップの中にある指定されたシェーダーを返す　一度も使用していないシェーダーならマップに追加した後に返す
-        static Microsoft::WRL::ComPtr<T> Emplace(const char* name);
+        static Microsoft::WRL::ComPtr<T> Emplace(const char* name)
+        {
+            Microsoft::WRL::ComPtr<T> shader;
+            if (shaders_.find(name) != shaders_.end())
+            {
+                shader = shaders_.at(name);
+            }
+            else
+            {
+                Blob cso(name);
+                HRESULT hr = CreateShader<T>(DXSystem::device_.Get(), cso, shader.GetAddressOf());
+                _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+
+                std::lock_guard<std::mutex> lock(mutex_);
+                shaders_.emplace(std::make_pair(name, shader));
+            }
+            return shader;
+        }
 
         //マップをクリア
-        static void Exterminate();
-        
+        static void Exterminate()
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            shaders_.clear();
+        }
     };
 
     //頂点シェーダークラス　インプットレイアウトがあるので他のシェーダーとの互換性がないからこいつだけ別で作る
@@ -77,66 +111,6 @@ namespace AbyssEngine
 
         static void Exterminate();
     };
-
-    template<>
-    class Shader<ID3D11PixelShader>
-    {
-    public:
-        static HRESULT Create(const Blob& cso, ID3D11PixelShader** pixelShader);
-    };
-
-    template<>
-    class Shader<ID3D11HullShader>
-    {
-    public:
-        static HRESULT Create(const Blob& cso, ID3D11HullShader** hullShader);
-    };
-
-    template<>
-    class Shader<ID3D11DomainShader>
-    {
-    public:
-        static HRESULT Create(const Blob& cso, ID3D11DomainShader** domainShader);
-    };
-
-    template<>
-    class Shader<ID3D11GeometryShader>
-    {
-    public:
-        static HRESULT Create(const Blob& cso, ID3D11GeometryShader** geometryShader);
-    };
-
-    template<>
-    class Shader<ID3D11ComputeShader>
-    {
-    public:
-        static HRESULT Create(const Blob& cso, ID3D11ComputeShader** computeShader);
-    };
-
-    inline HRESULT Shader<ID3D11PixelShader>::Create(const Blob& cso, ID3D11PixelShader** pixelShader)
-    {
-        return DXSystem::device_->CreatePixelShader(cso.data_.get(),cso.size_,NULL,pixelShader);
-    }
-
-    inline HRESULT Shader<ID3D11HullShader>::Create(const Blob& cso, ID3D11HullShader** hullShader)
-    {
-        return DXSystem::device_->CreateHullShader(cso.data_.get(),cso.size_,NULL,hullShader);
-    }
-
-    inline HRESULT Shader<ID3D11DomainShader>::Create(const Blob& cso, ID3D11DomainShader** domainShader)
-    {
-        return DXSystem::device_->CreateDomainShader(cso.data_.get(), cso.size_, NULL, domainShader);
-    }
-
-    inline HRESULT Shader<ID3D11GeometryShader>::Create(const Blob& cso, ID3D11GeometryShader** geometryShader)
-    {
-        return DXSystem::device_->CreateGeometryShader(cso.data_.get(),cso.size_,NULL,geometryShader);
-    }
-
-    inline HRESULT Shader<ID3D11ComputeShader>::Create(const Blob& cso, ID3D11ComputeShader** computeShader)
-    {
-        return DXSystem::device_->CreateComputeShader(cso.data_.get(),cso.size_,NULL,computeShader);
-    }
 }
 
 
