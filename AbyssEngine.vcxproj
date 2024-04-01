@@ -176,6 +176,7 @@
     <FxCompile>
       <AssemblerOutputFile>Resources\Shader\%(Filename).cso</AssemblerOutputFile>
       <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>Resources\Shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

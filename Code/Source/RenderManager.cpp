@@ -22,6 +22,20 @@ using namespace std;
 
 RenderManager::RenderManager()
 {
+	//サンプラーステート作成
+	D3D11_SAMPLER_DESC sd = {};
+	sd.Filter = D3D11_FILTER_ANISOTROPIC;	  // 異方性フィルタ
+	sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; // U
+	sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; // V
+	sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP; // W
+	sd.MipLODBias = 0;
+	sd.MaxAnisotropy = 4; // 最大異方性(1Pixelあたりのテクスチャ点数)
+	sd.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	sd.MinLOD = 0;
+	sd.MaxLOD = D3D11_FLOAT32_MAX;
+
+	HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, sampler_.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 }
 
 void RenderManager::Reset()

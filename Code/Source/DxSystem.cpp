@@ -93,14 +93,16 @@ HRESULT DXSystem::CreateDevice()
     creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif // _DEBUG
 
+    D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
+
     //デバイス生成
     hr = D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
         creationFlags,
-        nullptr,
-        0,
+        &featureLevel,
+        1,
         D3D11_SDK_VERSION,
         device_.GetAddressOf(),
         nullptr,

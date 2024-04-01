@@ -10,5 +10,6 @@ SamplerState smpState : register(s1);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
+    //return float4(1, 1, 1, 1);
     return tex2d.Sample(smpState,pin.texcoord) * pin.color;
 }

@@ -53,4 +53,6 @@ void SceneManager::ChangeScene()
     activeScene_ = sceneMap_[nextSceneName_].get();
 
     activeScene_->Initialize();
+
+    nextSceneName_ = "";
 }

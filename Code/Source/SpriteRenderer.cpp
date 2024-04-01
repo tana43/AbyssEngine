@@ -42,11 +42,11 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
 	D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	vertexShader_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/SpriteVS.cso", inputLayout_.GetAddressOf(),inputElementDesc, _countof(inputElementDesc));
+	vertexShader_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/SpriteVS.cso", inputLayout_.GetAddressOf(),inputElementDesc, ARRAYSIZE(inputElementDesc));
 	pixelShader_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/SpritePS.cso");
 
     //テクスチャ読み込み
@@ -58,6 +58,8 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
     {
         texture_ = Texture::Load(filePath_);
     }
+
+	size_ = Vector2(texture_->GetWidth(), texture_->GetHeight());
 
 	canRender_ = true;
 
@@ -75,6 +77,8 @@ void SpriteRenderer::Render()
     constexpr UINT stride = sizeof(Vertex);
     constexpr UINT offset = 0;
     DXSystem::deviceContext_->IASetVertexBuffers(0, 1, vertexBuffer_.GetAddressOf(), &stride, &offset);
+
+	DXSystem::deviceContext_->IASetInputLayout(inputLayout_.Get());
 
     //テクスチャの設定
     texture_->Set(1, Shader_Type::Pixel);
@@ -163,23 +167,32 @@ void SpriteRenderer::RecalculateFrame()
 	}
 
 	//テクスチャ座標設定
-	data[0].tex_.x = uvOrigin_.x;
+	/*data[0].tex_.x = uvOrigin_.x;
 	data[0].tex_.y = uvOrigin_.y;
 	data[1].tex_.x = uvOrigin_.x + uvSize_.x;
 	data[1].tex_.y = uvOrigin_.y;
 	data[2].tex_.x = uvOrigin_.x;
 	data[2].tex_.y = uvOrigin_.y + uvSize_.y;
 	data[3].tex_.x = uvOrigin_.x + uvSize_.x;
-	data[3].tex_.y = uvOrigin_.y + uvSize_.y;
+	data[3].tex_.y = uvOrigin_.y + uvSize_.y;*/
+
+	data[0].tex_.x = 0;
+	data[0].tex_.y = 0;
+	data[1].tex_.x = 1;
+	data[1].tex_.y = 0;
+	data[2].tex_.x = 0;
+	data[2].tex_.y = 1;
+	data[3].tex_.x = 1;
+	data[3].tex_.y = 1;
 
 	//UV座標
-	const float w = static_cast<float>(texture_->GetWidth());
+	/*const float w = static_cast<float>(texture_->GetWidth());
 	const float h = static_cast<float>(texture_->GetHeight());
 	for (auto& i : data)
 	{
 		i.tex_.x = i.tex_.x / w;
 		i.tex_.y = i.tex_.y / h;
-	}
+	}*/
 	//頂点カラー
 	data[0].color_ = color_;
 	data[1].color_ = color_;

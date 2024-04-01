@@ -28,7 +28,7 @@ namespace AbyssEngine
         Blob(const char* name)
         {
             FILE* fp = NULL;
-            fopen_s(&fp, 0, "rb");
+            fopen_s(&fp, name, "rb");
             _ASSERT_EXPR(fp, L"cso file not found");
 
             fseek(fp, 0, SEEK_END);
@@ -92,6 +92,11 @@ namespace AbyssEngine
             shaders_.clear();
         }
     };
+
+    template<class T>
+    std::unordered_map<std::string, Microsoft::WRL::ComPtr<T>> Shader<T>::shaders_;
+    template<class T> 
+    std::mutex Shader<T>::mutex_;
 
     //頂点シェーダークラス　インプットレイアウトがあるので他のシェーダーとの互換性がないからこいつだけ別で作る
     template<>

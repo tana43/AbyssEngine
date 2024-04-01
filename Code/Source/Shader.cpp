@@ -4,10 +4,10 @@
 
 using namespace AbyssEngine;
 
-template <class T>
-std::unordered_map<std::string, Microsoft::WRL::ComPtr<T>> Shader<T>::shaders_;
-template <class T>
-std::mutex Shader<T>::mutex_;
+//template <class T>
+//std::unordered_map<std::string, Microsoft::WRL::ComPtr<T>> Shader<T>::shaders_;
+//template <class T>
+//std::mutex Shader<T>::mutex_;
 
 Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(const char* name, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements)
 {
@@ -37,7 +37,7 @@ Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(c
         HRESULT hr;
 
         Blob cso(name);
-        hr = DXSystem::device_->CreateInputLayout(inputElementDesc, numElements, cso.data_.get(), cso.size_, inputLayout);
+        hr = DXSystem::device_->CreateVertexShader(cso.data_.get(),cso.size_,nullptr,vertexShader_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
 
         std::lock_guard<std::mutex> lock(mutex_);

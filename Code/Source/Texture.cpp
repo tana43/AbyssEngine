@@ -35,21 +35,18 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     ComPtr<ID3D11Resource> resource;
     auto texture = make_shared<Texture>();
 
-    ComPtr<ID3D11ShaderResourceView> shaderResourceView;
-
     filesystem::path ddsFilename(texturePath);
     ddsFilename.replace_extension("dds");
     if (std::filesystem::exists(ddsFilename.c_str()))
     {
-        hr = CreateDDSTextureFromFile(DXSystem::device_.Get(), ddsFilename.c_str(), resource.GetAddressOf(), shaderResourceView.GetAddressOf());
+        hr = CreateDDSTextureFromFile(DXSystem::device_.Get(), ddsFilename.c_str(), resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
     }
     else
     {
-        hr = CreateWICTextureFromFile(DXSystem::device_.Get(), fileName, resource.GetAddressOf(), shaderResourceView.GetAddressOf());
+        hr = CreateWICTextureFromFile(DXSystem::device_.Get(), fileName, resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
     }
-
 
     //テクスチャ情報取得
     ComPtr<ID3D11Texture2D> texture2d;

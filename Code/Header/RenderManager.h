@@ -29,6 +29,8 @@ namespace AbyssEngine
             Vector4 color_;
         };
 
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_;
+
 
     private:
         //std::vector<std::weak_ptr<Renderer>> renderer3DList_{};
