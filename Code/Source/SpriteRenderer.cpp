@@ -161,8 +161,8 @@ void SpriteRenderer::RecalculateFrame()
 	// 正規化デバイス座標系
 	for (auto& i : data)
 	{
-		i.pos_.x = 2.0f * i.pos_.x / 1920.0f - 1.0f;
-		i.pos_.y = 1.0f - 2.0f * i.pos_.y / 1080.0f;
+		i.pos_.x = 2.0f * i.pos_.x / DXSystem::GetScreenWidth() - 1.0f;
+		i.pos_.y = 1.0f - 2.0f * i.pos_.y / DXSystem::GetScreenHeight();
 		i.pos_.z = 0.0f;
 	}
 
@@ -176,14 +176,14 @@ void SpriteRenderer::RecalculateFrame()
 	data[3].tex_.x = uvOrigin_.x + uvSize_.x;
 	data[3].tex_.y = uvOrigin_.y + uvSize_.y;*/
 
-	data[0].tex_.x = 0;
-	data[0].tex_.y = 0;
-	data[1].tex_.x = 1;
-	data[1].tex_.y = 0;
-	data[2].tex_.x = 0;
-	data[2].tex_.y = 1;
-	data[3].tex_.x = 1;
-	data[3].tex_.y = 1;
+	data[0].tex_.x = 0.0f;
+	data[0].tex_.y = 0.0f;
+	data[1].tex_.x = 1.0f;
+	data[1].tex_.y = 0.0f;
+	data[2].tex_.x = 0.0f;
+	data[2].tex_.y = 1.0f;
+	data[3].tex_.x = 1.0f;
+	data[3].tex_.y = 1.0f;
 
 	//UV座標
 	/*const float w = static_cast<float>(texture_->GetWidth());
@@ -193,12 +193,12 @@ void SpriteRenderer::RecalculateFrame()
 		i.tex_.x = i.tex_.x / w;
 		i.tex_.y = i.tex_.y / h;
 	}*/
+
 	//頂点カラー
 	data[0].color_ = color_;
 	data[1].color_ = color_;
 	data[2].color_ = color_;
 	data[3].color_ = color_;
-
 
 	constexpr UINT subresourceIndex = 0;
 	D3D11_MAPPED_SUBRESOURCE mapped;

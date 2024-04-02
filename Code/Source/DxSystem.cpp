@@ -2,6 +2,7 @@
 #include "DXSystem.h"
 
 #include <DirectXMath.h>
+#include <dxgidebug.h>
 #include "Misc.h"
 
 using Microsoft::WRL::ComPtr;
@@ -43,6 +44,7 @@ bool DXSystem::Initialize(HWND hWnd, int width, int height)
 
 void DXSystem::Release()
 {
+    ReportLiveObjectsWrapper();
 }
 
 void DXSystem::Clear()
@@ -50,11 +52,9 @@ void DXSystem::Clear()
     //レンダーターゲットビュー設定
     deviceContext_->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), depthStencilView_.Get());
 
-    float clearColor[4] = { 0.1f,0.1f,0.1f,1 };
+    float clearColor[4] = { 0.4f,0.4f,0.4f,1 };
     deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), clearColor);
     deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
-
-    
 }
 
 void DXSystem::Flip(int n)
@@ -628,4 +628,15 @@ bool DXSystem::CreateBlendState()
     }
 
     return true;
+}
+
+void DXSystem::ReportLiveObjectsWrapper()
+{
+#if defined(_DEBUG)
+    typedef HRESULT(__stdcall* fPtr)(const IID&, void**);
+    HMODULE hDll = GetModuleHandleW(L"dxgidebug.dll");
+    fPtr DXGIGetDebugInterface = (fPtr)GetProcAddress(hDll, "DXGIGetDebugInterface");
+    DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**)&dxgiDebug_);
+    dxgiDebug_->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+#endif
 }

@@ -76,6 +76,8 @@ namespace AbyssEngine
 		static Microsoft::WRL::ComPtr<ID3D11BlendState>	blendStates_[blendType_];
 		static bool CreateBlendState(); //ブレンドステートの作成
 
+		// DirectX11の初期化後、メモリリーク検出のために次の関数を呼び出す
+		static void ReportLiveObjectsWrapper();
 	};
 
 	

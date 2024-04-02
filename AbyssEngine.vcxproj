@@ -174,7 +174,7 @@
       <AssemblerOutput>AssemblyCode</AssemblerOutput>
     </FxCompile>
     <FxCompile>
-      <AssemblerOutputFile>Resources\Shader\%(Filename).cso</AssemblerOutputFile>
+      <AssemblerOutputFile>Resources\Shader\%(Filename).cod</AssemblerOutputFile>
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>Resources\Shader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
@@ -199,6 +199,12 @@
       <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ObjectFileOutput>Resources\Shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile>
+      <AssemblerOutputFile>Resources\Shader\%(Filename).cod</AssemblerOutputFile>
+    </FxCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
