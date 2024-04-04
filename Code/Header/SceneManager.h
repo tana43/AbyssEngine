@@ -27,6 +27,8 @@ namespace AbyssEngine
         //シーンの変更
         void SetNextScene(std::string name);
 
+        void DrawImGui();
+
     private:
 
         //シーンの変更があった場合の更新処理

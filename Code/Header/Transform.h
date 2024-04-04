@@ -36,6 +36,8 @@ namespace AbyssEngine
 
         Vector3 GetEulerAngles() const;
 
+        bool DrawImGui()override;
+
     private:
         Vector3 position_ = { 0,0,0 };
         Quaternion rotation_ = { 0,0,0,1 };

@@ -23,6 +23,8 @@ namespace AbyssEngine
         virtual void Reset();       //シーンをリセット
         virtual void Finalize();    //後始末
 
+        virtual void DrawImGui(); //ImGuiデバッグ表示
+
         std::vector<std::shared_ptr<Actor>> actorList_; //シーン内の全アクター
 
         friend class SceneManager;

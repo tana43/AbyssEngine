@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Component.h"
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -113,4 +114,17 @@ void Scene::Reset()
 void Scene::Finalize()
 {
 
+}
+
+void Scene::DrawImGui()
+{
+    for (const auto& a : actorList_)
+    {
+        if (ImGui::BeginMenu(a->name_.c_str()))
+        {
+            a->DrawImGui();
+
+            ImGui::EndMenu();
+        }
+    }
 }

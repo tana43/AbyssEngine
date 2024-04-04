@@ -25,6 +25,7 @@ namespace AbyssEngine
     private:
         void Initialize();  //初期化
         void Release();     //後始末
+        void DrawImGui();
 
     private:
         std::shared_ptr<Transform> transform_;                  //アタッチされているTransform

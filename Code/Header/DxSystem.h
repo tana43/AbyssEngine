@@ -50,7 +50,6 @@ namespace AbyssEngine
 		static void SetViewport(int width, int height, int num = 1);//ビューポートをセット
 		static void SetDefaultView();//メインウィンドウのレンダーターゲットをセットする
 
-
 	private:
 		static int screenWidth_;
 		static int screenHeight_;

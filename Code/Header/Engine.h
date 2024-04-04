@@ -2,6 +2,7 @@
 #include "DXSystem.h"
 #include <memory>
 
+
 namespace AbyssEngine
 {
     class AssetManager;
@@ -23,6 +24,9 @@ namespace AbyssEngine
         static std::unique_ptr<AssetManager> assetManager_;
         static std::unique_ptr<RenderManager> renderManager_;
         static std::unique_ptr<SceneManager> sceneManager_;
+
+    private:
+        static void DrawDebug();
 
     };
 

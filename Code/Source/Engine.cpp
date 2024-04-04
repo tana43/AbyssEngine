@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "Misc.h"
+#include "../External/imgui/ImGuiCtrl.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -18,23 +19,36 @@ Engine::Engine()
     sceneManager_ = make_unique<SceneManager>();
     assetManager_ = make_unique<AssetManager>();
     renderManager_ = make_unique<RenderManager>();
+
+    //ImGui初期化
+    IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::device_.Get(), DXSystem::deviceContext_.Get());
 }
 
 Engine::~Engine()
 {
-    DXSystem::Release();
     assetManager_.reset();
     renderManager_.reset();
     sceneManager_.reset();
+    DXSystem::Release();
+
+    //ImGui後処理
+    IMGUI_CTRL_UNINITIALIZE();
 }
 
 void Engine::Update()
 {
+    //ImGui更新
+    IMGUI_CTRL_CLEAR_FRAME();
+
     DXSystem::Clear();
 
     sceneManager_->Update();
 
     renderManager_->Render();
+
+    //ImGui描画
+    DrawDebug();
+    IMGUI_CTRL_DISPLAY();
 
     DXSystem::Flip();
 }
@@ -52,6 +66,30 @@ void Engine::GetHandle(UINT msg, WPARAM wParam, LPARAM lParam)
     default:
         break;
     }*/
+}
+
+void Engine::DrawDebug()
+{
+#if _DEBUG
+    if (ImGui::BeginMainMenuBar())
+    {
+        //描画関係の値が対象
+        if (ImGui::BeginMenu("Graphics"))
+        {
+            ImGui::EndMenu();
+        }
+
+        //ワールドに存在するアクターを対象
+        if (ImGui::BeginMenu("World OutLiner"))
+        {
+            sceneManager_->DrawImGui();
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+#endif // _DEBUG
 }
 
 float Time::deltaTime_;

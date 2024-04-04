@@ -39,6 +39,11 @@ void SceneManager::SetNextScene(std::string name)
     nextSceneName_ = name;
 }
 
+void SceneManager::DrawImGui()
+{
+    if (activeScene_)activeScene_->DrawImGui();
+}
+
 Scene& SceneManager::GetActiveScene()
 {
     return *activeScene_;

@@ -1,5 +1,6 @@
 #include "Actor.h"
 #include "Engine.h"
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -42,6 +43,14 @@ void Actor::Release()
 	}
 	transform_.reset();
 	componentList_.clear();
+}
+
+void Actor::DrawImGui()
+{
+	for (auto& c : componentList_)
+	{
+		c->DrawImGui();
+	}
 }
 
 bool Actor::GetActiveInHierarchy() const

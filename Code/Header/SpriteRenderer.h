@@ -32,6 +32,8 @@ namespace AbyssEngine
         void Render()override;      //描画実行
         void RecalculateFrame();//表示座標を計算する
 
+        bool DrawImGui()override;
+
     private:
         void SetActive(const bool value)override;//アクティブ状態を設定する
     private:

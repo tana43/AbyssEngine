@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "RenderManager.h"
 #include "Actor.h"
+#include "imgui/imgui.h"
 
 using namespace std;
 using namespace AbyssEngine;
@@ -208,6 +209,18 @@ void SpriteRenderer::RecalculateFrame()
 		memcpy(mapped.pData, data, sizeof(data));
 		DXSystem::deviceContext_->Unmap(vertexBuffer_.Get(), subresourceIndex);
 	}
+}
+
+bool AbyssEngine::SpriteRenderer::DrawImGui()
+{
+	if (ImGui::TreeNode("SpriteRenderer"))
+	{
+		ImGui::ColorPicker4("Color",&color_.x);
+
+		ImGui::TreePop();
+	}
+
+	return false;
 }
 
 void SpriteRenderer::SetActive(const bool value)

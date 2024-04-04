@@ -1,6 +1,8 @@
 #include "Transform.h"
 #include "Component.h"
 
+#include "imgui/imgui.h"
+
 using namespace AbyssEngine;
 
 Matrix Transform::CalcWorldMatrix()
@@ -15,4 +17,19 @@ Matrix Transform::CalcWorldMatrix()
 Vector3 Transform::GetEulerAngles() const 
 {
     return rotation_.To_Euler();
+}
+
+bool Transform::DrawImGui()
+{
+    if (ImGui::TreeNode("Transform"))
+    {
+        ImGui::DragFloat3("Position", &position_.x, 0.1f, -FLT_MAX, FLT_MAX);
+        ImGui::DragFloat3("Scale", &scale_.x, 0.01f, -FLT_MAX, FLT_MAX);
+        ImGui::DragFloat3("Rotation", &rotation_.x, 0.01f, -FLT_MAX, FLT_MAX);
+        ImGui::DragFloat("ScaleFactor", &scaleFactor_, 0.01f, 0.01f, 100.0f);
+
+        ImGui::TreePop();
+    }
+
+    return false;
 }
