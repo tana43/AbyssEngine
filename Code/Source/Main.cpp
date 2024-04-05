@@ -8,6 +8,7 @@
 
 #include "Misc.h"
 #include "Engine.h"
+#include "imgui/ImGuiCtrl.h"
 
 using namespace ABI::Windows::Foundation;
 using namespace Microsoft::WRL;
@@ -15,6 +16,8 @@ using namespace Microsoft::WRL::Wrappers;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	IMGUI_CTRL_WND_PRC_HANDLER(hWnd, message, wParam, lParam);
+
 	switch (message)
 	{
 	case WM_ACTIVATEAPP:

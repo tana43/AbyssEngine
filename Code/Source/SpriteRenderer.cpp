@@ -215,6 +215,10 @@ bool AbyssEngine::SpriteRenderer::DrawImGui()
 {
 	if (ImGui::TreeNode("SpriteRenderer"))
 	{
+		ImGui::DragFloat2("Size", &size_.x, 0.1f, 0.0f);
+		ImGui::DragFloat2("UV Origin", &uvOrigin_.x, 0.1f, 0.0f);
+		ImGui::DragFloat2("UV Size", &uvSize_.x, 0.1f, 0.0f);
+
 		ImGui::ColorPicker4("Color",&color_.x);
 
 		ImGui::TreePop();
