@@ -60,7 +60,9 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
         texture_ = Texture::Load(filePath_);
     }
 
+	//初期値は元画像のサイズを設定しておく
 	size_ = Vector2(texture_->GetWidth(), texture_->GetHeight());
+	uvSize_ = size_;
 
 	canRender_ = true;
 
@@ -168,32 +170,32 @@ void SpriteRenderer::RecalculateFrame()
 	}
 
 	//テクスチャ座標設定
-	/*data[0].tex_.x = uvOrigin_.x;
+	data[0].tex_.x = uvOrigin_.x;
 	data[0].tex_.y = uvOrigin_.y;
 	data[1].tex_.x = uvOrigin_.x + uvSize_.x;
 	data[1].tex_.y = uvOrigin_.y;
 	data[2].tex_.x = uvOrigin_.x;
 	data[2].tex_.y = uvOrigin_.y + uvSize_.y;
 	data[3].tex_.x = uvOrigin_.x + uvSize_.x;
-	data[3].tex_.y = uvOrigin_.y + uvSize_.y;*/
+	data[3].tex_.y = uvOrigin_.y + uvSize_.y;
 
-	data[0].tex_.x = 0.0f;
+	/*data[0].tex_.x = 0.0f;
 	data[0].tex_.y = 0.0f;
 	data[1].tex_.x = 1.0f;
 	data[1].tex_.y = 0.0f;
 	data[2].tex_.x = 0.0f;
 	data[2].tex_.y = 1.0f;
 	data[3].tex_.x = 1.0f;
-	data[3].tex_.y = 1.0f;
+	data[3].tex_.y = 1.0f;*/
 
 	//UV座標
-	/*const float w = static_cast<float>(texture_->GetWidth());
+	const float w = static_cast<float>(texture_->GetWidth());
 	const float h = static_cast<float>(texture_->GetHeight());
 	for (auto& i : data)
 	{
 		i.tex_.x = i.tex_.x / w;
 		i.tex_.y = i.tex_.y / h;
-	}*/
+	}
 
 	//頂点カラー
 	data[0].color_ = color_;

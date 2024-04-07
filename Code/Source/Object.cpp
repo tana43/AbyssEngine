@@ -17,5 +17,5 @@ Object::Object(const Object& obj)
 
 Object::~Object()
 {
-    Engine::assetManager_->EraseAsset(instanceId_);
+    //Engine::assetManager_->EraseAsset(instanceId_);
 }

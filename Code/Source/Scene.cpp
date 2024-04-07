@@ -113,7 +113,10 @@ void Scene::Reset()
 
 void Scene::Finalize()
 {
-
+    for (const auto& a : actorList_)
+    {
+        a->Release();
+    }
 }
 
 void Scene::DrawImGui()

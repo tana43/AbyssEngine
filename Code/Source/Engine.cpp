@@ -26,8 +26,10 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+    assetManager_->Exit();
     assetManager_.reset();
     renderManager_.reset();
+    sceneManager_->Exit();
     sceneManager_.reset();
     DXSystem::Release();
 

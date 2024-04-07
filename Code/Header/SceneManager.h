@@ -11,7 +11,6 @@ namespace AbyssEngine
     {
     public:
         SceneManager();
-        ~SceneManager();
 
         Scene& GetActiveScene(); //現在アクティブなシーンを取得
 
