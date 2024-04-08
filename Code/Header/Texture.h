@@ -1,11 +1,11 @@
 #pragma once
 #include "Shader.h"
-#include "Object.h"
+#include "Asset.h"
 
 namespace AbyssEngine
 {
     //テクスチャ
-    class Texture : public Object
+    class Texture : public Asset
     {
     public:
         //テクスチャをファイルを指定し読み込む

@@ -69,7 +69,7 @@
     <ClInclude Include="Code\Header\Misc.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Object.h">
+    <ClInclude Include="Code\Header\Asset.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Renderer.h">
@@ -129,6 +129,7 @@
     <ClInclude Include="External\imgui\imstb_truetype.h">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\MeshData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp">
@@ -152,7 +153,7 @@
     <ClCompile Include="Code\Source\MathHelper.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Object.cpp">
+    <ClCompile Include="Code\Source\Asset.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Renderer.cpp">
@@ -209,6 +210,7 @@
     <ClCompile Include="External\imgui\ImGuiCtrl.cpp">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\MeshData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -217,5 +219,16 @@
     <FxCompile Include="Shader\SpriteVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\MeshPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\MeshVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\Mesh.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

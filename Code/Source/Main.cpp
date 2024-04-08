@@ -129,5 +129,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 	}
 
 	engine.reset();
+
 	return 0;
 }

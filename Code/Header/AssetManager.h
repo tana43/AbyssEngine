@@ -6,7 +6,7 @@
 
 namespace AbyssEngine
 {
-    class Object;
+    class Asset;
     class Texture;
 
 
@@ -14,16 +14,16 @@ namespace AbyssEngine
     class AssetManager
     {
     public:
-        void RegistrationAsset(std::shared_ptr<Object> asset);
+        void RegistrationAsset(std::shared_ptr<Asset> asset);
         void EraseAsset(const std::string& id);
-        std::weak_ptr<Object> GetAssetFromId(const std::string& id);
+        std::weak_ptr<Asset> GetAssetFromId(const std::string& id);
         
         std::unordered_map<std::string, std::shared_ptr<Texture>> cacheTexture_{}; //テクスチャのキャッシュ
 
         void Exit();//後始末
 
     private:
-        std::unordered_map<std::string, std::weak_ptr<Object>> cacheAsset_{};
+        std::unordered_map<std::string, std::weak_ptr<Asset>> cacheAsset_{};
    
     };
 }

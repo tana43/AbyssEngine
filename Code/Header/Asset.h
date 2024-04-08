@@ -5,15 +5,15 @@
 namespace AbyssEngine
 {
     //全てのオブジェクトの基底クラス
-    class Object : public std::enable_shared_from_this<Object>
+    class Asset : public std::enable_shared_from_this<Asset>
     {
     public:
         std::string name_;
 
     public:
-        Object();
-        Object(const Object& obj);
-        virtual ~Object();
+        Asset();
+        Asset(const Asset& obj);
+        virtual ~Asset();
 
         [[nodiscard]] std::string ToString() const { return name_; }//名前を返す
         [[nodiscard]] std::string GetInstanceId() const { return instanceId_; }

@@ -1,21 +1,21 @@
-#include "Object.h"
+#include "Asset.h"
 #include "AssetManager.h"
 #include "Engine.h"
 #include "SystemFunction.h"
 
 using namespace AbyssEngine;
 
-Object::Object()
+Asset::Asset()
 {
     instanceId_ = SystemFunction::CreateID();
 }
 
-Object::Object(const Object& obj)
+Asset::Asset(const Asset& obj)
 {
     instanceId_ = SystemFunction::CreateID();
 }
 
-Object::~Object()
+Asset::~Asset()
 {
-    //Engine::assetManager_->EraseAsset(instanceId_);
+    Engine::assetManager_->EraseAsset(instanceId_);
 }

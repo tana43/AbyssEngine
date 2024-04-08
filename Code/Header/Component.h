@@ -1,12 +1,12 @@
 #pragma once
-#include "Object.h"
+#include <memory>
 
 namespace AbyssEngine
 {
     class Transform;
     class Actor;
 
-    class Component : public Object
+    class Component : public std::enable_shared_from_this<Component>
     {
     public:
         //Actorにアタッチされたコンポーネントを取得（存在しない場合nullptr）

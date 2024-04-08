@@ -6,9 +6,11 @@
 
 namespace AbyssEngine
 {
-    class Actor final : public Object
+    class Actor final : public std::enable_shared_from_this<Actor>
     {
     public:
+        std::string name_;
+
         template<class T>
         std::shared_ptr<T> GetComponent();//アタッチされているコンポーネントを検索し、返す（存在しない場合nullptr）
         template<class T>
