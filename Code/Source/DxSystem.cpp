@@ -63,7 +63,7 @@ void DXSystem::Flip(int n)
     swapChain_->Present(n, 0);
 
     auto hr = AbyssEngine::DXSystem::device_->GetDeviceRemovedReason();
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 }
 
 void DXSystem::SetViewport(int width, int height, int num)
@@ -224,7 +224,7 @@ bool DXSystem::CreateDepthStencil()
 
     //深度ステンシルテクスチャ生成
     HRESULT hr = device_->CreateTexture2D(&td, nullptr, &depthStencilTexture_);
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     //深度ステンシルビュー設定
     D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
@@ -235,7 +235,7 @@ bool DXSystem::CreateDepthStencil()
 
     //深度ステンシルビュー生成
     hr = device_->CreateDepthStencilView(depthStencilTexture_.Get(), &dsvd, depthStencilView_.GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     //デプスステンシルステート作成
     D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -244,111 +244,111 @@ bool DXSystem::CreateDepthStencil()
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = FALSE;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::None)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Less)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Greater)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::LEqual)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::GEqual)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Equal)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::NotEqual)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Always)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = FALSE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::None_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Less_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Greater_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::LEqual_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::GEqual_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Equal_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::NotEqual_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = TRUE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
     hr = device_->CreateDepthStencilState(&depthStencilDesc, depthStencilStates_[static_cast<int>(DS_State::Always_No_Write)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     //シェーダーリソースビュー設定
     D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
@@ -360,7 +360,7 @@ bool DXSystem::CreateDepthStencil()
 
     //シェーダーリソースビュー生成
     hr = device_->CreateShaderResourceView(depthStencilTexture_.Get(), &srvd, shaderResourceView_.GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     if (FAILED(hr))
     {
@@ -378,7 +378,7 @@ bool DXSystem::InitializeRenderTarget()
 
     if (FAILED(hr))
     {
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr)); 
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr)); 
         return false;
     }
 
@@ -389,7 +389,7 @@ bool DXSystem::InitializeRenderTarget()
 
     if (FAILED(hr))
     {
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
         return false;
     }
 
@@ -480,7 +480,7 @@ bool DXSystem::CreateRasterizerState()
                 break;
         }
         const HRESULT hr = device_->CreateRasterizerState(&rd, rasterizerStates_[state].GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
 
     return true;
@@ -624,7 +624,7 @@ bool DXSystem::CreateBlendState()
         }
         //ブレンドステート生成
         const HRESULT hr = device_->CreateBlendState(&bd, blendStates_[state].GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
 
     return true;

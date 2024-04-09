@@ -30,6 +30,7 @@ cbuffer SCENE_CONSTANT_BUFFER : register(b0)
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
     row_major float4x4 viewProjection;
-    float4 lightDirection;
     float4 cameraPosition;
+    float4 lightDirection;
+    float3 lightColor;
 };

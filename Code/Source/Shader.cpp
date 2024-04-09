@@ -38,7 +38,7 @@ Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(c
 
         Blob cso(name);
         hr = DXSystem::device_->CreateVertexShader(cso.data_.get(),cso.size_,nullptr,vertexShader_.GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
         std::lock_guard<std::mutex> lock(mutex_);
         vertexShaders_.emplace(std::make_pair(name, vertexShader_));
@@ -46,7 +46,7 @@ Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(c
         if (inputLayout)
         {
             hr = DXSystem::device_->CreateInputLayout(inputElementDesc, numElements, cso.data_.get(), cso.size_, inputLayout);
-            _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
             inputLayouts_.emplace(std::make_pair(name, *inputLayout));
         }
     }

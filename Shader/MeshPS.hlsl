@@ -23,5 +23,5 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 V = normalize(cameraPosition.xyz - pin.worldPosition.xyz);
     float3 specular = pow(max(0, dot(N, normalize(V + L))), 128);
     
-    return float4(diffuse + specular, alpha) + color * pin.color;
+    return float4(diffuse + specular, alpha) + color * float4(lightColor,1) * pin.color;
 }

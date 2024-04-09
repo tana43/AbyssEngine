@@ -130,6 +130,8 @@
       <Filter>Code\Libraries\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\MeshData.h" />
+    <ClInclude Include="Code\Header\SkeltalMesh.h" />
+    <ClInclude Include="Code\Header\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp">
@@ -211,6 +213,8 @@
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\MeshData.cpp" />
+    <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
+    <ClCompile Include="Code\Source\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

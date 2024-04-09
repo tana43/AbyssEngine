@@ -607,7 +607,7 @@ namespace AbyssEngine
             subresourceData.SysMemSlicePitch = 0;
             hr = device->CreateBuffer(&bufferDesc, &subresourceData,
                 mesh.vertexBuffer_.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
             bufferDesc.ByteWidth = static_cast<UINT>(sizeof(uint32_t) * mesh.indices_.size());
             bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -615,7 +615,7 @@ namespace AbyssEngine
             subresourceData.pSysMem = mesh.indices_.data();
             hr = device->CreateBuffer(&bufferDesc, &subresourceData,
                 mesh.indexBuffer_.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 #if 1
             mesh.vertices_.clear();
@@ -662,7 +662,7 @@ namespace AbyssEngine
         bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
         hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffer_.ReleaseAndGetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
 
     void MeshData::Render(ID3D11DeviceContext* immediateContext, const Animation::Keyframe* keyframe)
@@ -759,8 +759,6 @@ namespace AbyssEngine
                 material.textures_[0]->Set(0, Shader_Type::Pixel);
                 material.textures_[1]->Set(1, Shader_Type::Pixel);
 #endif // 0
-
-                
 
                 immediateContext->DrawIndexed(subset.indexCount_, subset.startIndexLocation_, 0);
             }

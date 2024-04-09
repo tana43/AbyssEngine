@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h" />
     <ClInclude Include="Code\Header\AssetManager.h" />
+    <ClInclude Include="Code\Header\Camera.h" />
     <ClInclude Include="Code\Header\Component.h" />
     <ClInclude Include="Code\Header\DXSystem.h" />
     <ClInclude Include="Code\Header\Engine.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Code\Header\Scene.h" />
     <ClInclude Include="Code\Header\SceneManager.h" />
     <ClInclude Include="Code\Header\Shader.h" />
+    <ClInclude Include="Code\Header\SkeltalMesh.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
     <ClInclude Include="Code\Header\SystemFunction.h" />
     <ClInclude Include="Code\Header\TestScene.h" />
@@ -51,6 +53,7 @@
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp" />
     <ClCompile Include="Code\Source\AssetManager.cpp" />
+    <ClCompile Include="Code\Source\Camera.cpp" />
     <ClCompile Include="Code\Source\Component.cpp" />
     <ClCompile Include="Code\Source\DXSystem.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
@@ -63,6 +66,7 @@
     <ClCompile Include="Code\Source\Scene.cpp" />
     <ClCompile Include="Code\Source\SceneManager.cpp" />
     <ClCompile Include="Code\Source\Shader.cpp" />
+    <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
     <ClCompile Include="Code\Source\SystemFunction.cpp" />
     <ClCompile Include="Code\Source\TestScene.cpp" />
@@ -201,7 +205,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DirectXTK.lib;windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;DirectXTK.lib;windowsapp.lib;zlib-md.lib;libxml2-md.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Debug;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -231,7 +235,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Release;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;DirectXTK.lib;windowsapp.lib;zlib-md.lib;libxml2-md.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>Resources\Shader\%(Filename).cso</ObjectFileOutput>

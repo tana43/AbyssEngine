@@ -7,6 +7,7 @@
 namespace AbyssEngine
 {
     class SpriteRenderer;
+    class SkeltalMesh;
 
     class RenderManager
     {
@@ -15,6 +16,7 @@ namespace AbyssEngine
 
         void Reset();
         void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラー登録する
+        void Add(const std::shared_ptr<SkeltalMesh>& mRend);//マネージャーにレンダラー登録する
 
         void Render(); //描画実行
 
@@ -33,10 +35,23 @@ namespace AbyssEngine
 
 
     private:
-        //std::vector<std::weak_ptr<Renderer>> renderer3DList_{};
+        std::vector<std::weak_ptr<Renderer>> renderer3DList_{};
         std::vector<std::weak_ptr<Renderer>> renderer2DList_{};
 
-        //void RenderMain();
+        //今は最低限必要なものだけ用意
+        struct ConstantBufferScene
+        {
+            Matrix viewProjectionMatrix_;
+            //Matrix shadowMatrix_;
+            Vector4 cameraDirection_;
+            //Vector4 cameraPosition_;
+            Vector4 lightDirection_;
+            Vector3 lightColor_;
+            float pad;
+        };
+
+        ConstantBufferScene bufferScene_;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
 
         //2Dオブジェクトのレンダリング
         void Render2D() const;

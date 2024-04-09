@@ -22,20 +22,35 @@ using namespace std;
 
 RenderManager::RenderManager()
 {
-	//サンプラーステート作成
-	D3D11_SAMPLER_DESC sd = {};
-	sd.Filter = D3D11_FILTER_ANISOTROPIC;	  // 異方性フィルタ
-	sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; // U
-	sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; // V
-	sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP; // W
-	sd.MipLODBias = 0;
-	sd.MaxAnisotropy = 4; // 最大異方性(1Pixelあたりのテクスチャ点数)
-	sd.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	sd.MinLOD = 0;
-	sd.MaxLOD = D3D11_FLOAT32_MAX;
+	{
+		//定数バッファ作成
+		D3D11_BUFFER_DESC bd;
+		bd.Usage = D3D11_USAGE_DYNAMIC;
+		bd.ByteWidth = sizeof(ConstantBufferScene);
+		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		bd.MiscFlags = 0;
+		bd.StructureByteStride = 0;
+		const HRESULT hr = DXSystem::device_->CreateBuffer(&bd, nullptr, constantBufferScene_.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+	}
 
-	HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, sampler_.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+	{
+		//サンプラーステート作成
+		D3D11_SAMPLER_DESC sd = {};
+		sd.Filter = D3D11_FILTER_ANISOTROPIC;	  // 異方性フィルタ
+		sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; // U
+		sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; // V
+		sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP; // W
+		sd.MipLODBias = 0;
+		sd.MaxAnisotropy = 4; // 最大異方性(1Pixelあたりのテクスチャ点数)
+		sd.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		sd.MinLOD = 0;
+		sd.MaxLOD = D3D11_FLOAT32_MAX;
+
+		HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, sampler_.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+	}
 }
 
 void RenderManager::Reset()

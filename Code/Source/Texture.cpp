@@ -40,12 +40,12 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     if (std::filesystem::exists(ddsFilename.c_str()))
     {
         hr = CreateDDSTextureFromFile(DXSystem::device_.Get(), ddsFilename.c_str(), resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
     else
     {
         hr = CreateWICTextureFromFile(DXSystem::device_.Get(), fileName, resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
 
     //テクスチャ情報取得
@@ -66,7 +66,7 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     sd.MaxLOD = D3D11_FLOAT32_MAX;
 
     hr = DXSystem::device_->CreateSamplerState(&sd, texture->sampler_.GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     //アセットマネージャーに登録
     Engine::assetManager_->cacheTexture_.insert(make_pair(texturePath, texture));

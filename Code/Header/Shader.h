@@ -77,7 +77,7 @@ namespace AbyssEngine
             {
                 Blob cso(name);
                 HRESULT hr = CreateShader<T>(DXSystem::device_.Get(), cso, shader.GetAddressOf());
-                _ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+                _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
                 std::lock_guard<std::mutex> lock(mutex_);
                 shaders_.emplace(std::make_pair(name, shader));

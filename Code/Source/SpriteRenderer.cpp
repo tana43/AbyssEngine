@@ -38,7 +38,7 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
 	res.SysMemPitch = 0;
 	res.SysMemSlicePitch = 0;
     auto hr = DXSystem::device_->CreateBuffer(&bd, &res, vertexBuffer_.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hrTrace(hr));
+	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     
 	D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
 	{
