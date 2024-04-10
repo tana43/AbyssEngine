@@ -34,6 +34,10 @@ namespace AbyssEngine
         void SetScaleZ(const float& z) { scale_.z = z; }
         void SetScaleFactor(const float& scale) { scaleFactor_ = scale; }
 
+        [[nodiscard]] const Vector3& GetForward() const { return forward_; }
+        [[nodiscard]] const Vector3& GetRight() const { return right_; }
+        [[nodiscard]] const Vector3& GetUp() const { return up_; }
+
         Vector3 GetEulerAngles() const;
 
         bool DrawImGui()override;
@@ -43,6 +47,10 @@ namespace AbyssEngine
         Quaternion rotation_ = { 0,0,0,1 };
         Vector3 scale_ = { 1,1,1 };
         float scaleFactor_ = 1.0f;
+
+        Vector3 forward_ = { 0.0f,0.0f,1.0f };
+        Vector3 right_ = { 1.0f,0.0f,0.0f };
+        Vector3 up_ = { 0.0f,1.0f,0.0f };
     };
 }
 

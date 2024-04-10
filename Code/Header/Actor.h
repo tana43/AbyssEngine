@@ -21,7 +21,7 @@ namespace AbyssEngine
         void SetActive(const bool active) { active_ = active; }
         [[nodiscard]] bool GetActiveInHierarchy() const;            //親の状態を考慮してアクティブか
 
-        [[nodiscard]] std::shared_ptr<Transform>& GetTransfrom() {return transform_; }
+        [[nodiscard]] std::shared_ptr<Transform>& GetTransform() {return transform_; }
         [[nodiscard]] std::vector<std::shared_ptr<Component>>& GetComponentList() { return componentList_; }
 
     private:

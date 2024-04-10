@@ -9,7 +9,7 @@ void SkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //マネージャーの登録と初期化
     actor_ = actor;
-    transform_ = actor->GetTransfrom();
+    transform_ = actor->GetTransform();
 
     model_ = make_unique<MeshData>(DXSystem::device_.Get(), filePath_);
 }

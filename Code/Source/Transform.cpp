@@ -11,6 +11,16 @@ Matrix Transform::CalcWorldMatrix()
     const auto R = Matrix::CreateFromYawPitchRoll(rotation_.x, rotation_.y, rotation_.z);
     const auto T = Matrix::CreateTranslation(position_);
 
+    //各方向ベクトルの算出
+    forward_ = Vector3::Transform(Vector3::Forward, R);
+    forward_.Normalize();
+
+    right_ = Vector3::Transform(Vector3::Right, R);
+    right_.Normalize();
+
+    up_ = Vector3::Transform(Vector3::Up, R);
+    up_.Normalize();
+
     return S * R * T;
 }
 

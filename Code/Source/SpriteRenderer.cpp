@@ -14,7 +14,7 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
 {
 	//マネージャーの登録と初期化
 	actor_ = actor;
-	transform_ = actor->GetTransfrom();
+	transform_ = actor->GetTransform();
 
     const Vertex v[] = {
         Vector3(-0.5f, 0.5f,0),	Vector2(0,0),Vector4(1,1,1,1), //左上
@@ -103,8 +103,8 @@ void SpriteRenderer::RecalculateFrame()
     //頂点データ設定
     Vertex data[4];
 
-    const Vector3 transPos = actor_->GetTransfrom()->GetPosition();
-    const Vector3 transScale = actor_->GetTransfrom()->GetScale();
+    const Vector3 transPos = actor_->GetTransform()->GetPosition();
+    const Vector3 transScale = actor_->GetTransform()->GetScale();
     const Vector2 scaledSize = size_ * Vector2(transScale.x,transScale.y);
 
     data[0].pos_.x = transPos.x;

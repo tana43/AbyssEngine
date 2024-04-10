@@ -18,6 +18,12 @@ namespace AbyssEngine
         Matrix viewProjectionMatrix_ = {};
         //std::array<Vector4, 6> frustumPlanes_; //‹‘äƒJƒŠƒ“ƒO—pPlane
 
+    private:
+        void Initialize(const std::shared_ptr<Actor>& actor)override; //‰Šú‰»
+        bool DrawImGui() override;
+        //bool CanMultiple() override;
+        void Update();
+
     };
 }
 
