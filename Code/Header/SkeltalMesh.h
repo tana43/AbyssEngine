@@ -1,19 +1,19 @@
 #pragma once
 #include "Renderer.h"
-#include "MeshData.h"
 
 namespace AbyssEngine
 {
+    class MeshData;
+    class Actor;
+
     class SkeltalMesh : public Renderer
     {
     public:
-        SkeltalMesh() {}
-        ~SkeltalMesh() = default;
-
         void Initialize(const std::shared_ptr<Actor>& actor)override;
         void Render()override;
 
     private:
+
         //とりあえず描画させてみたいのでユニークポインタ
         std::unique_ptr<MeshData> model_;
 

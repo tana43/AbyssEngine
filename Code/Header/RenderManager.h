@@ -8,6 +8,7 @@ namespace AbyssEngine
 {
     class SpriteRenderer;
     class SkeltalMesh;
+    class Camera;
 
     class RenderManager
     {
@@ -15,8 +16,9 @@ namespace AbyssEngine
         RenderManager();
 
         void Reset();
-        void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラー登録する
-        void Add(const std::shared_ptr<SkeltalMesh>& mRend);//マネージャーにレンダラー登録する
+        void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<SkeltalMesh>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<Camera>& camera);//マネージャーにカメラを登録する
 
         void Render(); //描画実行
 
@@ -37,6 +39,8 @@ namespace AbyssEngine
     private:
         std::vector<std::weak_ptr<Renderer>> renderer3DList_{};
         std::vector<std::weak_ptr<Renderer>> renderer2DList_{};
+        
+        std::vector<std::weak_ptr<Camera>> cameraList_{};
 
         //今は最低限必要なものだけ用意
         struct ConstantBufferScene

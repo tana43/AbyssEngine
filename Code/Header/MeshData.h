@@ -13,11 +13,12 @@
 #include <cereal/types/set.hpp>
 #include <cereal/types/unordered_map.hpp>
 
-#include "Texture.h"
 #include "Asset.h"
 
 namespace AbyssEngine
 {
+    class Texture;
+
     struct Scene
     {
         struct Node

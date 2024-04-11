@@ -2,6 +2,8 @@
 #include "DXSystem.h"
 #include "Actor.h"
 #include "imgui/imgui.h"
+#include "RenderManager.h"
+#include "Engine.h"
 
 using namespace AbyssEngine;
 using namespace DirectX;
@@ -10,6 +12,8 @@ void Camera::Initialize(const std::shared_ptr<Actor>& actor)
 {
     actor_ = actor;
     transform_ = actor->GetTransform();
+
+    Engine::renderManager_->Add(static_pointer_cast<Camera>(shared_from_this()));
 }
 
 bool Camera::DrawImGui()
@@ -28,9 +32,8 @@ bool Camera::DrawImGui()
 
 void Camera::Update()
 {
-    const float fovY = XMConvertToRadians(fov_);
     const float aspect = DXSystem::GetScreenWidth() / DXSystem::GetScreenHeight(); //‰æ–Ê”ä—¦
-    projectionMatrix_ = XMMatrixPerspectiveFovLH(fovY, aspect, nearZ_, farZ_);
+    projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
 
     //ƒrƒ…[s—ñì¬
     const Vector3 eye = transform_->GetPosition();

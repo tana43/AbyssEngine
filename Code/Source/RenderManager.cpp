@@ -3,6 +3,7 @@
 #include "SpriteRenderer.h"
 #include "Actor.h"
 #include "Misc.h"
+#include "Camera.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -68,6 +69,11 @@ void RenderManager::Reset()
 void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)
 {
 	renderer2DList_.emplace_back(mRend);
+}
+
+void RenderManager::Add(const shared_ptr<Camera>& camera)
+{
+	cameraList_.emplace_back(camera);
 }
 
 void RenderManager::Render()

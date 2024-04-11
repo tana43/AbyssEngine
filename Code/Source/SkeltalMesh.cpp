@@ -1,6 +1,7 @@
 #include "SkeltalMesh.h"
 #include "Actor.h"
 #include "Engine.h"
+#include "MeshData.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -11,7 +12,7 @@ void SkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
     actor_ = actor;
     transform_ = actor->GetTransform();
 
-    model_ = make_unique<MeshData>(DXSystem::device_.Get(), filePath_);
+    model_ = make_unique<MeshData>(DXSystem::device_.Get(), filePath_.c_str());
 }
 
 void AbyssEngine::SkeltalMesh::Render()
