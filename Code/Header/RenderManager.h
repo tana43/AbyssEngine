@@ -60,8 +60,12 @@ namespace AbyssEngine
         //2Dオブジェクトのレンダリング
         void Render2D() const;
 
+        void Render3D(const std::shared_ptr<Camera>& camera);
+
         //Rendererの生存確認
         void CheckRenderer();
+
+        void UpdateConstantBuffer()const;
     };
 
 }

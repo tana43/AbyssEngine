@@ -15,11 +15,12 @@
 
 #include "Asset.h"
 
+
 namespace AbyssEngine
 {
     class Texture;
 
-    struct Scene
+    struct ModelScene
     {
         struct Node
         {
@@ -264,7 +265,7 @@ namespace AbyssEngine
         void BlendAnimations(const Animation::Keyframe* keyframes[2], float factor, Animation::Keyframe& keyframe);
 
     protected:
-        Scene sceneView_;
+        ModelScene sceneView_;
         float scaleFactor_ = 1.0f;
 
         void FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes);

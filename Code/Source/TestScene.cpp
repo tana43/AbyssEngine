@@ -2,6 +2,7 @@
 #include "SpriteRenderer.h"
 #include "Camera.h"
 #include "SkeltalMesh.h"
+#include "MeshData.h"
 
 using namespace AbyssEngine;
 
@@ -14,7 +15,7 @@ void TestScene::Initialize()
 
     //テスト用のオブジェクト
     const auto& p = InstanceActor("testObj");
-    p->AddComponent<SkeltalMesh>("./Assets/Moels/latha.fbx");
+    p->AddComponent<SkeltalMesh>("./Assets/Models/latha.fbx");
 }
 
 void TestScene::Update()

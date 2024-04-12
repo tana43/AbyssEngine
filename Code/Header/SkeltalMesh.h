@@ -9,6 +9,9 @@ namespace AbyssEngine
     class SkeltalMesh : public Renderer
     {
     public:
+        SkeltalMesh() {}
+        ~SkeltalMesh() = default;
+
         void Initialize(const std::shared_ptr<Actor>& actor)override;
         void Render()override;
 
