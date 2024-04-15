@@ -14,7 +14,6 @@ VS_OUT main(VS_IN vin)
         blendedPosition += vin.boneWeights[boneIndex] * mul(vin.position, boneTransforms[vin.boneIndices[boneIndex]]);
         blendedNormal += vin.boneWeights[boneIndex] * mul(vin.normal, boneTransforms[vin.boneIndices[boneIndex]]);
         blendedTangent += vin.boneWeights[boneIndex] * mul(vin.tangent, boneTransforms[vin.boneIndices[boneIndex]]);
-
     }
     vin.position = float4(blendedPosition.xyz, 1.0f);
     vin.normal = float4(blendedNormal.xyz, 0.0f);

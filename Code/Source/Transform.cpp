@@ -7,8 +7,9 @@ using namespace AbyssEngine;
 
 Matrix Transform::CalcWorldMatrix()
 {
-    const auto S = Matrix::CreateScale(scale_);
-    const auto R = Matrix::CreateFromYawPitchRoll(rotation_.x, rotation_.y, rotation_.z);
+    const auto scale = scale_ * scaleFactor_;
+    const auto S = Matrix::CreateScale(scale);
+    const auto R = Matrix::CreateFromYawPitchRoll(rotation_.y, rotation_.x, rotation_.z);
     const auto T = Matrix::CreateTranslation(position_);
 
     //各方向ベクトルの算出

@@ -32,7 +32,8 @@ bool Camera::DrawImGui()
 
 void Camera::Update()
 {
-    const float aspect = DXSystem::GetScreenWidth() / DXSystem::GetScreenHeight(); //‰æ–Ê”ä—¦
+    const float aspect = static_cast<float>(DXSystem::GetScreenWidth()) 
+        / static_cast<float>(DXSystem::GetScreenHeight()); //‰æ–Ê”ä—¦
     projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
 
     //ƒrƒ…[s—ñì¬

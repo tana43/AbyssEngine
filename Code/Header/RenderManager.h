@@ -47,8 +47,8 @@ namespace AbyssEngine
         {
             Matrix viewProjectionMatrix_;
             //Matrix shadowMatrix_;
-            Vector4 cameraDirection_;
-            //Vector4 cameraPosition_;
+            //Vector4 cameraDirection_;
+            Vector4 cameraPosition_;
             Vector4 lightDirection_;
             Vector3 lightColor_;
             float pad;

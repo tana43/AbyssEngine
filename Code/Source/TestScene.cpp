@@ -14,8 +14,12 @@ void TestScene::Initialize()
     camera->GetTransform()->SetPosition(Vector3(0, 3, -10));
 
     //テスト用のオブジェクト
-    const auto& p = InstanceActor("testObj");
-    p->AddComponent<SkeltalMesh>("./Assets/Models/latha.fbx");
+    const auto& p0 = InstanceActor("testModel");
+    p0->AddComponent<SkeltalMesh>("./Assets/Models/latha.fbx");
+
+    //テスト用のオブジェクト
+    /*const auto& p1 = InstanceActor("testSprite");
+    p1->AddComponent<SpriteRenderer>("./Assets/Images/Image_00.png");*/
 }
 
 void TestScene::Update()

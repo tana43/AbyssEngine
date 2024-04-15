@@ -747,7 +747,7 @@ void MeshData::Render(
                     DirectX::XMLoadFloat4(&material.Kd_))
             );
             immediateContext->UpdateSubresource(constantBuffer_.Get(), 0, 0, &data, 0, 0);
-            immediateContext->VSSetConstantBuffers(0, 1, constantBuffer_.GetAddressOf());
+            immediateContext->VSSetConstantBuffers(1, 1, constantBuffer_.GetAddressOf());
 
 #if 0
             immediateContext->PSSetShaderResources(0, 1, material.shaderResourceViews_[0].GetAddressOf());

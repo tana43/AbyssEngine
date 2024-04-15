@@ -16,6 +16,9 @@ namespace AbyssEngine
         void Render()override;
 
     private:
+        void SetActive(const bool value)override;
+
+    private:
 
         //とりあえず描画させてみたいのでユニークポインタ
         std::unique_ptr<MeshData> model_;

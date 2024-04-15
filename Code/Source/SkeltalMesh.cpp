@@ -2,6 +2,7 @@
 #include "Actor.h"
 #include "Engine.h"
 #include "MeshData.h"
+#include "RenderManager.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -13,34 +14,49 @@ void SkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
     transform_ = actor->GetTransform();
 
     model_ = make_unique<MeshData>(DXSystem::device_.Get(), filePath_.c_str());
+
+	//レンダラーマネージャーに登録
+	SetActive(true);
 }
 
-void AbyssEngine::SkeltalMesh::Render()
+void SkeltalMesh::Render()
 {
 	if (model_->animationClips_.size() > 0)
 	{
 #if 1
-		int clip_index{ 0 };
-		int frame_index{ 0 };
-		static float animation_tick{ 0 };
+		int clipIndex{ 0 };
+		int frameIndex{ 0 };
+		static float animationTick{ 0 };
 
-		Animation& animation{ model_->animationClips_.at(clip_index) };
-		frame_index = static_cast<int>(animation_tick * animation.samplingRate_);
-		if (frame_index > animation.sequence_.size() - 1)
+		Animation& animation{ model_->animationClips_.at(clipIndex) };
+		frameIndex = static_cast<int>(animationTick * animation.samplingRate_);
+		if (frameIndex > animation.sequence_.size() - 1)
 		{
-			frame_index = 0;
-			animation_tick = 0;
+			frameIndex = 0;
+			animationTick = 0;
 		}
 		else
 		{
-			animation_tick += Time::deltaTime_;
+			animationTick += Time::deltaTime_;
 		}
-		Animation::Keyframe& keyframe{ animation.sequence_.at(frame_index) };
+		Animation::Keyframe& keyframe{ animation.sequence_.at(frameIndex) };
 #endif
 		model_->Render(DXSystem::deviceContext_.Get(), transform_->CalcWorldMatrix(), color_, &keyframe);
 	}
 	else
 	{
 		model_->Render(DXSystem::deviceContext_.Get(), transform_->CalcWorldMatrix(), color_, nullptr);
+	}
+}
+
+void SkeltalMesh::SetActive(const bool value)
+{
+	if (value)
+	{
+		if (!isCalled_)
+		{
+			Engine::renderManager_->Add(static_pointer_cast<SkeltalMesh>(shared_from_this()));
+			isCalled_ = true;
+		}
 	}
 }
