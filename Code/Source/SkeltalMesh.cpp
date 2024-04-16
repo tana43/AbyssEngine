@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "MeshData.h"
 #include "RenderManager.h"
+#include "AssetManager.h"
 
 using namespace AbyssEngine;
 using namespace std;

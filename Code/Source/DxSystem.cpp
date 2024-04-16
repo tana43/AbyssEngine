@@ -54,7 +54,7 @@ void DXSystem::Clear()
 
     float clearColor[4] = { 0.4f,0.4f,0.4f,1 };
     deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), clearColor);
-    deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
+    deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void DXSystem::Flip(int n)
@@ -189,8 +189,8 @@ HRESULT DXSystem::CreateDevice()
     scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     scd.SampleDesc = MSAA_;
-    //scd.SampleDesc.Quality = 0;
     //scd.SampleDesc.Count = 1;
+    //scd.SampleDesc.Quality = 0;
     scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     scd.BufferCount = 1;
     scd.OutputWindow = hwnd_;
@@ -218,6 +218,8 @@ bool DXSystem::CreateDepthStencil()
     td.ArraySize = 1;
     td.Format = DXGI_FORMAT_R32G8X24_TYPELESS;
     td.SampleDesc = MSAA_;
+    //td.SampleDesc.Count = 1;
+    //td.SampleDesc.Quality = 0;
     td.Usage = D3D11_USAGE_DEFAULT;
     td.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
     td.CPUAccessFlags = 0;
@@ -238,27 +240,29 @@ bool DXSystem::CreateDepthStencil()
     hr = device_->CreateDepthStencilView(depthStencilTexture_.Get(), &dsvd, depthStencilView_.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 #else
-    //Microsoft::WRL::ComPtr<ID3D11Texture2D> depth_stencil_buffer{};
-    D3D11_TEXTURE2D_DESC texture2d_desc{};
-    texture2d_desc.Width = screenWidth_;
-    texture2d_desc.Height = screenHeight_;
-    texture2d_desc.MipLevels = 1;
-    texture2d_desc.ArraySize = 1;
-    texture2d_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    texture2d_desc.SampleDesc.Count = 1;
-    texture2d_desc.SampleDesc.Quality = 0;
-    texture2d_desc.Usage = D3D11_USAGE_DEFAULT;
-    texture2d_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    texture2d_desc.CPUAccessFlags = 0;
-    texture2d_desc.MiscFlags = 0;
-    HRESULT hr = device_->CreateTexture2D(&texture2d_desc, NULL, depthStencilTexture_.GetAddressOf());
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer{};
+    D3D11_TEXTURE2D_DESC texture2dDesc{};
+    texture2dDesc.Width = screenWidth_;
+    texture2dDesc.Height = screenHeight_;
+    texture2dDesc.MipLevels = 1;
+    texture2dDesc.ArraySize = 1;
+    texture2dDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+    //texture2dDesc.SampleDesc = MSAA_;
+    texture2dDesc.SampleDesc.Count = 1;
+    texture2dDesc.SampleDesc.Quality = 0;
+    texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
+    texture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    texture2dDesc.CPUAccessFlags = 0;
+    texture2dDesc.MiscFlags = 0;
+    //HRESULT hr = device_->CreateTexture2D(&texture2dDesc, NULL, depthStencilTexture_.GetAddressOf());
+    HRESULT hr = device_->CreateTexture2D(&texture2dDesc, NULL, depthStencilBuffer.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
-    D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc{};
-    depth_stencil_view_desc.Format = texture2d_desc.Format;
-    depth_stencil_view_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-    depth_stencil_view_desc.Texture2D.MipSlice = 0;
-    hr = device_->CreateDepthStencilView(depthStencilTexture_.Get(), &depth_stencil_view_desc, depthStencilView_.GetAddressOf());
+    D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc{};
+    depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    depthStencilViewDesc.Texture2D.MipSlice = 0;
+    hr = device_->CreateDepthStencilView(depthStencilBuffer.Get(), &depthStencilViewDesc, depthStencilView_.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 #endif // 0
 
@@ -438,7 +442,8 @@ bool DXSystem::CreateRasterizerState()
                 ZeroMemory(&rd, sizeof(rd));
                 rd.FillMode = D3D11_FILL_SOLID;	 // 塗りつぶし
                 rd.CullMode = D3D11_CULL_BACK;	 // カリング
-                rd.FrontCounterClockwise = TRUE; // 三角形の時計回りが正面
+                //rd.FrontCounterClockwise = TRUE;// 三角形の時計回りが正面
+                rd.FrontCounterClockwise = FALSE; 
                 rd.DepthBias = 0;
                 rd.DepthBiasClamp = 0;
                 rd.SlopeScaledDepthBias = 0;
@@ -470,10 +475,10 @@ bool DXSystem::CreateRasterizerState()
                 rd.DepthBias = 0;
                 rd.DepthBiasClamp = 0;
                 rd.SlopeScaledDepthBias = 0;
-                rd.DepthClipEnable = FALSE;
+                rd.DepthClipEnable = TRUE;
                 rd.ScissorEnable = FALSE;
-                rd.MultisampleEnable = TRUE;
-                rd.AntialiasedLineEnable = TRUE;
+                rd.MultisampleEnable = FALSE;
+                rd.AntialiasedLineEnable = FALSE;
                 break;
 
             case RS_State::Standard:

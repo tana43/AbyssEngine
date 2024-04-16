@@ -15,7 +15,7 @@ void TestScene::Initialize()
 
     //テスト用のオブジェクト
     const auto& p0 = InstanceActor("testModel");
-    p0->AddComponent<SkeltalMesh>("./Assets/Models/latha.fbx");
+    p0->AddComponent<SkeltalMesh>("./Assets/Models/nico.fbx");
 
     //テスト用のオブジェクト
     /*const auto& p1 = InstanceActor("testSprite");

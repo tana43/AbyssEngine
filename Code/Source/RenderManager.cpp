@@ -85,6 +85,8 @@ void RenderManager::Add(const shared_ptr<Camera>& camera)
 
 void RenderManager::Render()
 {
+	DXSystem::SetDefaultView();
+
 	CheckRenderer();
 
 	for (auto& c : cameraList_)
@@ -149,11 +151,13 @@ void RenderManager::Render2D() const
 void RenderManager::Render3D(const shared_ptr<Camera>& camera)
 {
 	//トポロジー設定
-	DXSystem::deviceContext_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	DXSystem::deviceContext_->OMSetBlendState(DXSystem::GetBlendState(BS_State::Alpha), nullptr, 0xFFFFFFFF);
-	DXSystem::deviceContext_->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::LEqual), 0);
-	DXSystem::deviceContext_->RSSetState(DXSystem::GetRasterizerState(RS_State::Standard));
+	DXSystem::deviceContext_->OMSetBlendState(DXSystem::GetBlendState(BS_State::Off), nullptr, 0xFFFFFFFF);
+	DXSystem::deviceContext_->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::LEqual), 1);
+	DXSystem::deviceContext_->RSSetState(DXSystem::GetRasterizerState(RS_State::Cull_Back));
+
+	DXSystem::deviceContext_->PSSetSamplers(0,1,sampler_.GetAddressOf());
 
 	for (auto& r : renderer3DList_)
 	{
@@ -163,8 +167,6 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera)
 			if (pRend)
 			{
 				pRend->Render();
-
-
 			}
 		}
 	}
