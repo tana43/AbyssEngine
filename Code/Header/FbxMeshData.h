@@ -138,7 +138,7 @@ namespace AbyssEngine
         }
     };
 
-    class MeshData : public Asset
+    class FbxMeshData : public Asset
     {
     public:
         static const int MAX_BONE_INFLUENCES{ 4 };
@@ -209,7 +209,7 @@ namespace AbyssEngine
         private:
             Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer_;
             Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer_;
-            friend class MeshData;
+            friend class FbxMeshData;
         };
         std::vector<Mesh> meshes_;
 
@@ -247,8 +247,8 @@ namespace AbyssEngine
         DirectX::XMFLOAT4 color_{ 1, 1, 1, 1 };
 
     public:
-        MeshData(ID3D11Device* device, const char* fbxFilename, bool triangulate = false, float samplingRate = 0);
-        virtual ~MeshData() = default;
+        FbxMeshData(ID3D11Device* device, const char* fbxFilename, bool triangulate = false, float samplingRate = 0);
+        virtual ~FbxMeshData() = default;
 
         void CreateComObjects(ID3D11Device* device, const char* fbxFilename);
 

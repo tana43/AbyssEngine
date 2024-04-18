@@ -1,4 +1,4 @@
-#include "MeshData.h"
+#include "FbxMeshData.h"
 #include "Misc.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -49,7 +49,7 @@ void FetchBoneInfluences(const FbxMesh* fbxMesh, std::vector<BoneInfluencePerCon
     }
 }
 
-MeshData::MeshData(ID3D11Device* device, const char* fbxFilename, bool triangulate, float samplingRate)
+FbxMeshData::FbxMeshData(ID3D11Device* device, const char* fbxFilename, bool triangulate, float samplingRate)
 {
     //シリアライズされたデータがある場合そちらからロード、なければ従来通りFBXからロード
     std::filesystem::path cerealFilename(fbxFilename);
@@ -164,7 +164,7 @@ inline DirectX::XMFLOAT4 ToXMFloat4(const FbxDouble4& fbxdouble4)
     return xmfloat4;
 }
 
-void MeshData::UpdateAnimation(Animation::Keyframe& keyframe)
+void FbxMeshData::UpdateAnimation(Animation::Keyframe& keyframe)
 {
     size_t nodeCount{ keyframe.nodes_.size() };
     for (size_t nodeIndex = 0; nodeIndex < nodeCount; ++nodeIndex)
@@ -182,7 +182,7 @@ void MeshData::UpdateAnimation(Animation::Keyframe& keyframe)
     }
 }
 
-void MeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
+void FbxMeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
 {
     for (const ModelScene::Node& node : sceneView_.nodes_)
     {
@@ -347,7 +347,7 @@ void MeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
     }
 }
 
-void MeshData::FetchMaterials(FbxScene* fbxScene, std::unordered_map<uint64_t, Material>& materials)
+void FbxMeshData::FetchMaterials(FbxScene* fbxScene, std::unordered_map<uint64_t, Material>& materials)
 {
     const size_t nodeCount{ sceneView_.nodes_.size() };
     for (size_t nodeIndex = 0; nodeIndex < nodeCount; ++nodeIndex)
@@ -430,7 +430,7 @@ void MeshData::FetchMaterials(FbxScene* fbxScene, std::unordered_map<uint64_t, M
 }
 
 //メッシュからバインドポーズの情報を抽出
-void MeshData::FetchSkeleton(FbxMesh* fbxMesh, Skeleton& bindPose)
+void FbxMeshData::FetchSkeleton(FbxMesh* fbxMesh, Skeleton& bindPose)
 {
     //メッシュからスキンを取得
     const int deformerCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
@@ -468,7 +468,7 @@ void MeshData::FetchSkeleton(FbxMesh* fbxMesh, Skeleton& bindPose)
 }
 
 //アニメーション情報抽出
-void MeshData::FetchAnimations(FbxScene* fbxScene, std::vector<Animation>& animationClips,
+void FbxMeshData::FetchAnimations(FbxScene* fbxScene, std::vector<Animation>& animationClips,
     float samplingRate/*１秒間にアニメーションを取り出す回数。この値が０の場合はアニメーションデータはデフォルトのフレームレートでサンプリングされる*/)
 {
     FbxArray<FbxString*> animationStackNames;
@@ -528,7 +528,7 @@ void MeshData::FetchAnimations(FbxScene* fbxScene, std::vector<Animation>& anima
     }
 }
 
-void MeshData::BlendAnimations(const Animation::Keyframe* keyframes[2], float factor, Animation::Keyframe& keyframe)
+void FbxMeshData::BlendAnimations(const Animation::Keyframe* keyframes[2], float factor, Animation::Keyframe& keyframe)
 {
     size_t nodeCount{ keyframes[0]->nodes_.size() };
     keyframe.nodes_.resize(nodeCount);
@@ -554,7 +554,7 @@ void MeshData::BlendAnimations(const Animation::Keyframe* keyframes[2], float fa
     }
 }
 
-bool MeshData::AppendAnimations(const char* animationFilename, float samplingRate)
+bool FbxMeshData::AppendAnimations(const char* animationFilename, float samplingRate)
 {
     //シリアライズされたデータがある場合そちらからロード、ねければ従来通りFBXからロード
     std::filesystem::path cerealFilename(animationFilename);
@@ -589,7 +589,7 @@ bool MeshData::AppendAnimations(const char* animationFilename, float samplingRat
     return true;
 }
 
-void MeshData::CreateComObjects(ID3D11Device* device, const char* fbxFilename)
+void FbxMeshData::CreateComObjects(ID3D11Device* device, const char* fbxFilename)
 {
     for (Mesh& mesh : meshes_)
     {
@@ -665,7 +665,7 @@ void MeshData::CreateComObjects(ID3D11Device* device, const char* fbxFilename)
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 }
 
-void MeshData::Render(ID3D11DeviceContext* immediateContext, const Animation::Keyframe* keyframe)
+void FbxMeshData::Render(ID3D11DeviceContext* immediateContext, const Animation::Keyframe* keyframe)
 {
     const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]{
         { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, // 0:RHS Y-UP
@@ -686,7 +686,7 @@ void MeshData::Render(ID3D11DeviceContext* immediateContext, const Animation::Ke
     Render(immediateContext, world, color_, keyframe);
 }
 
-void MeshData::Render(
+void FbxMeshData::Render(
     ID3D11DeviceContext* immediateContext,
     const DirectX::XMFLOAT4X4& world,
     const DirectX::XMFLOAT4& materialColor,

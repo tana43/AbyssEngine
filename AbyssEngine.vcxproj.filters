@@ -129,9 +129,12 @@
     <ClInclude Include="External\imgui\imstb_truetype.h">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\MeshData.h" />
+    <ClInclude Include="Code\Header\FbxMeshData.h" />
     <ClInclude Include="Code\Header\SkeltalMesh.h" />
     <ClInclude Include="Code\Header\Camera.h" />
+    <ClInclude Include="Code\Header\GltfModel.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp">
@@ -212,9 +215,12 @@
     <ClCompile Include="External\imgui\ImGuiCtrl.cpp">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\MeshData.cpp" />
+    <ClCompile Include="Code\Source\FbxMeshData.cpp" />
     <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
     <ClCompile Include="Code\Source\Camera.cpp" />
+    <ClCompile Include="Code\Source\GltfModel.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

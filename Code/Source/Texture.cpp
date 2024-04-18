@@ -15,6 +15,105 @@ using namespace AbyssEngine;
 using namespace std;
 using namespace DirectX;
 
+HRESULT Texture::LoadTextureFromMemory(const void* data, size_t size, ID3D11ShaderResourceView** shaderResourceView)
+{
+    HRESULT hr = S_OK;
+    Microsoft::WRL::ComPtr<ID3D11Resource> resource;
+
+    auto* device = DXSystem::device_.Get();
+    hr = CreateDDSTextureFromMemory(device,reinterpret_cast<const uint8_t*>(data),
+        size, resource.GetAddressOf(), shaderResourceView);
+    if (hr != S_OK)
+    {
+        hr = CreateWICTextureFromMemory(device, reinterpret_cast<const uint8_t*>(data),
+            size, resource.GetAddressOf(), shaderResourceView);
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+    }
+
+    return hr;
+}
+
+HRESULT Texture::LoadTextureFromFile(const std::string& texturePath, ID3D11ShaderResourceView** shaderResourceView, D3D11_TEXTURE2D_DESC* texture2dDesc)
+{
+    HRESULT hr{ S_OK };
+    Microsoft::WRL::ComPtr<ID3D11Resource> resource;
+
+    const auto it = Engine::assetManager_->cacheTexture_.find(texturePath);
+    if (it != Engine::assetManager_->cacheTexture_.end())
+    {
+        shaderResourceView = it->second->shaderResourceView_.GetAddressOf();
+        texture2dDesc = &it->second->texture2dDesc_;
+    }
+    else
+    {
+        auto* device = DXSystem::device_.Get();
+
+        std::filesystem::path ddsFilename(texturePath);
+        ddsFilename.replace_extension("dds");
+        if (std::filesystem::exists(ddsFilename.c_str()))
+        {
+            hr = DirectX::CreateDDSTextureFromFile(device, ddsFilename.c_str(), resource.GetAddressOf(), shaderResourceView);
+            _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+        }
+        else
+        {
+            setlocale(LC_ALL, "japanese");
+            wchar_t fileName[MAX_PATH] = { 0 };
+            size_t ret = 0;
+            mbstowcs_s(&ret, fileName, MAX_PATH, texturePath.c_str(), _TRUNCATE);
+
+            hr = DirectX::CreateWICTextureFromFile(device, fileName, resource.GetAddressOf(), shaderResourceView);
+            _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+        }
+    }
+
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2d;
+    hr = resource.Get()->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+    texture2d->GetDesc(texture2dDesc);
+
+    return hr;
+}
+
+HRESULT Texture::MakeDummyTexture(ID3D11ShaderResourceView** shaderResourceView, DWORD value, UINT dimension)
+{
+    HRESULT hr{ S_OK };
+
+    D3D11_TEXTURE2D_DESC texture2dDesc{};
+    texture2dDesc.Width = dimension;
+    texture2dDesc.Height = dimension;
+    texture2dDesc.MipLevels = 1;
+    texture2dDesc.ArraySize = 1;
+    texture2dDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    texture2dDesc.SampleDesc.Count = 1;
+    texture2dDesc.SampleDesc.Quality = 0;
+    texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
+    texture2dDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    size_t texels = dimension * dimension;
+    std::unique_ptr<DWORD[]> sysmem{std::make_unique<DWORD[]>(texels)};
+    for (size_t i = 0; i < texels; ++i)sysmem[i] = value;
+
+    D3D11_SUBRESOURCE_DATA subresourceData;
+    subresourceData.pSysMem = sysmem.get();
+    subresourceData.SysMemPitch = sizeof(DWORD) * dimension;
+
+    auto* device = DXSystem::device_.Get();
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2d;
+    hr = device->CreateTexture2D(&texture2dDesc, &subresourceData, &texture2d);
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
+    shaderResourceViewDesc.Format = texture2dDesc.Format;
+    shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    shaderResourceViewDesc.Texture2D.MipLevels = 1;
+    hr = device->CreateShaderResourceView(texture2d.Get(), &shaderResourceViewDesc,
+        shaderResourceView);
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
+    return hr;
+}
+
 std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_int& textureFlg)
 {
     HRESULT hr = S_OK;

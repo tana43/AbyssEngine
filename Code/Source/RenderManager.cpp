@@ -5,7 +5,7 @@
 #include "Misc.h"
 #include "Camera.h"
 #include "SkeltalMesh.h"
-#include "MeshData.h"
+#include "FbxMeshData.h"
 
 using namespace AbyssEngine;
 using namespace std;

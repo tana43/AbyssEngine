@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -25,8 +25,9 @@
     <ClInclude Include="Code\Header\Component.h" />
     <ClInclude Include="Code\Header\DXSystem.h" />
     <ClInclude Include="Code\Header\Engine.h" />
+    <ClInclude Include="Code\Header\GltfModel.h" />
     <ClInclude Include="Code\Header\MathHelper.h" />
-    <ClInclude Include="Code\Header\MeshData.h" />
+    <ClInclude Include="Code\Header\FbxMeshData.h" />
     <ClInclude Include="Code\Header\Misc.h" />
     <ClInclude Include="Code\Header\Asset.h" />
     <ClInclude Include="Code\Header\Renderer.h" />
@@ -57,9 +58,10 @@
     <ClCompile Include="Code\Source\Component.cpp" />
     <ClCompile Include="Code\Source\DXSystem.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
+    <ClCompile Include="Code\Source\GltfModel.cpp" />
     <ClCompile Include="Code\Source\Main.cpp" />
     <ClCompile Include="Code\Source\MathHelper.cpp" />
-    <ClCompile Include="Code\Source\MeshData.cpp" />
+    <ClCompile Include="Code\Source\FbxMeshData.cpp" />
     <ClCompile Include="Code\Source\Asset.cpp" />
     <ClCompile Include="Code\Source\Renderer.cpp" />
     <ClCompile Include="Code\Source\RenderManager.cpp" />

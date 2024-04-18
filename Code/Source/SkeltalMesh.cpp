@@ -1,9 +1,10 @@
 #include "SkeltalMesh.h"
 #include "Actor.h"
 #include "Engine.h"
-#include "MeshData.h"
+#include "FbxMeshData.h"
 #include "RenderManager.h"
 #include "AssetManager.h"
+#include "GltfModel.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -14,7 +15,7 @@ void SkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
     actor_ = actor;
     transform_ = actor->GetTransform();
 
-    model_ = make_unique<MeshData>(DXSystem::device_.Get(), filePath_.c_str());
+    model_ = make_unique<FbxMeshData>(DXSystem::device_.Get(), filePath_.c_str());
 
 	//レンダラーマネージャーに登録
 	SetActive(true);
@@ -60,4 +61,16 @@ void SkeltalMesh::SetActive(const bool value)
 			isCalled_ = true;
 		}
 	}
+}
+
+void AbyssEngine::GltfSkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
+{
+	//マネージャーの登録と初期化
+	actor_ = actor;
+	transform_ = actor->GetTransform();
+
+	model_ = make_unique<GltfModel>(DXSystem::device_.Get(), filePath_.c_str());
+
+	//レンダラーマネージャーに登録
+	SetActive(true);
 }
