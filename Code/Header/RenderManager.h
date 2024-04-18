@@ -8,6 +8,7 @@ namespace AbyssEngine
 {
     class SpriteRenderer;
     class SkeltalMesh;
+    class GltfSkeltalMesh;
     class Camera;
 
     class RenderManager
@@ -18,6 +19,7 @@ namespace AbyssEngine
         void Reset();
         void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<SkeltalMesh>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<GltfSkeltalMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<Camera>& camera);//マネージャーにカメラを登録する
 
         void Render(); //描画実行

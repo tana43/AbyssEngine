@@ -74,8 +74,8 @@ GltfModel::GltfModel(ID3D11Device* device, const std::string& filename) : filena
         {"WEIGHTS",0,vertexBufferViews.at("WEIGHTS_0").format,5,0,D3D11_INPUT_PER_VERTEX_DATA,0},
     };
 
-    vertexShader = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/GltfModelVS.cso",inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
-    pixelShader = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GltfModelPS.cso");
+    vertexShader = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/GltfMeshVS.cso",inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
+    pixelShader = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GltfMeshPS.cso");
 
     D3D11_BUFFER_DESC bufferDesc{};
     bufferDesc.ByteWidth = sizeof(PrimitiveConstants);
@@ -161,6 +161,11 @@ GltfModel::BufferView GltfModel::MakeBufferView(const tinygltf::Accessor& access
         case TINYGLTF_COMPONENT_TYPE_FLOAT:
             bufferView.format = DXGI_FORMAT_R32G32B32A32_FLOAT;
             bufferView.strideInBytes = sizeof(FLOAT) * 4;
+            break;
+
+        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+            bufferView.format = DXGI_FORMAT_R16G16B16A16_UINT;
+            bufferView.strideInBytes = sizeof(UINT16) * 4;
             break;
 
         default:
@@ -640,8 +645,8 @@ void GltfModel::Render(ID3D11DeviceContext* immediateContext, const DirectX::XMF
                 XMStoreFloat4x4(&primitiveData.world,
                     XMLoadFloat4x4(&node.globalTransform) * XMLoadFloat4x4(&world));
                 immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-                immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-                immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
+                immediateContext->VSSetConstantBuffers(1, 1, primitiveCbuffer.GetAddressOf());
+                immediateContext->PSSetConstantBuffers(1, 1, primitiveCbuffer.GetAddressOf());
 
                 //textureResourceViewsオブジェクトをバインド
                 const Material& material{ materials.at(primitive.material) };

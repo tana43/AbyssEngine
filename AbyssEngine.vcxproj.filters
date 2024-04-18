@@ -235,9 +235,24 @@
     <FxCompile Include="Shader\MeshVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\GltfMeshPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GltfMeshVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Mesh.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\GltfMesh.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\ImageBasedLighting.hlsli">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

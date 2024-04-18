@@ -84,6 +84,18 @@
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\GltfMeshPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\GltfMeshVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\MeshPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -110,6 +122,9 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli" />
+    <None Include="Shader\GltfMesh.hlsli" />
+    <None Include="Shader\ImageBasedLighting.hlsli" />
     <None Include="Shader\Mesh.hlsli" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

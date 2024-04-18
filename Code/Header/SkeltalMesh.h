@@ -30,6 +30,7 @@ namespace AbyssEngine
 
     class GltfSkeltalMesh : public Renderer
     {
+    public:
         GltfSkeltalMesh() {}
         ~GltfSkeltalMesh() = default;
 
@@ -41,7 +42,7 @@ namespace AbyssEngine
 
     private:
 
-        std::unique_ptr<SkeltalMesh> model_;
+        std::unique_ptr<GltfModel> model_;
     };
 }
 

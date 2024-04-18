@@ -63,7 +63,7 @@ void SkeltalMesh::SetActive(const bool value)
 	}
 }
 
-void AbyssEngine::GltfSkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
+void GltfSkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
 {
 	//マネージャーの登録と初期化
 	actor_ = actor;
@@ -73,4 +73,25 @@ void AbyssEngine::GltfSkeltalMesh::Initialize(const std::shared_ptr<Actor>& acto
 
 	//レンダラーマネージャーに登録
 	SetActive(true);
+}
+
+void GltfSkeltalMesh::Render()
+{
+	static std::vector<GltfModel::Node> animatedNodes = model_->nodes;
+	static float time{ 0 };
+	model_->Animate(0, time += Time::deltaTime_, animatedNodes);
+	// UNIT.34
+	model_->Render(DXSystem::deviceContext_.Get(), transform_->CalcWorldMatrix(), animatedNodes/*UNIT.37*/);
+}
+
+void GltfSkeltalMesh::SetActive(const bool value)
+{
+	if (value)
+	{
+		if (!isCalled_)
+		{
+			Engine::renderManager_->Add(static_pointer_cast<GltfSkeltalMesh>(shared_from_this()));
+			isCalled_ = true;
+		}
+	}
 }

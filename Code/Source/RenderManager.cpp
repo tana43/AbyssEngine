@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "SkeltalMesh.h"
 #include "FbxMeshData.h"
+#include "GltfModel.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -74,6 +75,11 @@ void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)
 }
 
 void RenderManager::Add(const shared_ptr<SkeltalMesh>& mRend)
+{
+	renderer3DList_.emplace_back(mRend);
+}
+
+void RenderManager::Add(const shared_ptr<GltfSkeltalMesh>& mRend)
 {
 	renderer3DList_.emplace_back(mRend);
 }

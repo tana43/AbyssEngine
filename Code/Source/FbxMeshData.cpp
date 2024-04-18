@@ -638,7 +638,7 @@ void FbxMeshData::CreateComObjects(ID3D11Device* device, const char* fbxFilename
             else
             {
                 //ダミーテクスチャの読み込み
-                itr->second.textures_[textureIndex] = Texture::Load("./Resources/dummy_texture_00.png");
+                itr->second.textures_[textureIndex] = Texture::Load("./Scripts/Resources/dummy_texture_00.png");
             }
         }
     }
