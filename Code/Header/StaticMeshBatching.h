@@ -13,14 +13,16 @@
 #define TINYGLTF_NO_STB_IMAGE_WRITE
 #include <tinygltf-release/tiny_gltf.h>
 
+#include "Asset.h"
+
 namespace AbyssEngine
 {
-    class StaticMeshBaching
+    class StaticMeshBatching : public Asset
     {
         std::string filename_;
     public:
-        StaticMeshBaching(const std::string& filename);
-        virtual ~StaticMeshBaching() = delete;
+        StaticMeshBatching(const std::string& filename);
+        //virtual ~StaticMeshBaching() = delete;
 
         struct Scene
         {

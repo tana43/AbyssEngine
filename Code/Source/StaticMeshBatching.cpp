@@ -1,5 +1,5 @@
-// StaticMeshBaching
-#include "StaticMeshBaching.h"
+// StaticMeshBatching
+#include "StaticMeshBatching.h"
 #include <stack>
 #include <functional>
 #include <filesystem>
@@ -13,7 +13,7 @@ using namespace std;
 
 bool NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*, int, int, const unsigned char*, int, void*);
 
-StaticMeshBaching::StaticMeshBaching(const std::string& filename) : filename_(filename)
+StaticMeshBatching::StaticMeshBatching(const std::string& filename) : filename_(filename)
 {
 	tinygltf::TinyGLTF tiny_gltf;
 	tiny_gltf.SetImageLoader(NullLoadImageData, nullptr);
@@ -55,8 +55,8 @@ StaticMeshBaching::StaticMeshBaching(const std::string& filename) : filename_(fi
 		{ "TANGENT", 0, vertexBufferViews.at("TANGENT").format_, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, vertexBufferViews.at("TEXCOORD_0").format_, 3, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	vertexShader_ = Shader<ID3D11VertexShader>::Emplace("StaticMeshBaching_vs.cso",inputLayout_.ReleaseAndGetAddressOf(), input_element_desc, _countof(input_element_desc));
-	pixelShader_ = Shader<ID3D11PixelShader>::Emplace("gltfModel_ps.cso");
+	vertexShader_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/GltfMeshStaticBatchingVS.cso",inputLayout_.ReleaseAndGetAddressOf(), input_element_desc, _countof(input_element_desc));
+	pixelShader_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GltfMeshPS.cso");
 
 	D3D11_BUFFER_DESC bd{};
 	bd.ByteWidth = sizeof(PrimitiveConstants);
@@ -68,7 +68,7 @@ StaticMeshBaching::StaticMeshBaching(const std::string& filename) : filename_(fi
 
 
 }
-void StaticMeshBaching::FetchNodes(const tinygltf::Model& gltfModel)
+void StaticMeshBatching::FetchNodes(const tinygltf::Model& gltfModel)
 {
 	for (std::vector<tinygltf::Node>::const_reference gltfNode : gltfModel.nodes)
 	{
@@ -121,7 +121,7 @@ void StaticMeshBaching::FetchNodes(const tinygltf::Model& gltfModel)
 	}
 	CumulateTransforms(nodes_);
 }
-void StaticMeshBaching::CumulateTransforms(std::vector<Node>& nodes)
+void StaticMeshBatching::CumulateTransforms(std::vector<Node>& nodes)
 {
 	std::stack<Matrix> parentGlobalTransforms;
 	std::function<void(int)> traverse{ [&](int node_index)->void
@@ -145,7 +145,7 @@ void StaticMeshBaching::CumulateTransforms(std::vector<Node>& nodes)
 		parentGlobalTransforms.pop();
 	}
 }
-StaticMeshBaching::BufferView StaticMeshBaching::MakeBufferView(const tinygltf::Accessor& accessor)
+StaticMeshBatching::BufferView StaticMeshBatching::MakeBufferView(const tinygltf::Accessor& accessor)
 {
 	BufferView bufferView;
 	switch (accessor.type)
@@ -217,7 +217,7 @@ StaticMeshBaching::BufferView StaticMeshBaching::MakeBufferView(const tinygltf::
 	bufferView.sizeInBytes_ = static_cast<UINT>(accessor.count * bufferView.strideInBytes_);
 	return bufferView;
 }
-void StaticMeshBaching::FetchMeshes(const tinygltf::Model& gltfModel)
+void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 {
 	ID3D11Device* device = DXSystem::device_.Get();
 
@@ -463,10 +463,10 @@ void StaticMeshBaching::FetchMeshes(const tinygltf::Model& gltfModel)
 	}
 }
 
-void StaticMeshBaching::Render(const Matrix& world)
+void StaticMeshBatching::Render(const Matrix& world)
 {
 	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
-	deviceContext->PSSetShaderResources(1, 1, materialResourceView_.GetAddressOf());
+	deviceContext->PSSetShaderResources(0, 1, materialResourceView_.GetAddressOf());
 
 	deviceContext->VSSetShader(vertexShader_.Get(), nullptr, 0);
 	deviceContext->PSSetShader(pixelShader_.Get(), nullptr, 0);
@@ -475,7 +475,7 @@ void StaticMeshBaching::Render(const Matrix& world)
 
 	for (decltype(primitives_)::const_reference primitive : primitives_)
 	{
-		ID3D11Buffer* vertex_buffers[] = {
+		ID3D11Buffer* vertexBuffer[] = {
 			primitive.vertexBufferViews_.at("POSITION").buffer_.Get(),
 			primitive.vertexBufferViews_.at("NORMAL").buffer_.Get(),
 			primitive.vertexBufferViews_.at("TANGENT").buffer_.Get(),
@@ -487,8 +487,8 @@ void StaticMeshBaching::Render(const Matrix& world)
 			static_cast<UINT>(primitive.vertexBufferViews_.at("TANGENT").strideInBytes_),
 			static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_0").strideInBytes_),
 		};
-		UINT offsets[_countof(vertex_buffers)] = {};
-		deviceContext->IASetVertexBuffers(0, _countof(vertex_buffers), vertex_buffers, strides, offsets);
+		UINT offsets[_countof(vertexBuffer)] = {};
+		deviceContext->IASetVertexBuffers(0, _countof(vertexBuffer), vertexBuffer, strides, offsets);
 		deviceContext->IASetIndexBuffer(primitive.indexBufferView_.buffer_.Get(), primitive.indexBufferView_.format_, 0);
 
 		PrimitiveConstants primitiveData_ = {};
@@ -521,7 +521,7 @@ void StaticMeshBaching::Render(const Matrix& world)
 	}
 }
 
-void StaticMeshBaching::FetchMaterials(const tinygltf::Model& gltfModel)
+void StaticMeshBatching::FetchMaterials(const tinygltf::Model& gltfModel)
 {
 	ID3D11Device* device = DXSystem::device_.Get();
 
@@ -588,7 +588,7 @@ void StaticMeshBaching::FetchMaterials(const tinygltf::Model& gltfModel)
 	hr = device->CreateShaderResourceView(material_buffer.Get(), &shader_resource_view_desc, materialResourceView_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 }
-void StaticMeshBaching::FetchTextures(const tinygltf::Model& gltfModel)
+void StaticMeshBatching::FetchTextures(const tinygltf::Model& gltfModel)
 {
 	ID3D11Device* device = DXSystem::device_.Get();
 

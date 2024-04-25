@@ -41,6 +41,9 @@ void Camera::Update()
     const Vector3 focus = eye + transform_->GetForward();
     const Vector3 up = transform_->GetUp();
 
+    //各方向ベクトルの更新
+    transform_->CalcWorldMatrix();
+
     viewMatrix_ = XMMatrixLookAtLH(eye, focus, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }

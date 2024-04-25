@@ -4,6 +4,8 @@
 #include "SkeltalMesh.h"
 #include "FbxMeshData.h"
 #include "GltfModel.h"
+#include "StaticMesh.h"
+#include "StaticMeshBatching.h"
 
 using namespace AbyssEngine;
 
@@ -20,14 +22,17 @@ void TestScene::Initialize()
 
     //テスト用のオブジェクト
     const auto& p1 = InstanceActor("testGltf");
-    p1->AddComponent<GltfSkeltalMesh>(
+    p1->AddComponent<StaticMesh>(
         "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
-        //"./Assets/Models/UE/AssetsvilleTown.glb"
-        //"./Assets/Models/UE/SKM_Manny.glb"
-        //"./Assets/Models/CesiumMan.glb"
-        //"./Assets/Models/DamagedHelmet.glb"
-        //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     );
+    //p1->AddComponent<GltfSkeltalMesh>(
+    //    "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
+    //    //"./Assets/Models/UE/AssetsvilleTown.glb"
+    //    //"./Assets/Models/UE/SKM_Manny.glb"
+    //    //"./Assets/Models/CesiumMan.glb"
+    //    //"./Assets/Models/DamagedHelmet.glb"
+    //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
+    //);
 }
 
 void TestScene::Update()

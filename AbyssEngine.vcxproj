@@ -38,7 +38,7 @@
     <ClInclude Include="Code\Header\SkeltalMesh.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
     <ClInclude Include="Code\Header\StaticMesh.h" />
-    <ClInclude Include="Code\Header\StaticMeshBaching.h" />
+    <ClInclude Include="Code\Header\StaticMeshBatching.h" />
     <ClInclude Include="Code\Header\SystemFunction.h" />
     <ClInclude Include="Code\Header\TestScene.h" />
     <ClInclude Include="Code\Header\Texture.h" />
@@ -73,7 +73,7 @@
     <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
     <ClCompile Include="Code\Source\StaticMesh.cpp" />
-    <ClCompile Include="Code\Source\StaticMeshBaching.cpp" />
+    <ClCompile Include="Code\Source\StaticMeshBatching.cpp" />
     <ClCompile Include="Code\Source\SystemFunction.cpp" />
     <ClCompile Include="Code\Source\TestScene.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />
@@ -95,6 +95,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\GltfMeshVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\GltfMeshStaticBatchingVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

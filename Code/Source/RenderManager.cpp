@@ -8,6 +8,9 @@
 #include "FbxMeshData.h"
 #include "GltfModel.h"
 #include "Texture.h"
+#include "StaticMeshBatching.h"
+#include "StaticMesh.h"
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -84,6 +87,11 @@ void RenderManager::Add(const shared_ptr<SkeltalMesh>& mRend)
 }
 
 void RenderManager::Add(const shared_ptr<GltfSkeltalMesh>& mRend)
+{
+	renderer3DList_.emplace_back(mRend);
+}
+
+void RenderManager::Add(const shared_ptr<StaticMesh>& mRend)
 {
 	renderer3DList_.emplace_back(mRend);
 }
