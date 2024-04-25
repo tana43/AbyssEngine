@@ -22,7 +22,7 @@ void TestScene::Initialize()
 
     //テスト用のオブジェクト
     const auto& p1 = InstanceActor("testGltf");
-    p1->AddComponent<StaticMesh>(
+    p1->AddComponent<GltfSkeltalMesh>(
         "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     );
     //p1->AddComponent<GltfSkeltalMesh>(

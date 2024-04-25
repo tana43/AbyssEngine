@@ -15,6 +15,9 @@ namespace AbyssEngine
         //bool CanMultiple() override;
         void Update();
 
+    private:
+        void CameraController();
+
     public:
         float fov_ = DirectX::XMConvertToRadians(60.0f);
         float nearZ_ = 0.1f;
@@ -27,7 +30,6 @@ namespace AbyssEngine
         //std::array<Vector4, 6> frustumPlanes_; //‹‘äƒJƒŠƒ“ƒO—pPlane
 
         friend class RenderManager;
-
     };
 }
 

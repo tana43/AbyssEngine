@@ -58,6 +58,12 @@
     <Filter Include="Code\Source\ImGui">
       <UniqueIdentifier>{d5209d72-b2a8-466b-98c0-89f53010a198}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Header\Input">
+      <UniqueIdentifier>{3034fa37-d609-40ab-8d60-3d4eab14a1e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source\Input">
+      <UniqueIdentifier>{e4f83e83-b0fc-46b6-9046-6f347bc766b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -157,6 +163,18 @@
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\StaticMesh.h" />
+    <ClInclude Include="Code\Header\GamePad.h">
+      <Filter>Code\Header\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Input.h">
+      <Filter>Code\Header\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Mouse.h">
+      <Filter>Code\Header\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Keyboard.h">
+      <Filter>Code\Header\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -253,6 +271,18 @@
       <Filter>Code\Source\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\StaticMesh.cpp" />
+    <ClCompile Include="Code\Source\GamePad.cpp">
+      <Filter>Code\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Input.cpp">
+      <Filter>Code\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Mouse.cpp">
+      <Filter>Code\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Keyboard.cpp">
+      <Filter>Code\Source\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

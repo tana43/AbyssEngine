@@ -4,6 +4,7 @@
 #include "imgui/imgui.h"
 #include "RenderManager.h"
 #include "Engine.h"
+#include "Input.h"
 
 using namespace AbyssEngine;
 using namespace DirectX;
@@ -46,4 +47,63 @@ void Camera::Update()
 
     viewMatrix_ = XMMatrixLookAtLH(eye, focus, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
+}
+
+void Camera::CameraController()
+{
+    //マウス、キーボードによるカメラ操作
+
+    //マウス操作
+#if _DEBUG
+    static bool inputStart;
+    if (Mouse::GetButtonState().rightButton)
+#endif // _DEBUG
+    {
+        //auto mouseVec = argent::input::GetMousePrevPosition() - argent::input::GetMouseCurPosition();
+
+#if _DEBUG//右クリックが押された最初のフレームはカメラが大きく回転する可能性があるので処理しない
+        if (inputStart)
+#endif // _DEBUG
+        {
+            auto mouseVec = Vector2(960, 540) - argent::input::GetMouseCurPosition();
+            if (mouseVec.x != 0 || mouseVec.y != 0)
+            {
+                rot.y -= mouseVec.x * cameraSensitivity_mouse_ * argent::GetDeltaTime();
+                rot.x -= mouseVec.y * cameraSensitivity_mouse_ * argent::GetDeltaTime();
+            }
+        }
+#if _DEBUG
+        else
+        {
+            inputStart = true;
+        }
+#endif // _DEBUG
+
+
+        /*SetCursorPos(
+            static_cast<int>(argent::render::GetScreenWidth()) / 2,
+            static_cast<int>(argent::render::GetScreenHeight()) / 2);*/
+        SetCursorPos(960, 540);
+    }
+#if _DEBUG
+    else
+    {
+        inputStart = false;
+    }
+#endif // _DEBUG
+
+
+    //コントローラー操作
+    {
+        auto stick = Input::CameraRoll();
+        if (stick.x != 0 || stick.y != 0)
+        {
+            rot.y += stick.x * cameraSensitivity_pad_ * argent::GetDeltaTime();
+            rot.x -= stick.y * cameraSensitivity_pad_ * argent::GetDeltaTime();
+        }
+    }
+
+    rot.x = std::clamp(rot.x, cameraMinRotX_, cameraMaxRotX_);
+
+    camera.SetRotation(rot);
 }
