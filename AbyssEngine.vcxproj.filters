@@ -46,60 +46,24 @@
     <Filter Include="Code\Libraries\ImGui">
       <UniqueIdentifier>{d5209d72-b2a8-466b-98c0-89f53010a198}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Header\Resource">
+      <UniqueIdentifier>{0987514f-936d-4a9a-9693-460cca0c9eaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source\Resource">
+      <UniqueIdentifier>{1970f221-ae56-46f3-8a36-d3fe3d0b363b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source\Manager">
+      <UniqueIdentifier>{f1fd84f6-14bd-494b-b4e0-f205d4f4c902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Header\Manager">
+      <UniqueIdentifier>{66d5febb-b40c-4c9b-b2df-59d7ead0c9bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\AssetManager.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Component.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\DXSystem.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Engine.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\MathHelper.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Misc.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Asset.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Renderer.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\RenderManager.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Scene.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\SceneManager.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Shader.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\SpriteRenderer.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\SystemFunction.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\TestScene.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Texture.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Transform.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="External\imgui\imconfig.h">
@@ -129,66 +93,73 @@
     <ClInclude Include="External\imgui\imstb_truetype.h">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\FbxMeshData.h" />
-    <ClInclude Include="Code\Header\SkeltalMesh.h" />
-    <ClInclude Include="Code\Header\Camera.h" />
-    <ClInclude Include="Code\Header\GltfModel.h">
-      <Filter>Code\Header</Filter>
+    <ClInclude Include="Code\Header\Camera.h">
+      <Filter>Code\Header\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\Component.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Renderer.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SpriteRenderer.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SkeltalMesh.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Transform.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\AssetManager.h">
+      <Filter>Code\Header\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\RenderManager.h">
+      <Filter>Code\Header\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SceneManager.h">
+      <Filter>Code\Header\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\FbxMeshData.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\GltfModel.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Texture.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Asset.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\DXSystem.h">
+      <Filter>Code\Header\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Engine.h">
+      <Filter>Code\Header\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SystemFunction.h">
+      <Filter>Code\Header\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Misc.h">
+      <Filter>Code\Header\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\TestScene.h">
+      <Filter>Code\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Scene.h">
+      <Filter>Code\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\StaticMeshBaching.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Shader.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\StaticMesh.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Source\Actor.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\AssetManager.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Component.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\DXSystem.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Engine.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Main.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\MathHelper.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Asset.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Renderer.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\RenderManager.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Scene.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\SceneManager.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Shader.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\SpriteRenderer.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\SystemFunction.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\TestScene.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Texture.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Transform.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="External\imgui\imgui.cpp">
@@ -215,12 +186,73 @@
     <ClCompile Include="External\imgui\ImGuiCtrl.cpp">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\FbxMeshData.cpp" />
-    <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
-    <ClCompile Include="Code\Source\Camera.cpp" />
+    <ClCompile Include="Code\Source\Engine.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Main.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\DXSystem.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Scene.cpp">
+      <Filter>Code\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\TestScene.cpp">
+      <Filter>Code\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SpriteRenderer.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SkeltalMesh.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Transform.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Component.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Camera.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\StaticMeshBaching.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Texture.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Shader.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
     <ClCompile Include="Code\Source\GltfModel.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\FbxMeshData.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Asset.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SystemFunction.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Actor.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\Renderer.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\RenderManager.cpp">
+      <Filter>Code\Source\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SceneManager.cpp">
+      <Filter>Code\Source\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\AssetManager.cpp">
+      <Filter>Code\Source\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\StaticMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

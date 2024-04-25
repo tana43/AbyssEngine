@@ -20,7 +20,7 @@ bool NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*,
 GltfModel::GltfModel(ID3D11Device* device, const std::string& filename) : filename(filename)
 {
     tinygltf::TinyGLTF tinyGltf;
-    //tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
+    tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
 
     //ÉÇÉfÉãì«Ç›çûÇ›
     tinygltf::Model gltfModel;
@@ -112,6 +112,11 @@ GltfModel::BufferView GltfModel::MakeBufferView(const tinygltf::Accessor& access
             bufferView.strideInBytes = sizeof(UINT);
             break;
 
+        case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+            bufferView.format = DXGI_FORMAT_R8_UINT;
+            bufferView.strideInBytes = sizeof(UINT8);
+            break;
+
         default:
             _ASSERT_EXPR(FALSE, L"This accessor component type is not supported.");
             break;
@@ -164,8 +169,8 @@ GltfModel::BufferView GltfModel::MakeBufferView(const tinygltf::Accessor& access
             break;
 
         case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
-            bufferView.format = DXGI_FORMAT_R16G16B16A16_UINT;
-            bufferView.strideInBytes = sizeof(UINT16) * 4;
+            bufferView.format = DXGI_FORMAT_R8G8B8A8_UINT;
+            bufferView.strideInBytes = sizeof(UINT8) * 4;
             break;
 
         default:

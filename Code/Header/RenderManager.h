@@ -24,6 +24,8 @@ namespace AbyssEngine
 
         void Render(); //描画実行
 
+        void DrawImGui();
+
         //bool renderGame_ = true; //ゲームビューを描画する
         //bool renderScene_ = true; //シーンビューを描画する
 
@@ -51,13 +53,15 @@ namespace AbyssEngine
             //Matrix shadowMatrix_;
             //Vector4 cameraDirection_;
             Vector4 cameraPosition_;
-            Vector4 lightDirection_;
+            Vector4 lightDirection_ = {0,0,1,0};
             Vector3 lightColor_;
             float pad;
         };
 
         ConstantBufferScene bufferScene_;
         Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
+
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> iblShaderResourceView_[4];
 
         //2Dオブジェクトのレンダリング
         void Render2D() const;
@@ -68,6 +72,9 @@ namespace AbyssEngine
         void CheckRenderer();
 
         void UpdateConstantBuffer()const;
+
+        void IBLInitialize();
+        void IBLSetResources();
     };
 
 }

@@ -80,7 +80,7 @@ void GltfSkeltalMesh::Render()
 	static std::vector<GltfModel::Node> animatedNodes = model_->nodes;
 	static float time{ 0 };
 	model_->Animate(0, time += Time::deltaTime_, animatedNodes);
-	// UNIT.34
+
 	model_->Render(DXSystem::deviceContext_.Get(), transform_->CalcWorldMatrix(), animatedNodes/*UNIT.37*/);
 }
 

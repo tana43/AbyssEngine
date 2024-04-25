@@ -7,6 +7,8 @@
 #include "SkeltalMesh.h"
 #include "FbxMeshData.h"
 #include "GltfModel.h"
+#include "Texture.h"
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -55,6 +57,8 @@ RenderManager::RenderManager()
 		HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, sampler_.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
+
+	IBLInitialize();
 }
 
 void RenderManager::Reset()
@@ -111,7 +115,7 @@ void RenderManager::Render()
 				bufferScene_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
 
 				//仮のライト
-				bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
+				//bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
 				bufferScene_.lightColor_ = Vector3(1, 1, 1);
 
 				UpdateConstantBuffer();
@@ -127,6 +131,16 @@ void RenderManager::Render()
 	}
 
 	Render2D();
+}
+
+void RenderManager::DrawImGui()
+{
+	if (ImGui::BeginMenu("SceneConstant"))
+	{
+		ImGui::DragFloat3("Light Direction",&bufferScene_.lightDirection_.x,0.01f);
+
+		ImGui::EndMenu();
+	}
 }
 
 void RenderManager::Render2D() const
@@ -158,6 +172,8 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera)
 {
 	//トポロジー設定
 	//DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	IBLSetResources();
 
 	DXSystem::deviceContext_->OMSetBlendState(DXSystem::GetBlendState(BS_State::Off), nullptr, 0xFFFFFFFF);
 	DXSystem::deviceContext_->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::LEqual), 1);
@@ -236,4 +252,33 @@ void RenderManager::UpdateConstantBuffer() const
 		memcpy(mapped.pData, &bufferScene_, sizeof(constantBufferScene_));
 		DXSystem::deviceContext_->Unmap(constantBufferScene_.Get(), subresourceIndex);
 	}*/
+}
+
+void RenderManager::IBLInitialize()
+{                                 
+	D3D11_TEXTURE2D_DESC texture2dDesc{};
+	texture2dDesc.Width = DXSystem::GetScreenWidth();
+	texture2dDesc.Height = DXSystem::GetScreenHeight();
+	texture2dDesc.MipLevels = 1;
+	texture2dDesc.ArraySize = 1;
+	texture2dDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	texture2dDesc.SampleDesc.Count = 1;
+	texture2dDesc.SampleDesc.Quality = 0;
+	texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
+	texture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	texture2dDesc.CPUAccessFlags = 0;
+	texture2dDesc.MiscFlags = 0;
+
+	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/sunset_jhbcentral_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
+}
+
+void RenderManager::IBLSetResources()
+{
+	DXSystem::deviceContext_->PSSetShaderResources(32, 1, iblShaderResourceView_[0].GetAddressOf());
+	DXSystem::deviceContext_->PSSetShaderResources(33, 1, iblShaderResourceView_[1].GetAddressOf());
+	DXSystem::deviceContext_->PSSetShaderResources(34, 1, iblShaderResourceView_[2].GetAddressOf());
+	DXSystem::deviceContext_->PSSetShaderResources(35, 1, iblShaderResourceView_[3].GetAddressOf());
 }

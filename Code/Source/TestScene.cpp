@@ -19,8 +19,15 @@ void TestScene::Initialize()
     p0->AddComponent<SkeltalMesh>("./Assets/Models/nico.fbx");*/
 
     //テスト用のオブジェクト
-    const auto& p1 = InstanceActor("testSprite");
-    p1->AddComponent<GltfSkeltalMesh>("./Assets/Models/UE/SK_Mannequin.gltf");
+    const auto& p1 = InstanceActor("testGltf");
+    p1->AddComponent<GltfSkeltalMesh>(
+        "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
+        //"./Assets/Models/UE/AssetsvilleTown.glb"
+        //"./Assets/Models/UE/SKM_Manny.glb"
+        //"./Assets/Models/CesiumMan.glb"
+        //"./Assets/Models/DamagedHelmet.glb"
+        //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
+    );
 }
 
 void TestScene::Update()

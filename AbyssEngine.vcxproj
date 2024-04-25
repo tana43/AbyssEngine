@@ -37,6 +37,8 @@
     <ClInclude Include="Code\Header\Shader.h" />
     <ClInclude Include="Code\Header\SkeltalMesh.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
+    <ClInclude Include="Code\Header\StaticMesh.h" />
+    <ClInclude Include="Code\Header\StaticMeshBaching.h" />
     <ClInclude Include="Code\Header\SystemFunction.h" />
     <ClInclude Include="Code\Header\TestScene.h" />
     <ClInclude Include="Code\Header\Texture.h" />
@@ -70,6 +72,8 @@
     <ClCompile Include="Code\Source\Shader.cpp" />
     <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
+    <ClCompile Include="Code\Source\StaticMesh.cpp" />
+    <ClCompile Include="Code\Source\StaticMeshBaching.cpp" />
     <ClCompile Include="Code\Source\SystemFunction.cpp" />
     <ClCompile Include="Code\Source\TestScene.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />

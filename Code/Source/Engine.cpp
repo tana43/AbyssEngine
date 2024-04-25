@@ -79,6 +79,8 @@ void Engine::DrawDebug()
         //•`‰æŠÖŒW‚Ì’l‚ª‘ÎÛ
         if (ImGui::BeginMenu("Graphics"))
         {
+            renderManager_->DrawImGui();
+
             ImGui::EndMenu();
         }
 
