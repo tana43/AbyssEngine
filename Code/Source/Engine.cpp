@@ -2,6 +2,7 @@
 #include "AssetManager.h"
 #include "RenderManager.h"
 #include "SceneManager.h"
+#include "Input.h"
 #include "Scene.h"
 #include "Misc.h"
 #include "../External/imgui/ImGuiCtrl.h"
@@ -12,6 +13,7 @@ using namespace std;
 unique_ptr<AssetManager>    Engine::assetManager_;
 unique_ptr<RenderManager>   Engine::renderManager_;
 unique_ptr<SceneManager>    Engine::sceneManager_;
+unique_ptr<Input>           Engine::inputManager_;
 
 Engine::Engine()
 {
@@ -19,6 +21,7 @@ Engine::Engine()
     sceneManager_ = make_unique<SceneManager>();
     assetManager_ = make_unique<AssetManager>();
     renderManager_ = make_unique<RenderManager>();
+    inputManager_ = make_unique<Input>();
 
     //ImGui‰Šú‰»
     IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::device_.Get(), DXSystem::deviceContext_.Get());
@@ -44,6 +47,8 @@ void Engine::Update()
     IMGUI_CTRL_CLEAR_FRAME();
 
     DXSystem::Clear();
+
+    inputManager_->Update();
 
     sceneManager_->Update();
 

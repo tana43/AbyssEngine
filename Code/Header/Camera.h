@@ -16,7 +16,7 @@ namespace AbyssEngine
         void Update();
 
     private:
-        void CameraController();
+        void DebugCameraController();
 
     public:
         float fov_ = DirectX::XMConvertToRadians(60.0f);

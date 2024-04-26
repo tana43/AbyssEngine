@@ -6,6 +6,8 @@
 #include "Engine.h"
 #include "Input.h"
 
+#include <algorithm>
+
 using namespace AbyssEngine;
 using namespace DirectX;
 
@@ -33,6 +35,10 @@ bool Camera::DrawImGui()
 
 void Camera::Update()
 {
+#if _DEBUG
+    DebugCameraController();
+#endif // _DEBUG
+
     const float aspect = static_cast<float>(DXSystem::GetScreenWidth()) 
         / static_cast<float>(DXSystem::GetScreenHeight()); //画面比率
     projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
@@ -49,13 +55,14 @@ void Camera::Update()
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }
 
-void Camera::CameraController()
+void Camera::DebugCameraController()
 {
     //マウス、キーボードによるカメラ操作
 
+    auto rot = transform_->GetRotation();
     //マウス操作
 #if _DEBUG
-    static bool inputStart;
+    static bool inputStart = false;
     if (Mouse::GetButtonState().rightButton)
 #endif // _DEBUG
     {
@@ -65,11 +72,11 @@ void Camera::CameraController()
         if (inputStart)
 #endif // _DEBUG
         {
-            auto mouseVec = Vector2(960, 540) - argent::input::GetMouseCurPosition();
+            auto mouseVec = Vector2(960, 540) - Vector2(Mouse::GetPosX(),Mouse::GetPosY());
             if (mouseVec.x != 0 || mouseVec.y != 0)
             {
-                rot.y -= mouseVec.x * cameraSensitivity_mouse_ * argent::GetDeltaTime();
-                rot.x -= mouseVec.y * cameraSensitivity_mouse_ * argent::GetDeltaTime();
+                rot.y -= mouseVec.x * Time::deltaTime_;
+                rot.x -= mouseVec.y * Time::deltaTime_;
             }
         }
 #if _DEBUG
@@ -95,15 +102,20 @@ void Camera::CameraController()
 
     //コントローラー操作
     {
-        auto stick = Input::CameraRoll();
+        auto& gamepad = Input::GetGamePad();
+        auto stick = Vector2(gamepad.GetAxisRX(),gamepad.GetAxisRY());
         if (stick.x != 0 || stick.y != 0)
         {
-            rot.y += stick.x * cameraSensitivity_pad_ * argent::GetDeltaTime();
-            rot.x -= stick.y * cameraSensitivity_pad_ * argent::GetDeltaTime();
+            rot.y += stick.x * Time::deltaTime_;
+            rot.x -= stick.y * Time::deltaTime_;
         }
     }
 
-    rot.x = std::clamp(rot.x, cameraMinRotX_, cameraMaxRotX_);
 
-    camera.SetRotation(rot);
+    const float CAMERA_MAX_ROT_X = 1.309f;
+    const float CAMERA_MIN_ROT_X = -1.309f;
+    rot.x = std::clamp(rot.x, CAMERA_MIN_ROT_X, CAMERA_MAX_ROT_X);
+
+    //camera.SetRotation(rot);
+    transform_->SetRotation(rot);
 }

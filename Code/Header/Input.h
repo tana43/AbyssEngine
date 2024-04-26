@@ -12,7 +12,7 @@ namespace AbyssEngine
     //入力判定を各アクションごとに決めたいときもここで関数定義する
     class Input
     {
-    private:
+    public:
         Input();
         ~Input() {}
 
@@ -21,19 +21,15 @@ namespace AbyssEngine
         static const Device GAMEPAD  = 1;
 
     public:
-
-        static Input& Instance()
-        {
-            static Input instance_;
-            return instance_;
-        }
-
         void Update();
 
-        static GamePad& GetGamePad() { return Instance().gamePad_; }
+        static GamePad& GetGamePad();
 
     private:
         GamePad gamePad_;
+
+        std::unique_ptr<Keyboard> keyboard_;
+        std::unique_ptr<Mouse> mouse_;
 
         Device useDevice_;
     };

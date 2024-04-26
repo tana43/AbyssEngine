@@ -2,21 +2,36 @@
 
 using namespace AbyssEngine;
 
+Mouse* Mouse::instance_;
+
 Mouse::Mouse()
 {
-    mouse = std::make_unique<DirectX::Mouse>();
+    mouse_ = std::make_unique<DirectX::Mouse>();
+    if (instance_ == nullptr)
+    {
+        instance_ = this;
+    }
+    else
+    {
+        _ASSERT_EXPR(false, "AbyssEngine::Mouse‚Í‚·‚Å‚É¶¬‚³‚ê‚Ä‚¢‚Ü‚·B");
+    }
 }
 
 void Mouse::Update()
 {
-    state = mouse->GetState();
-    tracker.Update(state);
+    instance_->state_ = instance_->mouse_->GetState();
+    tracker_.Update(state_);
 }
 
-const bool Mouse::GetButtonDown(const MouseButton button)
+DirectX::Mouse::State& Mouse::GetButtonState() 
+{ 
+    return instance_->state_; 
+}
+
+bool Mouse::GetButtonDown(const MouseButton button)
 {
     DirectX::Mouse::ButtonStateTracker::ButtonState thisButton;
-    auto tracker{ Instance().tracker };
+    auto tracker =  instance_->tracker_;
     switch (button)
     {
     case BTN_LEFT:  thisButton = tracker.leftButton;   break;
@@ -27,10 +42,10 @@ const bool Mouse::GetButtonDown(const MouseButton button)
     return thisButton == DirectX::Mouse::ButtonStateTracker::PRESSED;
 }
 
-const bool Mouse::GetButtonUp(const MouseButton button)
+bool Mouse::GetButtonUp(const MouseButton button)
 {
     DirectX::Mouse::ButtonStateTracker::ButtonState thisButton;
-    auto tracker{ Instance().tracker };
+    auto tracker = instance_->tracker_;
     switch (button)
     {
     case BTN_LEFT:  thisButton = tracker.leftButton;   break;

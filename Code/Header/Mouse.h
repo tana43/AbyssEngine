@@ -9,7 +9,10 @@ namespace AbyssEngine
 {
     class Mouse
     {
-    private:
+    public:
+        static Mouse* instance_;
+
+    public:
         Mouse();
         ~Mouse() {}
 
@@ -18,39 +21,33 @@ namespace AbyssEngine
         static const MouseButton BTN_MIDDLE = 1;
         static const MouseButton BTN_RIGHT = 2;
 
-        static Mouse& Instance()
-        {
-            static Mouse instance;
-            return instance;
-        }
-
         void Update();
 
         //それぞれのマウスの入力状態を持った構造体を返す(例:if(GetButtonState().Space))
-        static DirectX::Mouse::State& GetButtonState() { return Instance().state; }
+        static DirectX::Mouse::State& GetButtonState();
         
         //キーを押した瞬間かどうかを返す
-        static const bool GetButtonDown(const MouseButton button);
+        static bool GetButtonDown(const MouseButton button);
 
         //キーを離した瞬間かどうかを返す
-        static const bool GetButtonUp(const MouseButton button);
+        static bool GetButtonUp(const MouseButton button);
 
-        const int GetPosX() const { return state.x; }
-        const int GetPosY() const { return state.y; }
+        static int GetPosX() { return instance_->state_.x; }
+        static int GetPosY() { return instance_->state_.y; }
 
         //TODO:後で前回転、後回転のどちらが正の値を返すか確認する
         //マウスホイールの回転値を返す
-        const int GetScrollWheelValue() const { return state.scrollWheelValue; }
+        static int GetScrollWheelValue() { return instance_->state_.scrollWheelValue; }
 
     private:
         //DirectX::Keyboardクラスを生成するためのポインタ
-        std::unique_ptr<DirectX::Mouse> mouse;
+        std::unique_ptr<DirectX::Mouse> mouse_;
 
         //ボタンを押した瞬間、離した瞬間の判定処理をしてくれている
-        DirectX::Mouse::ButtonStateTracker tracker;
+        DirectX::Mouse::ButtonStateTracker tracker_;
 
         //マウスボタンの入力状態を取ってくる
-        DirectX::Mouse::State state;
+        DirectX::Mouse::State state_;
     };
 }
 

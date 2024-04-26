@@ -8,21 +8,17 @@ namespace AbyssEngine
     //DirectXTKのKeyboardを使う
     class Keyboard
     {
-    private:
-        Keyboard();
-        ~Keyboard() {}
+    public:
+        static Keyboard* instance_;
 
     public:
-        static Keyboard& Instance()
-        {
-            static Keyboard instance;
-            return instance;
-        }
+        Keyboard();
+        ~Keyboard() {}
 
         void Update();
 
         //それぞれのキーの入力状態を持った構造体を返す(例:if(GetKeyState().Space))
-        static DirectX::Keyboard::State& GetKeyState() { return Instance().state_; }
+        static DirectX::Keyboard::State& GetKeyState();
 
         //キーを押した瞬間かどうかを返す
         static const bool GetKeyDown(const DirectX::Keyboard::Keys key);
