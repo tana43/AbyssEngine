@@ -7,6 +7,7 @@
 #include "Input.h"
 
 #include <algorithm>
+#include <Windows.h>
 
 using namespace AbyssEngine;
 using namespace DirectX;
@@ -58,64 +59,70 @@ void Camera::Update()
 void Camera::DebugCameraController()
 {
     //マウス、キーボードによるカメラ操作
-
-    auto rot = transform_->GetRotation();
-    //マウス操作
-#if _DEBUG
-    static bool inputStart = false;
-    if (Mouse::GetButtonState().rightButton)
-#endif // _DEBUG
     {
-        //auto mouseVec = argent::input::GetMousePrevPosition() - argent::input::GetMouseCurPosition();
+        auto rot = transform_->GetRotation();
+        //マウス操作
 
-#if _DEBUG//右クリックが押された最初のフレームはカメラが大きく回転する可能性があるので処理しない
-        if (inputStart)
-#endif // _DEBUG
+        static bool inputStart = false;
+        if (Mouse::GetButtonState().rightButton)
         {
-            auto mouseVec = Vector2(960, 540) - Vector2(Mouse::GetPosX(),Mouse::GetPosY());
-            if (mouseVec.x != 0 || mouseVec.y != 0)
+            if (inputStart)
             {
-                rot.y -= mouseVec.x * Time::deltaTime_;
-                rot.x -= mouseVec.y * Time::deltaTime_;
+                POINT pos{};
+                GetCursorPos(&pos);
+                auto mouseVec = Vector2(960, 540) - Vector2(pos.x, pos.y);
+                if (mouseVec.x != 0 || mouseVec.y != 0)
+                {
+                    rot.y -= mouseVec.x * 0.05f * Time::deltaTime_;
+                    rot.x -= mouseVec.y * 0.05f * Time::deltaTime_;
+                }
             }
+            else
+            {
+                inputStart = true;
+            }
+            SetCursorPos(960, 540);
         }
-#if _DEBUG
         else
         {
-            inputStart = true;
+            inputStart = false;
         }
-#endif // _DEBUG
 
-
-        /*SetCursorPos(
-            static_cast<int>(argent::render::GetScreenWidth()) / 2,
-            static_cast<int>(argent::render::GetScreenHeight()) / 2);*/
-        SetCursorPos(960, 540);
-    }
-#if _DEBUG
-    else
-    {
-        inputStart = false;
-    }
-#endif // _DEBUG
-
-
-    //コントローラー操作
-    {
-        auto& gamepad = Input::GetGamePad();
-        auto stick = Vector2(gamepad.GetAxisRX(),gamepad.GetAxisRY());
-        if (stick.x != 0 || stick.y != 0)
+        //コントローラー操作
         {
-            rot.y += stick.x * Time::deltaTime_;
-            rot.x -= stick.y * Time::deltaTime_;
+            auto& gamepad = Input::GetGamePad();
+            auto stick = Vector2(gamepad.GetAxisRX(), gamepad.GetAxisRY());
+            if (stick.x != 0 || stick.y != 0)
+            {
+                rot.y += stick.x * Time::deltaTime_;
+                rot.x -= stick.y * Time::deltaTime_;
+            }
         }
+
+        const float CAMERA_MAX_ROT_X = 1.309f;
+        const float CAMERA_MIN_ROT_X = -1.309f;
+        rot.x = std::clamp(rot.x, CAMERA_MIN_ROT_X, CAMERA_MAX_ROT_X);
+
+        transform_->SetRotation(rot);
     }
 
+    //移動処理
+    {
+        //WASD
+        Vector2 input = {};
+        if (Keyboard::GetKeyState().D)input.x += 1.0f;
+        if (Keyboard::GetKeyState().A)input.x -= 1.0f;
+        if (Keyboard::GetKeyState().W)input.y += 1.0f;
+        if (Keyboard::GetKeyState().S)input.y -= 1.0f;
 
-    const float CAMERA_MAX_ROT_X = 1.309f;
-    const float CAMERA_MIN_ROT_X = -1.309f;
-    rot.x = std::clamp(rot.x, CAMERA_MIN_ROT_X, CAMERA_MAX_ROT_X);
-
-    //camera.SetRotation(rot);
-    transform_->SetRotation(rot);
+        //入力値がない場合処理しない
+        if (input.Length() > 0)
+        {
+            const Vector3 move = {
+                transform_->GetForward() * input.y + transform_->GetRight() * input.x
+            };
+            auto pos = transform_->GetPosition();
+            transform_->SetPosition(pos + move);
+        }
+    }
 }
