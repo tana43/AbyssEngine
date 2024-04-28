@@ -175,6 +175,7 @@
     <ClInclude Include="Code\Header\Keyboard.h">
       <Filter>Code\Header\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\FrameBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -283,6 +284,7 @@
     <ClCompile Include="Code\Source\Keyboard.cpp">
       <Filter>Code\Source\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\FrameBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
