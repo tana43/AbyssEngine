@@ -10,7 +10,7 @@ namespace AbyssEngine
     {
     public:
         FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil = true);
-        virtual ~FrameBuffer() = delete;
+        virtual ~FrameBuffer() = default;
 
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView_;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView_;

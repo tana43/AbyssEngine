@@ -164,7 +164,7 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     sd.MinLOD = 0;
     sd.MaxLOD = D3D11_FLOAT32_MAX;
 
-    hr = DXSystem::device_->CreateSamplerState(&sd, texture->sampler_.GetAddressOf());
+    hr = DXSystem::device_->CreateSamplerState(&sd, texture->samplers_.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     //アセットマネージャーに登録
@@ -182,23 +182,23 @@ void Texture::Set(UINT slot, Shader_Type type)
         {
         case Shader_Type::Vertex:
             DXSystem::deviceContext_->VSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->VSSetSamplers(slot, 1, sampler_.GetAddressOf());
+            DXSystem::deviceContext_->VSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Geometry:
             DXSystem::deviceContext_->GSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->GSSetSamplers(slot, 1, sampler_.GetAddressOf());
+            DXSystem::deviceContext_->GSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Pixel:
             DXSystem::deviceContext_->PSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->PSSetSamplers(slot, 1, sampler_.GetAddressOf());
+            DXSystem::deviceContext_->PSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Hull:
             DXSystem::deviceContext_->HSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->HSSetSamplers(slot, 1, sampler_.GetAddressOf());
+            DXSystem::deviceContext_->HSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Domain:
             DXSystem::deviceContext_->DSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->DSSetSamplers(slot, 1, sampler_.GetAddressOf());
+            DXSystem::deviceContext_->DSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         }
     }

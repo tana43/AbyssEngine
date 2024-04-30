@@ -36,7 +36,7 @@ namespace AbyssEngine
 
     private:
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView_ = nullptr;
-        Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_ = nullptr;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> samplers_ = nullptr;
         D3D11_TEXTURE2D_DESC texture2dDesc_ = {}; //テクスチャ情報
         std::string path_;
     };

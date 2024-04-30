@@ -39,9 +39,9 @@ namespace AbyssEngine
 
             std::vector<int> children_;
 
-            Vector4 rotation_ = { 0, 0, 0, 1 };
-            Vector3 scale_ = {1, 1, 1};
-            Vector3 translation_ = {0, 0, 0};
+            Vector4 rotation_       = { 0, 0, 0, 1 };
+            Vector3 scale_          = {1, 1, 1};
+            Vector3 translation_    = {0, 0, 0};
 
             Matrix globalTransform_ = {
                 1,0,0,0,
@@ -171,7 +171,5 @@ namespace AbyssEngine
 
             void FetchMaterials(const tinygltf::Model& gltfModel);
             void FetchTextures(const tinygltf::Model& gltfModel);
-        
     };
-
 }

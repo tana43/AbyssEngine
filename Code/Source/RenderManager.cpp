@@ -1,5 +1,6 @@
 #include "RenderManager.h"
 #include "DXSystem.h"
+#include "Engine.h"
 #include "SpriteRenderer.h"
 #include "Actor.h"
 #include "Misc.h"
@@ -10,6 +11,7 @@
 #include "Texture.h"
 #include "StaticMeshBatching.h"
 #include "StaticMesh.h"
+#include "Bloom.h"
 
 #include "imgui/imgui.h"
 
@@ -57,11 +59,47 @@ RenderManager::RenderManager()
 		sd.MinLOD = 0;
 		sd.MaxLOD = D3D11_FLOAT32_MAX;
 
-		HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, sampler_.GetAddressOf());
+		HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Anisotropic)].GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
+		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Point)].GetAddressOf());
+
+		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Linear)].GetAddressOf());
+
+		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sd.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		sd.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		sd.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		sd.BorderColor[0] = 0;
+		sd.BorderColor[1] = 0;
+		sd.BorderColor[2] = 0;
+		sd.BorderColor[3] = 0;
+		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::LinearBorderBlack)].GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
+		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sd.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		sd.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		sd.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		sd.BorderColor[0] = 1;
+		sd.BorderColor[1] = 1;
+		sd.BorderColor[2] = 1;
+		sd.BorderColor[3] = 1;
+		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::LinearBorderWhite)].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 
 	IBLInitialize();
+
+	//オフスクリーンレンダリング
+	frameBuffer_ = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight());
+	bitBlockTransfer_ = std::make_unique<FullscreenQuad>();
+	bloom_ = std::make_unique<Bloom>(
+		static_cast<size_t>(DXSystem::GetScreenWidth()), 
+		static_cast<size_t>(DXSystem::GetScreenHeight()));
+	pixelShader_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/FinalPassPS.cso");
 }
 
 void RenderManager::Reset()
@@ -130,8 +168,21 @@ void RenderManager::Render()
 
 				DXSystem::deviceContext_->VSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
 				DXSystem::deviceContext_->PSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
+				
+				//オフスクリーンレンダリング
+				frameBuffer_->Clear();
+				frameBuffer_->Activate();
 
 				Render3D(camera);
+
+				frameBuffer_->Deactivate();
+				bloom_->Make(frameBuffer_->shaderResourceViews_[0].Get());
+				ID3D11ShaderResourceView* shaderResourceViews[] =
+				{
+					frameBuffer_->shaderResourceViews_[0].Get(),
+					bloom_->GetShaderResourceView(),
+				};
+				bitBlockTransfer_->Blit(shaderResourceViews, 0, 2, pixelShader_.Get());
 
 				break;
 			}
@@ -143,9 +194,16 @@ void RenderManager::Render()
 
 void RenderManager::DrawImGui()
 {
-	if (ImGui::BeginMenu("SceneConstant"))
+	if (ImGui::BeginMenu("Scene Constant"))
 	{
 		ImGui::DragFloat3("Light Direction",&bufferScene_.lightDirection_.x,0.01f);
+
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Post Effect"))
+	{
+		bloom_->DrawImGui();
 
 		ImGui::EndMenu();
 	}
@@ -187,7 +245,11 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera)
 	DXSystem::deviceContext_->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::LEqual), 1);
 	DXSystem::deviceContext_->RSSetState(DXSystem::GetRasterizerState(RS_State::Cull_Back));
 
-	DXSystem::deviceContext_->PSSetSamplers(0,1,sampler_.GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(0,1,samplers_[static_cast<int>(SP_State::Anisotropic)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(1,1,samplers_[static_cast<int>(SP_State::Point)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(2,1,samplers_[static_cast<int>(SP_State::Linear)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(3,1,samplers_[static_cast<int>(SP_State::LinearBorderBlack)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(4,1,samplers_[static_cast<int>(SP_State::LinearBorderWhite)].GetAddressOf());
 
 	for (auto& r : renderer3DList_)
 	{

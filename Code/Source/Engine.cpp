@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "Scene.h"
 #include "Misc.h"
+#include "Bloom.h"
 #include "../External/imgui/ImGuiCtrl.h"
 
 using namespace AbyssEngine;

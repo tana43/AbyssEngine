@@ -48,10 +48,10 @@ StructuredBuffer<MaterialConstants> materials : register(t0);
 #define OCCLUSION_TEXTURE 4
 Texture2D<float4> materialTextures[5] : register(t1);
 
-//#define POINT 0
-//#define LINEAR 1
-//#define ANISOTROPIC 2
-//SamplerState samplerStates[3] : register(s0);
+#define ANISOTROPIC 0
+#define POINT 1
+#define LINEAR 2
+SamplerState samplerStates[3] : register(s0);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
@@ -70,7 +70,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const int basecolorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
     if (basecolorTexture > -1)
     {
-        float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerState, pin.texcoord);
+        float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
         basecolorFactor *= sampled;
     }
@@ -83,7 +83,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const int emmisiveTexture = m.emissiveTexture.index;
     if (emmisiveTexture > -1)
     {
-        float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerState, pin.texcoord);
+        float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
         emmisiveFactor *= sampled.rgb;
     }
@@ -93,7 +93,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const int metallicRoughnessTexture = m.pbrMetallicRoughness.metallicRoughnessTexture.index;
     if (metallicRoughnessTexture > -1)
     {
-        float4 sampled = materialTextures[METALLIC_ROUGHNESS_TEXTURE].Sample(samplerState,
+        float4 sampled = materialTextures[METALLIC_ROUGHNESS_TEXTURE].Sample(samplerStates[LINEAR],
         pin.texcoord);
         roughnessFactor *= sampled.g;
         metallicFactor *= sampled.b;
@@ -103,7 +103,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const int occlusionTexture = m.occlusionTexture.index;
     if (occlusionTexture > -1)
     {
-        float4 sampled = materialTextures[OCCLUSION_TEXTURE].Sample(samplerState, pin.texcoord);
+        float4 sampled = materialTextures[OCCLUSION_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
         occlusionFactor *= sampled.r;
     }
     const float occlusionStrengh = m.occlusionTexture.strength;
@@ -125,7 +125,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const int normalTexture = m.normalTexture.index;
     if (normalTexture > -1)
     {
-        float4 sampled = materialTextures[NORMAL_TEXTURE].Sample(samplerState, pin.texcoord);
+        float4 sampled = materialTextures[NORMAL_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
         float3 normalFactor = sampled.xyz;
         normalFactor = (normalFactor * 2.0) - 1.0;
         normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
@@ -152,7 +152,6 @@ float4 main(VS_OUT pin) : SV_TARGET
         specular += Li * NoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, NoL, NoV, NoH);
     }
     
-    //unit39
     diffuse += IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0);
     specular += IblRadianceGgx(N, V, roughnessFactor, f0);
     

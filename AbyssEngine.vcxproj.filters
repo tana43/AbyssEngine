@@ -162,7 +162,6 @@
     <ClInclude Include="Code\Header\Shader.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\StaticMesh.h" />
     <ClInclude Include="Code\Header\GamePad.h">
       <Filter>Code\Header\Input</Filter>
     </ClInclude>
@@ -176,6 +175,11 @@
       <Filter>Code\Header\Input</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\FrameBuffer.h" />
+    <ClInclude Include="Code\Header\Bloom.h" />
+    <ClInclude Include="Code\Header\FullscreenQuad.h" />
+    <ClInclude Include="Code\Header\StaticMesh.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -209,9 +213,6 @@
       <Filter>Code\Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Main.cpp">
-      <Filter>Code\Source\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\DXSystem.cpp">
       <Filter>Code\Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Scene.cpp">
@@ -271,7 +272,6 @@
     <ClCompile Include="Code\Source\AssetManager.cpp">
       <Filter>Code\Source\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\StaticMesh.cpp" />
     <ClCompile Include="Code\Source\GamePad.cpp">
       <Filter>Code\Source\Input</Filter>
     </ClCompile>
@@ -285,6 +285,14 @@
       <Filter>Code\Source\Input</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\FrameBuffer.cpp" />
+    <ClCompile Include="Code\Source\Bloom.cpp" />
+    <ClCompile Include="Code\Source\FullscreenQuad.cpp" />
+    <ClCompile Include="Code\Source\DXSystem.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\StaticMesh.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -308,6 +316,30 @@
     <FxCompile Include="Shader\GltfMeshStaticBatchingVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\FinalPassPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FullscreenQuadPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FullscreenQuadVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurDownsamplingPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurHorizontalPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurUpsamplingPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurVerticalPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GlowExtractionPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Mesh.hlsli">
@@ -320,6 +352,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\ImageBasedLighting.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\FullscreenQuad.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\Bloom.hlsli">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

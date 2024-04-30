@@ -11,9 +11,15 @@ namespace AbyssEngine
     class GltfSkeltalMesh;
     class StaticMesh;
     class Camera;
+    class Bloom;
+    class FrameBuffer;
+    class FullscreenQuad;
 
     class RenderManager
     {
+    private:
+        enum class SP_State {Anisotropic,Point,Linear,LinearBorderBlack, LinearBorderWhite, End};
+
     public:
         RenderManager();
 
@@ -39,7 +45,7 @@ namespace AbyssEngine
             Vector4 color_;
         };
 
-        Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> samplers_[static_cast<int>(SP_State::End)];
 
 
     private:
@@ -64,6 +70,14 @@ namespace AbyssEngine
         Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
 
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> iblShaderResourceView_[4];
+
+        //オフスクリーンレンダリング
+        std::unique_ptr<FrameBuffer> frameBuffer_;
+        std::unique_ptr<FullscreenQuad> bitBlockTransfer_;
+        std::unique_ptr<Bloom> bloom_;
+        Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader_;
+
+    private:
 
         //2Dオブジェクトのレンダリング
         void Render2D() const;

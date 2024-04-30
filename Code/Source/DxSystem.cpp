@@ -84,6 +84,21 @@ void DXSystem::SetDefaultView()
     SetViewport(screenWidth_, screenHeight_);
 }
 
+void DXSystem::SetDepthStencilState(DS_State type)
+{
+    deviceContext_->OMSetDepthStencilState(depthStencilStates_[static_cast<int>(type)].Get(),1);
+}
+
+void DXSystem::SetRasterizerState(RS_State type)
+{
+    deviceContext_->RSSetState(rasterizerStates_[static_cast<int>(type)].Get());
+}
+
+void AbyssEngine::DXSystem::SetBlendState(BS_State type)
+{
+    deviceContext_->OMSetBlendState(blendStates_[static_cast<int>(type)].Get(),nullptr,0xFFFFFFFF);
+}
+
 HRESULT DXSystem::CreateDevice()
 {
     HRESULT hr;
