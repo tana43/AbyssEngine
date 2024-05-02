@@ -5,11 +5,11 @@
 using namespace AbyssEngine;
 using namespace std;
 
-weak_ptr<Actor> Scene::Find(const std::string& name)
+weak_ptr<Actor> Scene::Find(const std::string& name_)
 {
     for (auto& a : actorList_)
     {
-        if (a->name_ == name)
+        if (a->name_ == name_)
         {
             return a;
         }
@@ -18,12 +18,12 @@ weak_ptr<Actor> Scene::Find(const std::string& name)
     return a;
 }
 
-shared_ptr<Actor> Scene::InstanceActor(const std::string& name)
+shared_ptr<Actor> Scene::InstanceActor(const std::string& name_)
 {
     //オブジェクトを生成して登録する
     auto actor = make_shared<Actor>();
     actor->transform_ = actor->AddComponent<Transform>();
-    actor->name_ = name;
+    actor->name_ = name_;
     actorList_.emplace_back(actor);
 
     return actor;

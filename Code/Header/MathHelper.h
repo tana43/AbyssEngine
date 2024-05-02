@@ -106,14 +106,14 @@ namespace AbyssEngine
 
 		static void Transform(const Vector2& v, const Matrix& m, Vector2& result);
 		static Vector2 Transform(const Vector2& v, const Matrix& m);
-		static void Transform(_In_reads_(count) const Vector2* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector2* resultArray);
+		static void Transform(_In_reads_(Count) const Vector2* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector2* resultArray);
 
 		static void Transform(const Vector2& v, const Matrix& m, Vector4& result);
-		static void Transform(_In_reads_(count) const Vector2* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector4* resultArray);
+		static void Transform(_In_reads_(Count) const Vector2* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector4* resultArray);
 
 		static void TransformNormal(const Vector2& v, const Matrix& m, Vector2& result);
 		static Vector2 TransformNormal(const Vector2& v, const Matrix& m);
-		static void TransformNormal(_In_reads_(count) const Vector2* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector2* resultArray);
+		static void TransformNormal(_In_reads_(Count) const Vector2* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector2* resultArray);
 
 		// Constants
 		static const Vector2 Zero;
@@ -220,14 +220,14 @@ namespace AbyssEngine
 
 		static void Transform(const Vector3& v, const Matrix& m, Vector3& result);
 		static Vector3 Transform(const Vector3& v, const Matrix& m);
-		static void Transform(_In_reads_(count) const Vector3* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector3* resultArray);
+		static void Transform(_In_reads_(Count) const Vector3* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector3* resultArray);
 
 		static void Transform(const Vector3& v, const Matrix& m, Vector4& result);
-		static void Transform(_In_reads_(count) const Vector3* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector4* resultArray);
+		static void Transform(_In_reads_(Count) const Vector3* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector4* resultArray);
 
 		static void TransformNormal(const Vector3& v, const Matrix& m, Vector3& result);
 		static Vector3 TransformNormal(const Vector3& v, const Matrix& m);
-		static void TransformNormal(_In_reads_(count) const Vector3* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector3* resultArray);
+		static void TransformNormal(_In_reads_(Count) const Vector3* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector3* resultArray);
 
 		// Constants
 		static const Vector3 Zero;
@@ -345,7 +345,7 @@ namespace AbyssEngine
 
 		static void Transform(const Vector4& v, const Matrix& m, Vector4& result);
 		static Vector4 Transform(const Vector4& v, const Matrix& m);
-		static void Transform(_In_reads_(count) const Vector4* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector4* resultArray);
+		static void Transform(_In_reads_(Count) const Vector4* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector4* resultArray);
 
 		// Constants
 		static const Vector4 Zero;
@@ -457,7 +457,7 @@ namespace AbyssEngine
 		void Translation(const Vector3& v) { _41 = v.x; _42 = v.y; _43 = v.z; }
 
 		// Matrix operations
-		bool Decompose(Vector3& scale, Quaternion& rotation, Vector3& translation);
+		bool Decompose(Vector3& scale_, Quaternion& rotation_, Vector3& translation_);
 
 		Matrix Transpose() const;
 		void Transpose(Matrix& result) const;
@@ -478,7 +478,7 @@ namespace AbyssEngine
 
 		static Matrix CreateScale(const Vector3& scales);
 		static Matrix CreateScale(float xs, float ys, float zs);
-		static Matrix CreateScale(float scale);
+		static Matrix CreateScale(float scale_);
 
 		static Matrix CreateRotationX(float radians);
 		static Matrix CreateRotationY(float radians);
@@ -506,8 +506,8 @@ namespace AbyssEngine
 		static void Lerp(const Matrix& M1, const Matrix& M2, float t, Matrix& result);
 		static Matrix Lerp(const Matrix& M1, const Matrix& M2, float t);
 
-		static void Transform(const Matrix& M, const Quaternion& rotation, Matrix& result);
-		static Matrix Transform(const Matrix& M, const Quaternion& rotation);
+		static void Transform(const Matrix& M, const Quaternion& rotation_, Matrix& result);
+		static Matrix Transform(const Matrix& M, const Quaternion& rotation_);
 
 		// Constants
 		static const Matrix Identity;
@@ -1113,11 +1113,11 @@ namespace AbyssEngine
 	}
 
 	_Use_decl_annotations_
-		inline void Vector2::Transform(const Vector2* varray, size_t count, const Matrix& m, Vector2* resultArray)
+		inline void Vector2::Transform(const Vector2* varray, size_t Count, const Matrix& m, Vector2* resultArray)
 	{
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
-		XMVector2TransformCoordStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), count, M);
+		XMVector2TransformCoordStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), Count, M);
 	}
 
 	inline void Vector2::Transform(const Vector2& v, const Matrix& m, Vector4& result)
@@ -1130,11 +1130,11 @@ namespace AbyssEngine
 	}
 
 	_Use_decl_annotations_
-		inline void Vector2::Transform(const Vector2* varray, size_t count, const Matrix& m, Vector4* resultArray)
+		inline void Vector2::Transform(const Vector2* varray, size_t Count, const Matrix& m, Vector4* resultArray)
 	{
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
-		XMVector2TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT2), count, M);
+		XMVector2TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT2), Count, M);
 	}
 
 	inline void Vector2::TransformNormal(const Vector2& v, const Matrix& m, Vector2& result)
@@ -1159,11 +1159,11 @@ namespace AbyssEngine
 	}
 
 	_Use_decl_annotations_
-		inline void Vector2::TransformNormal(const Vector2* varray, size_t count, const Matrix& m, Vector2* resultArray)
+		inline void Vector2::TransformNormal(const Vector2* varray, size_t Count, const Matrix& m, Vector2* resultArray)
 	{
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
-		XMVector2TransformNormalStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), count, M);
+		XMVector2TransformNormalStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), Count, M);
 	}
 
 	/****************************************************************************
@@ -1691,11 +1691,11 @@ namespace AbyssEngine
 	}
 
 	_Use_decl_annotations_
-		inline void Vector3::Transform(const Vector3* varray, size_t count, const Matrix& m, Vector3* resultArray)
+		inline void Vector3::Transform(const Vector3* varray, size_t Count, const Matrix& m, Vector3* resultArray)
 	{
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
-		XMVector3TransformCoordStream(resultArray, sizeof(XMFLOAT3), varray, sizeof(XMFLOAT3), count, M);
+		XMVector3TransformCoordStream(resultArray, sizeof(XMFLOAT3), varray, sizeof(XMFLOAT3), Count, M);
 	}
 
 	inline void Vector3::Transform(const Vector3& v, const Matrix& m, Vector4& result)
@@ -1708,11 +1708,11 @@ namespace AbyssEngine
 	}
 
 	_Use_decl_annotations_
-		inline void Vector3::Transform(const Vector3* varray, size_t count, const Matrix& m, Vector4* resultArray)
+		inline void Vector3::Transform(const Vector3* varray, size_t Count, const Matrix& m, Vector4* resultArray)
 	{
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
-		XMVector3TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT3), count, M);
+		XMVector3TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT3), Count, M);
 	}
 
 	inline void Vector3::TransformNormal(const Vector3& v, const Matrix& m, Vector3& result)
@@ -1737,11 +1737,11 @@ namespace AbyssEngine
 	}
 
 	_Use_decl_annotations_
-		inline void Vector3::TransformNormal(const Vector3* varray, size_t count, const Matrix& m, Vector3* resultArray)
+		inline void Vector3::TransformNormal(const Vector3* varray, size_t Count, const Matrix& m, Vector3* resultArray)
 	{
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
-		XMVector3TransformNormalStream(resultArray, sizeof(XMFLOAT3), varray, sizeof(XMFLOAT3), count, M);
+		XMVector3TransformNormalStream(resultArray, sizeof(XMFLOAT3), varray, sizeof(XMFLOAT3), Count, M);
 	}
 
 	/****************************************************************************
@@ -2319,11 +2319,11 @@ namespace AbyssEngine
 	}
 
 	_Use_decl_annotations_
-		inline void Vector4::Transform(const Vector4* varray, size_t count, const Matrix& m, Vector4* resultArray)
+		inline void Vector4::Transform(const Vector4* varray, size_t Count, const Matrix& m, Vector4* resultArray)
 	{
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
-		XMVector4TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT4), count, M);
+		XMVector4TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT4), Count, M);
 	}
 
 	/****************************************************************************
@@ -2731,7 +2731,7 @@ namespace AbyssEngine
 	// Matrix operations
 	//------------------------------------------------------------------------------
 
-	inline bool Matrix::Decompose(Vector3& scale, Quaternion& rotation, Vector3& translation)
+	inline bool Matrix::Decompose(Vector3& scale_, Quaternion& rotation_, Vector3& translation_)
 	{
 		using namespace DirectX;
 
@@ -2740,9 +2740,9 @@ namespace AbyssEngine
 		if (!XMMatrixDecompose(&s, &r, &t, *this))
 			return false;
 
-		XMStoreFloat3(&scale, s);
-		XMStoreFloat4(&rotation, r);
-		XMStoreFloat3(&translation, t);
+		XMStoreFloat3(&scale_, s);
+		XMStoreFloat4(&rotation_, r);
+		XMStoreFloat3(&translation_, t);
 
 		return true;
 	}
@@ -2941,11 +2941,11 @@ namespace AbyssEngine
 		return R;
 	}
 
-	inline Matrix Matrix::CreateScale(float scale)
+	inline Matrix Matrix::CreateScale(float scale_)
 	{
 		using namespace DirectX;
 		Matrix R;
-		XMStoreFloat4x4(&R, XMMatrixScaling(scale, scale, scale));
+		XMStoreFloat4x4(&R, XMMatrixScaling(scale_, scale_, scale_));
 		return R;
 	}
 
@@ -3051,11 +3051,11 @@ namespace AbyssEngine
 		return R;
 	}
 
-	inline Matrix Matrix::CreateFromQuaternion(const Quaternion& rotation)
+	inline Matrix Matrix::CreateFromQuaternion(const Quaternion& rotation_)
 	{
 		using namespace DirectX;
 		Matrix R;
-		XMVECTOR quatv = XMLoadFloat4(&rotation);
+		XMVECTOR quatv = XMLoadFloat4(&rotation_);
 		XMStoreFloat4x4(&R, XMMatrixRotationQuaternion(quatv));
 		return R;
 	}
@@ -3137,10 +3137,10 @@ namespace AbyssEngine
 		return result;
 	}
 
-	inline void Matrix::Transform(const Matrix& M, const Quaternion& rotation, Matrix& result)
+	inline void Matrix::Transform(const Matrix& M, const Quaternion& rotation_, Matrix& result)
 	{
 		using namespace DirectX;
-		XMVECTOR quatv = XMLoadFloat4(&rotation);
+		XMVECTOR quatv = XMLoadFloat4(&rotation_);
 
 		XMMATRIX M0 = XMLoadFloat4x4(&M);
 		XMMATRIX M1 = XMMatrixRotationQuaternion(quatv);
@@ -3148,10 +3148,10 @@ namespace AbyssEngine
 		XMStoreFloat4x4(&result, XMMatrixMultiply(M0, M1));
 	}
 
-	inline Matrix Matrix::Transform(const Matrix& M, const Quaternion& rotation)
+	inline Matrix Matrix::Transform(const Matrix& M, const Quaternion& rotation_)
 	{
 		using namespace DirectX;
-		XMVECTOR quatv = XMLoadFloat4(&rotation);
+		XMVECTOR quatv = XMLoadFloat4(&rotation_);
 
 		XMMATRIX M0 = XMLoadFloat4x4(&M);
 		XMMATRIX M1 = XMMatrixRotationQuaternion(quatv);

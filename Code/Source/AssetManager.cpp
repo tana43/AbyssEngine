@@ -4,11 +4,11 @@
 
 using namespace AbyssEngine;
 
-void AssetManager::RegistrationAsset(std::shared_ptr<Asset> asset)
+void AssetManager::RegistrationAsset(std::shared_ptr<Asset> Asset)
 {
     //アセットのIDをハッシュにしてキャッシュ
-    const auto i = asset->GetInstanceId();
-    cacheAsset_[asset->GetInstanceId()] = asset;
+    const auto i = Asset->GetInstanceId();
+    cacheAsset_[Asset->GetInstanceId()] = Asset;
 }
 
 void AssetManager::EraseAsset(const std::string& id)
@@ -20,12 +20,12 @@ void AssetManager::EraseAsset(const std::string& id)
 std::weak_ptr<Asset> AssetManager::GetAssetFromId(const std::string& id)
 {
     //IDからアセットを取得（多分つかわん？？）
-    std::weak_ptr<Asset>  asset;
+    std::weak_ptr<Asset>  Asset;
     if (const auto it = cacheAsset_.find(id);it != cacheAsset_.end())
     {
         return it->second;
     }
-    return asset;
+    return Asset;
 }
 
 void AssetManager::Exit()

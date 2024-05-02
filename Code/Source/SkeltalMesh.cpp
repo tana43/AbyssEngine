@@ -4,7 +4,6 @@
 #include "FbxMeshData.h"
 #include "RenderManager.h"
 #include "AssetManager.h"
-#include "GltfModel.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -62,36 +61,36 @@ void SkeltalMesh::SetActive(const bool value)
 		}
 	}
 }
-
-void GltfSkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
-{
-	//マネージャーの登録と初期化
-	actor_ = actor;
-	transform_ = actor->GetTransform();
-
-	model_ = make_unique<GltfModel>(DXSystem::device_.Get(), filePath_.c_str());
-
-	//レンダラーマネージャーに登録
-	SetActive(true);
-}
-
-void GltfSkeltalMesh::Render()
-{
-	static std::vector<GltfModel::Node> animatedNodes = model_->nodes;
-	static float time{ 0 };
-	model_->Animate(0, time += Time::deltaTime_, animatedNodes);
-
-	model_->Render(DXSystem::deviceContext_.Get(), transform_->CalcWorldMatrix(), animatedNodes/*UNIT.37*/);
-}
-
-void GltfSkeltalMesh::SetActive(const bool value)
-{
-	if (value)
-	{
-		if (!isCalled_)
-		{
-			Engine::renderManager_->Add(static_pointer_cast<GltfSkeltalMesh>(shared_from_this()));
-			isCalled_ = true;
-		}
-	}
-}
+//
+//void GltfSkeltalMesh::Initialize(const std::shared_ptr<Actor>& actor)
+//{
+//	//マネージャーの登録と初期化
+//	actor_ = actor;
+//	transform_ = actor->GetTransform();
+//
+//	model_ = make_unique<GltfModel>(DXSystem::device_.Get(), filePath_.c_str());
+//
+//	//レンダラーマネージャーに登録
+//	SetActive(true);
+//}
+//
+//void GltfSkeltalMesh::Render()
+//{
+//	static std::vector<GltfModel::Node> animatedNodes = model_->nodes_;
+//	static float time{ 0 };
+//	model_->Animate(0, time += Time::deltaTime_, animatedNodes);
+//
+//	model_->Render(DXSystem::deviceContext_.Get(), transform_->CalcWorldMatrix(), animatedNodes/*UNIT.37*/);
+//}
+//
+//void GltfSkeltalMesh::SetActive(const bool value)
+//{
+//	if (value)
+//	{
+//		if (!isCalled_)
+//		{
+//			Engine::renderManager_->Add(static_pointer_cast<GltfSkeltalMesh>(shared_from_this()));
+//			isCalled_ = true;
+//		}
+//	}
+//}

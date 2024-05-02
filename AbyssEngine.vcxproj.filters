@@ -64,6 +64,12 @@
     <Filter Include="Code\Source\Input">
       <UniqueIdentifier>{e4f83e83-b0fc-46b6-9046-6f347bc766b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Source\Effect">
+      <UniqueIdentifier>{199a084f-d8af-4d27-b8ec-b22422551942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Header\Effect">
+      <UniqueIdentifier>{9d15af0e-ee46-4bc3-b496-db50c6ae5f52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -129,9 +135,6 @@
     <ClInclude Include="Code\Header\FbxMeshData.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\GltfModel.h">
-      <Filter>Code\Header\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\Texture.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
@@ -174,11 +177,26 @@
     <ClInclude Include="Code\Header\Keyboard.h">
       <Filter>Code\Header\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\FrameBuffer.h" />
-    <ClInclude Include="Code\Header\Bloom.h" />
-    <ClInclude Include="Code\Header\FullscreenQuad.h" />
     <ClInclude Include="Code\Header\StaticMesh.h">
       <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ConstantBuffer.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\GeometricSubstance.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Bloom.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\FrameBuffer.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\FullscreenQuad.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\GltfSkeltalMesh.h">
+      <Filter>Code\Header\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +263,6 @@
     <ClCompile Include="Code\Source\Shader.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\GltfModel.cpp">
-      <Filter>Code\Source\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\FbxMeshData.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
@@ -284,14 +299,26 @@
     <ClCompile Include="Code\Source\Keyboard.cpp">
       <Filter>Code\Source\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\FrameBuffer.cpp" />
-    <ClCompile Include="Code\Source\Bloom.cpp" />
-    <ClCompile Include="Code\Source\FullscreenQuad.cpp" />
     <ClCompile Include="Code\Source\DXSystem.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\StaticMesh.cpp">
       <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\GeometricSubstance.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Bloom.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\FrameBuffer.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\FullscreenQuad.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\GltfSkeltalMesh.cpp">
+      <Filter>Code\Source\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

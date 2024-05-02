@@ -48,11 +48,6 @@ StructuredBuffer<MaterialConstants> materials : register(t0);
 #define OCCLUSION_TEXTURE 4
 Texture2D<float4> materialTextures[5] : register(t1);
 
-#define ANISOTROPIC 0
-#define POINT 1
-#define LINEAR 2
-SamplerState samplerStates[3] : register(s0);
-
 float4 main(VS_OUT pin) : SV_TARGET
 {
     const float GAMMA = 2.2;

@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "SkeltalMesh.h"
 #include "FbxMeshData.h"
-#include "GltfModel.h"
+//#include "GltfModel.h"
 #include "StaticMesh.h"
 #include "StaticMeshBatching.h"
 
@@ -12,9 +12,9 @@ using namespace AbyssEngine;
 void TestScene::Initialize()
 {
     //カメラ
-    const auto& camera = InstanceActor("MainCamera");
-    camera->AddComponent<Camera>();
-    camera->GetTransform()->SetPosition(Vector3(0, 3, -10));
+    const auto& camera_ = InstanceActor("MainCamera");
+    camera_->AddComponent<Camera>();
+    camera_->GetTransform()->SetPosition(Vector3(0, 3, -10));
 
     //テスト用のオブジェクト
     /*const auto& p0 = InstanceActor("testModel");
@@ -33,6 +33,11 @@ void TestScene::Initialize()
     //    //"./Assets/Models/DamagedHelmet.glb"
     //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //);
+
+    const auto& p2 = InstanceActor("testGltf_2");
+    p2->AddComponent<StaticMesh>(
+        "./Assets/Models/robot_oj.glb"
+    );
 }
 
 void TestScene::Update()

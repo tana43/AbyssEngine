@@ -26,7 +26,7 @@ namespace AbyssEngine
         Vector4 color_ = {1,1,1,1};
     };
 
-    class GltfModel;
+    /*class GltfModel;
 
     class GltfSkeltalMesh : public Renderer
     {
@@ -43,6 +43,6 @@ namespace AbyssEngine
     private:
 
         std::unique_ptr<GltfModel> model_;
-    };
+    };*/
 }
 

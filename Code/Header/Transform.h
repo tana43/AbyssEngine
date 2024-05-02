@@ -32,7 +32,7 @@ namespace AbyssEngine
         void SetScaleX(const float& x) { scale_.x = x; }
         void SetScaleY(const float& y) { scale_.y = y; }
         void SetScaleZ(const float& z) { scale_.z = z; }
-        void SetScaleFactor(const float& scale) { scaleFactor_ = scale; }
+        void SetScaleFactor(const float& scale_) { scaleFactor_ = scale_; }
 
         [[nodiscard]] const Vector3& GetForward() const { return forward_; }
         [[nodiscard]] const Vector3& GetRight() const { return right_; }

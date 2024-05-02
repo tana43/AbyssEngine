@@ -153,7 +153,7 @@ namespace AbyssEngine
 
         private:
             void FetchNodes(const tinygltf::Model& gltfModel);
-            void CumulateTransforms(std::vector<Node>& nodes);
+            void CumulateTransforms(std::vector<Node>& nodes_);
             BufferView MakeBufferView(const tinygltf::Accessor& accessor);
             void FetchMeshes(const tinygltf::Model& gltfModel);
 

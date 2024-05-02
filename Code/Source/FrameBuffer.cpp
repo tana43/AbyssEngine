@@ -70,8 +70,8 @@ FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil)
 }
 void FrameBuffer::Clear(float r, float g, float b, float a, float depth)
 {
-	float color[4]{ r, g, b, a };
-	DXSystem::deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), color);
+	float color_[4]{ r, g, b, a };
+	DXSystem::deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), color_);
 	if (depthStencilView_) // BLOOM
 	{
 		DXSystem::deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH, depth, 0);

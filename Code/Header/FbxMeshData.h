@@ -39,9 +39,9 @@ namespace AbyssEngine
         int64_t indexOf(uint64_t uniqueId)const
         {
             int64_t index{ 0 };
-            for (const Node& node : nodes_)
+            for (const Node& Node : nodes_)
             {
-                if (node.uniqueId_ == uniqueId)
+                if (Node.uniqueId_ == uniqueId)
                 {
                     return index;
                 }

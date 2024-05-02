@@ -9,12 +9,12 @@ namespace AbyssEngine
     class Scene
     {
     public:
-        std::weak_ptr<Actor> Find(const std::string& name);  //指定した名前のアクターを返す
+        std::weak_ptr<Actor> Find(const std::string& name_);  //指定した名前のアクターを返す
 
-        std::string name;   //シーン名
+        std::string name_;   //シーン名
 
     protected:
-        std::shared_ptr<Actor> InstanceActor(const std::string& name);      //シーン内にオブジェクト配置する
+        std::shared_ptr<Actor> InstanceActor(const std::string& name_);      //シーン内にオブジェクト配置する
         void DestroyActor(const std::shared_ptr<Actor>& actor);             //アクターを削除する
         void DestroyComponent(const std::shared_ptr<Component>& component); //コンポーネントを削除する
 

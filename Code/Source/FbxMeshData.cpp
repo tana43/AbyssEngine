@@ -82,12 +82,12 @@ FbxMeshData::FbxMeshData(ID3D11Device* device, const char* fbxFilename, bool tri
 
         std::function<void(FbxNode*)> traverse{[&](FbxNode* fbxNode)
             {
-                ModelScene::Node& node{sceneView_.nodes_.emplace_back()};
-                node.attribute_ = fbxNode->GetNodeAttribute() ?
+                ModelScene::Node& Node{sceneView_.nodes_.emplace_back()};
+                Node.attribute_ = fbxNode->GetNodeAttribute() ?
                     fbxNode->GetNodeAttribute()->GetAttributeType() : FbxNodeAttribute::EType::eUnknown;
-                node.name_ = fbxNode->GetName();
-                node.uniqueId_ = fbxNode->GetUniqueID();
-                node.parentIndex_ = sceneView_.indexOf(fbxNode->GetParent() ?
+                Node.name_ = fbxNode->GetName();
+                Node.uniqueId_ = fbxNode->GetUniqueID();
+                Node.parentIndex_ = sceneView_.indexOf(fbxNode->GetParent() ?
                     fbxNode->GetParent()->GetUniqueID() : 0);
                 for (int childIndex = 0; childIndex < fbxNode->GetChildCount(); ++childIndex)
                 {
@@ -169,32 +169,32 @@ void FbxMeshData::UpdateAnimation(Animation::Keyframe& keyframe)
     size_t nodeCount{ keyframe.nodes_.size() };
     for (size_t nodeIndex = 0; nodeIndex < nodeCount; ++nodeIndex)
     {
-        Animation::Keyframe::Node& node{keyframe.nodes_.at(nodeIndex)};
-        DirectX::XMMATRIX S{DirectX::XMMatrixScaling(node.scaling_.x, node.scaling_.y, node.scaling_.z)};
-        DirectX::XMMATRIX R{DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&node.rotation_))};
-        DirectX::XMMATRIX T{DirectX::XMMatrixTranslation(node.translation_.x, node.translation_.y, node.translation_.z)};
+        Animation::Keyframe::Node& Node{keyframe.nodes_.at(nodeIndex)};
+        DirectX::XMMATRIX S{DirectX::XMMatrixScaling(Node.scaling_.x, Node.scaling_.y, Node.scaling_.z)};
+        DirectX::XMMATRIX R{DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&Node.rotation_))};
+        DirectX::XMMATRIX T{DirectX::XMMatrixTranslation(Node.translation_.x, Node.translation_.y, Node.translation_.z)};
 
         int64_t parentIndex{ sceneView_.nodes_.at(nodeIndex).parentIndex_ };
         DirectX::XMMATRIX P{parentIndex < 0 ? DirectX::XMMatrixIdentity() :
             DirectX::XMLoadFloat4x4(&keyframe.nodes_.at(parentIndex).globalTransform_)};
 
-        DirectX::XMStoreFloat4x4(&node.globalTransform_, S * R * T * P);
+        DirectX::XMStoreFloat4x4(&Node.globalTransform_, S * R * T * P);
     }
 }
 
 void FbxMeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
 {
-    for (const ModelScene::Node& node : sceneView_.nodes_)
+    for (const ModelScene::Node& Node : sceneView_.nodes_)
     {
-        if (node.attribute_ != FbxNodeAttribute::EType::eMesh)
+        if (Node.attribute_ != FbxNodeAttribute::EType::eMesh)
         {
             continue;
         }
 
-        FbxNode* fbxNode{ fbxScene->FindNodeByName(node.name_.c_str()) };
+        FbxNode* fbxNode{ fbxScene->FindNodeByName(Node.name_.c_str()) };
         FbxMesh* fbxMesh{ fbxNode->GetMesh() };
 
-        Mesh& mesh{ meshes.emplace_back() };
+        Mesh& mesh_{ meshes.emplace_back() };
 
 #if 0
         mesh.uniqueId = fbxMesh->GetNode()->GetUniqueID();
@@ -202,10 +202,10 @@ void FbxMeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
         mesh.nodeIndex = sceneView.indexOf(mesh.uniqueId);
         mesh.defaultGlobalTransform = ToXMFloat4x4(fbxMesh->GetNode()->EvaluateGlobalTransform());
 #else
-        mesh.uniqueId_ = node.uniqueId_;
-        mesh.name_ = node.name_;
-        mesh.nodeIndex_ = sceneView_.indexOf(node.uniqueId_);
-        mesh.defaultGlobalTransform_ = ToXMFloat4x4(fbxNode->EvaluateGlobalTransform());
+        mesh_.uniqueId_ = Node.uniqueId_;
+        mesh_.name_ = Node.name_;
+        mesh_.nodeIndex_ = sceneView_.indexOf(Node.uniqueId_);
+        mesh_.defaultGlobalTransform_ = ToXMFloat4x4(fbxNode->EvaluateGlobalTransform());
 #endif // 0
 
 
@@ -215,9 +215,9 @@ void FbxMeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
         FetchBoneInfluences(fbxMesh, boneInfluences);
 
         //バインドポーズ取得(初期ポーズ)
-        FetchSkeleton(fbxMesh, mesh.bindPose_);
+        FetchSkeleton(fbxMesh, mesh_.bindPose_);
 
-        std::vector<Mesh::Subset>& subsets{mesh.subsets_};
+        std::vector<Mesh::Subset>& subsets{mesh_.subsets_};
         const int materialCount{ fbxMesh->GetNode()->GetMaterialCount() };
         subsets.resize(materialCount > 0 ? materialCount : 1);
         for (int materialIndex = 0; materialIndex < materialCount; ++materialIndex)
@@ -245,8 +245,8 @@ void FbxMeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
         }
 
         const int polygonCount{ fbxMesh->GetPolygonCount() };
-        mesh.vertices_.resize(polygonCount * 3LL);
-        mesh.indices_.resize(polygonCount * 3LL);
+        mesh_.vertices_.resize(polygonCount * 3LL);
+        mesh_.indices_.resize(polygonCount * 3LL);
 
         FbxStringList uvNames;
         fbxMesh->GetUVSetNames(uvNames);
@@ -328,21 +328,21 @@ void FbxMeshData::FetchMeshes(FbxScene* fbxScene, std::vector<Mesh>& meshes)
                     vertex.tangent_.w = static_cast<float>(tangent->GetDirectArray().GetAt(vertexIndex)[3]);
                 }
 
-                mesh.vertices_.at(vertexIndex) = std::move(vertex);
-                mesh.indices_.at(static_cast<size_t>(offset) + positionInPolygon) = vertexIndex;
+                mesh_.vertices_.at(vertexIndex) = std::move(vertex);
+                mesh_.indices_.at(static_cast<size_t>(offset) + positionInPolygon) = vertexIndex;
                 subset.indexCount_++;
             }
         }
 
         //バウンディングボックス作成
-        for (const Vertex& v : mesh.vertices_)
+        for (const Vertex& v : mesh_.vertices_)
         {
-            mesh.boundingBox_[0].x = std::min<float>(mesh.boundingBox_[0].x, v.position_.x);
-            mesh.boundingBox_[0].y = std::min<float>(mesh.boundingBox_[0].y, v.position_.y);
-            mesh.boundingBox_[0].z = std::min<float>(mesh.boundingBox_[0].z, v.position_.z);
-            mesh.boundingBox_[1].x = std::max<float>(mesh.boundingBox_[1].x, v.position_.x);
-            mesh.boundingBox_[1].y = std::max<float>(mesh.boundingBox_[1].y, v.position_.y);
-            mesh.boundingBox_[1].z = std::max<float>(mesh.boundingBox_[1].z, v.position_.z);
+            mesh_.boundingBox_[0].x = std::min<float>(mesh_.boundingBox_[0].x, v.position_.x);
+            mesh_.boundingBox_[0].y = std::min<float>(mesh_.boundingBox_[0].y, v.position_.y);
+            mesh_.boundingBox_[0].z = std::min<float>(mesh_.boundingBox_[0].z, v.position_.z);
+            mesh_.boundingBox_[1].x = std::max<float>(mesh_.boundingBox_[1].x, v.position_.x);
+            mesh_.boundingBox_[1].y = std::max<float>(mesh_.boundingBox_[1].y, v.position_.y);
+            mesh_.boundingBox_[1].z = std::max<float>(mesh_.boundingBox_[1].z, v.position_.z);
         }
     }
 }
@@ -352,40 +352,40 @@ void FbxMeshData::FetchMaterials(FbxScene* fbxScene, std::unordered_map<uint64_t
     const size_t nodeCount{ sceneView_.nodes_.size() };
     for (size_t nodeIndex = 0; nodeIndex < nodeCount; ++nodeIndex)
     {
-        const ModelScene::Node& node{sceneView_.nodes_.at(nodeIndex)};
-        const FbxNode* fbxNode{ fbxScene->FindNodeByName(node.name_.c_str()) };
+        const ModelScene::Node& Node{sceneView_.nodes_.at(nodeIndex)};
+        const FbxNode* fbxNode{ fbxScene->FindNodeByName(Node.name_.c_str()) };
 
         const int materialCount{ fbxNode->GetMaterialCount() };
         for (int materialIndex = 0; materialIndex < materialCount; ++materialIndex)
         {
             const FbxSurfaceMaterial* fbxMaterial{ fbxNode->GetMaterial(materialIndex) };
 
-            Material material;
-            material.name_ = fbxMaterial->GetName();
-            material.uniqueId_ = fbxMaterial->GetUniqueID();
+            Material material_;
+            material_.name_ = fbxMaterial->GetName();
+            material_.uniqueId_ = fbxMaterial->GetUniqueID();
             FbxProperty fbxProperty;
             //ディフューズ取得(拡散反射光、ザラつきを表現）
             fbxProperty = fbxMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
             if (fbxProperty.IsValid())
             {
-                const FbxDouble3 color{ fbxProperty.Get<FbxDouble3>() };
-                material.Kd_.x = static_cast<float>(color[0]);
-                material.Kd_.y = static_cast<float>(color[1]);
-                material.Kd_.z = static_cast<float>(color[2]);
-                material.Kd_.w = 1.0f;
+                const FbxDouble3 color_{ fbxProperty.Get<FbxDouble3>() };
+                material_.Kd_.x = static_cast<float>(color_[0]);
+                material_.Kd_.y = static_cast<float>(color_[1]);
+                material_.Kd_.z = static_cast<float>(color_[2]);
+                material_.Kd_.w = 1.0f;
 
                 const FbxFileTexture* fbxTexture{ fbxProperty.GetSrcObject<FbxFileTexture>() };
-                material.textureFilenames_[0] = fbxTexture ? fbxTexture->GetRelativeFileName() : "";
+                material_.textureFilenames_[0] = fbxTexture ? fbxTexture->GetRelativeFileName() : "";
             }
             //アンビエント取得(環境光、各オブジェクトに別々のパラメータを設定するとキモなるらしい)
             fbxProperty = fbxMaterial->FindProperty(FbxSurfaceMaterial::sAmbient);
             if (fbxProperty.IsValid())
             {
-                const FbxDouble3 color{ fbxProperty.Get<FbxDouble3>() };
-                material.Ka_.x = static_cast<float>(color[0]);
-                material.Ka_.y = static_cast<float>(color[1]);
-                material.Ka_.z = static_cast<float>(color[2]);
-                material.Ka_.w = 1.0f;
+                const FbxDouble3 color_{ fbxProperty.Get<FbxDouble3>() };
+                material_.Ka_.x = static_cast<float>(color_[0]);
+                material_.Ka_.y = static_cast<float>(color_[1]);
+                material_.Ka_.z = static_cast<float>(color_[2]);
+                material_.Ka_.w = 1.0f;
 
                 //const FbxFileTexture* fbxTexture{ fbxProperty.GetSrcObject<FbxFileTexture>() };
                 //material.textureFilenames[0] = fbxTexture ? fbxTexture->GetRelativeFileName() : "";
@@ -394,11 +394,11 @@ void FbxMeshData::FetchMaterials(FbxScene* fbxScene, std::unordered_map<uint64_t
             fbxProperty = fbxMaterial->FindProperty(FbxSurfaceMaterial::sSpecular);
             if (fbxProperty.IsValid())
             {
-                const FbxDouble3 color{ fbxProperty.Get<FbxDouble3>() };
-                material.Ks_.x = static_cast<float>(color[0]);
-                material.Ks_.y = static_cast<float>(color[1]);
-                material.Ks_.z = static_cast<float>(color[2]);
-                material.Ks_.w = 1.0f;
+                const FbxDouble3 color_{ fbxProperty.Get<FbxDouble3>() };
+                material_.Ks_.x = static_cast<float>(color_[0]);
+                material_.Ks_.y = static_cast<float>(color_[1]);
+                material_.Ks_.z = static_cast<float>(color_[2]);
+                material_.Ks_.w = 1.0f;
 
                 //const FbxFileTexture* fbxTexture{ fbxProperty.GetSrcObject<FbxFileTexture>() };
                 //material.textureFilenames[0] = fbxTexture ? fbxTexture->GetRelativeFileName() : "";
@@ -409,7 +409,7 @@ void FbxMeshData::FetchMaterials(FbxScene* fbxScene, std::unordered_map<uint64_t
             if (fbxProperty.IsValid())
             {
                 const FbxFileTexture* fileTexture{ fbxProperty.GetSrcObject<FbxFileTexture>() };
-                material.textureFilenames_[1] = fileTexture ? fileTexture->GetRelativeFileName() : "";
+                material_.textureFilenames_[1] = fileTexture ? fileTexture->GetRelativeFileName() : "";
             }
 
             //エミッションテクスチャ取得
@@ -417,9 +417,9 @@ void FbxMeshData::FetchMaterials(FbxScene* fbxScene, std::unordered_map<uint64_t
             if (fbxProperty.IsValid())
             {
                 const FbxFileTexture* fbxTexture{ fbxProperty.GetSrcObject<FbxFileTexture>() };
-                material.textureFilenames_[2] = fbxTexture ? fbxTexture->GetRelativeFileName() : "";
+                material_.textureFilenames_[2] = fbxTexture ? fbxTexture->GetRelativeFileName() : "";
             }
-            materials.emplace(material.uniqueId_, std::move(material));
+            materials.emplace(material_.uniqueId_, std::move(material_));
         }
         if (materialCount == 0)
         {
@@ -436,14 +436,14 @@ void FbxMeshData::FetchSkeleton(FbxMesh* fbxMesh, Skeleton& bindPose)
     const int deformerCount = fbxMesh->GetDeformerCount(FbxDeformer::eSkin);
     for (int deformerIndex = 0; deformerIndex < deformerCount; ++deformerIndex)
     {
-        FbxSkin* skin = static_cast<FbxSkin*>(fbxMesh->GetDeformer(deformerIndex, FbxDeformer::eSkin));
+        FbxSkin* skin_ = static_cast<FbxSkin*>(fbxMesh->GetDeformer(deformerIndex, FbxDeformer::eSkin));
 
         //スキンからクラスター（頂点影響力とそれに対応するボーン）を取得
-        const int clusterCount = skin->GetClusterCount();
+        const int clusterCount = skin_->GetClusterCount();
         bindPose.bones_.resize(clusterCount);
         for (int clusterIndex = 0; clusterIndex < clusterCount; ++clusterIndex)
         {
-            FbxCluster* cluster = skin->GetCluster(clusterIndex);
+            FbxCluster* cluster = skin_->GetCluster(clusterIndex);
 
             Skeleton::Bone& bone{bindPose.bones_.at(clusterIndex)};
             bone.name_ = cluster->GetLink()->GetName();
@@ -508,16 +508,16 @@ void FbxMeshData::FetchAnimations(FbxScene* fbxScene, std::vector<Animation>& an
                 FbxNode* fbxNode{ fbxScene->FindNodeByName(sceneView_.nodes_.at(nodeIndex).name_.c_str()) };
                 if (fbxNode)
                 {
-                    Animation::Keyframe::Node& node{keyframe.nodes_.at(nodeIndex)};
+                    Animation::Keyframe::Node& Node{keyframe.nodes_.at(nodeIndex)};
 
                     //グローバル座標系への交換行列
-                    node.globalTransform_ = ToXMFloat4x4(fbxNode->EvaluateGlobalTransform(time));
+                    Node.globalTransform_ = ToXMFloat4x4(fbxNode->EvaluateGlobalTransform(time));
 
                     //parentのローカル座標系に関する変換行列
                     const FbxAMatrix& localTransform{ fbxNode->EvaluateLocalTransform(time) };
-                    node.scaling_ = ToXMFloat3(localTransform.GetS());
-                    node.rotation_ = ToXMFloat4(localTransform.GetQ());
-                    node.translation_ = ToXMFloat3(localTransform.GetT());
+                    Node.scaling_ = ToXMFloat3(localTransform.GetS());
+                    Node.rotation_ = ToXMFloat4(localTransform.GetQ());
+                    Node.translation_ = ToXMFloat3(localTransform.GetT());
                 }
             }
         }
@@ -591,35 +591,35 @@ bool FbxMeshData::AppendAnimations(const char* animationFilename, float sampling
 
 void FbxMeshData::CreateComObjects(ID3D11Device* device, const char* fbxFilename)
 {
-    for (Mesh& mesh : meshes_)
+    for (Mesh& mesh_ : meshes_)
     {
         HRESULT hr{ S_OK };
         D3D11_BUFFER_DESC bufferDesc{};
         D3D11_SUBRESOURCE_DATA subresourceData{};
-        bufferDesc.ByteWidth = static_cast<UINT>(sizeof(Vertex) * mesh.vertices_.size());
+        bufferDesc.ByteWidth = static_cast<UINT>(sizeof(Vertex) * mesh_.vertices_.size());
         bufferDesc.Usage = D3D11_USAGE_DEFAULT;
         bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
         bufferDesc.CPUAccessFlags = 0;
         bufferDesc.MiscFlags = 0;
         bufferDesc.StructureByteStride = 0;
-        subresourceData.pSysMem = mesh.vertices_.data();
+        subresourceData.pSysMem = mesh_.vertices_.data();
         subresourceData.SysMemPitch = 0;
         subresourceData.SysMemSlicePitch = 0;
         hr = device->CreateBuffer(&bufferDesc, &subresourceData,
-            mesh.vertexBuffer_.ReleaseAndGetAddressOf());
+            mesh_.vertexBuffer_.ReleaseAndGetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
-        bufferDesc.ByteWidth = static_cast<UINT>(sizeof(uint32_t) * mesh.indices_.size());
+        bufferDesc.ByteWidth = static_cast<UINT>(sizeof(uint32_t) * mesh_.indices_.size());
         bufferDesc.Usage = D3D11_USAGE_DEFAULT;
         bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-        subresourceData.pSysMem = mesh.indices_.data();
+        subresourceData.pSysMem = mesh_.indices_.data();
         hr = device->CreateBuffer(&bufferDesc, &subresourceData,
-            mesh.indexBuffer_.ReleaseAndGetAddressOf());
+            mesh_.indexBuffer_.ReleaseAndGetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 #if 1
-        mesh.vertices_.clear();
-        mesh.indices_.clear();
+        mesh_.vertices_.clear();
+        mesh_.indices_.clear();
 #endif // 1
     }
 
@@ -692,12 +692,12 @@ void FbxMeshData::Render(
     const DirectX::XMFLOAT4& materialColor,
     const Animation::Keyframe* keyframe)
 {
-    for (const Mesh& mesh : meshes_)
+    for (const Mesh& mesh_ : meshes_)
     {
         uint32_t stride{ sizeof(Vertex) };
         uint32_t offset{ 0 };
-        immediateContext->IASetVertexBuffers(0, 1, mesh.vertexBuffer_.GetAddressOf(), &stride, &offset);
-        immediateContext->IASetIndexBuffer(mesh.indexBuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
+        immediateContext->IASetVertexBuffers(0, 1, mesh_.vertexBuffer_.GetAddressOf(), &stride, &offset);
+        immediateContext->IASetIndexBuffer(mesh_.indexBuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
         immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         immediateContext->IASetInputLayout(inputLayout_.Get());
 
@@ -711,40 +711,40 @@ void FbxMeshData::Render(
         {
             //メッシュのglobalTransformが時間軸で変化しているので、その行列をキーフレームから取得する
             //取得したglobalTransform行列を定数バッファのワールド交換行列に合成する
-            const Animation::Keyframe::Node& meshNode{keyframe->nodes_.at(mesh.nodeIndex_)};
+            const Animation::Keyframe::Node& meshNode{keyframe->nodes_.at(mesh_.nodeIndex_)};
             DirectX::XMStoreFloat4x4(&data.world_, DirectX::XMLoadFloat4x4(&meshNode.globalTransform_) * DirectX::XMLoadFloat4x4(&world));
 
-            const size_t boneCount{ mesh.bindPose_.bones_.size() };
+            const size_t boneCount{ mesh_.bindPose_.bones_.size() };
             _ASSERT_EXPR(boneCount < MAX_BONES, L"The value of the 'boneCount' has exceeded MAX_BONES.");
 
             //多分ボーンの情報をローカルからグローバルに変えてる多分多分
             for (size_t boneIndex = 0; boneIndex < boneCount; ++boneIndex)
             {
-                const Skeleton::Bone& bone{mesh.bindPose_.bones_.at(boneIndex)};
+                const Skeleton::Bone& bone{mesh_.bindPose_.bones_.at(boneIndex)};
                 const Animation::Keyframe::Node& boneNode{keyframe->nodes_.at(bone.nodeIndex_)};
                 DirectX::XMStoreFloat4x4(&data.boneTransforms_[boneIndex],
                     DirectX::XMLoadFloat4x4(&bone.offsetTransform_) *
                     DirectX::XMLoadFloat4x4(&boneNode.globalTransform_) *
-                    DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&mesh.defaultGlobalTransform_))
+                    DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&mesh_.defaultGlobalTransform_))
                 );
             }
         }
         else//アニメーションを持っていない
         {
             DirectX::XMStoreFloat4x4(&data.world_,
-                DirectX::XMLoadFloat4x4(&mesh.defaultGlobalTransform_) * DirectX::XMLoadFloat4x4(&world));
+                DirectX::XMLoadFloat4x4(&mesh_.defaultGlobalTransform_) * DirectX::XMLoadFloat4x4(&world));
             for (size_t boneIndex = 0; boneIndex < MAX_BONES; ++boneIndex)
             {
                 data.boneTransforms_[boneIndex] = { 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
             }
         }
-        for (const Mesh::Subset& subset : mesh.subsets_)
+        for (const Mesh::Subset& subset : mesh_.subsets_)
         {
-            const Material& material{ materials_.at(subset.materialUniqueId_) };
+            const Material& material_{ materials_.at(subset.materialUniqueId_) };
             DirectX::XMStoreFloat4(&data.materialColor_,
                 DirectX::XMVectorMultiply(
                     DirectX::XMLoadFloat4(&materialColor),
-                    DirectX::XMLoadFloat4(&material.Kd_))
+                    DirectX::XMLoadFloat4(&material_.Kd_))
             );
             immediateContext->UpdateSubresource(constantBuffer_.Get(), 0, 0, &data, 0, 0);
             immediateContext->VSSetConstantBuffers(1, 1, constantBuffer_.GetAddressOf());
@@ -756,8 +756,8 @@ void FbxMeshData::Render(
             immediateContext->PSSetShaderResources(2, 1, material.shaderResourceViews_[2].GetAddressOf());
 #else
             //テクスチャバインド
-            material.textures_[0]->Set(0, Shader_Type::Pixel);
-            material.textures_[1]->Set(1, Shader_Type::Pixel);
+            material_.textures_[0]->Set(0, Shader_Type::Pixel);
+            material_.textures_[1]->Set(1, Shader_Type::Pixel);
 #endif // 0
 
             immediateContext->DrawIndexed(subset.indexCount_, subset.startIndexLocation_, 0);

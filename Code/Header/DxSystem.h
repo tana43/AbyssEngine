@@ -9,9 +9,9 @@
 
 #define Debug_Log( str, ... ) \
       { \
-		wchar_t buffer[256]; \
-		wsprintfW(buffer, str, __VA_ARGS__); \
-		OutputDebugString(buffer); \
+		wchar_t buffer_[256]; \
+		wsprintfW(buffer_, str, __VA_ARGS__); \
+		OutputDebugString(buffer_); \
       }
 
 namespace AbyssEngine
@@ -50,9 +50,9 @@ namespace AbyssEngine
 		static void SetViewport(int width, int height, int num = 1);//ビューポートをセット
 		static void SetDefaultView();//メインウィンドウのレンダーターゲットをセットする
 
-		static void SetDepthStencilState(DS_State type);
-		static void SetRasterizerState(RS_State type);
-		static void SetBlendState(BS_State type);
+		static void SetDepthStencilState(DS_State type_);
+		static void SetRasterizerState(RS_State type_);
+		static void SetBlendState(BS_State type_);
 	private:
 		static int screenWidth_;
 		static int screenHeight_;

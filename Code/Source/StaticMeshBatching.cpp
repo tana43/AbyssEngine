@@ -11,7 +11,10 @@
 using namespace AbyssEngine;
 using namespace std;
 
-bool NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*, int, int, const unsigned char*, int, void*);
+bool NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*, int, int, const unsigned char*, int, void*)
+{
+	return true;
+}
 
 StaticMeshBatching::StaticMeshBatching(const std::string& filename) : filename_(filename)
 {
@@ -36,9 +39,9 @@ StaticMeshBatching::StaticMeshBatching(const std::string& filename) : filename_(
 
 	for (std::vector<tinygltf::Scene>::const_reference gltfScene : gltfModel.scenes)
 	{
-		Scene& scene{ scenes_.emplace_back() };
-		scene.name_ = gltfModel.scenes.at(0).name;
-		scene.nodes_ = gltfModel.scenes.at(0).nodes;
+		Scene& Scene{ scenes_.emplace_back() };
+		Scene.name_ = gltfModel.scenes.at(0).name;
+		Scene.nodes_ = gltfModel.scenes.at(0).nodes;
 	}
 
 	FetchNodes(gltfModel);
@@ -72,11 +75,11 @@ void StaticMeshBatching::FetchNodes(const tinygltf::Model& gltfModel)
 {
 	for (std::vector<tinygltf::Node>::const_reference gltfNode : gltfModel.nodes)
 	{
-		Node& node{ nodes_.emplace_back() };
-		node.name_ = gltfNode.name;
-		node.skin_ = gltfNode.skin;
-		node.mesh_ = gltfNode.mesh;
-		node.children_ = gltfNode.children;
+		Node& Node{ nodes_.emplace_back() };
+		Node.name_ = gltfNode.name;
+		Node.skin_ = gltfNode.skin;
+		Node.mesh_ = gltfNode.mesh;
+		Node.children_ = gltfNode.children;
 		if (!gltfNode.matrix.empty())
 		{
 			Matrix matrix;
@@ -92,48 +95,48 @@ void StaticMeshBatching::FetchNodes(const tinygltf::Model& gltfModel)
 			bool succeed = DirectX::XMMatrixDecompose(&S, &R, &T, DirectX::XMLoadFloat4x4(&matrix));
 			_ASSERT_EXPR(succeed, L"Failed to decompose matrix.");
 
-			DirectX::XMStoreFloat3(&node.scale_, S);
-			DirectX::XMStoreFloat4(&node.rotation_, R);
-			DirectX::XMStoreFloat3(&node.translation_, T);
+			DirectX::XMStoreFloat3(&Node.scale_, S);
+			DirectX::XMStoreFloat4(&Node.rotation_, R);
+			DirectX::XMStoreFloat3(&Node.translation_, T);
 		}
 		else
 		{
 			if (gltfNode.scale.size() > 0)
 			{
-				node.scale_.x = static_cast<float>(gltfNode.scale.at(0));
-				node.scale_.y = static_cast<float>(gltfNode.scale.at(1));
-				node.scale_.z = static_cast<float>(gltfNode.scale.at(2));
+				Node.scale_.x = static_cast<float>(gltfNode.scale.at(0));
+				Node.scale_.y = static_cast<float>(gltfNode.scale.at(1));
+				Node.scale_.z = static_cast<float>(gltfNode.scale.at(2));
 			}
 			if (gltfNode.translation.size() > 0)
 			{
-				node.translation_.x = static_cast<float>(gltfNode.translation.at(0));
-				node.translation_.y = static_cast<float>(gltfNode.translation.at(1));
-				node.translation_.z = static_cast<float>(gltfNode.translation.at(2));
+				Node.translation_.x = static_cast<float>(gltfNode.translation.at(0));
+				Node.translation_.y = static_cast<float>(gltfNode.translation.at(1));
+				Node.translation_.z = static_cast<float>(gltfNode.translation.at(2));
 			}
 			if (gltfNode.rotation.size() > 0)
 			{
-				node.rotation_.x = static_cast<float>(gltfNode.rotation.at(0));
-				node.rotation_.y = static_cast<float>(gltfNode.rotation.at(1));
-				node.rotation_.z = static_cast<float>(gltfNode.rotation.at(2));
-				node.rotation_.w = static_cast<float>(gltfNode.rotation.at(3));
+				Node.rotation_.x = static_cast<float>(gltfNode.rotation.at(0));
+				Node.rotation_.y = static_cast<float>(gltfNode.rotation.at(1));
+				Node.rotation_.z = static_cast<float>(gltfNode.rotation.at(2));
+				Node.rotation_.w = static_cast<float>(gltfNode.rotation.at(3));
 			}
 		}
 	}
 	CumulateTransforms(nodes_);
 }
-void StaticMeshBatching::CumulateTransforms(std::vector<Node>& nodes)
+void StaticMeshBatching::CumulateTransforms(std::vector<Node>& nodes_)
 {
 	std::stack<Matrix> parentGlobalTransforms;
 	std::function<void(int)> traverse{ [&](int node_index)->void
 		{
-			Node& node{ nodes.at(node_index) };
-			Matrix S{ Matrix::CreateScale(node.scale_.x, node.scale_.y, node.scale_.z) };
-			Matrix R{ Matrix::CreateFromQuaternion(Quaternion(node.rotation_.x, node.rotation_.y, node.rotation_.z, node.rotation_.w))};
-			Matrix T{ Matrix::CreateTranslation(node.translation_.x, node.translation_.y, node.translation_.z) };
-			node.globalTransform_ = S * R * T * parentGlobalTransforms.top();
-			for (int child_index : node.children_)
+			Node& Node{ nodes_.at(node_index) };
+			Matrix S{ Matrix::CreateScale(Node.scale_.x, Node.scale_.y, Node.scale_.z) };
+			Matrix R{ Matrix::CreateFromQuaternion(Quaternion(Node.rotation_.x, Node.rotation_.y, Node.rotation_.z, Node.rotation_.w))};
+			Matrix T{ Matrix::CreateTranslation(Node.translation_.x, Node.translation_.y, Node.translation_.z) };
+			Node.globalTransform_ = S * R * T * parentGlobalTransforms.top();
+			for (int child_index : Node.children_)
 			{
-				parentGlobalTransforms.push(node.globalTransform_);
+				parentGlobalTransforms.push(Node.globalTransform_);
 				traverse(child_index);
 				parentGlobalTransforms.pop();
 			}
@@ -225,10 +228,10 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 
 	struct combinedBuffer
 	{
-		size_t index_count;
+		size_t indexCount_;
 		size_t vertex_count;
 
-		D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
+		D3D_PRIMITIVE_TOPOLOGY topology_ = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 		std::vector<unsigned int> indices;
 		struct StructureOfArrays
 		{
@@ -243,13 +246,13 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 
 	// Collect primitives with same material
 	//decltyoe:Žw’è‚µ‚½Ž®‚©‚çŒ^‚ðŽ©“®‚ÅŽæ“¾‚µ‚Ä‚¢‚é
-	for (decltype(nodes_)::reference node : nodes_)
+	for (decltype(nodes_)::reference Node : nodes_)
 	{
-		const Matrix transform = node.globalTransform_;
+		const Matrix transform = Node.globalTransform_;
 
-		if (node.mesh_ > -1)
+		if (Node.mesh_ > -1)
 		{
-			const tinygltf::Mesh& gltfMesh = gltfModel.meshes.at(node.mesh_);
+			const tinygltf::Mesh& gltfMesh = gltfModel.meshes.at(Node.mesh_);
 
 			for (std::vector<tinygltf::Primitive>::const_reference gltfPrimitive : gltfMesh.primitives)
 			{
@@ -267,26 +270,26 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 					const size_t vertexOffset = combinedBuffer.vertices.positions.size();
 					if (gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE)
 					{
-						const unsigned char* buffer = gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset;
+						const unsigned char* buffer_ = gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset;
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							combinedBuffer.indices.emplace_back(static_cast<unsigned int>(buffer[accessorIndex] + vertexOffset));
+							combinedBuffer.indices.emplace_back(static_cast<unsigned int>(buffer_[accessorIndex] + vertexOffset));
 						}
 					}
 					else if (gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT)
 					{
-						const unsigned short* buffer = reinterpret_cast<const unsigned short*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
+						const unsigned short* buffer_ = reinterpret_cast<const unsigned short*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							combinedBuffer.indices.emplace_back(static_cast<unsigned int>(buffer[accessorIndex] + vertexOffset));
+							combinedBuffer.indices.emplace_back(static_cast<unsigned int>(buffer_[accessorIndex] + vertexOffset));
 						}
 					}
 					else if (gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT)
 					{
-						const unsigned int* buffer = reinterpret_cast<const unsigned int*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
+						const unsigned int* buffer_ = reinterpret_cast<const unsigned int*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							combinedBuffer.indices.emplace_back(static_cast<unsigned int>(buffer[accessorIndex] + vertexOffset));
+							combinedBuffer.indices.emplace_back(static_cast<unsigned int>(buffer_[accessorIndex] + vertexOffset));
 						}
 					}
 					else
@@ -309,10 +312,10 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 					if (gltf_attribute.first == "POSITION")
 					{
 						_ASSERT_EXPR(gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && gltfAccessor.type == TINYGLTF_TYPE_VEC3, L"'POSITION' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC3.");
-						const Vector3* buffer = reinterpret_cast<const Vector3*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
+						const Vector3* buffer_ = reinterpret_cast<const Vector3*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							Vector3 position = buffer[accessorIndex];
+							Vector3 position = buffer_[accessorIndex];
 							DirectX::XMStoreFloat3(&position, XMVector3TransformCoord(XMLoadFloat3(&position), transform));
 							combinedBuffer.vertices.positions.emplace_back(position);
 						}
@@ -320,10 +323,10 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 					else if (gltf_attribute.first == "NORMAL")
 					{
 						_ASSERT_EXPR(gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && gltfAccessor.type == TINYGLTF_TYPE_VEC3, L"'NORMAL' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC3.");
-						const Vector3* buffer = reinterpret_cast<const Vector3*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
+						const Vector3* buffer_ = reinterpret_cast<const Vector3*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							Vector3 normal = buffer[accessorIndex];
+							Vector3 normal = buffer_[accessorIndex];
 							XMStoreFloat3(&normal, XMVector3TransformNormal(XMLoadFloat3(&normal), transform));
 							combinedBuffer.vertices.normals.emplace_back(normal);
 						}
@@ -331,10 +334,10 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 					else if (gltf_attribute.first == "TANGENT")
 					{
 						_ASSERT_EXPR(gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && gltfAccessor.type == TINYGLTF_TYPE_VEC4, L"'TANGENT' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC4.");
-						const Vector4* buffer = reinterpret_cast<const Vector4*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
+						const Vector4* buffer_ = reinterpret_cast<const Vector4*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							Vector4 tangent = buffer[accessorIndex];
+							Vector4 tangent = buffer_[accessorIndex];
 							float sigma = tangent.w;
 							tangent.w = 0;
 							XMStoreFloat4(&tangent, XMVector4Transform(XMLoadFloat4(&tangent), transform));
@@ -345,10 +348,10 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 					else if (gltf_attribute.first == "TEXCOORD_0")
 					{
 						_ASSERT_EXPR(gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && gltfAccessor.type == TINYGLTF_TYPE_VEC2, L"'TEXCOORD_0' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC2.");
-						const Vector2* buffer = reinterpret_cast<const Vector2*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
+						const Vector2* buffer_ = reinterpret_cast<const Vector2*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							combinedBuffer.vertices.texcoords.emplace_back(buffer[accessorIndex]);
+							combinedBuffer.vertices.texcoords.emplace_back(buffer_[accessorIndex]);
 						}
 					}
 				}
@@ -365,19 +368,19 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 			continue;
 		}
 #endif
-		Primitive& primitive = primitives_.emplace_back();
-		primitive.material_ = combinedBuffer.first;
+		Primitive& Primitive = primitives_.emplace_back();
+		Primitive.material_ = combinedBuffer.first;
 
 		D3D11_BUFFER_DESC buffer_desc = {};
 		D3D11_SUBRESOURCE_DATA subresource_data = {};
 
 		if (combinedBuffer.second.indices.size() > 0)
 		{
-			primitive.indexBufferView_.format_ = DXGI_FORMAT_R32_UINT;
-			primitive.indexBufferView_.strideInBytes_ = sizeof(UINT);
-			primitive.indexBufferView_.sizeInBytes_ = combinedBuffer.second.indices.size() * primitive.indexBufferView_.strideInBytes_;
+			Primitive.indexBufferView_.format_ = DXGI_FORMAT_R32_UINT;
+			Primitive.indexBufferView_.strideInBytes_ = sizeof(UINT);
+			Primitive.indexBufferView_.sizeInBytes_ = combinedBuffer.second.indices.size() * Primitive.indexBufferView_.strideInBytes_;
 
-			buffer_desc.ByteWidth = static_cast<UINT>(primitive.indexBufferView_.sizeInBytes_);
+			buffer_desc.ByteWidth = static_cast<UINT>(Primitive.indexBufferView_.sizeInBytes_);
 			buffer_desc.Usage = D3D11_USAGE_DEFAULT;
 			buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			buffer_desc.CPUAccessFlags = 0;
@@ -386,7 +389,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 			subresource_data.pSysMem = combinedBuffer.second.indices.data();
 			subresource_data.SysMemPitch = 0;
 			subresource_data.SysMemSlicePitch = 0;
-			hr = device->CreateBuffer(&buffer_desc, &subresource_data, primitive.indexBufferView_.buffer_.ReleaseAndGetAddressOf());
+			hr = device->CreateBuffer(&buffer_desc, &subresource_data, Primitive.indexBufferView_.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 		}
 
@@ -402,7 +405,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 			subresource_data.pSysMem = combinedBuffer.second.vertices.positions.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
-			primitive.vertexBufferViews_.emplace(std::make_pair("POSITION", vertexBufferView));
+			Primitive.vertexBufferViews_.emplace(std::make_pair("POSITION", vertexBufferView));
 		}
 		if (combinedBuffer.second.vertices.normals.size() > 0)
 		{
@@ -415,7 +418,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 			subresource_data.pSysMem = combinedBuffer.second.vertices.normals.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
-			primitive.vertexBufferViews_.emplace(std::make_pair("NORMAL", vertexBufferView));
+			Primitive.vertexBufferViews_.emplace(std::make_pair("NORMAL", vertexBufferView));
 		}
 		if (combinedBuffer.second.vertices.tangents.size() > 0)
 		{
@@ -428,7 +431,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 			subresource_data.pSysMem = combinedBuffer.second.vertices.tangents.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
-			primitive.vertexBufferViews_.emplace(std::make_pair("TANGENT", vertexBufferView));
+			Primitive.vertexBufferViews_.emplace(std::make_pair("TANGENT", vertexBufferView));
 		}
 		if (combinedBuffer.second.vertices.texcoords.size() > 0)
 		{
@@ -441,7 +444,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 			subresource_data.pSysMem = combinedBuffer.second.vertices.texcoords.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
-			primitive.vertexBufferViews_.emplace(std::make_pair("TEXCOORD_0", vertexBufferView));
+			Primitive.vertexBufferViews_.emplace(std::make_pair("TEXCOORD_0", vertexBufferView));
 		}
 
 
@@ -455,9 +458,9 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 		};
 		for (std::unordered_map<std::string, BufferView>::const_reference attribute : attributes)
 		{
-			if (primitive.vertexBufferViews_.find(attribute.first) == primitive.vertexBufferViews_.end())
+			if (Primitive.vertexBufferViews_.find(attribute.first) == Primitive.vertexBufferViews_.end())
 			{
-				primitive.vertexBufferViews_.insert(std::make_pair(attribute.first, attribute.second));
+				Primitive.vertexBufferViews_.insert(std::make_pair(attribute.first, attribute.second));
 			}
 		}
 	}
@@ -473,40 +476,40 @@ void StaticMeshBatching::Render(const Matrix& world)
 	deviceContext->IASetInputLayout(inputLayout_.Get());
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	for (decltype(primitives_)::const_reference primitive : primitives_)
+	for (decltype(primitives_)::const_reference Primitive : primitives_)
 	{
 		ID3D11Buffer* vertexBuffer[] = {
-			primitive.vertexBufferViews_.at("POSITION").buffer_.Get(),
-			primitive.vertexBufferViews_.at("NORMAL").buffer_.Get(),
-			primitive.vertexBufferViews_.at("TANGENT").buffer_.Get(),
-			primitive.vertexBufferViews_.at("TEXCOORD_0").buffer_.Get(),
+			Primitive.vertexBufferViews_.at("POSITION").buffer_.Get(),
+			Primitive.vertexBufferViews_.at("NORMAL").buffer_.Get(),
+			Primitive.vertexBufferViews_.at("TANGENT").buffer_.Get(),
+			Primitive.vertexBufferViews_.at("TEXCOORD_0").buffer_.Get(),
 		};
 		UINT strides[] = {
-			static_cast<UINT>(primitive.vertexBufferViews_.at("POSITION").strideInBytes_),
-			static_cast<UINT>(primitive.vertexBufferViews_.at("NORMAL").strideInBytes_),
-			static_cast<UINT>(primitive.vertexBufferViews_.at("TANGENT").strideInBytes_),
-			static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_0").strideInBytes_),
+			static_cast<UINT>(Primitive.vertexBufferViews_.at("POSITION").strideInBytes_),
+			static_cast<UINT>(Primitive.vertexBufferViews_.at("NORMAL").strideInBytes_),
+			static_cast<UINT>(Primitive.vertexBufferViews_.at("TANGENT").strideInBytes_),
+			static_cast<UINT>(Primitive.vertexBufferViews_.at("TEXCOORD_0").strideInBytes_),
 		};
 		UINT offsets[_countof(vertexBuffer)] = {};
 		deviceContext->IASetVertexBuffers(0, _countof(vertexBuffer), vertexBuffer, strides, offsets);
-		deviceContext->IASetIndexBuffer(primitive.indexBufferView_.buffer_.Get(), primitive.indexBufferView_.format_, 0);
+		deviceContext->IASetIndexBuffer(Primitive.indexBufferView_.buffer_.Get(), Primitive.indexBufferView_.format_, 0);
 
 		PrimitiveConstants primitiveData_ = {};
-		primitiveData_.material_ = primitive.material_;
-		primitiveData_.hasTangent_ = primitive.vertexBufferViews_.at("TANGENT").buffer_ != NULL;
+		primitiveData_.material_ = Primitive.material_;
+		primitiveData_.hasTangent_ = Primitive.vertexBufferViews_.at("TANGENT").buffer_ != NULL;
 		primitiveData_.world_ = world;
 		deviceContext->UpdateSubresource(primitiveCBuffer_.Get(), 0, 0, &primitiveData_, 0, 0);
 		deviceContext->VSSetConstantBuffers(1, 1, primitiveCBuffer_.GetAddressOf());
 		deviceContext->PSSetConstantBuffers(1, 1, primitiveCBuffer_.GetAddressOf());
 
-		const Material& material = materials_.at(primitive.material_);
+		const Material& material_ = materials_.at(Primitive.material_);
 		const int texture_indices[] =
 		{
-			material.data_.pbrMetallicRoughness_.basecolorTexture_.index_,
-			material.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.index_,
-			material.data_.normalTexture_.index_,
-			material.data_.emissiveTexture_.index_,
-			material.data_.occlusionTexture_.index_,
+			material_.data_.pbrMetallicRoughness_.basecolorTexture_.index_,
+			material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.index_,
+			material_.data_.normalTexture_.index_,
+			material_.data_.emissiveTexture_.index_,
+			material_.data_.occlusionTexture_.index_,
 		};
 		ID3D11ShaderResourceView* null_shader_resource_view = {};
 		std::vector<ID3D11ShaderResourceView*> shaderResourceViews_(_countof(texture_indices));
@@ -516,7 +519,7 @@ void StaticMeshBatching::Render(const Matrix& world)
 		}
 		deviceContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews_.size()), shaderResourceViews_.data());
 
-		deviceContext->DrawIndexed(static_cast<UINT>(primitive.indexBufferView_.Count()), 0, 0);
+		deviceContext->DrawIndexed(static_cast<UINT>(Primitive.indexBufferView_.Count()), 0, 0);
 
 	}
 }
@@ -527,46 +530,46 @@ void StaticMeshBatching::FetchMaterials(const tinygltf::Model& gltfModel)
 
 	for (std::vector<tinygltf::Material>::const_reference gltf_material : gltfModel.materials)
 	{
-		std::vector<Material>::reference material = materials_.emplace_back();
+		std::vector<Material>::reference material_ = materials_.emplace_back();
 
-		material.name_ = gltf_material.name;
+		material_.name_ = gltf_material.name;
 
-		material.data_.emissiveFactor_[0] = static_cast<float>(gltf_material.emissiveFactor.at(0));
-		material.data_.emissiveFactor_[1] = static_cast<float>(gltf_material.emissiveFactor.at(1));
-		material.data_.emissiveFactor_[2] = static_cast<float>(gltf_material.emissiveFactor.at(2));
+		material_.data_.emissiveFactor_[0] = static_cast<float>(gltf_material.emissiveFactor.at(0));
+		material_.data_.emissiveFactor_[1] = static_cast<float>(gltf_material.emissiveFactor.at(1));
+		material_.data_.emissiveFactor_[2] = static_cast<float>(gltf_material.emissiveFactor.at(2));
 
-		material.data_.alphaMode_ = gltf_material.alphaMode == "OPAQUE" ? 0 : gltf_material.alphaMode == "MASK" ? 1 : gltf_material.alphaMode == "BLEND" ? 2 : 0;
-		material.data_.alphaCutoff_ = static_cast<float>(gltf_material.alphaCutoff);
-		material.data_.doubleSided_ = gltf_material.doubleSided ? 1 : 0;
+		material_.data_.alphaMode_ = gltf_material.alphaMode == "OPAQUE" ? 0 : gltf_material.alphaMode == "MASK" ? 1 : gltf_material.alphaMode == "BLEND" ? 2 : 0;
+		material_.data_.alphaCutoff_ = static_cast<float>(gltf_material.alphaCutoff);
+		material_.data_.doubleSided_ = gltf_material.doubleSided ? 1 : 0;
 
-		material.data_.pbrMetallicRoughness_.basecolorFactor_[0] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(0));
-		material.data_.pbrMetallicRoughness_.basecolorFactor_[1] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(1));
-		material.data_.pbrMetallicRoughness_.basecolorFactor_[2] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(2));
-		material.data_.pbrMetallicRoughness_.basecolorFactor_[3] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(3));
-		material.data_.pbrMetallicRoughness_.basecolorTexture_.index_ = gltf_material.pbrMetallicRoughness.baseColorTexture.index;
-		material.data_.pbrMetallicRoughness_.basecolorTexture_.texcoord_ = gltf_material.pbrMetallicRoughness.baseColorTexture.texCoord;
-		material.data_.pbrMetallicRoughness_.metallicFactor_ = static_cast<float>(gltf_material.pbrMetallicRoughness.metallicFactor);
-		material.data_.pbrMetallicRoughness_.roughnessFactor_ = static_cast<float>(gltf_material.pbrMetallicRoughness.roughnessFactor);
-		material.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.index_ = gltf_material.pbrMetallicRoughness.metallicRoughnessTexture.index;
-		material.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.texcoord_ = gltf_material.pbrMetallicRoughness.metallicRoughnessTexture.texCoord;
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[0] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(0));
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[1] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(1));
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[2] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(2));
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[3] = static_cast<float>(gltf_material.pbrMetallicRoughness.baseColorFactor.at(3));
+		material_.data_.pbrMetallicRoughness_.basecolorTexture_.index_ = gltf_material.pbrMetallicRoughness.baseColorTexture.index;
+		material_.data_.pbrMetallicRoughness_.basecolorTexture_.texcoord_ = gltf_material.pbrMetallicRoughness.baseColorTexture.texCoord;
+		material_.data_.pbrMetallicRoughness_.metallicFactor_ = static_cast<float>(gltf_material.pbrMetallicRoughness.metallicFactor);
+		material_.data_.pbrMetallicRoughness_.roughnessFactor_ = static_cast<float>(gltf_material.pbrMetallicRoughness.roughnessFactor);
+		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.index_ = gltf_material.pbrMetallicRoughness.metallicRoughnessTexture.index;
+		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.texcoord_ = gltf_material.pbrMetallicRoughness.metallicRoughnessTexture.texCoord;
 
-		material.data_.normalTexture_.index_ = gltf_material.normalTexture.index;
-		material.data_.normalTexture_.texcoord_ = gltf_material.normalTexture.texCoord;
-		material.data_.normalTexture_.scale_ = static_cast<float>(gltf_material.normalTexture.scale);
+		material_.data_.normalTexture_.index_ = gltf_material.normalTexture.index;
+		material_.data_.normalTexture_.texcoord_ = gltf_material.normalTexture.texCoord;
+		material_.data_.normalTexture_.scale_ = static_cast<float>(gltf_material.normalTexture.scale);
 
-		material.data_.occlusionTexture_.index_ = gltf_material.occlusionTexture.index;
-		material.data_.occlusionTexture_.texcoord_ = gltf_material.occlusionTexture.texCoord;
-		material.data_.occlusionTexture_.strength_ = static_cast<float>(gltf_material.occlusionTexture.strength);
+		material_.data_.occlusionTexture_.index_ = gltf_material.occlusionTexture.index;
+		material_.data_.occlusionTexture_.texcoord_ = gltf_material.occlusionTexture.texCoord;
+		material_.data_.occlusionTexture_.strength_ = static_cast<float>(gltf_material.occlusionTexture.strength);
 
-		material.data_.emissiveTexture_.index_ = gltf_material.emissiveTexture.index;
-		material.data_.emissiveTexture_.texcoord_ = gltf_material.emissiveTexture.texCoord;
+		material_.data_.emissiveTexture_.index_ = gltf_material.emissiveTexture.index;
+		material_.data_.emissiveTexture_.texcoord_ = gltf_material.emissiveTexture.texCoord;
 	}
 
 	// Create material data as shader resource view on GPU
 	std::vector<Material::CBuffer> material_data;
-	for (std::vector<Material>::const_reference material : materials_)
+	for (std::vector<Material>::const_reference material_ : materials_)
 	{
-		material_data.emplace_back(material.data_);
+		material_data.emplace_back(material_.data_);
 	}
 
 	HRESULT hr;
@@ -616,8 +619,8 @@ void StaticMeshBatching::FetchTextures(const tinygltf::Model& gltfModel)
 		if (gltfImage.bufferView > -1)
 		{
 			const tinygltf::BufferView& bufferView{ gltfModel.bufferViews.at(gltfImage.bufferView) };
-			const tinygltf::Buffer& buffer{ gltfModel.buffers.at(bufferView.buffer) };
-			const BYTE* data = buffer.data.data() + bufferView.byteOffset;
+			const tinygltf::Buffer& buffer_{ gltfModel.buffers.at(bufferView.buffer) };
+			const BYTE* data = buffer_.data.data() + bufferView.byteOffset;
 
 			ID3D11ShaderResourceView* textureResourceView_{};
 			hr = AbyssEngine::Texture::LoadTextureFromMemory(data, bufferView.byteLength, &textureResourceView_);

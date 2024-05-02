@@ -19,7 +19,7 @@ namespace AbyssEngine
         static std::shared_ptr<Texture> Load(const std::string& texturePath, const u_int& textureFlg = 0);
 
         //テクスチャをシェーダーにステージする
-        void Set(UINT slot, AbyssEngine::Shader_Type type);
+        void Set(UINT slot, AbyssEngine::Shader_Type type_);
 
     public:
         //テクスチャリソースを取得する

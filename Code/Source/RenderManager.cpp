@@ -7,7 +7,6 @@
 #include "Camera.h"
 #include "SkeltalMesh.h"
 #include "FbxMeshData.h"
-#include "GltfModel.h"
 #include "Texture.h"
 #include "StaticMeshBatching.h"
 #include "StaticMesh.h"
@@ -124,19 +123,19 @@ void RenderManager::Add(const shared_ptr<SkeltalMesh>& mRend)
 	renderer3DList_.emplace_back(mRend);
 }
 
-void RenderManager::Add(const shared_ptr<GltfSkeltalMesh>& mRend)
-{
-	renderer3DList_.emplace_back(mRend);
-}
+//void RenderManager::Add(const shared_ptr<GltfSkeltalMesh>& mRend)
+//{
+//	renderer3DList_.emplace_back(mRend);
+//}
 
 void RenderManager::Add(const shared_ptr<StaticMesh>& mRend)
 {
 	renderer3DList_.emplace_back(mRend);
 }
 
-void RenderManager::Add(const shared_ptr<Camera>& camera)
+void RenderManager::Add(const shared_ptr<Camera>& camera_)
 {
-	cameraList_.emplace_back(camera);
+	cameraList_.emplace_back(camera_);
 }
 
 void RenderManager::Render()
@@ -147,18 +146,18 @@ void RenderManager::Render()
 
 	for (auto& c : cameraList_)
 	{
-		if (const auto& camera = c.lock())
+		if (const auto& camera_ = c.lock())
 		{
-			if (camera->actor_->GetActiveInHierarchy())
+			if (camera_->actor_->GetActiveInHierarchy())
 			{
-				camera->Update();
+				camera_->Update();
 
 
-				const Vector3& pos = camera->GetTransform()->GetPosition();
+				const Vector3& pos = camera_->GetTransform()->GetPosition();
 				//const Vector3& dir = camera->GetTransform()->GetForward();
 
 				bufferScene_.cameraPosition_ = Vector4(pos.x,pos.y,pos.z,0);
-				bufferScene_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
+				bufferScene_.viewProjectionMatrix_ = camera_->viewProjectionMatrix_;
 
 				//仮のライト
 				//bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
@@ -173,7 +172,7 @@ void RenderManager::Render()
 				frameBuffer_->Clear();
 				frameBuffer_->Activate();
 
-				Render3D(camera);
+				Render3D(camera_);
 
 				frameBuffer_->Deactivate();
 				bloom_->Make(frameBuffer_->shaderResourceViews_[0].Get());
@@ -234,7 +233,7 @@ void RenderManager::Render2D() const
 	}
 }
 
-void RenderManager::Render3D(const shared_ptr<Camera>& camera)
+void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 {
 	//トポロジー設定
 	//DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

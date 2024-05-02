@@ -174,11 +174,11 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     return texture;
 }
 
-void Texture::Set(UINT slot, Shader_Type type)
+void Texture::Set(UINT slot, Shader_Type type_)
 {
     if (shaderResourceView_)
     {
-        switch (type)
+        switch (type_)
         {
         case Shader_Type::Vertex:
             DXSystem::deviceContext_->VSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());

@@ -14,7 +14,7 @@ namespace AbyssEngine
     class AssetManager
     {
     public:
-        void RegistrationAsset(std::shared_ptr<Asset> asset);
+        void RegistrationAsset(std::shared_ptr<Asset> Asset);
         void EraseAsset(const std::string& id);
         std::weak_ptr<Asset> GetAssetFromId(const std::string& id);
         

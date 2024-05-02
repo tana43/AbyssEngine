@@ -25,10 +25,10 @@ namespace AbyssEngine
     {
         std::unique_ptr<unsigned char[]> data_;
         long size_;
-        Blob(const char* name)
+        Blob(const char* name_)
         {
             FILE* fp = NULL;
-            fopen_s(&fp, name, "rb");
+            fopen_s(&fp, name_, "rb");
             _ASSERT_EXPR(fp, L"cso file not found");
 
             fseek(fp, 0, SEEK_END);
@@ -66,21 +66,21 @@ namespace AbyssEngine
     public:
 
         //マップの中にある指定されたシェーダーを返す　一度も使用していないシェーダーならマップに追加した後に返す
-        static Microsoft::WRL::ComPtr<T> Emplace(const char* name)
+        static Microsoft::WRL::ComPtr<T> Emplace(const char* name_)
         {
             Microsoft::WRL::ComPtr<T> shader;
-            if (shaders_.find(name) != shaders_.end())
+            if (shaders_.find(name_) != shaders_.end())
             {
-                shader = shaders_.at(name);
+                shader = shaders_.at(name_);
             }
             else
             {
-                Blob cso(name);
+                Blob cso(name_);
                 HRESULT hr = CreateShader<T>(DXSystem::device_.Get(), cso, shader.GetAddressOf());
                 _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
                 std::lock_guard<std::mutex> lock(mutex_);
-                shaders_.emplace(std::make_pair(name, shader));
+                shaders_.emplace(std::make_pair(name_, shader));
             }
             return shader;
         }
@@ -109,10 +109,10 @@ namespace AbyssEngine
 
     public:
         //マップの中にある指定されたシェーダーを返す　一度も使用していないシェーダーならマップに追加した後に返す
-        static Microsoft::WRL::ComPtr<ID3D11VertexShader> Emplace(const char* name, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements);
+        static Microsoft::WRL::ComPtr<ID3D11VertexShader> Emplace(const char* name_, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements);
         
         //インプットレイアウト生成
-        static HRESULT AutoGenerateInputLayout(const char* name, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElemetDesc, size_t numElements);
+        static HRESULT AutoGenerateInputLayout(const char* name_, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElemetDesc, size_t numElements);
 
         static void Exterminate();
     };
