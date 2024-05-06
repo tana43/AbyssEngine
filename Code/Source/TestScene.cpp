@@ -1,9 +1,9 @@
 #include "TestScene.h"
 #include "SpriteRenderer.h"
 #include "Camera.h"
-#include "SkeltalMesh.h"
+#include "SkeletalMesh.h"
 #include "FbxMeshData.h"
-//#include "GltfModel.h"
+#include "GltfSkeletalMesh.h"
 #include "StaticMesh.h"
 #include "StaticMeshBatching.h"
 

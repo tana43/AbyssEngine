@@ -181,48 +181,48 @@ void GeometricSubstance::ExtractMaterials(const tinygltf::Model& transmissionMod
 {
 	ID3D11Device* device = DXSystem::device_.Get();
 
-	for (std::vector<tinygltf::Material>::const_reference transmission_material : transmissionModel.materials)
+	for (std::vector<tinygltf::Material>::const_reference transmissionMaterial : transmissionModel.materials)
 	{
 		std::vector<Material>::reference material_ = materials_.emplace_back();
 
-		material_.name_ = transmission_material.name;
+		material_.name_ = transmissionMaterial.name;
 
-		material_.data_.emissiveFactor_[0] = static_cast<float>(transmission_material.emissiveFactor.at(0));
-		material_.data_.emissiveFactor_[1] = static_cast<float>(transmission_material.emissiveFactor.at(1));
-		material_.data_.emissiveFactor_[2] = static_cast<float>(transmission_material.emissiveFactor.at(2));
+		material_.data_.emissiveFactor_[0] = static_cast<float>(transmissionMaterial.emissiveFactor.at(0));
+		material_.data_.emissiveFactor_[1] = static_cast<float>(transmissionMaterial.emissiveFactor.at(1));
+		material_.data_.emissiveFactor_[2] = static_cast<float>(transmissionMaterial.emissiveFactor.at(2));
 
-		material_.data_.alphaMode_ = transmission_material.alphaMode == "OPAQUE" ? 0 : transmission_material.alphaMode == "MASK" ? 1 : transmission_material.alphaMode == "BLEND" ? 2 : 0;
-		material_.data_.alphaCutoff_ = static_cast<float>(transmission_material.alphaCutoff);
-		material_.data_.doubleSided_ = transmission_material.doubleSided ? 1 : 0;
+		material_.data_.alphaMode_ = transmissionMaterial.alphaMode == "OPAQUE" ? 0 : transmissionMaterial.alphaMode == "MASK" ? 1 : transmissionMaterial.alphaMode == "BLEND" ? 2 : 0;
+		material_.data_.alphaCutoff_ = static_cast<float>(transmissionMaterial.alphaCutoff);
+		material_.data_.doubleSided_ = transmissionMaterial.doubleSided ? 1 : 0;
 
-		material_.data_.pbrMetallicRoughness_.basecolorFactor_[0] = static_cast<float>(transmission_material.pbrMetallicRoughness.baseColorFactor.at(0));
-		material_.data_.pbrMetallicRoughness_.basecolorFactor_[1] = static_cast<float>(transmission_material.pbrMetallicRoughness.baseColorFactor.at(1));
-		material_.data_.pbrMetallicRoughness_.basecolorFactor_[2] = static_cast<float>(transmission_material.pbrMetallicRoughness.baseColorFactor.at(2));
-		material_.data_.pbrMetallicRoughness_.basecolorFactor_[3] = static_cast<float>(transmission_material.pbrMetallicRoughness.baseColorFactor.at(3));
-		material_.data_.pbrMetallicRoughness_.basecolorTexture_.index_ = transmission_material.pbrMetallicRoughness.baseColorTexture.index;
-		material_.data_.pbrMetallicRoughness_.basecolorTexture_.texcoord_ = transmission_material.pbrMetallicRoughness.baseColorTexture.texCoord;
-		material_.data_.pbrMetallicRoughness_.basecolorTexture_.khrTextureTransform_.init(transmission_material.pbrMetallicRoughness.baseColorTexture.extensions);
-		material_.data_.pbrMetallicRoughness_.metallicFactor_ = static_cast<float>(transmission_material.pbrMetallicRoughness.metallicFactor);
-		material_.data_.pbrMetallicRoughness_.roughnessFactor_ = static_cast<float>(transmission_material.pbrMetallicRoughness.roughnessFactor);
-		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.index_ = transmission_material.pbrMetallicRoughness.metallicRoughnessTexture.index;
-		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.texcoord_ = transmission_material.pbrMetallicRoughness.metallicRoughnessTexture.texCoord;
-		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.khrTextureTransform_.init(transmission_material.pbrMetallicRoughness.metallicRoughnessTexture.extensions);
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[0] = static_cast<float>(transmissionMaterial.pbrMetallicRoughness.baseColorFactor.at(0));
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[1] = static_cast<float>(transmissionMaterial.pbrMetallicRoughness.baseColorFactor.at(1));
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[2] = static_cast<float>(transmissionMaterial.pbrMetallicRoughness.baseColorFactor.at(2));
+		material_.data_.pbrMetallicRoughness_.basecolorFactor_[3] = static_cast<float>(transmissionMaterial.pbrMetallicRoughness.baseColorFactor.at(3));
+		material_.data_.pbrMetallicRoughness_.basecolorTexture_.index_ = transmissionMaterial.pbrMetallicRoughness.baseColorTexture.index;
+		material_.data_.pbrMetallicRoughness_.basecolorTexture_.texcoord_ = transmissionMaterial.pbrMetallicRoughness.baseColorTexture.texCoord;
+		material_.data_.pbrMetallicRoughness_.basecolorTexture_.khrTextureTransform_.init(transmissionMaterial.pbrMetallicRoughness.baseColorTexture.extensions);
+		material_.data_.pbrMetallicRoughness_.metallicFactor_ = static_cast<float>(transmissionMaterial.pbrMetallicRoughness.metallicFactor);
+		material_.data_.pbrMetallicRoughness_.roughnessFactor_ = static_cast<float>(transmissionMaterial.pbrMetallicRoughness.roughnessFactor);
+		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.index_ = transmissionMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index;
+		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.texcoord_ = transmissionMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord;
+		material_.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.khrTextureTransform_.init(transmissionMaterial.pbrMetallicRoughness.metallicRoughnessTexture.extensions);
 
-		material_.data_.normalTexture_.index = transmission_material.normalTexture.index;
-		material_.data_.normalTexture_.texcoord = transmission_material.normalTexture.texCoord;
-		material_.data_.normalTexture_.scale_ = static_cast<float>(transmission_material.normalTexture.scale);
-		material_.data_.normalTexture_.khrTextureTransform_.init(transmission_material.normalTexture.extensions);
+		material_.data_.normalTexture_.index_ = transmissionMaterial.normalTexture.index;
+		material_.data_.normalTexture_.texcoord_ = transmissionMaterial.normalTexture.texCoord;
+		material_.data_.normalTexture_.scale_ = static_cast<float>(transmissionMaterial.normalTexture.scale);
+		material_.data_.normalTexture_.khrTextureTransform_.init(transmissionMaterial.normalTexture.extensions);
 
-		material_.data_.occlusionTexture_.index = transmission_material.occlusionTexture.index;
-		material_.data_.occlusionTexture_.texcoord = transmission_material.occlusionTexture.texCoord;
-		material_.data_.occlusionTexture_.strength = static_cast<float>(transmission_material.occlusionTexture.strength);
-		material_.data_.occlusionTexture_.khr_texture_transform.init(transmission_material.occlusionTexture.extensions);
+		material_.data_.occlusionTexture_.index_ = transmissionMaterial.occlusionTexture.index;
+		material_.data_.occlusionTexture_.texcoord_ = transmissionMaterial.occlusionTexture.texCoord;
+		material_.data_.occlusionTexture_.strength = static_cast<float>(transmissionMaterial.occlusionTexture.strength);
+		material_.data_.occlusionTexture_.khr_texture_transform.init(transmissionMaterial.occlusionTexture.extensions);
 
-		material_.data_.emissiveTexture_.index_ = transmission_material.emissiveTexture.index;
-		material_.data_.emissiveTexture_.texcoord_ = transmission_material.emissiveTexture.texCoord;
-		material_.data_.emissiveTexture_.khrTextureTransform_.init(transmission_material.emissiveTexture.extensions);
+		material_.data_.emissiveTexture_.index_ = transmissionMaterial.emissiveTexture.index;
+		material_.data_.emissiveTexture_.texcoord_ = transmissionMaterial.emissiveTexture.texCoord;
+		material_.data_.emissiveTexture_.khrTextureTransform_.init(transmissionMaterial.emissiveTexture.extensions);
 
-		for (tinygltf::ExtensionMap::const_reference extension : transmission_material.extensions)
+		for (tinygltf::ExtensionMap::const_reference extension : transmissionMaterial.extensions)
 		{
 			// KHR_materials_pbrSpecularGlossiness
 			// https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Archived/KHR_materials_pbrSpecularGlossiness/README.md
@@ -418,31 +418,31 @@ void GeometricSubstance::ExtractMaterials(const tinygltf::Model& transmissionMod
 
 	// Create material data as shader resource view on GPU
 	HRESULT hr;
-	std::vector<Material::CBuffer> material_data;
+	std::vector<Material::CBuffer> materialData;
 	for (std::vector<Material>::const_reference material_ : materials_)
 	{
-		material_data.emplace_back(material_.data_);
+		materialData.emplace_back(material_.data_);
 	}
-	Microsoft::WRL::ComPtr<ID3D11Buffer> material_buffer;
-	D3D11_BUFFER_DESC buffer_desc = {};
-	buffer_desc.ByteWidth = static_cast<UINT>(sizeof(Material::CBuffer) * material_data.size());
-	buffer_desc.StructureByteStride = sizeof(Material::CBuffer);
-	buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	buffer_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	buffer_desc.CPUAccessFlags = 0;
-	buffer_desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> materialBuffer;
+	D3D11_BUFFER_DESC bufferDesc = {};
+	bufferDesc.ByteWidth = static_cast<UINT>(sizeof(Material::CBuffer) * materialData.size());
+	bufferDesc.StructureByteStride = sizeof(Material::CBuffer);
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	D3D11_SUBRESOURCE_DATA subresource_data{};
-	subresource_data.pSysMem = material_data.data();
+	subresource_data.pSysMem = materialData.data();
 	subresource_data.SysMemPitch = 0;
 	subresource_data.SysMemSlicePitch = 0;
-	hr = device->CreateBuffer(&buffer_desc, &subresource_data, material_buffer.GetAddressOf());
+	hr = device->CreateBuffer(&bufferDesc, &subresource_data, materialBuffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{};
 	shader_resource_view_desc.Format = DXGI_FORMAT_UNKNOWN;
 	shader_resource_view_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 	shader_resource_view_desc.Buffer.ElementOffset = 0;
-	shader_resource_view_desc.Buffer.NumElements = static_cast<UINT>(material_data.size());
-	hr = device->CreateShaderResourceView(material_buffer.Get(), &shader_resource_view_desc, materialResourceView_.GetAddressOf());
+	shader_resource_view_desc.Buffer.NumElements = static_cast<UINT>(materialData.size());
+	hr = device->CreateShaderResourceView(materialBuffer.Get(), &shader_resource_view_desc, materialResourceView_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 }
@@ -486,8 +486,8 @@ void GeometricSubstance::ExtractTextures(const tinygltf::Model& transmissionMode
 		if (image.bufferView_ > -1)
 		{
 			const tinygltf::BufferView& bufferView = transmissionModel.bufferViews.at(image.bufferView_);
-			const tinygltf::Buffer& buffer_ = transmissionModel.buffers.at(bufferView.buffer);
-			const byte* data = buffer_.data.data() + bufferView.byteOffset;
+			const tinygltf::Buffer& buffer = transmissionModel.buffers.at(bufferView.buffer);
+			const byte* data = buffer.data.data() + bufferView.byteOffset;
 
 			std::wstring name_;
 			if (image.name_.size() > 0)
@@ -658,53 +658,53 @@ void GeometricSubstance::ExtractAnimations(const tinygltf::Model& transmissionMo
 	}
 }
 
-void GeometricSubstance::Animate(size_t animation_index, float time, std::vector<Node>& animated_nodes, bool loopback, size_t scene_index)
+void GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes, bool loopback, size_t sceneIndex)
 {
-	_ASSERT_EXPR(animated_nodes.size() > animation_index, L"");
-	_ASSERT_EXPR(animated_nodes.size() == nodes_.size(), L"");
+	_ASSERT_EXPR(animatedNodes.size() > animationIndex, L"");
+	_ASSERT_EXPR(animatedNodes.size() == nodes_.size(), L"");
 
-	std::function<size_t(const std::vector<float>&, float, float&, bool)> indexof = [](const std::vector<float>& keyframeTimes, float time, float& interpolation_factor, bool loopback)->size_t {
-		size_t keyframe_index = 0;
-		const size_t keyframe_count = keyframeTimes.size();
+	std::function<size_t(const std::vector<float>&, float, float&, bool)> indexof = [](const std::vector<float>& keyframeTimes, float time, float& interpolationFactor, bool loopback)->size_t {
+		size_t keyframeIndex = 0;
+		const size_t keyframeCount = keyframeTimes.size();
 
-		const float begin_time = keyframeTimes.at(0);
-		const float end_time = keyframeTimes.at(keyframe_count - 1);
+		const float beginTime = keyframeTimes.at(0);
+		const float endTime = keyframeTimes.at(keyframeCount - 1);
 
-		if (time > end_time)
+		if (time > endTime)
 		{
 			if (loopback)
 			{
-				time = fmodf(time, end_time);
+				time = fmodf(time, endTime);
 			}
 			else
 			{
-				interpolation_factor = 1.0f;
-				return keyframe_count - 2;
+				interpolationFactor = 1.0f;
+				return keyframeCount - 2;
 			}
 		}
-		else if (time < begin_time)
+		else if (time < beginTime)
 		{
-			interpolation_factor = 0.0f;
+			interpolationFactor = 0.0f;
 			return 0;
 		}
 
-		for (size_t time_index = 1; time_index < keyframe_count; ++time_index)
+		for (size_t timeIndex = 1; timeIndex < keyframeCount; ++timeIndex)
 		{
-			if (time < keyframeTimes.at(time_index))
+			if (time < keyframeTimes.at(timeIndex))
 			{
-				keyframe_index = std::max<size_t>(0LL, time_index - 1);
+				keyframeIndex = std::max<size_t>(0LL, timeIndex - 1);
 				break;
 			}
 		}
 
-		interpolation_factor = (time - keyframeTimes.at(keyframe_index + 0)) / (keyframeTimes.at(keyframe_index + 1) - keyframeTimes.at(keyframe_index + 0));
+		interpolationFactor = (time - keyframeTimes.at(keyframeIndex + 0)) / (keyframeTimes.at(keyframeIndex + 1) - keyframeTimes.at(keyframeIndex + 0));
 
-		return keyframe_index;
+		return keyframeIndex;
 	};
 
 	if (animations_.size() > 0)
 	{
-		const Animation& animation = animations_.at(animation_index);
+		const Animation& animation = animations_.at(animationIndex);
 		for (std::vector<Animation::Channel>::const_reference channel : animation.channels_)
 		{
 			if (channel.targetNode_ < 0)
@@ -723,17 +723,17 @@ void GeometricSubstance::Animate(size_t animation_index, float time, std::vector
 			if (channel.targetPath_ == "scale")
 			{
 				const std::vector<DirectX::XMFLOAT3>& keyframe_scales = animation.keyframeScales_.at(sampler.output_);
-				DirectX::XMStoreFloat3(&animated_nodes.at(channel.targetNode_).scale_, DirectX::XMVectorLerp(DirectX::XMLoadFloat3(&keyframe_scales.at(keyframe_index + 0)), DirectX::XMLoadFloat3(&keyframe_scales.at(keyframe_index + 1)), interpolation_factor));
+				DirectX::XMStoreFloat3(&animatedNodes.at(channel.targetNode_).scale_, DirectX::XMVectorLerp(DirectX::XMLoadFloat3(&keyframe_scales.at(keyframe_index + 0)), DirectX::XMLoadFloat3(&keyframe_scales.at(keyframe_index + 1)), interpolation_factor));
 			}
 			else if (channel.targetPath_ == "rotation")
 			{
 				const std::vector<DirectX::XMFLOAT4>& keyframeRotations = animation.keyframeRotations_.at(sampler.output_);
-				DirectX::XMStoreFloat4(&animated_nodes.at(channel.targetNode_).rotation_, DirectX::XMQuaternionNormalize(DirectX::XMQuaternionSlerp(DirectX::XMLoadFloat4(&keyframeRotations.at(keyframe_index + 0)), DirectX::XMLoadFloat4(&keyframeRotations.at(keyframe_index + 1)), interpolation_factor)));
+				DirectX::XMStoreFloat4(&animatedNodes.at(channel.targetNode_).rotation_, DirectX::XMQuaternionNormalize(DirectX::XMQuaternionSlerp(DirectX::XMLoadFloat4(&keyframeRotations.at(keyframe_index + 0)), DirectX::XMLoadFloat4(&keyframeRotations.at(keyframe_index + 1)), interpolation_factor)));
 			}
 			else if (channel.targetPath_ == "translation")
 			{
 				const std::vector<DirectX::XMFLOAT3>& keyframeTranslations = animation.keyframeTranslations_.at(sampler.output_);
-				DirectX::XMStoreFloat3(&animated_nodes.at(channel.targetNode_).translation_, DirectX::XMVectorLerp(DirectX::XMLoadFloat3(&keyframeTranslations.at(keyframe_index + 0)), DirectX::XMLoadFloat3(&keyframeTranslations.at(keyframe_index + 1)), interpolation_factor));
+				DirectX::XMStoreFloat3(&animatedNodes.at(channel.targetNode_).translation_, DirectX::XMVectorLerp(DirectX::XMLoadFloat3(&keyframeTranslations.at(keyframe_index + 0)), DirectX::XMLoadFloat3(&keyframeTranslations.at(keyframe_index + 1)), interpolation_factor));
 			}
 			else if (channel.targetPath_ == "weights")
 			{
@@ -744,11 +744,11 @@ void GeometricSubstance::Animate(size_t animation_index, float time, std::vector
 
 			}
 		}
-		CumulateTransforms(animated_nodes, scene_index);
+		CumulateTransforms(animatedNodes, sceneIndex);
 	}
 	else
 	{
-		animated_nodes = nodes_;
+		animatedNodes = nodes_;
 	}
 }
 void GeometricSubstance::CumulateTransforms(std::vector<Node>& nodes_, size_t scene_index)

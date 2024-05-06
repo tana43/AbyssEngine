@@ -47,24 +47,24 @@ void Bloom::Make(ID3D11ShaderResourceView* colorMap)
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>  cachedDepthStencilSstate;
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>  cachedRasterizerState;
 	Microsoft::WRL::ComPtr<ID3D11BlendState>  cachedBlendState;
-	FLOAT blend_factor[4];
-	UINT sample_mask;
+	FLOAT blendFactor[4];
+	UINT sampleMask;
 	deviceContext->OMGetDepthStencilState(cachedDepthStencilSstate.GetAddressOf(), 0);
 	deviceContext->RSGetState(cachedRasterizerState.GetAddressOf());
-	deviceContext->OMGetBlendState(cachedBlendState.GetAddressOf(), blend_factor, &sample_mask);
+	deviceContext->OMGetBlendState(cachedBlendState.GetAddressOf(), blendFactor, &sampleMask);
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer>  cached_constant_buffer;
-	deviceContext->PSGetConstantBuffers(8, 1, cached_constant_buffer.GetAddressOf());
+	Microsoft::WRL::ComPtr<ID3D11Buffer>  cachedConstantBuffer;
+	deviceContext->PSGetConstantBuffers(8, 1, cachedConstantBuffer.GetAddressOf());
 
 	// Bind states
 	DXSystem::SetDepthStencilState(DS_State::None_No_Write);
 	DXSystem::SetRasterizerState(RS_State::Cull_Back);
 	DXSystem::SetBlendState(BS_State::Off);
 
-	BloomConstants data{};
-	data.bloomExtractionThreshold_ = bloomExtractionThreshold_;
-	data.bloomIntensity_ = bloomIntensity_;
-	deviceContext->UpdateSubresource(constantBuffer_.Get(), 0, 0, &data, 0, 0);
+	BloomConstants data_{};
+	data_.bloomExtractionThreshold_ = bloomExtractionThreshold_;
+	data_.bloomIntensity_ = bloomIntensity_;
+	deviceContext->UpdateSubresource(constantBuffer_.Get(), 0, 0, &data_, 0, 0);
 	deviceContext->PSSetConstantBuffers(8, 1, constantBuffer_.GetAddressOf());
 
 	// Extracting bright color
@@ -124,20 +124,20 @@ void Bloom::Make(ID3D11ShaderResourceView* colorMap)
 	glowExtraction_->Clear( 0, 0, 0, 1);
 	glowExtraction_->Activate();
 	std::vector<ID3D11ShaderResourceView*> shaderResourceViews_;
-	for (size_t downsampled_index = 0; downsampled_index < DOWNSAMPLED_COUNT; ++downsampled_index)
+	for (size_t downsampledIndex = 0; downsampledIndex < DOWNSAMPLED_COUNT; ++downsampledIndex)
 	{
-		shaderResourceViews_.push_back(gaussianBlur_[downsampled_index][0]->shaderResourceViews_[0].Get());
+		shaderResourceViews_.push_back(gaussianBlur_[downsampledIndex][0]->shaderResourceViews_[0].Get());
 	}
 	bitBlockTransfer_->Blit(shaderResourceViews_.data(), 0, DOWNSAMPLED_COUNT, gaussianBlurUpsamplingPs_.Get());
 	glowExtraction_->Deactivate();
 	deviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
 	// Restore states
-	deviceContext->PSSetConstantBuffers(8, 1, cached_constant_buffer.GetAddressOf());
+	deviceContext->PSSetConstantBuffers(8, 1, cachedConstantBuffer.GetAddressOf());
 
 	deviceContext->OMSetDepthStencilState(cachedDepthStencilSstate.Get(), 0);
 	deviceContext->RSSetState(cachedRasterizerState.Get());
-	deviceContext->OMSetBlendState(cachedBlendState.Get(), blend_factor, sample_mask);
+	deviceContext->OMSetBlendState(cachedBlendState.Get(), blendFactor, sampleMask);
 
 	deviceContext->PSSetShaderResources(0, DOWNSAMPLED_COUNT, cachedShaderResourceViews_);
 	for (ID3D11ShaderResourceView* cachedShaderResourceView : cachedShaderResourceViews_)

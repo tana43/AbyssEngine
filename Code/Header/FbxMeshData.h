@@ -38,14 +38,14 @@ namespace AbyssEngine
         std::vector<Node> nodes_;
         int64_t indexOf(uint64_t uniqueId)const
         {
-            int64_t index{ 0 };
+            int64_t index_{ 0 };
             for (const Node& Node : nodes_)
             {
                 if (Node.uniqueId_ == uniqueId)
                 {
-                    return index;
+                    return index_;
                 }
-                ++index;
+                ++index_;
             }
             return -1;
         }
@@ -80,14 +80,14 @@ namespace AbyssEngine
         std::vector<Bone> bones_;
         int64_t indexof(uint64_t uniqueId) const
         {
-            int64_t index{ 0 };
+            int64_t index_{ 0 };
             for (const Bone& bone : bones_)
             {
                 if (bone.uniqueId_ == uniqueId)
                 {
-                    return index;
+                    return index_;
                 }
-                ++index;
+                ++index_;
             }
             return -1;
         }

@@ -7,8 +7,8 @@
 namespace AbyssEngine
 {
     class SpriteRenderer;
-    class SkeltalMesh;
-    class GltfSkeltalMesh;
+    class SkeletalMesh;
+    class GltfSkeletalMesh;
     class StaticMesh;
     class Camera;
     class Bloom;
@@ -25,8 +25,8 @@ namespace AbyssEngine
 
         void Reset();
         void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラーを登録する
-        void Add(const std::shared_ptr<SkeltalMesh>& mRend);//マネージャーにレンダラーを登録する
-        //void Add(const std::shared_ptr<GltfSkeltalMesh>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<SkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<GltfSkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<StaticMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<Camera>& camera_);//マネージャーにカメラを登録する
 

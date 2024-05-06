@@ -20,6 +20,7 @@ namespace AbyssEngine
         
         std::unordered_map<std::string, std::shared_ptr<Texture>> cacheTexture_{}; //テクスチャのキャッシュ
 
+
         void Exit();//後始末
 
     private:

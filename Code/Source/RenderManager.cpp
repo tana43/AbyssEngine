@@ -5,7 +5,7 @@
 #include "Actor.h"
 #include "Misc.h"
 #include "Camera.h"
-#include "SkeltalMesh.h"
+#include "SkeletalMesh.h"
 #include "FbxMeshData.h"
 #include "Texture.h"
 #include "StaticMeshBatching.h"
@@ -118,15 +118,15 @@ void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)
 	renderer2DList_.emplace_back(mRend);
 }
 
-void RenderManager::Add(const shared_ptr<SkeltalMesh>& mRend)
+void RenderManager::Add(const shared_ptr<SkeletalMesh>& mRend)
 {
 	renderer3DList_.emplace_back(mRend);
 }
 
-//void RenderManager::Add(const shared_ptr<GltfSkeltalMesh>& mRend)
-//{
-//	renderer3DList_.emplace_back(mRend);
-//}
+void RenderManager::Add(const shared_ptr<GltfSkeletalMesh>& mRend)
+{
+	renderer3DList_.emplace_back(mRend);
+}
 
 void RenderManager::Add(const shared_ptr<StaticMesh>& mRend)
 {

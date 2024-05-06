@@ -11,11 +11,11 @@ namespace AbyssEngine
     public:
         //Actorにアタッチされたコンポーネントを取得（存在しない場合nullptr）
         template<class T>
-        std::shared_ptr<T> GetComponent(); 
+        std::shared_ptr<T> GetComponent();
 
         //Actorにコンポーネントをアタッチする（テンプレート版）
         template<class T>
-        std::shared_ptr<T> AddComponent();                                      
+        std::shared_ptr<T> AddComponent();
 
         //Actorにコンポーネントをアタッチする（クラス名版）
         //std::shared_ptr<Component> AddComponent(const std::string& className_); 

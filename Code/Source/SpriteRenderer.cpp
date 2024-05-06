@@ -101,68 +101,68 @@ void SpriteRenderer::RecalculateFrame()
     if (!visibility_)return;
 
     //頂点データ設定
-    Vertex data[4];
+    Vertex data_[4];
 
     const Vector3 transPos = actor_->GetTransform()->GetPosition();
     const Vector3 transScale = actor_->GetTransform()->GetScale();
     const Vector2 scaledSize = size_ * Vector2(transScale.x,transScale.y);
 
-    data[0].pos_.x = transPos.x;
-    data[0].pos_.y = transPos.y;
-    data[0].pos_.z = 0.0f;
+    data_[0].pos_.x = transPos.x;
+    data_[0].pos_.y = transPos.y;
+    data_[0].pos_.z = 0.0f;
 
-    data[1].pos_.x = transPos.x + scaledSize.x;
-    data[1].pos_.y = transPos.y;
-    data[1].pos_.z = 0.0f;
+    data_[1].pos_.x = transPos.x + scaledSize.x;
+    data_[1].pos_.y = transPos.y;
+    data_[1].pos_.z = 0.0f;
 
-    data[2].pos_.x = transPos.x;
-    data[2].pos_.y = transPos.y + scaledSize.y;
-    data[2].pos_.z = 0.0f;
+    data_[2].pos_.x = transPos.x;
+    data_[2].pos_.y = transPos.y + scaledSize.y;
+    data_[2].pos_.z = 0.0f;
 
-    data[3].pos_.x = transPos.x + scaledSize.x;
-    data[3].pos_.y = transPos.y + scaledSize.y;
-    data[3].pos_.z = 0.0f;
+    data_[3].pos_.x = transPos.x + scaledSize.x;
+    data_[3].pos_.y = transPos.y + scaledSize.y;
+    data_[3].pos_.z = 0.0f;
 
 	// 中心座標を原点へ
 	const float mx = transPos.x + scaledSize.x * 0.5f;
 	const float my = transPos.y + scaledSize.y * 0.5f;
-	data[0].pos_.x -= mx; data[0].pos_.y -= my;
-	data[1].pos_.x -= mx; data[1].pos_.y -= my;
-	data[2].pos_.x -= mx; data[2].pos_.y -= my;
-	data[3].pos_.x -= mx; data[3].pos_.y -= my;
+	data_[0].pos_.x -= mx; data_[0].pos_.y -= my;
+	data_[1].pos_.x -= mx; data_[1].pos_.y -= my;
+	data_[2].pos_.x -= mx; data_[2].pos_.y -= my;
+	data_[3].pos_.x -= mx; data_[3].pos_.y -= my;
 
 	const float z = transform_->GetEulerAngles().z;
 	const float cos = cosf(XMConvertToRadians(z));
 	const float sin = sinf(XMConvertToRadians(z));
 
-	float rx = data[0].pos_.x;
-	float ry = data[0].pos_.y;
-	data[0].pos_.x = cos * rx + -sin * ry;
-	data[0].pos_.y = sin * rx + cos * ry;
+	float rx = data_[0].pos_.x;
+	float ry = data_[0].pos_.y;
+	data_[0].pos_.x = cos * rx + -sin * ry;
+	data_[0].pos_.y = sin * rx + cos * ry;
 
-	rx = data[1].pos_.x;
-	ry = data[1].pos_.y;
-	data[1].pos_.x = cos * rx + -sin * ry;
-	data[1].pos_.y = sin * rx + cos * ry;
+	rx = data_[1].pos_.x;
+	ry = data_[1].pos_.y;
+	data_[1].pos_.x = cos * rx + -sin * ry;
+	data_[1].pos_.y = sin * rx + cos * ry;
 
-	rx = data[2].pos_.x;
-	ry = data[2].pos_.y;
-	data[2].pos_.x = cos * rx + -sin * ry;
-	data[2].pos_.y = sin * rx + cos * ry;
+	rx = data_[2].pos_.x;
+	ry = data_[2].pos_.y;
+	data_[2].pos_.x = cos * rx + -sin * ry;
+	data_[2].pos_.y = sin * rx + cos * ry;
 
-	rx = data[3].pos_.x;
-	ry = data[3].pos_.y;
-	data[3].pos_.x = cos * rx + -sin * ry;
-	data[3].pos_.y = sin * rx + cos * ry;
+	rx = data_[3].pos_.x;
+	ry = data_[3].pos_.y;
+	data_[3].pos_.x = cos * rx + -sin * ry;
+	data_[3].pos_.y = sin * rx + cos * ry;
 
 	// 動かした分戻す
-	data[0].pos_.x += mx; data[0].pos_.y += my;
-	data[1].pos_.x += mx; data[1].pos_.y += my;
-	data[2].pos_.x += mx; data[2].pos_.y += my;
-	data[3].pos_.x += mx; data[3].pos_.y += my;
+	data_[0].pos_.x += mx; data_[0].pos_.y += my;
+	data_[1].pos_.x += mx; data_[1].pos_.y += my;
+	data_[2].pos_.x += mx; data_[2].pos_.y += my;
+	data_[3].pos_.x += mx; data_[3].pos_.y += my;
 
 	// 正規化デバイス座標系
-	for (auto& i : data)
+	for (auto& i : data_)
 	{
 		i.pos_.x = 2.0f * i.pos_.x / DXSystem::GetScreenWidth() - 1.0f;
 		i.pos_.y = 1.0f - 2.0f * i.pos_.y / DXSystem::GetScreenHeight();
@@ -170,14 +170,14 @@ void SpriteRenderer::RecalculateFrame()
 	}
 
 	//テクスチャ座標設定
-	data[0].tex_.x = uvOrigin_.x;
-	data[0].tex_.y = uvOrigin_.y;
-	data[1].tex_.x = uvOrigin_.x + uvSize_.x;
-	data[1].tex_.y = uvOrigin_.y;
-	data[2].tex_.x = uvOrigin_.x;
-	data[2].tex_.y = uvOrigin_.y + uvSize_.y;
-	data[3].tex_.x = uvOrigin_.x + uvSize_.x;
-	data[3].tex_.y = uvOrigin_.y + uvSize_.y;
+	data_[0].tex_.x = uvOrigin_.x;
+	data_[0].tex_.y = uvOrigin_.y;
+	data_[1].tex_.x = uvOrigin_.x + uvSize_.x;
+	data_[1].tex_.y = uvOrigin_.y;
+	data_[2].tex_.x = uvOrigin_.x;
+	data_[2].tex_.y = uvOrigin_.y + uvSize_.y;
+	data_[3].tex_.x = uvOrigin_.x + uvSize_.x;
+	data_[3].tex_.y = uvOrigin_.y + uvSize_.y;
 
 	/*data[0].tex_.x = 0.0f;
 	data[0].tex_.y = 0.0f;
@@ -191,24 +191,24 @@ void SpriteRenderer::RecalculateFrame()
 	//UV座標
 	const float w = static_cast<float>(texture_->GetWidth());
 	const float h = static_cast<float>(texture_->GetHeight());
-	for (auto& i : data)
+	for (auto& i : data_)
 	{
 		i.tex_.x = i.tex_.x / w;
 		i.tex_.y = i.tex_.y / h;
 	}
 
 	//頂点カラー
-	data[0].color_ = color_;
-	data[1].color_ = color_;
-	data[2].color_ = color_;
-	data[3].color_ = color_;
+	data_[0].color_ = color_;
+	data_[1].color_ = color_;
+	data_[2].color_ = color_;
+	data_[3].color_ = color_;
 
 	constexpr UINT subresourceIndex = 0;
 	D3D11_MAPPED_SUBRESOURCE mapped;
 	const auto hr = DXSystem::deviceContext_->Map(vertexBuffer_.Get(), subresourceIndex, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 	if (SUCCEEDED(hr))
 	{
-		memcpy(mapped.pData, data, sizeof(data));
+		memcpy(mapped.pData, data_, sizeof(data_));
 		DXSystem::deviceContext_->Unmap(vertexBuffer_.Get(), subresourceIndex);
 	}
 }

@@ -8,7 +8,7 @@ namespace AbyssEngine
     class Texture : public Asset
     {
     public:
-        static HRESULT LoadTextureFromMemory(const void* data, size_t size,
+        static HRESULT LoadTextureFromMemory(const void* data_, size_t size,
             ID3D11ShaderResourceView** shaderResourceView);
         static HRESULT LoadTextureFromFile(const std::string& texturePath,ID3D11ShaderResourceView** shaderResourceView, 
             D3D11_TEXTURE2D_DESC* texture2dDesc);

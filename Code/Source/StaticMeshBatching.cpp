@@ -566,29 +566,29 @@ void StaticMeshBatching::FetchMaterials(const tinygltf::Model& gltfModel)
 	}
 
 	// Create material data as shader resource view on GPU
-	std::vector<Material::CBuffer> material_data;
+	std::vector<Material::CBuffer> materialData;
 	for (std::vector<Material>::const_reference material_ : materials_)
 	{
-		material_data.emplace_back(material_.data_);
+		materialData.emplace_back(material_.data_);
 	}
 
 	HRESULT hr;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> material_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> materialBuffer;
 	D3D11_BUFFER_DESC buffer_desc{};
-	buffer_desc.ByteWidth = static_cast<UINT>(sizeof(Material::CBuffer) * material_data.size());
+	buffer_desc.ByteWidth = static_cast<UINT>(sizeof(Material::CBuffer) * materialData.size());
 	buffer_desc.StructureByteStride = sizeof(Material::CBuffer);
 	buffer_desc.Usage = D3D11_USAGE_DEFAULT;
 	buffer_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	buffer_desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	D3D11_SUBRESOURCE_DATA subresource_data{};
-	subresource_data.pSysMem = material_data.data();
-	hr = device->CreateBuffer(&buffer_desc, &subresource_data, material_buffer.GetAddressOf());
+	subresource_data.pSysMem = materialData.data();
+	hr = device->CreateBuffer(&buffer_desc, &subresource_data, materialBuffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc{};
 	shader_resource_view_desc.Format = DXGI_FORMAT_UNKNOWN;
 	shader_resource_view_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-	shader_resource_view_desc.Buffer.NumElements = static_cast<UINT>(material_data.size());
-	hr = device->CreateShaderResourceView(material_buffer.Get(), &shader_resource_view_desc, materialResourceView_.GetAddressOf());
+	shader_resource_view_desc.Buffer.NumElements = static_cast<UINT>(materialData.size());
+	hr = device->CreateShaderResourceView(materialBuffer.Get(), &shader_resource_view_desc, materialResourceView_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 }
 void StaticMeshBatching::FetchTextures(const tinygltf::Model& gltfModel)
@@ -620,10 +620,10 @@ void StaticMeshBatching::FetchTextures(const tinygltf::Model& gltfModel)
 		{
 			const tinygltf::BufferView& bufferView{ gltfModel.bufferViews.at(gltfImage.bufferView) };
 			const tinygltf::Buffer& buffer_{ gltfModel.buffers.at(bufferView.buffer) };
-			const BYTE* data = buffer_.data.data() + bufferView.byteOffset;
+			const BYTE* data_ = buffer_.data.data() + bufferView.byteOffset;
 
 			ID3D11ShaderResourceView* textureResourceView_{};
-			hr = AbyssEngine::Texture::LoadTextureFromMemory(data, bufferView.byteLength, &textureResourceView_);
+			hr = AbyssEngine::Texture::LoadTextureFromMemory(data_, bufferView.byteLength, &textureResourceView_);
 			if (hr == S_OK)
 			{
 				textureResourceViews_.emplace_back().Attach(textureResourceView_);

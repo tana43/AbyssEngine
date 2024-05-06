@@ -15,17 +15,17 @@ using namespace AbyssEngine;
 using namespace std;
 using namespace DirectX;
 
-HRESULT Texture::LoadTextureFromMemory(const void* data, size_t size, ID3D11ShaderResourceView** shaderResourceView)
+HRESULT Texture::LoadTextureFromMemory(const void* data_, size_t size, ID3D11ShaderResourceView** shaderResourceView)
 {
     HRESULT hr = S_OK;
     Microsoft::WRL::ComPtr<ID3D11Resource> resource;
 
     auto* device = DXSystem::device_.Get();
-    hr = CreateDDSTextureFromMemory(device,reinterpret_cast<const uint8_t*>(data),
+    hr = CreateDDSTextureFromMemory(device,reinterpret_cast<const uint8_t*>(data_),
         size, resource.GetAddressOf(), shaderResourceView);
     if (hr != S_OK)
     {
-        hr = CreateWICTextureFromMemory(device, reinterpret_cast<const uint8_t*>(data),
+        hr = CreateWICTextureFromMemory(device, reinterpret_cast<const uint8_t*>(data_),
             size, resource.GetAddressOf(), shaderResourceView);
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }

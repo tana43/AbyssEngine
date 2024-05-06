@@ -117,7 +117,7 @@
     <ClInclude Include="Code\Header\SpriteRenderer.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\SkeltalMesh.h">
+    <ClInclude Include="Code\Header\SkeletalMesh.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Transform.h">
@@ -195,7 +195,10 @@
     <ClInclude Include="Code\Header\FullscreenQuad.h">
       <Filter>Code\Header\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\GltfSkeltalMesh.h">
+    <ClInclude Include="Code\Header\GltfSkeletalMesh.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\BoundingBox.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
   </ItemGroup>
@@ -317,7 +320,7 @@
     <ClCompile Include="Code\Source\FullscreenQuad.cpp">
       <Filter>Code\Source\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\GltfSkeltalMesh.cpp">
+    <ClCompile Include="Code\Source\GltfSkeletalMesh.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -367,6 +370,27 @@
     <FxCompile Include="Shader\GlowExtractionPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\CsmOpaqueGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmOpaqueSkeletalMeshVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmOpaqueStaticMeshVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmTransparentGS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmTransparentPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmTransparentSkeletalMeshVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmTransparentStaticMeshVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Mesh.hlsli">
@@ -385,6 +409,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\Bloom.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\CsmOpaque.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\CsmTransparent.hlsli">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

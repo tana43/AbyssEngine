@@ -614,7 +614,7 @@ void FbxMeshData::CreateComObjects(ID3D11Device* device, const char* fbxFilename
         bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
         subresourceData.pSysMem = mesh_.indices_.data();
         hr = device->CreateBuffer(&bufferDesc, &subresourceData,
-            mesh_.indexBuffer_.ReleaseAndGetAddressOf());
+        mesh_.indexBuffer_.ReleaseAndGetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 #if 1
@@ -706,13 +706,13 @@ void FbxMeshData::Render(
 
         //immediateContext->PSSetShaderResources(0, 1, materials.cbegin()->second.shaderResourceViews[0].GetAddressOf());
 
-        Constants data;
+        Constants data_;
         if (keyframe && keyframe->nodes_.size() > 0)
         {
             //メッシュのglobalTransformが時間軸で変化しているので、その行列をキーフレームから取得する
             //取得したglobalTransform行列を定数バッファのワールド交換行列に合成する
             const Animation::Keyframe::Node& meshNode{keyframe->nodes_.at(mesh_.nodeIndex_)};
-            DirectX::XMStoreFloat4x4(&data.world_, DirectX::XMLoadFloat4x4(&meshNode.globalTransform_) * DirectX::XMLoadFloat4x4(&world));
+            DirectX::XMStoreFloat4x4(&data_.world_, DirectX::XMLoadFloat4x4(&meshNode.globalTransform_) * DirectX::XMLoadFloat4x4(&world));
 
             const size_t boneCount{ mesh_.bindPose_.bones_.size() };
             _ASSERT_EXPR(boneCount < MAX_BONES, L"The value of the 'boneCount' has exceeded MAX_BONES.");
@@ -722,7 +722,7 @@ void FbxMeshData::Render(
             {
                 const Skeleton::Bone& bone{mesh_.bindPose_.bones_.at(boneIndex)};
                 const Animation::Keyframe::Node& boneNode{keyframe->nodes_.at(bone.nodeIndex_)};
-                DirectX::XMStoreFloat4x4(&data.boneTransforms_[boneIndex],
+                DirectX::XMStoreFloat4x4(&data_.boneTransforms_[boneIndex],
                     DirectX::XMLoadFloat4x4(&bone.offsetTransform_) *
                     DirectX::XMLoadFloat4x4(&boneNode.globalTransform_) *
                     DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&mesh_.defaultGlobalTransform_))
@@ -731,22 +731,22 @@ void FbxMeshData::Render(
         }
         else//アニメーションを持っていない
         {
-            DirectX::XMStoreFloat4x4(&data.world_,
+            DirectX::XMStoreFloat4x4(&data_.world_,
                 DirectX::XMLoadFloat4x4(&mesh_.defaultGlobalTransform_) * DirectX::XMLoadFloat4x4(&world));
             for (size_t boneIndex = 0; boneIndex < MAX_BONES; ++boneIndex)
             {
-                data.boneTransforms_[boneIndex] = { 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
+                data_.boneTransforms_[boneIndex] = { 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
             }
         }
         for (const Mesh::Subset& subset : mesh_.subsets_)
         {
             const Material& material_{ materials_.at(subset.materialUniqueId_) };
-            DirectX::XMStoreFloat4(&data.materialColor_,
+            DirectX::XMStoreFloat4(&data_.materialColor_,
                 DirectX::XMVectorMultiply(
                     DirectX::XMLoadFloat4(&materialColor),
                     DirectX::XMLoadFloat4(&material_.Kd_))
             );
-            immediateContext->UpdateSubresource(constantBuffer_.Get(), 0, 0, &data, 0, 0);
+            immediateContext->UpdateSubresource(constantBuffer_.Get(), 0, 0, &data_, 0, 0);
             immediateContext->VSSetConstantBuffers(1, 1, constantBuffer_.GetAddressOf());
 
 #if 0

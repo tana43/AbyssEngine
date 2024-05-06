@@ -46,10 +46,10 @@ namespace AbyssEngine
 	template <class T>
 	struct ConstantBuffer
 	{
-		T data;
-		ConstantBuffer(ID3D11Device* device)
+		T data_;
+		ConstantBuffer()
 		{
-
+			ID3D11Device* device = DXSystem::device_.Get();
 #if 0
 			assert(sizeof(T) % 16 == 0 && L"constant buffer's need to be 16 byte aligned");
 #endif
@@ -83,9 +83,9 @@ namespace AbyssEngine
 
 		void Activate(int slot, CBufferUsage usage)
 		{
-			Activate(slot, usage, &data);
+			Activate(slot, usage, &data_);
 		}
-		void Activate(int slot, CBufferUsage usage, const T* data)
+		void Activate(int slot, CBufferUsage usage, const T* data_)
 		{
 			ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
 
@@ -96,7 +96,7 @@ namespace AbyssEngine
 
 			hr = deviceContext->Map(bufferObject_.Get(), 0, map, 0, &mappedBuffer);
 			assert(SUCCEEDED(hr) && HrTrace(hr));
-			memcpy_s(mappedBuffer.pData, sizeof(T), data, sizeof(T));
+			memcpy_s(mappedBuffer.pData, sizeof(T), data_, sizeof(T));
 			deviceContext->Unmap(bufferObject_.Get(), 0);
 #else
 			immediate_context->UpdateSubresource(buffer_object.Get(), 0, 0, &data, 0, 0);

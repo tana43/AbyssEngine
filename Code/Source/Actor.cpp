@@ -37,7 +37,7 @@ void Actor::Release()
 	//各コンポーネントを削除する	
 	for (auto& c : componentList_)
 	{
-		c->actor_.reset(); 
+		c->actor_.reset();
 		c->transform_.reset();
 		c.reset();
 	}

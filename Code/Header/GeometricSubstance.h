@@ -21,12 +21,12 @@
 
 namespace AbyssEngine
 {
-	enum class DrawPass { opaque, transmission, /*emissive*/ };
+	enum class DrawPass { Opaque, Transmission, /*emissive*/ };
 
 	class GeometricSubstance
 	{
 	protected:
-		GeometricSubstance(ID3D11Device* device, const std::string& filename) : name_(filename), primitiveConstants_(std::make_unique<decltype(primitiveConstants_)::element_type>(device)) {}
+		GeometricSubstance(const std::string& filename) : name_(filename), primitiveConstants_(std::make_unique<decltype(primitiveConstants_)::element_type>()) {}
 		GeometricSubstance(const GeometricSubstance& rhs) = delete;
 		GeometricSubstance& operator=(const GeometricSubstance& rhs) = delete;
 		GeometricSubstance(GeometricSubstance&&) noexcept = delete;
@@ -100,7 +100,7 @@ namespace AbyssEngine
 		};
 		std::vector<Node> nodes_;
 
-		struct buffer_view
+		struct BufferView
 		{
 			DXGI_FORMAT format_ = DXGI_FORMAT_UNKNOWN;
 			int buffer_ = -1;
@@ -122,8 +122,8 @@ namespace AbyssEngine
 			DirectX::XMFLOAT3 minValue_ = { +(std::numeric_limits<float>::max)(), +(std::numeric_limits<float>::max)(), +(std::numeric_limits<float>::max)()};
 			DirectX::XMFLOAT3 maxValue_ = { -(std::numeric_limits<float>::max)(), -(std::numeric_limits<float>::max)(), -(std::numeric_limits<float>::max)()};
 
-			std::map<std::string, buffer_view> vertexBufferViews_;
-			buffer_view indexBufferView_;
+			std::map<std::string, BufferView> vertexBufferViews_;
+			BufferView indexBufferView_;
 
 			size_t indexLocation_ = 0;
 			size_t indexCount_ = 0;
@@ -249,8 +249,8 @@ namespace AbyssEngine
 		// https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#reference-material-normaltextureinfo
 		struct NormalTextureInfo
 		{
-			int index = -1;  // required
-			int texcoord = 0;    // The set index of texture's TEXCOORD attribute used for texture coordinate mapping.
+			int index_ = -1;  // required
+			int texcoord_ = 0;    // The set index of texture's TEXCOORD attribute used for texture coordinate mapping.
 			float scale_ = 1;    // scaledNormal = normalize((<sampled normal texture value> * 2.0 - 1.0) * vec3(<normal scale>, <normal scale>, 1.0))
 
 			KhrTextureTransform khrTextureTransform_;
@@ -261,11 +261,11 @@ namespace AbyssEngine
 				{
 					if (value.first == "index")
 					{
-						index = value.second.GetNumberAsInt();
+						index_ = value.second.GetNumberAsInt();
 					}
 					else if (value.first == "texCoord")
 					{
-						texcoord = value.second.GetNumberAsInt();
+						texcoord_ = value.second.GetNumberAsInt();
 					}
 					else if (value.first == "scale")
 					{
@@ -281,8 +281,8 @@ namespace AbyssEngine
 		// https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#reference-material-occlusiontextureinfo
 		struct OcclusionTextureInfo
 		{
-			int index = -1;   // required
-			int texcoord = 0;     // The set index of texture's TEXCOORD attribute used for texture coordinate mapping.
+			int index_ = -1;   // required
+			int texcoord_ = 0;     // The set index of texture's TEXCOORD attribute used for texture coordinate mapping.
 			float strength = 1;  // A scalar parameter controlling the amount of occlusion applied. A value of `0.0` means no occlusion. A value of `1.0` means full occlusion. This value affects the final occlusion value as: `1.0 + strength * (<sampled occlusion texture value> - 1.0)`.
 
 			KhrTextureTransform khr_texture_transform;
