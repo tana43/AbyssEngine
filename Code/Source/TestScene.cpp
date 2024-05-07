@@ -21,10 +21,10 @@ void TestScene::Initialize()
     p0->AddComponent<SkeltalMesh>("./Assets/Models/nico.fbx");*/
 
     //テスト用のオブジェクト
-    const auto& p1 = InstanceActor("testGltf");
+    /*const auto& p1 = InstanceActor("testGltf");
     p1->AddComponent<StaticMesh>(
         "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
-    );
+    );*/
     //p1->AddComponent<GltfSkeltalMesh>(
     //    "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //    //"./Assets/Models/UE/AssetsvilleTown.glb"
@@ -35,7 +35,7 @@ void TestScene::Initialize()
     //);
 
     const auto& p2 = InstanceActor("testGltf_2");
-    p2->AddComponent<StaticMesh>(
+    p2->AddComponent<SkeletalMesh>(
         "./Assets/Models/robot_oj.glb"
     );
 }

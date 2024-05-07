@@ -63,8 +63,8 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 		{ "JOINTS", 0, DXGI_FORMAT_R16G16B16A16_UINT, 5, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "WEIGHTS", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 6, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	skeletalMeshVs_ = Shader<ID3D11VertexShader>::Emplace("skeletal_mesh_vs.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
-	skeletalMeshPs_ = Shader<ID3D11PixelShader>::Emplace("GeometricSubstance_ps.cso");
+	skeletalMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/SkeletalMeshVS.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
+	skeletalMeshPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstancePS.cso");
 
 	D3D11_INPUT_ELEMENT_DESC csmOpaqueInputElementDesc[] =
 	{
@@ -72,8 +72,8 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 		{ "JOINTS", 0, DXGI_FORMAT_R16G16B16A16_UINT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "WEIGHTS", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	csmOpaqueSkeletalMeshVs_	= Shader<ID3D11VertexShader>::Emplace("csm_opaque_skeletal_mesh_vs.cso",csmOpaqueInputLayout_.ReleaseAndGetAddressOf(), csmOpaqueInputElementDesc, _countof(csmOpaqueInputElementDesc));
-	csmOpaqueGs_				= Shader<ID3D11GeometryShader>::Emplace("csm_opaque_gs.cso");
+	csmOpaqueSkeletalMeshVs_	= Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmOpaqueSkeletalMeshVS.cso",csmOpaqueInputLayout_.ReleaseAndGetAddressOf(), csmOpaqueInputElementDesc, _countof(csmOpaqueInputElementDesc));
+	csmOpaqueGs_				= Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmOpaqueGS.cso");
 
 	D3D11_INPUT_ELEMENT_DESC csmTransparentInputElementDesc[]
 	{
@@ -82,9 +82,9 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 		{ "WEIGHTS", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	csmTransparentSkeletalMeshVs_	= Shader<ID3D11VertexShader>::Emplace("csm_transparent_skeletal_mesh_vs.cso",csm_transparent_input_layout.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
-	csmTransparentGs_				= Shader<ID3D11GeometryShader>::Emplace("csm_transparent_gs.cso");
-	csmTransparentPs_				= Shader<ID3D11PixelShader>::Emplace("csm_transparent_ps.cso");
+	csmTransparentSkeletalMeshVs_	= Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmTransparentSkeletalMeshVS.cso",csm_transparent_input_layout.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
+	csmTransparentGs_				= Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmTransparentGS.cso");
+	csmTransparentPs_				= Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/CsmTransparentPS.cso");
 
 	jointConstants_ = std::make_unique<decltype(jointConstants_)::element_type>();
 }

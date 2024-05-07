@@ -6,6 +6,7 @@
 #include "Misc.h"
 #include "Camera.h"
 #include "SkeletalMesh.h"
+#include "GltfSkeletalMesh.h"
 #include "FbxMeshData.h"
 #include "Texture.h"
 #include "StaticMeshBatching.h"
@@ -123,10 +124,10 @@ void RenderManager::Add(const shared_ptr<SkeletalMesh>& mRend)
 	renderer3DList_.emplace_back(mRend);
 }
 
-void RenderManager::Add(const shared_ptr<GltfSkeletalMesh>& mRend)
-{
-	renderer3DList_.emplace_back(mRend);
-}
+//void RenderManager::Add(const shared_ptr<GltfSkeletalMesh>& mRend)
+//{
+//	renderer3DList_.emplace_back(mRend);
+//}
 
 void RenderManager::Add(const shared_ptr<StaticMesh>& mRend)
 {

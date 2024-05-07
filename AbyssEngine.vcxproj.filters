@@ -70,6 +70,9 @@
     <Filter Include="Code\Header\Effect">
       <UniqueIdentifier>{9d15af0e-ee46-4bc3-b496-db50c6ae5f52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Gltf">
+      <UniqueIdentifier>{d5881f1e-c56a-48a0-88cd-2b2466e97093}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -337,15 +340,6 @@
     <FxCompile Include="Shader\MeshVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\GltfMeshPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GltfMeshVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GltfMeshStaticBatchingVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\FinalPassPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
@@ -380,23 +374,29 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\CsmTransparentGS.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Gltf</Filter>
     </FxCompile>
     <FxCompile Include="Shader\CsmTransparentPS.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Gltf</Filter>
     </FxCompile>
     <FxCompile Include="Shader\CsmTransparentSkeletalMeshVS.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Gltf</Filter>
     </FxCompile>
     <FxCompile Include="Shader\CsmTransparentStaticMeshVS.hlsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Gltf</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GeometricSubstancePS.hlsl">
+      <Filter>Shader\Gltf</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SkeletalMeshVS.hlsl">
+      <Filter>Shader\Gltf</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\StaticMeshVS.hlsl">
+      <Filter>Shader\Gltf</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Mesh.hlsli">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="Shader\GltfMesh.hlsli">
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
@@ -414,7 +414,22 @@
     <None Include="Shader\CsmOpaque.hlsli">
       <Filter>Shader</Filter>
     </None>
+    <None Include="Shader\Common.hlsli">
+      <Filter>Shader</Filter>
+    </None>
     <None Include="Shader\CsmTransparent.hlsli">
+      <Filter>Shader\Gltf</Filter>
+    </None>
+    <None Include="Shader\GeometricSubstance.hlsli">
+      <Filter>Shader\Gltf</Filter>
+    </None>
+    <None Include="Shader\Material.hlsli">
+      <Filter>Shader\Gltf</Filter>
+    </None>
+    <None Include="Shader\PhysicallyBasedRendering.hlsli">
+      <Filter>Shader\Gltf</Filter>
+    </None>
+    <None Include="Shader\Constants.hlsli">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

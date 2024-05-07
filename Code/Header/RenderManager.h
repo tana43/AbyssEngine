@@ -26,7 +26,7 @@ namespace AbyssEngine
         void Reset();
         void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<SkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
-        void Add(const std::shared_ptr<GltfSkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
+        //void Add(const std::shared_ptr<GltfSkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<StaticMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<Camera>& camera_);//マネージャーにカメラを登録する
 

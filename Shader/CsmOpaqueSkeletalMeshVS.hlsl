@@ -2,7 +2,7 @@
 #include "CsmOpaque.hlsli"
 #include "constants.hlsli"
 
-VS_OUT_CSM main(float3 position : POSITION, uint4 joints : JOINTS, float4 weights : WEIGHTS, uint instance_id : SV_INSTANCEID)
+VS_OUT_CSM main(float3 position : POSITION, uint4 joints : JOINTS, float4 weights : WEIGHTS, uint instanceId : SV_INSTANCEID)
 {
     VS_OUT_CSM vout;
 
@@ -13,8 +13,8 @@ VS_OUT_CSM main(float3 position : POSITION, uint4 joints : JOINTS, float4 weight
         position = mul(float4(position.xyz, 1), skin_matrix).xyz;
     }
 	
-    vout.position = mul(float4(position.xyz, 1), mul(primitive_data.transform, csm_data.view_projection_matrices[instance_id]));
-    vout.slice = primitiveData.start_instance_location + instance_id;
+    vout.position = mul(float4(position.xyz, 1), mul(primitiveData.transform, csmData.viewProjectionMatrices[instanceId]));
+    vout.slice = primitiveData.startInstanceLocation + instanceId;
 
     return vout;
 }
