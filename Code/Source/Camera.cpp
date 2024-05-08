@@ -45,14 +45,14 @@ void Camera::Update()
     projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
 
     //ビュー行列作成
-    const Vector3 eye = transform_->GetPosition();
-    const Vector3 focus = eye + transform_->GetForward();
+    eye_ = transform_->GetPosition();
+    focus_ = eye_ + transform_->GetForward();
     const Vector3 up = transform_->GetUp();
 
     //各方向ベクトルの更新
     transform_->CalcWorldMatrix();
 
-    viewMatrix_ = XMMatrixLookAtLH(eye, focus, up);
+    viewMatrix_ = XMMatrixLookAtLH(eye_, focus_, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }
 

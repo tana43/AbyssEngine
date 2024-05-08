@@ -28,6 +28,8 @@ namespace AbyssEngine
         Matrix projectionMatrix_ = {};
         Matrix viewProjectionMatrix_ = {};
         //std::array<Vector4, 6> frustumPlanes_; //‹‘äƒJƒŠƒ“ƒO—pPlane
+        Vector3 eye_;
+        Vector3 focus_;
 
         friend class RenderManager;
     };

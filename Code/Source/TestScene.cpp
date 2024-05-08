@@ -36,8 +36,14 @@ void TestScene::Initialize()
 
     const auto& p2 = InstanceActor("testGltf_2");
     p2->AddComponent<SkeletalMesh>(
-        "./Assets/Models/robot_oj.glb"
+        //"./Assets/Models/robot_oj.glb"
+        "./Assets/Models/Nico/nico_full_body.glb"
     );
+    SkeletalMesh* model = p2->GetComponent<SkeletalMesh>().get();
+    model->AppendAnimations({
+        "./Assets/Models/Nico/nico_full_body_Anim_NIC_Attack.glb",
+        "./Assets/Models/Nico/Hip_Hop_Dancing.glb",
+        "./Assets/Models/Nico/Death_From_Right.glb" });
 }
 
 void TestScene::Update()

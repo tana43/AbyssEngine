@@ -18,7 +18,12 @@ namespace AbyssEngine
     class RenderManager
     {
     private:
-        enum class SP_State {Anisotropic,Point,Linear,LinearBorderBlack, LinearBorderWhite, End};
+        enum class SP_State {
+            Point_Wrap,Linear_Wrap,Anisotropic_Wrap,
+            Point_Clamp,Linear_Clamp, Anisotropic_Clamp,
+            Point_Border_Opaque_Black, Linear_Border_Opaque_Black, Point_Border_Opaque_White, Linear_Border_Opaque_White,
+            Comparision_Depth,Count
+        };
 
     public:
         RenderManager();
@@ -45,7 +50,7 @@ namespace AbyssEngine
             Vector4 color_;
         };
 
-        Microsoft::WRL::ComPtr<ID3D11SamplerState> samplers_[static_cast<int>(SP_State::End)];
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> samplers_[static_cast<int>(SP_State::Count)];
 
 
     private:
@@ -57,13 +62,22 @@ namespace AbyssEngine
         //ç°ÇÕç≈í·å¿ïKóvÇ»Ç‡ÇÃÇæÇØópà”
         struct ConstantBufferScene
         {
+            Matrix view_;
+            Matrix projection_;
             Matrix viewProjectionMatrix_;
+            Matrix inverseViewProjection_;
             //Matrix shadowMatrix_;
             //Vector4 cameraDirection_;
-            Vector4 cameraPosition_;
             Vector4 lightDirection_ = {0,0,1,0};
-            Vector3 lightColor_;
-            float pad;
+            Vector4 eyePosition_;
+            Vector4 focusPosition_;
+            //Vector3 lightColor_;
+            float exposure_ = 1.0f;
+            float pureWhite_ = 3.0f;
+            float emissiveIntensity_ = 50.0f;
+            float imageBasedLightingIntensity_ = 1.0f;
+            float skyboxRoughness_ = 1.0f;
+            float time_ = 0.0f;
         };
 
         ConstantBufferScene bufferScene_;

@@ -48,6 +48,7 @@ RenderManager::RenderManager()
 
 	{
 		//サンプラーステート作成
+#if 0
 		D3D11_SAMPLER_DESC sd = {};
 		sd.Filter = D3D11_FILTER_ANISOTROPIC;	  // 異方性フィルタ
 		sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; // U
@@ -58,9 +59,9 @@ RenderManager::RenderManager()
 		sd.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 		sd.MinLOD = 0;
 		sd.MaxLOD = D3D11_FLOAT32_MAX;
-
 		HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Anisotropic)].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
 
 		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Point)].GetAddressOf());
@@ -89,6 +90,26 @@ RenderManager::RenderManager()
 		sd.BorderColor[3] = 1;
 		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::LinearBorderWhite)].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+#else
+		D3D11_SAMPLER_DESC sd[]{
+		{D3D11_FILTER_MIN_MAG_MIP_POINT/*Filter*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressU*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressV*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 0}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_MIN_MAG_MIP_LINEAR/*Filter*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressU*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressV*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 0}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_ANISOTROPIC/*Filter*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressU*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressV*/, D3D11_TEXTURE_ADDRESS_WRAP/*AddressW*/, 0.0f/*MipLODBias*/, 8/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 0}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_MIN_MAG_MIP_POINT/*Filter*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressU*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressV*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 0}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_MIN_MAG_MIP_LINEAR/*Filter*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressU*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressV*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 0}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_ANISOTROPIC/*Filter*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressU*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressV*/, D3D11_TEXTURE_ADDRESS_CLAMP/*AddressW*/, 0.0f/*MipLODBias*/, 8/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 0}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_MIN_MAG_MIP_POINT/*Filter*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressU*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressV*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 1}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_MIN_MAG_MIP_LINEAR/*Filter*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressU*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressV*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {0, 0, 0, 1}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_MIN_MAG_MIP_POINT/*Filter*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressU*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressV*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {1, 1, 1, 1}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_MIN_MAG_MIP_LINEAR/*Filter*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressU*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressV*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressW*/, 0.0f/*MipLODBias*/, 0/*MaxAnisotropy*/, D3D11_COMPARISON_NEVER/*ComparisonFunc*/, {1, 1, 1, 1}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		{D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT/*Filter*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressU*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressV*/, D3D11_TEXTURE_ADDRESS_BORDER/*AddressW*/, 0.0f/*MipLODBias*/, 16/*MaxAnisotropy*/, D3D11_COMPARISON_LESS_EQUAL/*ComparisonFunc*/, {1, 1, 1, 1}/*BorderColor[4]*/, 0.0f/*MinLOD*/, D3D11_FLOAT32_MAX/*MaxLOD*/},
+		};
+		for (size_t samplerIndex = 0; samplerIndex < _countof(sd); ++samplerIndex)
+		{
+			const HRESULT hr = DXSystem::device_->CreateSamplerState(&sd[samplerIndex], samplers_[samplerIndex].GetAddressOf());
+			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+		}
+#endif // 0
 	}
 
 	IBLInitialize();
@@ -147,22 +168,30 @@ void RenderManager::Render()
 
 	for (auto& c : cameraList_)
 	{
-		if (const auto& camera_ = c.lock())
+		if (const auto& camera = c.lock())
 		{
-			if (camera_->actor_->GetActiveInHierarchy())
+			if (camera->actor_->GetActiveInHierarchy())
 			{
-				camera_->Update();
+				camera->Update();
 
 
-				const Vector3& pos = camera_->GetTransform()->GetPosition();
+				const Vector3& pos = camera->GetTransform()->GetPosition();
 				//const Vector3& dir = camera->GetTransform()->GetForward();
 
-				bufferScene_.cameraPosition_ = Vector4(pos.x,pos.y,pos.z,0);
-				bufferScene_.viewProjectionMatrix_ = camera_->viewProjectionMatrix_;
+				//シーン用定数バッファの設定
+				Vector3 const eye = camera->eye_;
+				Vector3 const focus = camera->focus_;
+				bufferScene_.eyePosition_ = Vector4(eye.x,eye.y,eye.z,0);
+				bufferScene_.focusPosition_ = Vector4(focus.x, focus.y, focus.z,0);
+				bufferScene_.view_ = camera->viewMatrix_;
+				bufferScene_.projection_ = camera->projectionMatrix_;
+				bufferScene_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
+				camera->viewProjectionMatrix_.Invert(bufferScene_.inverseViewProjection_);
+				bufferScene_.time_ += Time::deltaTime_;
 
 				//仮のライト
 				//bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
-				bufferScene_.lightColor_ = Vector3(1, 1, 1);
+				//bufferScene_.lightColor_ = Vector3(1, 1, 1);
 
 				UpdateConstantBuffer();
 
@@ -173,7 +202,7 @@ void RenderManager::Render()
 				frameBuffer_->Clear();
 				frameBuffer_->Activate();
 
-				Render3D(camera_);
+				Render3D(camera);
 
 				frameBuffer_->Deactivate();
 				bloom_->Make(frameBuffer_->shaderResourceViews_[0].Get());
@@ -245,11 +274,20 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 	DXSystem::deviceContext_->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::LEqual), 1);
 	DXSystem::deviceContext_->RSSetState(DXSystem::GetRasterizerState(RS_State::Cull_Back));
 
-	DXSystem::deviceContext_->PSSetSamplers(0,1,samplers_[static_cast<int>(SP_State::Anisotropic)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(1,1,samplers_[static_cast<int>(SP_State::Point)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(2,1,samplers_[static_cast<int>(SP_State::Linear)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(3,1,samplers_[static_cast<int>(SP_State::LinearBorderBlack)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(4,1,samplers_[static_cast<int>(SP_State::LinearBorderWhite)].GetAddressOf());
+#if 0
+
+	DXSystem::deviceContext_->PSSetSamplers(0, 1, samplers_[static_cast<int>(SP_State::Anisotropic)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(1, 1, samplers_[static_cast<int>(SP_State::Point)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(2, 1, samplers_[static_cast<int>(SP_State::Linear)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(3, 1, samplers_[static_cast<int>(SP_State::LinearBorderBlack)].GetAddressOf());
+	DXSystem::deviceContext_->PSSetSamplers(4, 1, samplers_[static_cast<int>(SP_State::LinearBorderWhite)].GetAddressOf());
+#else
+	for (size_t samplerIndex = 0; samplerIndex < _countof(samplerStates_); ++samplerIndex)
+	{
+		DXSystem::deviceContext_->PSSetSamplers(static_cast<UINT>(samplerIndex), 1, samplers_[samplerIndex].GetAddressOf());
+	}
+#endif // 0
+
 
 	for (auto& r : renderer3DList_)
 	{
