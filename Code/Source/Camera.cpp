@@ -73,20 +73,20 @@ void Camera::DebugCameraController()
                 auto mouseVec = Vector2(960, 540) - Vector2(pos.x, pos.y);
                 if (mouseVec.x != 0 || mouseVec.y != 0)
                 {
-                    rot.y -= mouseVec.x * 0.05f * Time::deltaTime_;
-                    rot.x -= mouseVec.y * 0.05f * Time::deltaTime_;
+                    rot.y -= mouseVec.x * 0.15f * Time::deltaTime_;
+                    rot.x -= mouseVec.y * 0.15f * Time::deltaTime_;
                 }
             }
             else
             {
                 inputStart = true;
             }
-            SetCursorPos(960, 540);
         }
         else
         {
             inputStart = false;
         }
+        SetCursorPos(960, 540);
 
         //コントローラー操作
         {
@@ -107,6 +107,7 @@ void Camera::DebugCameraController()
     }
 
     //移動処理
+    if(Mouse::GetButtonState().rightButton)
     {
         //WASD
         Vector2 input = {};

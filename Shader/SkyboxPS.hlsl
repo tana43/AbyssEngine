@@ -14,6 +14,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     R /= R.w;
 	
     float roughness = sceneData.skyboxRoughness;
+    
 #if 1
     return SampleSkybox(R.xyz, roughness);
 #else

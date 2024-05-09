@@ -173,6 +173,8 @@ void RenderManager::Render()
 {
 	DXSystem::SetDefaultView();
 
+	IBLSetResources();
+
 	CheckRenderer();
 
 	for (auto& c : cameraList_)
@@ -295,7 +297,6 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 	//トポロジー設定
 	//DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	IBLSetResources();
 
 	DXSystem::SetBlendState(BS_State::Off);
 	DXSystem::SetDepthStencilState(DS_State::LEqual);
@@ -411,10 +412,11 @@ void RenderManager::IBLInitialize()
 	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
 #else
-	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/syferfontein_0d_clear_puresky_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/sheen_pmrem.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
+	//Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/syferfontein_0d_clear_puresky_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/kloofendal_48d_partly_cloudy_puresky_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/sheen_pmrem.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[4].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/lut_sheen_E.dds", iblShaderResourceView_[5].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/lut_charlie.dds", iblShaderResourceView_[6].GetAddressOf(), &texture2dDesc);

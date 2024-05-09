@@ -33,6 +33,7 @@
     <ClInclude Include="Code\Header\GamePad.h" />
     <ClInclude Include="Code\Header\GeometricSubstance.h" />
     <ClInclude Include="Code\Header\GltfSkeletalMesh.h" />
+    <ClInclude Include="Code\Header\GltfStaticMesh.h" />
     <ClInclude Include="Code\Header\Input.h" />
     <ClInclude Include="Code\Header\Keyboard.h" />
     <ClInclude Include="Code\Header\MathHelper.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="Code\Source\GamePad.cpp" />
     <ClCompile Include="Code\Source\GeometricSubstance.cpp" />
     <ClCompile Include="Code\Source\GltfSkeletalMesh.cpp" />
+    <ClCompile Include="Code\Source\GltfStaticMesh.cpp" />
     <ClCompile Include="Code\Source\Input.cpp" />
     <ClCompile Include="Code\Source\Keyboard.cpp" />
     <ClCompile Include="Code\Source\Main.cpp" />

@@ -80,7 +80,7 @@ namespace AbyssEngine
             float pureWhite_ = 3.0f;
             float emissiveIntensity_ = 50.0f;
             float imageBasedLightingIntensity_ = 1.0f;
-            float skyboxRoughness_ = 1.0f;
+            float skyboxRoughness_ = 0.0f;
             float time_ = 0.0f;
         };
 

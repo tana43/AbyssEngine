@@ -205,6 +205,7 @@
     <ClInclude Include="Code\Header\FullscreenQuad.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\GltfStaticMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -328,6 +329,7 @@
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Skybox.cpp" />
+    <ClCompile Include="Code\Source\GltfStaticMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
