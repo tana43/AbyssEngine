@@ -49,6 +49,7 @@ void Actor::DrawImGui()
 {
 	for (auto& c : componentList_)
 	{
+		ImGui::SetNextItemOpen(true,ImGuiCond_Once);
 		c->DrawImGui();
 	}
 }

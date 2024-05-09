@@ -55,9 +55,6 @@
     <Filter Include="Code\Header\Manager">
       <UniqueIdentifier>{66d5febb-b40c-4c9b-b2df-59d7ead0c9bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Source\ImGui">
-      <UniqueIdentifier>{d5209d72-b2a8-466b-98c0-89f53010a198}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Header\Input">
       <UniqueIdentifier>{3034fa37-d609-40ab-8d60-3d4eab14a1e9}</UniqueIdentifier>
     </Filter>
@@ -73,6 +70,9 @@
     <Filter Include="Shader\Gltf">
       <UniqueIdentifier>{d5881f1e-c56a-48a0-88cd-2b2466e97093}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Libraries\ImGui">
+      <UniqueIdentifier>{d5209d72-b2a8-466b-98c0-89f53010a198}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -80,33 +80,6 @@
     </ClInclude>
     <ClInclude Include="Code\Header\MathHelper.h">
       <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imconfig.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imgui.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imgui_impl_dx11.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imgui_impl_win32.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imgui_internal.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\ImGuiCtrl.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imstb_rectpack.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imstb_textedit.h">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="External\imgui\imstb_truetype.h">
-      <Filter>Code\Source\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Camera.h">
       <Filter>Code\Header\Component</Filter>
@@ -192,46 +165,50 @@
     <ClInclude Include="Code\Header\Bloom.h">
       <Filter>Code\Header\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\FrameBuffer.h">
-      <Filter>Code\Header\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\FullscreenQuad.h">
-      <Filter>Code\Header\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\GltfSkeletalMesh.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\BoundingBox.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="External\imgui\imconfig.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui_impl_dx11.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui_impl_win32.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui_internal.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\ImGuiCtrl.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imstb_rectpack.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imstb_textedit.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imstb_truetype.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Skybox.h" />
+    <ClInclude Include="Code\Header\FrameBuffer.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\FullscreenQuad.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
       <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\imgui.cpp">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\imgui_demo.cpp">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\imgui_draw.cpp">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\imgui_impl_dx11.cpp">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\imgui_impl_win32.cpp">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\imgui_tables.cpp">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\imgui_widgets.cpp">
-      <Filter>Code\Source\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="External\imgui\ImGuiCtrl.cpp">
-      <Filter>Code\Source\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Engine.cpp">
       <Filter>Code\Source\Core</Filter>
@@ -326,6 +303,31 @@
     <ClCompile Include="Code\Source\GltfSkeletalMesh.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="External\imgui\imgui.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui_demo.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui_draw.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui_impl_dx11.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui_impl_win32.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui_tables.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui_widgets.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\ImGuiCtrl.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -393,6 +395,9 @@
     </FxCompile>
     <FxCompile Include="Shader\StaticMeshVS.hlsl">
       <Filter>Shader\Gltf</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SkyboxPS.hlsl">
+      <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

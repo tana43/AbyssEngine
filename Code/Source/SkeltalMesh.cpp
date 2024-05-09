@@ -5,6 +5,7 @@
 #include "GltfSkeletalMesh.h"
 #include "RenderManager.h"
 #include "AssetManager.h"
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -62,6 +63,25 @@ void SkeletalMesh::RecalculateFrame()
 {
 	timeStamp_ += Time::deltaTime_;
 	model_->Animate(animationClip_, timeStamp_ * animationSpeed_, animatedNodes_, true);
+}
+
+bool SkeletalMesh::DrawImGui()
+{
+	
+	if (ImGui::TreeNode("Skeletal Mesh"))
+	{
+		static int animClip = animationClip_;
+		ImGui::SliderInt("Anim Clip", &animClip, 0, model_->animations_.size() - 1);
+		animationClip_ = animClip;
+
+		std::string t0 = "Current Anim :";
+		std::string t1 = t0 + model_->animations_.at(animationClip_).name_;
+		ImGui::Text(t1.c_str());
+
+		ImGui::TreePop();
+	}
+
+	return false;
 }
 
 void SkeletalMesh::SetActive(const bool value)

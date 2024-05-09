@@ -22,6 +22,8 @@ namespace AbyssEngine
 
         void RecalculateFrame()override;
 
+        bool DrawImGui()override;
+
     private:
         void SetActive(const bool value)override;
 

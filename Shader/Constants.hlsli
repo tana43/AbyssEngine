@@ -19,7 +19,7 @@ struct SceneConstants
     float skyboxRoughness;
     float time;
 };
-cbuffer sceneConstants : register(b0)
+cbuffer sceneConstants : register(b10)
 {
     SceneConstants sceneData;
 }

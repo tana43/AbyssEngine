@@ -38,6 +38,7 @@ void TestScene::Initialize()
     p2->AddComponent<SkeletalMesh>(
         //"./Assets/Models/robot_oj.glb"
         "./Assets/Models/Nico/nico_full_body.glb"
+        //"./Assets/Models/.glb"
     );
     SkeletalMesh* model = p2->GetComponent<SkeletalMesh>().get();
     model->AppendAnimations({

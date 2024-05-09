@@ -12,6 +12,7 @@
 #include "StaticMeshBatching.h"
 #include "StaticMesh.h"
 #include "Bloom.h"
+#include "Skybox.h"
 
 #include "imgui/imgui.h"
 
@@ -35,6 +36,8 @@ RenderManager::RenderManager()
 {
 	{
 		//定数バッファ作成
+
+#if 0
 		D3D11_BUFFER_DESC bd;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.ByteWidth = sizeof(ConstantBufferScene);
@@ -44,6 +47,9 @@ RenderManager::RenderManager()
 		bd.StructureByteStride = 0;
 		const HRESULT hr = DXSystem::device_->CreateBuffer(&bd, nullptr, constantBufferScene_.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+#else
+		bufferScene_ = std::make_unique<ConstantBuffer<ConstantBufferScene>>();
+#endif // 0
 	}
 
 	{
@@ -121,6 +127,9 @@ RenderManager::RenderManager()
 		static_cast<size_t>(DXSystem::GetScreenWidth()), 
 		static_cast<size_t>(DXSystem::GetScreenHeight()));
 	pixelShader_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/FinalPassPS.cso");
+
+	//スカイボックス生成
+	skybox_ = std::make_unique<Skybox>();
 }
 
 void RenderManager::Reset()
@@ -181,26 +190,35 @@ void RenderManager::Render()
 				//シーン用定数バッファの設定
 				Vector3 const eye = camera->eye_;
 				Vector3 const focus = camera->focus_;
-				bufferScene_.eyePosition_ = Vector4(eye.x,eye.y,eye.z,0);
-				bufferScene_.focusPosition_ = Vector4(focus.x, focus.y, focus.z,0);
-				bufferScene_.view_ = camera->viewMatrix_;
-				bufferScene_.projection_ = camera->projectionMatrix_;
-				bufferScene_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
-				camera->viewProjectionMatrix_.Invert(bufferScene_.inverseViewProjection_);
-				bufferScene_.time_ += Time::deltaTime_;
+				bufferScene_->data_.eyePosition_ = Vector4(eye.x,eye.y,eye.z,0);
+				bufferScene_->data_.focusPosition_ = Vector4(focus.x, focus.y, focus.z,0);
+				bufferScene_->data_.view_ = camera->viewMatrix_;
+				bufferScene_->data_.projection_ = camera->projectionMatrix_;
+				bufferScene_->data_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
+				camera->projectionMatrix_.Invert(bufferScene_->data_.inverseProjection_);
+				camera->viewProjectionMatrix_.Invert(bufferScene_->data_.inverseViewProjection_);
+				bufferScene_->data_.time_ += Time::deltaTime_;
 
 				//仮のライト
 				//bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
 				//bufferScene_.lightColor_ = Vector3(1, 1, 1);
 
-				UpdateConstantBuffer();
 
+				//定数バッファ更新
+#if 0
+				UpdateConstantBuffer();
 				DXSystem::deviceContext_->VSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
 				DXSystem::deviceContext_->PSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
-				
+#else
+				bufferScene_->Activate(10,CBufferUsage::vp);
+#endif // 0
+
 				//オフスクリーンレンダリング
-				frameBuffer_->Clear();
+				frameBuffer_->Clear(0.4f,0.4f,0.4f,1.0f);
 				frameBuffer_->Activate();
+
+				//スカイボックス描画
+				skybox_->Render(bitBlockTransfer_.get());
 
 				Render3D(camera);
 
@@ -225,7 +243,16 @@ void RenderManager::DrawImGui()
 {
 	if (ImGui::BeginMenu("Scene Constant"))
 	{
-		ImGui::DragFloat3("Light Direction",&bufferScene_.lightDirection_.x,0.01f);
+		auto& buffer = bufferScene_->data_;
+		ImGui::DragFloat3("Light Direction",&buffer.lightDirection_.x,0.01f);
+		ImGui::ColorEdit4("Light Color", &buffer.lightColor_.x, ImGuiColorEditFlags_HDR);
+
+		ImGui::DragFloat("Exposure", &buffer.exposure_,0.01f,0.0f);
+		ImGui::DragFloat("Pure White", &buffer.pureWhite_,0.01f,0.0f);
+		ImGui::DragFloat("Emissive Intensity", &buffer.emissiveIntensity_,0.01f,0.0f);
+		ImGui::DragFloat("Image Based Lighting Intensity", &buffer.imageBasedLightingIntensity_,0.01f,0.0f);
+		ImGui::DragFloat("Skybox Roughness", &buffer.skyboxRoughness_,0.01f,0.0f);
+		ImGui::DragFloat("Time", &buffer.time_);
 
 		ImGui::EndMenu();
 	}
@@ -270,9 +297,9 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 
 	IBLSetResources();
 
-	DXSystem::deviceContext_->OMSetBlendState(DXSystem::GetBlendState(BS_State::Off), nullptr, 0xFFFFFFFF);
-	DXSystem::deviceContext_->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::LEqual), 1);
-	DXSystem::deviceContext_->RSSetState(DXSystem::GetRasterizerState(RS_State::Cull_Back));
+	DXSystem::SetBlendState(BS_State::Off);
+	DXSystem::SetDepthStencilState(DS_State::LEqual);
+	DXSystem::SetRasterizerState(RS_State::Cull_Back);
 
 #if 0
 
@@ -282,7 +309,7 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 	DXSystem::deviceContext_->PSSetSamplers(3, 1, samplers_[static_cast<int>(SP_State::LinearBorderBlack)].GetAddressOf());
 	DXSystem::deviceContext_->PSSetSamplers(4, 1, samplers_[static_cast<int>(SP_State::LinearBorderWhite)].GetAddressOf());
 #else
-	for (size_t samplerIndex = 0; samplerIndex < _countof(samplerStates_); ++samplerIndex)
+	for (size_t samplerIndex = 0; samplerIndex < _countof(samplers_); ++samplerIndex)
 	{
 		DXSystem::deviceContext_->PSSetSamplers(static_cast<UINT>(samplerIndex), 1, samplers_[samplerIndex].GetAddressOf());
 	}
@@ -350,6 +377,7 @@ void RenderManager::CheckRenderer()
 
 void RenderManager::UpdateConstantBuffer() const
 {
+#if 0
 	constexpr UINT subresourceIndex = 0;
 	//D3D11_MAPPED_SUBRESOURCE mapped;
 
@@ -360,6 +388,7 @@ void RenderManager::UpdateConstantBuffer() const
 		memcpy(mapped.pData, &bufferScene_, sizeof(constantBufferScene_));
 		DXSystem::deviceContext_->Unmap(constantBufferScene_.Get(), subresourceIndex);
 	}*/
+#endif // 0
 }
 
 void RenderManager::IBLInitialize()
@@ -376,11 +405,22 @@ void RenderManager::IBLInitialize()
 	texture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	texture2dDesc.CPUAccessFlags = 0;
 	texture2dDesc.MiscFlags = 0;
-
+#if 0
 	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/sunset_jhbcentral_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
+#else
+	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/syferfontein_0d_clear_puresky_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/sheen_pmrem.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[4].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/lut_sheen_E.dds", iblShaderResourceView_[5].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/lut_charlie.dds", iblShaderResourceView_[6].GetAddressOf(), &texture2dDesc);
+#endif // 0
+
+	
 }
 
 void RenderManager::IBLSetResources()
@@ -389,4 +429,7 @@ void RenderManager::IBLSetResources()
 	DXSystem::deviceContext_->PSSetShaderResources(33, 1, iblShaderResourceView_[1].GetAddressOf());
 	DXSystem::deviceContext_->PSSetShaderResources(34, 1, iblShaderResourceView_[2].GetAddressOf());
 	DXSystem::deviceContext_->PSSetShaderResources(35, 1, iblShaderResourceView_[3].GetAddressOf());
+	DXSystem::deviceContext_->PSSetShaderResources(36, 1, iblShaderResourceView_[4].GetAddressOf());
+	DXSystem::deviceContext_->PSSetShaderResources(37, 1, iblShaderResourceView_[5].GetAddressOf());
+	DXSystem::deviceContext_->PSSetShaderResources(38, 1, iblShaderResourceView_[6].GetAddressOf());
 }

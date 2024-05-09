@@ -81,6 +81,7 @@ namespace AbyssEngine
 		ConstantBuffer(ConstantBuffer&) = delete;
 		ConstantBuffer& operator =(ConstantBuffer&) = delete;
 
+		//バッファの更新 usageからセットするシェーダーを選択
 		void Activate(int slot, CBufferUsage usage)
 		{
 			Activate(slot, usage, &data_);

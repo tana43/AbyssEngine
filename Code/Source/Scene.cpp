@@ -121,11 +121,19 @@ void Scene::Finalize()
 
 void Scene::DrawImGui()
 {
+    //ImGuiID myDockspace = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    ImVec2 wSize = { 400.0f,1080.0f };
     for (const auto& a : actorList_)
     {
         if (ImGui::BeginMenu(a->name_.c_str()))
         {
+            //ImGui::DockSpace(myDockspace, wSize);
+            //ImGui::SetNextWindowDockID(myDockspace, ImGuiCond_Once);
+            ImGui::SetNextWindowPos(ImVec2(1920.0f - wSize.x,24.0f),ImGuiCond_FirstUseEver);
+            ImGui::SetNextWindowSize(wSize,ImGuiCond_FirstUseEver);
+            ImGui::Begin(a->name_.c_str());
             a->DrawImGui();
+            ImGui::End();
 
             ImGui::EndMenu();
         }

@@ -3,6 +3,7 @@
 #include <vector>
 #include "MathHelper.h"
 #include "Renderer.h"
+#include "ConstantBuffer.h"
 
 namespace AbyssEngine
 {
@@ -14,6 +15,7 @@ namespace AbyssEngine
     class Bloom;
     class FrameBuffer;
     class FullscreenQuad;
+    class Skybox;
 
     class RenderManager
     {
@@ -65,10 +67,12 @@ namespace AbyssEngine
             Matrix view_;
             Matrix projection_;
             Matrix viewProjectionMatrix_;
+            Matrix inverseProjection_;
             Matrix inverseViewProjection_;
             //Matrix shadowMatrix_;
             //Vector4 cameraDirection_;
             Vector4 lightDirection_ = {0,0,1,0};
+            Vector4 lightColor_ = {1,1,1,1};
             Vector4 eyePosition_;
             Vector4 focusPosition_;
             //Vector3 lightColor_;
@@ -80,16 +84,19 @@ namespace AbyssEngine
             float time_ = 0.0f;
         };
 
-        ConstantBufferScene bufferScene_;
-        Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
+        std::unique_ptr<ConstantBuffer<ConstantBufferScene>> bufferScene_;
+        //Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
 
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> iblShaderResourceView_[4];
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> iblShaderResourceView_[7];
 
         //オフスクリーンレンダリング
         std::unique_ptr<FrameBuffer> frameBuffer_;
         std::unique_ptr<FullscreenQuad> bitBlockTransfer_;
         std::unique_ptr<Bloom> bloom_;
         Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader_;
+
+        //スカイボックス
+        std::unique_ptr<Skybox> skybox_;
 
     private:
 
