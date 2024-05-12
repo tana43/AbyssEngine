@@ -30,7 +30,7 @@ namespace AbyssEngine
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> csmTransparentSkeletalMeshVs_;
 		Microsoft::WRL::ComPtr<ID3D11GeometryShader> csmTransparentGs_;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> csmTransparentPs_;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> csm_transparent_input_layout;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> csmTransparentInputLayout_;
 
 		static const size_t Max_Joints = 512;
 		struct JointConstants

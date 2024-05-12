@@ -123,42 +123,42 @@ void GeometricSubstance::ExtractExtensions(const tinygltf::Model& transmissionMo
 		{
 			for (tinygltf::Value::Array::const_reference light : extension->second.Get<tinygltf::Value::Object>().find("lights")->second.Get<tinygltf::Value::Array>())
 			{
-				punctual_light punctual_light;
+				PunctualLight PunctualLight;
 				if (light.Has("name"))
 				{
-					punctual_light.type_ = light.Get<tinygltf::Value::Object>().find("name")->second.Get<std::string>();
+					PunctualLight.type_ = light.Get<tinygltf::Value::Object>().find("name")->second.Get<std::string>();
 				}
 				if (light.Has("color"))
 				{
 					std::vector<tinygltf::Value::Array>::const_reference color_ = light.Get<tinygltf::Value::Object>().find("color")->second.Get<tinygltf::Value::Array>();
-					punctual_light.color_[0] = static_cast<float>(color_.at(0).GetNumberAsDouble());
-					punctual_light.color_[1] = static_cast<float>(color_.at(1).GetNumberAsDouble());
-					punctual_light.color_[2] = static_cast<float>(color_.at(2).GetNumberAsDouble());
+					PunctualLight.color_[0] = static_cast<float>(color_.at(0).GetNumberAsDouble());
+					PunctualLight.color_[1] = static_cast<float>(color_.at(1).GetNumberAsDouble());
+					PunctualLight.color_[2] = static_cast<float>(color_.at(2).GetNumberAsDouble());
 				}
 				if (light.Has("intensity"))
 				{
-					punctual_light.intensity_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("intensity")->second.GetNumberAsDouble());
+					PunctualLight.intensity_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("intensity")->second.GetNumberAsDouble());
 				}
 				if (light.Has("type"))
 				{
-					punctual_light.type_ = light.Get<tinygltf::Value::Object>().find("type")->second.Get<std::string>();
+					PunctualLight.type_ = light.Get<tinygltf::Value::Object>().find("type")->second.Get<std::string>();
 				}
 				if (light.Has("range"))
 				{
-					punctual_light.intensity_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("range")->second.GetNumberAsDouble());
+					PunctualLight.intensity_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("range")->second.GetNumberAsDouble());
 				}
 				if (light.Has("spot"))
 				{
 					if (light.Get<tinygltf::Value::Object>().find("spot")->second.Has("innerConeAngle"))
 					{
-						punctual_light.innerConeAngle_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("spot")->second.Get<tinygltf::Value::Object>().find("innerConeAngle")->second.GetNumberAsDouble());
+						PunctualLight.innerConeAngle_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("spot")->second.Get<tinygltf::Value::Object>().find("innerConeAngle")->second.GetNumberAsDouble());
 					}
 					if (light.Get<tinygltf::Value::Object>().find("spot")->second.Has("outerConeAngle"))
 					{
-						punctual_light.outerConeAngle_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("spot")->second.Get<tinygltf::Value::Object>().find("outerConeAngle")->second.GetNumberAsDouble());
+						PunctualLight.outerConeAngle_ = static_cast<float>(light.Get<tinygltf::Value::Object>().find("spot")->second.Get<tinygltf::Value::Object>().find("outerConeAngle")->second.GetNumberAsDouble());
 					}
 				}
-				punctualLights_.emplace_back(std::move(punctual_light));
+				punctualLights_.emplace_back(std::move(PunctualLight));
 			}
 		}
 	}

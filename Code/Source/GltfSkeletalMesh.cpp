@@ -82,7 +82,7 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 		{ "WEIGHTS", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	csmTransparentSkeletalMeshVs_	= Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmTransparentSkeletalMeshVS.cso",csm_transparent_input_layout.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
+	csmTransparentSkeletalMeshVs_	= Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmTransparentSkeletalMeshVS.cso",csmTransparentInputLayout_.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
 	csmTransparentGs_				= Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmTransparentGS.cso");
 	csmTransparentPs_				= Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/CsmTransparentPS.cso");
 
@@ -825,7 +825,7 @@ int GltfSkeletalMesh::CastShadow(const DirectX::XMFLOAT4X4& world, const std::ve
 						deviceContext->VSSetShader(csmTransparentSkeletalMeshVs_.Get(), NULL, 0);
 						deviceContext->GSSetShader(csmTransparentGs_.Get(), NULL, 0);
 						deviceContext->PSSetShader(csmTransparentPs_.Get(), NULL, 0);
-						deviceContext->IASetInputLayout(csm_transparent_input_layout.Get());
+						deviceContext->IASetInputLayout(csmTransparentInputLayout_.Get());
 
 						ID3D11Buffer* vertex_buffers[4] =
 						{

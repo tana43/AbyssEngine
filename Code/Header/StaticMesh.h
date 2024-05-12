@@ -5,11 +5,11 @@ namespace AbyssEngine
 {
     class StaticMeshBatching;
 
-    class StaticMesh : public Renderer
+    class GltfStaticMesh : public Renderer
     {
     public:
-        StaticMesh() {}
-        ~StaticMesh() = default;
+        GltfStaticMesh() {}
+        ~GltfStaticMesh() = default;
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
         void Render()override;

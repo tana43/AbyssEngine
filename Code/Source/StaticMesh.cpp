@@ -7,7 +7,7 @@
 using namespace AbyssEngine;
 using namespace std;
 
-void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
+void GltfStaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //マネージャーの登録と初期化
     actor_ = actor;
@@ -20,18 +20,18 @@ void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
 
 }
 
-void StaticMesh::Render()
+void GltfStaticMesh::Render()
 {
     model_->Render(transform_->CalcWorldMatrix());
 }
 
-void StaticMesh::SetActive(const bool value)
+void GltfStaticMesh::SetActive(const bool value)
 {
     if (value)
     {
         if (!isCalled_)
         {
-            Engine::renderManager_->Add(static_pointer_cast<StaticMesh>(shared_from_this()));
+            Engine::renderManager_->Add(static_pointer_cast<GltfStaticMesh>(shared_from_this()));
             isCalled_ = true;
         }
     }

@@ -159,7 +159,7 @@ void RenderManager::Add(const shared_ptr<SkeletalMesh>& mRend)
 //	renderer3DList_.emplace_back(mRend);
 //}
 
-void RenderManager::Add(const shared_ptr<StaticMesh>& mRend)
+void RenderManager::Add(const shared_ptr<GltfStaticMesh>& mRend)
 {
 	renderer3DList_.emplace_back(mRend);
 }

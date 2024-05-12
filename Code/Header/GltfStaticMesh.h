@@ -19,35 +19,39 @@
 
 #include "GeometricSubstance.h"
 
-class static_mesh : public geometric_substance
+namespace AbyssEngine
 {
-public:
-	static_mesh(ID3D11Device* device, const std::string& filename);
+	class GltfStaticMesh : public GeometricSubstance
+	{
+	public:
+		GltfStaticMesh(const std::string& filename);
 
-	std::vector<primitive> batch_primitives;
+		std::vector<Primitive> batchPrimitives_;
 
-private:
-	void extract_meshes(ID3D11Device* device, const tinygltf::Model& transmission_model);
+	private:
+		void ExtractMeshes(const tinygltf::Model& transmissionModel);
 
-public:
-	int draw(ID3D11DeviceContext* immediate_context, draw_pass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, std::function<void(const material&, pipeline_state&)> drawcallback = [](const material&, pipeline_state&) {});
-	int cast_shadow(ID3D11DeviceContext* immediate_context, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+	public:
+		int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, std::function<void(const Material&, PipelineState&)> drawcallback = [](const Material&, PipelineState&) {});
+		int CastShadow(const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
-	int _draw(ID3D11DeviceContext* immediate_context, draw_pass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+		int _Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
-private:
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> static_mesh_vs;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> static_mesh_ps;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout;
+	private:
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> staticMeshVs_;
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> staticMeshPs_;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout_;
 
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> csm_opaque_static_mesh_vs;
-	Microsoft::WRL::ComPtr<ID3D11GeometryShader> csm_opaque_gs;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> csm_opaque_input_layout;
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> csmOpaqueStaticMeshVs_;
+		Microsoft::WRL::ComPtr<ID3D11GeometryShader> csmOpaqueGs_;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> csmOpaquInputLayout_;
 
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> csm_transparent_static_mesh_vs;
-	Microsoft::WRL::ComPtr<ID3D11GeometryShader> csm_transparent_gs;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> csm_transparent_ps;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> csm_transparent_input_layout;
-};
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> csmTransparentStaticMeshVs_;
+		Microsoft::WRL::ComPtr<ID3D11GeometryShader> csmTransparentGs_;
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> csmTransparentPs_;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> csmTransparentInputLayout_;
+	};
+}
+
 
 

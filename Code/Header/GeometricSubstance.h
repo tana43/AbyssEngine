@@ -23,6 +23,20 @@ namespace AbyssEngine
 {
 	enum class DrawPass { Opaque, Transmission, /*emissive*/ };
 
+	struct PipelineState
+	{
+		ID3D11VertexShader* vertexShader_ = NULL;
+		ID3D11PixelShader* pixelShader_ = NULL;
+		ID3D11DomainShader* domainShader_ = NULL;
+		ID3D11HullShader* hullShader_ = NULL;
+		ID3D11GeometryShader* geometryShader_ = NULL;
+		ID3D11InputLayout* inputLayout_ = NULL;
+
+		ID3D11DepthStencilState* depthStencilState_ = NULL;
+		ID3D11BlendState* blendState_ = NULL;
+		ID3D11RasterizerState* rasterizerState_ = NULL;
+	};
+
 	class GeometricSubstance
 	{
 	protected:
@@ -47,7 +61,7 @@ namespace AbyssEngine
 
 		// KHR_lights_punctual
 		// https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_lights_punctual
-		struct punctual_light
+		struct PunctualLight
 		{
 			std::string name_;
 			float color_[3] = { 1.0f, 1.0f, 1.0f };
@@ -58,7 +72,7 @@ namespace AbyssEngine
 			float innerConeAngle_ = 0.0f;
 			float outerConeAngle_ = 3.14159265358979f / 4.0f;
 		};
-		std::vector<punctual_light> punctualLights_;
+		std::vector<PunctualLight> punctualLights_;
 
 		// KHR_materials_variants
 		// https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_variants
