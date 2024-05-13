@@ -32,7 +32,7 @@ namespace AbyssEngine
 
 	public:
 		float bloomExtractionThreshold_ = 0.55f;
-		float bloomIntensity_ = 0.2f;
+		float bloomIntensity_ = 0.03f;
 
 	private:
 		std::unique_ptr<FullscreenQuad> bitBlockTransfer_;

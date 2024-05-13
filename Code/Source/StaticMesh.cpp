@@ -1,37 +1,37 @@
 #include "StaticMesh.h"
 #include "Actor.h"
-#include "StaticMeshBatching.h"
+#include "GltfStaticMesh.h"
 #include "Engine.h"
 #include "RenderManager.h"
 
 using namespace AbyssEngine;
 using namespace std;
 
-void GltfStaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
+void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //マネージャーの登録と初期化
     actor_ = actor;
     transform_ = actor->GetTransform();
 
-    model_ = make_unique<StaticMeshBatching>(filePath_.c_str());
+    model_ = make_unique<GltfStaticMesh>(filePath_.c_str());
 
     //レンダラーマネージャーに登録
     SetActive(true);
 
 }
 
-void GltfStaticMesh::Render()
+void StaticMesh::Render()
 {
-    model_->Render(transform_->CalcWorldMatrix());
+    model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
 }
 
-void GltfStaticMesh::SetActive(const bool value)
+void StaticMesh::SetActive(const bool value)
 {
     if (value)
     {
         if (!isCalled_)
         {
-            Engine::renderManager_->Add(static_pointer_cast<GltfStaticMesh>(shared_from_this()));
+            Engine::renderManager_->Add(static_pointer_cast<StaticMesh>(shared_from_this()));
             isCalled_ = true;
         }
     }

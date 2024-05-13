@@ -5,7 +5,8 @@
 #include "FbxMeshData.h"
 #include "GltfSkeletalMesh.h"
 #include "StaticMesh.h"
-#include "StaticMeshBatching.h"
+#include "GltfStaticMesh.h"
+//#include "StaticMeshBatching.h"
 
 using namespace AbyssEngine;
 
@@ -21,10 +22,10 @@ void TestScene::Initialize()
     p0->AddComponent<SkeltalMesh>("./Assets/Models/nico.fbx");*/
 
     //テスト用のオブジェクト
-    /*const auto& p1 = InstanceActor("testGltf");
+    const auto& p1 = InstanceActor("testGltf");
     p1->AddComponent<StaticMesh>(
         "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
-    );*/
+    );
     //p1->AddComponent<GltfSkeltalMesh>(
     //    "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //    //"./Assets/Models/UE/AssetsvilleTown.glb"
@@ -35,16 +36,18 @@ void TestScene::Initialize()
     //);
 
     const auto& p2 = InstanceActor("testGltf_2");
-    p2->AddComponent<SkeletalMesh>(
-        //"./Assets/Models/robot_oj.glb"
-        "./Assets/Models/Nico/nico_full_body.glb"
-        //"./Assets/Models/.glb"
+    p2->AddComponent<StaticMesh>(
+        "./Assets/Models/robot_oj.glb"
     );
-    SkeletalMesh* model = p2->GetComponent<SkeletalMesh>().get();
-    model->AppendAnimations({
-        "./Assets/Models/Nico/nico_full_body_Anim_NIC_Attack.glb",
-        "./Assets/Models/Nico/Hip_Hop_Dancing.glb",
-        "./Assets/Models/Nico/Death_From_Right.glb" });
+    //p2->AddComponent<SkeletalMesh>(
+    //    "./Assets/Models/Nico/nico_full_body.glb"
+    //    //"./Assets/Models/.glb"
+    //);
+    //SkeletalMesh* model = p2->GetComponent<SkeletalMesh>().get();
+    //model->AppendAnimations({
+    //    "./Assets/Models/Nico/nico_full_body_Anim_NIC_Attack.glb",
+    //    "./Assets/Models/Nico/Hip_Hop_Dancing.glb",
+    //    "./Assets/Models/Nico/Death_From_Right.glb" });
 }
 
 void TestScene::Update()

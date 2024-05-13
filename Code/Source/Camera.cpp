@@ -81,12 +81,13 @@ void Camera::DebugCameraController()
             {
                 inputStart = true;
             }
+            SetCursorPos(960, 540);
         }
         else
         {
             inputStart = false;
         }
-        SetCursorPos(960, 540);
+        
 
         //コントローラー操作
         {

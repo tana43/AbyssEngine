@@ -75,28 +75,28 @@ GltfStaticMesh::GltfStaticMesh(const std::string& filename) : GeometricSubstance
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 3, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 4, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	staticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("StaticMeshVS.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
+	staticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/StaticMeshVS.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
 #if 1
-	staticMeshPs_ =  Shader<ID3D11PixelShader>::Emplace("GeometricSubstancePS.cso");
+	staticMeshPs_ =  Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstancePS.cso");
 #else
-	staticMeshPscreatePS = Shader<ID3D11PixelShader>::Emplace("FilamentPS.cso");
+	staticMeshPscreatePS = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/FilamentPS.cso");
 #endif
 
 	D3D11_INPUT_ELEMENT_DESC csmOpaqueInputElementDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	csmOpaqueStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("CsmOpaqueStaticMeshVS.cso", csmOpaquInputLayout_.ReleaseAndGetAddressOf(), csmOpaqueInputElementDesc, _countof(csmOpaqueInputElementDesc));
-	csmOpaqueGs_ = Shader<ID3D11GeometryShader>::Emplace("CsmOpaqueGS.cso");
+	csmOpaqueStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmOpaqueStaticMeshVS.cso", csmOpaquInputLayout_.ReleaseAndGetAddressOf(), csmOpaqueInputElementDesc, _countof(csmOpaqueInputElementDesc));
+	csmOpaqueGs_ = Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmOpaqueGS.cso");
 
 	D3D11_INPUT_ELEMENT_DESC csmTransparentInputElementDesc[]
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	csmTransparentStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("CsmTransparentStaticMeshVS.cso",csmTransparentInputLayout_.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
-	csmTransparentGs_ = Shader<ID3D11GeometryShader>::Emplace("CsmTransparentGS.cso");
-	csmTransparentPs_ = Shader<ID3D11PixelShader>::Emplace("CsmTransparentPS.cso");
+	csmTransparentStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmTransparentStaticMeshVS.cso",csmTransparentInputLayout_.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
+	csmTransparentGs_ = Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmTransparentGS.cso");
+	csmTransparentPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/CsmTransparentPS.cso");
 }
 void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 {
@@ -600,14 +600,143 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 	}
 }
 
-int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, std::function<void(const Material&, PipelineState&)> drawcallback)
+//int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, std::function<void(const Material&, PipelineState&)> drawcallback)
+//{
+//	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
+//
+//	int drawcallCount = 0;
+//
+//	// The slot number of 'material_constants' are defined in 'material.hlsli'.
+//	const int materialConstantsSlot = 0;
+//	deviceContext->PSSetShaderResources(materialConstantsSlot, 1, materialResourceView_.GetAddressOf());
+//
+//	for (std::vector<Primitive>::const_reference primitive : batchPrimitives_)
+//	{
+//		if (primitive.vertexBufferViews_.at("POSITION").Count() == 0 || primitive.vertexBufferViews_.at("POSITION").buffer_ < 0)
+//		{
+//			continue;
+//		}
+//
+//		const Material& material = materials_.at(primitive.material_ < 0 ? materials_.size() - 1 : primitive.material_);
+//		_ASSERT_EXPR(material.data_.normalTexture_.index_ > -1 ? primitive.vertexBufferViews_.at("TANGENT").buffer_ > -1 : TRUE, L"");
+//
+//#if 1
+//		bool permitted = false;
+//		switch (pass)
+//		{
+//		case DrawPass::Opaque:
+//			permitted = material.HasOpaque();
+//			break;
+//		case DrawPass::Transmission:
+//			permitted = material.HasTransmission();
+//			break;
+//		}
+//		if (!permitted)
+//		{
+//			continue;
+//		}
+//#endif
+//
+//		PipelineState replacementPipelineState = {};
+//		drawcallback(material, replacementPipelineState);
+//		deviceContext->VSSetShader(replacementPipelineState.vertexShader_ ? replacementPipelineState.vertexShader_ : staticMeshVs_.Get(), NULL, 0);
+//		deviceContext->PSSetShader(replacementPipelineState.pixelShader_ ? replacementPipelineState.pixelShader_ : staticMeshPs_.Get(), NULL, 0);
+//		deviceContext->DSSetShader(replacementPipelineState.domainShader_ ? replacementPipelineState.domainShader_ : NULL, NULL, 0);
+//		deviceContext->HSSetShader(replacementPipelineState.hullShader_ ? replacementPipelineState.hullShader_ : NULL, NULL, 0);
+//		deviceContext->GSSetShader(replacementPipelineState.geometryShader_ ? replacementPipelineState.geometryShader_ : NULL, NULL, 0);
+//		deviceContext->IASetInputLayout(replacementPipelineState.inputLayout_ ? replacementPipelineState.inputLayout_ : inputLayout_.Get());
+//		if (replacementPipelineState.depthStencilState_)
+//		{
+//			deviceContext->OMSetDepthStencilState(replacementPipelineState.depthStencilState_, 0);
+//		}
+//		if (replacementPipelineState.rasterizerState_)
+//		{
+//			deviceContext->RSSetState(replacementPipelineState.rasterizerState_);
+//		}
+//		if (replacementPipelineState.blendState_)
+//		{
+//			deviceContext->OMSetBlendState(replacementPipelineState.blendState_, NULL, 0xFFFFFFFF);
+//		}
+//
+//		ID3D11Buffer* vertexBuffers[] = {
+//			primitive.vertexBufferViews_.at("POSITION").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("POSITION").buffer_).Get() : NULL,
+//			primitive.vertexBufferViews_.at("NORMAL").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("NORMAL").buffer_).Get() : NULL,
+//			primitive.vertexBufferViews_.at("TANGENT").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("TANGENT").buffer_).Get() : NULL,
+//			primitive.vertexBufferViews_.at("TEXCOORD_0").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("TEXCOORD_0").buffer_).Get() : NULL,
+//			primitive.vertexBufferViews_.at("TEXCOORD_1").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("TEXCOORD_1").buffer_).Get() : NULL,
+//		};
+//		UINT strides[] =
+//		{
+//			static_cast<UINT>(primitive.vertexBufferViews_.at("POSITION").strideInBytes_),
+//			static_cast<UINT>(primitive.vertexBufferViews_.at("NORMAL").strideInBytes_),
+//			static_cast<UINT>(primitive.vertexBufferViews_.at("TANGENT").strideInBytes_),
+//			static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_0").strideInBytes_),
+//			static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_1").strideInBytes_),
+//		};
+//
+//		UINT offsets[_countof(vertexBuffers)] = { 0 };
+//		deviceContext->IASetVertexBuffers(0, _countof(vertexBuffers), vertexBuffers, strides, offsets);
+//
+//		// The slot numbers of 'primitive_textures' are defined in 'material.hlsli'.
+//		const int textureIndices_[] =
+//		{
+//			material.data_.pbrMetallicRoughness_.basecolorTexture_.index_,
+//			material.data_.pbrMetallicRoughness_.metallicRoughnessTexture_.index_,
+//			material.data_.normalTexture_.index_,
+//			material.data_.emissiveTexture_.index_,
+//			material.data_.occlusionTexture_.index_,
+//			material.data_.KhrMaterialsPbrSpecularGlossiness_.diffuseTexture_.index_,
+//			material.data_.KhrMaterialsPbrSpecularGlossiness_.specularGlossinessTexture_.index_,
+//			material.data_.khrMaterialsSheen_.sheenColorTexture_.index_,
+//			material.data_.khrMaterialsSheen_.sheenRoughnessTexture_.index_,
+//			material.data_.khrMaterialsSpecular_.specularTexture_.index_,
+//			material.data_.khrMaterialsSpecular_.specularColorTexture_.index_,
+//			material.data_.khrMaterialsClearcoat_.clearcoatTexture_.index_,
+//			material.data_.khrMaterialsClearcoat_.clearcoatRoughnessTexture_.index_,
+//			material.data_.khrMaterialsClearcoat_.clearcoatNormalTexture_.index_,
+//			material.data_.khrMaterialsTransmission_.transmissionTexture_.index_,
+//			material.data_.khrMaterialsVolume_.thicknessTexture_.index_,
+//		};
+//		ID3D11ShaderResourceView* nullShaderResourceView = NULL;
+//		std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices_));
+//		for (int textureIndex = 0; textureIndex < shaderResourceViews.size(); ++textureIndex)
+//		{
+//			shaderResourceViews.at(textureIndex) = textureIndices_[textureIndex] > -1 ? textureResourceViews_.at(textures_.at(textureIndices_[textureIndex]).source_).Get() : nullShaderResourceView;
+//		}
+//		deviceContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
+//
+//		primitiveConstants_->data_.color_ = { 1, 1, 1, 1 };
+//		primitiveConstants_->data_.transform_ = transform;
+//		primitiveConstants_->data_.material_ = primitive.material_ < 0 ? static_cast<int>(materials_.size() - 1) : primitive.material_;
+//		primitiveConstants_->Activate(Primitive_Slot, CBufferUsage::vp);
+//
+//		deviceContext->IASetPrimitiveTopology(primitive.topology_);
+//
+//		drawcallCount++;
+//		if (primitive.indexBufferView_.Count() > 0)
+//		{
+//			deviceContext->IASetIndexBuffer(buffers_.at(primitive.indexBufferView_.buffer_).Get(), primitive.indexBufferView_.format_, 0);
+//			deviceContext->DrawIndexed(static_cast<UINT>(primitive.indexCount_), static_cast<UINT>(primitive.indexLocation_), 0);
+//		}
+//		else
+//		{
+//			deviceContext->Draw(static_cast<UINT>(primitive.vertexBufferViews_.at("POSITION").Count()), 0);
+//		}
+//	}
+//	return drawcallCount;
+//}
+int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform)
 {
 	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
 
 	int drawcallCount = 0;
 
+	deviceContext->VSSetShader(staticMeshVs_.Get(), nullptr, 0);
+	deviceContext->PSSetShader(staticMeshPs_.Get(), nullptr, 0);
+	deviceContext->IASetInputLayout(inputLayout_.Get());
+
 	// The slot number of 'material_constants' are defined in 'material.hlsli'.
-	const int materialConstantsSlot = 0;
+	const int materialConstantsSlot{ 0 };
 	deviceContext->PSSetShaderResources(materialConstantsSlot, 1, materialResourceView_.GetAddressOf());
 
 	for (decltype(batchPrimitives_)::const_reference primitive : batchPrimitives_)
@@ -616,6 +745,7 @@ int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, st
 		{
 			continue;
 		}
+
 
 		const Material& material = materials_.at(primitive.material_ < 0 ? materials_.size() - 1 : primitive.material_);
 		_ASSERT_EXPR(material.data_.normalTexture_.index_ > -1 ? primitive.vertexBufferViews_.at("TANGENT").buffer_ > -1 : TRUE, L"");
@@ -637,28 +767,7 @@ int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, st
 		}
 #endif
 
-		PipelineState replacementPipelineState = {};
-		drawcallback(material, replacementPipelineState);
-		deviceContext->VSSetShader(replacementPipelineState.vertexShader_ ? replacementPipelineState.vertexShader_ : staticMeshVs_.Get(), NULL, 0);
-		deviceContext->PSSetShader(replacementPipelineState.pixelShader_ ? replacementPipelineState.pixelShader_ : staticMeshPs_.Get(), NULL, 0);
-		deviceContext->DSSetShader(replacementPipelineState.domainShader_ ? replacementPipelineState.domainShader_ : NULL, NULL, 0);
-		deviceContext->HSSetShader(replacementPipelineState.hullShader_ ? replacementPipelineState.hullShader_ : NULL, NULL, 0);
-		deviceContext->GSSetShader(replacementPipelineState.geometryShader_ ? replacementPipelineState.geometryShader_ : NULL, NULL, 0);
-		deviceContext->IASetInputLayout(replacementPipelineState.inputLayout_ ? replacementPipelineState.inputLayout_ : inputLayout_.Get());
-		if (replacementPipelineState.depthStencilState_)
-		{
-			deviceContext->OMSetDepthStencilState(replacementPipelineState.depthStencilState_, 0);
-		}
-		if (replacementPipelineState.rasterizerState_)
-		{
-			deviceContext->RSSetState(replacementPipelineState.rasterizerState_);
-		}
-		if (replacementPipelineState.blendState_)
-		{
-			deviceContext->OMSetBlendState(replacementPipelineState.blendState_, NULL, 0xFFFFFFFF);
-		}
-
-		ID3D11Buffer* vertex_buffers[] =
+		ID3D11Buffer* vertexBuffers[] =
 		{
 			primitive.vertexBufferViews_.at("POSITION").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("POSITION").buffer_).Get() : NULL,
 			primitive.vertexBufferViews_.at("NORMAL").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("NORMAL").buffer_).Get() : NULL,
@@ -675,8 +784,8 @@ int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, st
 			static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_1").strideInBytes_),
 		};
 
-		UINT offsets[_countof(vertex_buffers)] = { 0 };
-		deviceContext->IASetVertexBuffers(0, _countof(vertex_buffers), vertex_buffers, strides, offsets);
+		UINT offsets[_countof(vertexBuffers)] = { 0 };
+		deviceContext->IASetVertexBuffers(0, _countof(vertexBuffers), vertexBuffers, strides, offsets);
 
 		// The slot numbers of 'primitive_textures' are defined in 'material.hlsli'.
 		const int textureIndices_[] =
@@ -698,164 +807,55 @@ int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, st
 			material.data_.khrMaterialsTransmission_.transmissionTexture_.index_,
 			material.data_.khrMaterialsVolume_.thicknessTexture_.index_,
 		};
+
 		ID3D11ShaderResourceView* nullShaderResourceView = NULL;
 		std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices_));
-		for (int textureIndex = 0; textureIndex < shaderResourceViews.size(); ++textureIndex)
+		for (int texture_index = 0; texture_index < shaderResourceViews.size(); ++texture_index)
 		{
-			shaderResourceViews.at(textureIndex) = textureIndices_[textureIndex] > -1 ? texture_resource_views.at(textures.at(textureIndices_[textureIndex]).source).Get() : nullShaderResourceView;
+			shaderResourceViews.at(texture_index) = textureIndices_[texture_index] > -1 ? textureResourceViews_.at(textures_.at(textureIndices_[texture_index]).source_).Get() : nullShaderResourceView;
 		}
 		deviceContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
 
-		primitive_constants->data.color = { 1, 1, 1, 1 };
-		primitive_constants->data.transform = transform;
-		primitive_constants->data.material = primitive.material < 0 ? static_cast<int>(materials.size() - 1) : primitive.material;
-		primitive_constants->update(deviceContext, _primitive_slot, cb_usage::vp);
+		primitiveConstants_->data_.color_ = { 1, 1, 1, 1 };
+		primitiveConstants_->data_.transform_ = transform;
+		primitiveConstants_->data_.material_ = primitive.material_ < 0 ? static_cast<int>(materials_.size() - 1) : primitive.material_;
+		primitiveConstants_->Activate(Primitive_Slot, CBufferUsage::vp);
 
 		deviceContext->IASetPrimitiveTopology(primitive.topology_);
 
 		drawcallCount++;
-		if (primitive.index_buffer_view.count() > 0)
+		if (primitive.indexBufferView_.Count() > 0)
 		{
-			deviceContext->IASetIndexBuffer(buffers.at(primitive.index_buffer_view.buffer).Get(), primitive.index_buffer_view.format, 0);
+			deviceContext->IASetIndexBuffer(buffers_.at(primitive.indexBufferView_.buffer_).Get(), primitive.indexBufferView_.format_, 0);
 			deviceContext->DrawIndexed(static_cast<UINT>(primitive.indexCount_), static_cast<UINT>(primitive.indexLocation_), 0);
 		}
 		else
 		{
-			deviceContext->Draw(static_cast<UINT>(primitive.vertexBufferViews.at("POSITION").count()), 0);
+			deviceContext->Draw(static_cast<UINT>(primitive.vertexBufferViews_.at("POSITION").Count()), 0);
 		}
 	}
 	return drawcallCount;
 }
-int GltfStaticMesh::_Draw(ID3D11DeviceContext* deviceContext, draw_pass pass, const DirectX::XMFLOAT4X4& transform)
+int GltfStaticMesh::CastShadow(const DirectX::XMFLOAT4X4& transform)
 {
-	int drawcall_count = 0;
+	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
 
-	deviceContext->VSSetShader(staticMeshVs_.Get(), nullptr, 0);
-	deviceContext->PSSetShader(staticMeshPs_.Get(), nullptr, 0);
-	deviceContext->IASetInputLayout(inputLayout_.Get());
-
-	// The slot number of 'material_constants' are defined in 'material.hlsli'.
-	const int material_constants_slot{ 0 };
-	deviceContext->PSSetShaderResources(material_constants_slot, 1, materialResourceView_.GetAddressOf());
-
-	for (decltype(meshes)::const_reference mesh : meshes)
-	{
-		for (decltype(batchPrimitives_)::const_reference primitive : mesh.primitives)
-		{
-			if (primitive.vertexBufferViews.at("POSITION").count() == 0 || primitive.vertexBufferViews.at("POSITION").buffer < 0)
-			{
-				continue;
-			}
-
-
-			const material& material = materials.at(primitive.material < 0 ? materials.size() - 1 : primitive.material);
-			_ASSERT_EXPR(material.data.normal_texture.index > -1 ? primitive.vertexBufferViews.at("TANGENT").buffer > -1 : TRUE, L"");
-
-#if 1
-			bool permitted = false;
-			switch (pass)
-			{
-			case draw_pass::opaque:
-				permitted = material.has_opaque();
-				break;
-			case draw_pass::transmission:
-				permitted = material.has_transmission();
-				break;
-			}
-			if (!permitted)
-			{
-				continue;
-			}
-#endif
-
-			ID3D11Buffer* vertex_buffers[] =
-			{
-				primitive.vertexBufferViews.at("POSITION").buffer > -1 ? buffers.at(primitive.vertexBufferViews.at("POSITION").buffer).Get() : NULL,
-				primitive.vertexBufferViews.at("NORMAL").buffer > -1 ? buffers.at(primitive.vertexBufferViews.at("NORMAL").buffer).Get() : NULL,
-				primitive.vertexBufferViews.at("TANGENT").buffer > -1 ? buffers.at(primitive.vertexBufferViews.at("TANGENT").buffer).Get() : NULL,
-				primitive.vertexBufferViews.at("TEXCOORD_0").buffer > -1 ? buffers.at(primitive.vertexBufferViews.at("TEXCOORD_0").buffer).Get() : NULL,
-				primitive.vertexBufferViews.at("TEXCOORD_1").buffer > -1 ? buffers.at(primitive.vertexBufferViews.at("TEXCOORD_1").buffer).Get() : NULL,
-			};
-			UINT strides[] =
-			{
-				static_cast<UINT>(primitive.vertexBufferViews.at("POSITION").stride_in_bytes),
-				static_cast<UINT>(primitive.vertexBufferViews.at("NORMAL").stride_in_bytes),
-				static_cast<UINT>(primitive.vertexBufferViews.at("TANGENT").stride_in_bytes),
-				static_cast<UINT>(primitive.vertexBufferViews.at("TEXCOORD_0").stride_in_bytes),
-				static_cast<UINT>(primitive.vertexBufferViews.at("TEXCOORD_1").stride_in_bytes),
-			};
-
-			UINT offsets[_countof(vertex_buffers)] = { 0 };
-			deviceContext->IASetVertexBuffers(0, _countof(vertex_buffers), vertex_buffers, strides, offsets);
-
-			// The slot numbers of 'primitive_textures' are defined in 'material.hlsli'.
-			const int textureIndices_[] =
-			{
-				material.data.pbr_metallic_roughness.basecolor_texture.index,
-				material.data.pbr_metallic_roughness.metallic_roughness_texture.index,
-				material.data.normal_texture.index,
-				material.data.emissive_texture.index,
-				material.data.occlusion_texture.index,
-				material.data.khr_materials_pbr_specular_glossiness.diffuse_texture.index,
-				material.data.khr_materials_pbr_specular_glossiness.specular_glossiness_texture.index,
-				material.data.khr_materials_sheen.sheen_color_texture.index,
-				material.data.khr_materials_sheen.sheen_roughness_texture.index,
-				material.data.khr_materials_specular.specular_texture.index,
-				material.data.khr_materials_specular.specular_color_texture.index,
-				material.data.khr_materials_clearcoat.clearcoat_texture.index,
-				material.data.khr_materials_clearcoat.clearcoat_roughness_texture.index,
-				material.data.khr_materials_clearcoat.clearcoat_normal_texture.index,
-				material.data.khr_materials_transmission.transmission_texture.index,
-				material.data.khr_materials_volume.thickness_texture.index,
-			};
-
-			ID3D11ShaderResourceView* null_shader_resource_view = NULL;
-			std::vector<ID3D11ShaderResourceView*> shader_resource_views(_countof(textureIndices_));
-			for (int texture_index = 0; texture_index < shader_resource_views.size(); ++texture_index)
-			{
-				shader_resource_views.at(texture_index) = textureIndices_[texture_index] > -1 ? texture_resource_views.at(textures.at(textureIndices_[texture_index]).source).Get() : null_shader_resource_view;
-			}
-			deviceContext->PSSetShaderResources(1, static_cast<UINT>(shader_resource_views.size()), shader_resource_views.data());
-
-			primitive_constants->data.color = { 1, 1, 1, 1 };
-			primitive_constants->data.transform = transform;
-			primitive_constants->data.material = primitive.material < 0 ? static_cast<int>(materials.size() - 1) : primitive.material;
-			primitive_constants->update(deviceContext, _primitive_slot, cb_usage::vp);
-
-			deviceContext->IASetPrimitiveTopology(primitive.topology_);
-
-			drawcall_count++;
-			if (primitive.index_buffer_view.count() > 0)
-			{
-				deviceContext->IASetIndexBuffer(buffers.at(primitive.index_buffer_view.buffer).Get(), primitive.index_buffer_view.format, 0);
-				deviceContext->DrawIndexed(static_cast<UINT>(primitive.indexCount_), static_cast<UINT>(primitive.indexLocation_), 0);
-			}
-			else
-			{
-				deviceContext->Draw(static_cast<UINT>(primitive.vertexBufferViews.at("POSITION").count()), 0);
-			}
-		}
-	}
-	return drawcall_count;
-}
-int GltfStaticMesh::CastShadow(ID3D11DeviceContext* deviceContext, const DirectX::XMFLOAT4X4& transform)
-{
 	int drawcall_count = 0;
 
 	for (int pass = 0; pass < 2; ++pass)
 	{
 		for (decltype(batchPrimitives_)::const_reference primitive : batchPrimitives_)
 		{
-			const material& material = materials.at(primitive.material < 0 ? materials.size() - 1 : primitive.material);
+			const Material& material = materials_.at(primitive.material_ < 0 ? materials_.size() - 1 : primitive.material_);
 
 			bool permitted = false;
 			switch (pass)
 			{
 			case 0: // opaque
-				permitted = material.has_opaque();
+				permitted = material.HasOpaque();
 				break;
 			case 1: // transmission
-				permitted = material.has_transmission();
+				permitted = material.HasTransmission();
 				break;
 			}
 			if (!permitted)
@@ -872,12 +872,12 @@ int GltfStaticMesh::CastShadow(ID3D11DeviceContext* deviceContext, const DirectX
 
 				ID3D11Buffer* vertex_buffers[] =
 				{
-					buffers.at(primitive.vertexBufferViews.at("POSITION").buffer).Get(),
+					buffers_.at(primitive.vertexBufferViews_.at("POSITION").buffer_).Get(),
 					NULL,
 				};
 				UINT strides[] =
 				{
-					static_cast<UINT>(primitive.vertexBufferViews.at("POSITION").stride_in_bytes),
+					static_cast<UINT>(primitive.vertexBufferViews_.at("POSITION").strideInBytes_),
 					0,
 				};
 				UINT offsets[_countof(vertex_buffers)] = { 0 };
@@ -890,67 +890,67 @@ int GltfStaticMesh::CastShadow(ID3D11DeviceContext* deviceContext, const DirectX
 				deviceContext->PSSetShader(csmTransparentPs_.Get(), NULL, 0);
 				deviceContext->IASetInputLayout(csmTransparentInputLayout_.Get());
 
-				ID3D11Buffer* vertex_buffers[] =
+				ID3D11Buffer* vertexBuffers[] =
 				{
-					buffers.at(primitive.vertexBufferViews.at("POSITION").buffer).Get(),
+					buffers_.at(primitive.vertexBufferViews_.at("POSITION").buffer_).Get(),
 					NULL,
 				};
 				UINT strides[] =
 				{
-					static_cast<UINT>(primitive.vertexBufferViews.at("POSITION").stride_in_bytes),
+					static_cast<UINT>(primitive.vertexBufferViews_.at("POSITION").strideInBytes_),
 					0,
 				};
-				int texcoord = material.data.pbr_metallic_roughness.basecolor_texture.texcoord;
+				int texcoord = material.data_.pbrMetallicRoughness_.basecolorTexture_.texcoord_;
 				switch (texcoord)
 				{
 				case 0:
-					vertex_buffers[1] = buffers.at(primitive.vertexBufferViews.at("TEXCOORD_0").buffer).Get();
-					strides[1] = static_cast<UINT>(primitive.vertexBufferViews.at("TEXCOORD_0").stride_in_bytes);
+					vertexBuffers[1] = buffers_.at(primitive.vertexBufferViews_.at("TEXCOORD_0").buffer_).Get();
+					strides[1] = static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_0").strideInBytes_);
 					break;
 				case 1:
-					vertex_buffers[1] = buffers.at(primitive.vertexBufferViews.at("TEXCOORD_1").buffer).Get();
-					strides[1] = static_cast<UINT>(primitive.vertexBufferViews.at("TEXCOORD_1").stride_in_bytes);
+					vertexBuffers[1] = buffers_.at(primitive.vertexBufferViews_.at("TEXCOORD_1").buffer_).Get();
+					strides[1] = static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_1").strideInBytes_);
 					break;
 				}
-				UINT offsets[_countof(vertex_buffers)] = { 0 };
-				deviceContext->IASetVertexBuffers(0, _countof(vertex_buffers), vertex_buffers, strides, offsets);
+				UINT offsets[_countof(vertexBuffers)] = { 0 };
+				deviceContext->IASetVertexBuffers(0, _countof(vertexBuffers), vertexBuffers, strides, offsets);
 
-				ID3D11ShaderResourceView* texture_resource_view = NULL;
-				int basecolor_texture_index = material.data.pbr_metallic_roughness.basecolor_texture.index;
+				ID3D11ShaderResourceView* textureResourceView = NULL;
+				int basecolor_texture_index = material.data_.pbrMetallicRoughness_.basecolorTexture_.index_;
 				if (basecolor_texture_index > -1)
 				{
-					int image = textures.at(basecolor_texture_index).source;
+					int image = textures_.at(basecolor_texture_index).source_;
 					if (image > -1)
 					{
-						texture_resource_view = texture_resource_views.at(image).Get();
-						deviceContext->PSSetShaderResources(1, 1, &texture_resource_view);
+						textureResourceView = textureResourceViews_.at(image).Get();
+						deviceContext->PSSetShaderResources(1, 1, &textureResourceView);
 					}
 				}
 			}
 
 #if 1
-			if (primitive.vertexBufferViews.at("POSITION").buffer < 0)
+			if (primitive.vertexBufferViews_.at("POSITION").buffer_ < 0)
 			{
 				continue;
 			}
 #endif
 
-			primitive_constants->data.transform = transform;
-			primitive_constants->data.start_instance_location = 0;
-			primitive_constants->data.skin = -1;
-			primitive_constants->update(deviceContext, _primitive_slot, cb_usage::v);
+			primitiveConstants_->data_.transform_ = transform;
+			primitiveConstants_->data_.startInstanceLocation_ = 0;
+			primitiveConstants_->data_.skin_ = -1;
+			primitiveConstants_->Activate(Primitive_Slot, CBufferUsage::v);
 
 			deviceContext->IASetPrimitiveTopology(primitive.topology_);
 
 			drawcall_count++;
-			if (primitive.index_buffer_view.count() > 0)
+			if (primitive.indexBufferView_.Count() > 0)
 			{
-				deviceContext->IASetIndexBuffer(buffers.at(primitive.index_buffer_view.buffer).Get(), primitive.index_buffer_view.format, 0);
+				deviceContext->IASetIndexBuffer(buffers_.at(primitive.indexBufferView_.buffer_).Get(), primitive.indexBufferView_.format_, 0);
 				deviceContext->DrawIndexedInstanced(static_cast<UINT>(primitive.indexCount_), 4, static_cast<UINT>(primitive.indexLocation_), 0, 0);
 			}
 			else
 			{
-				deviceContext->DrawInstanced(static_cast<UINT>(primitive.vertexBufferViews.at("POSITION").count()), 4, 0, 0);
+				deviceContext->DrawInstanced(static_cast<UINT>(primitive.vertexBufferViews_.at("POSITION").Count()), 4, 0, 0);
 			}
 		}
 	}

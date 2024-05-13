@@ -32,10 +32,10 @@ namespace AbyssEngine
 		void ExtractMeshes(const tinygltf::Model& transmissionModel);
 
 	public:
-		int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, std::function<void(const Material&, PipelineState&)> drawcallback = [](const Material&, PipelineState&) {});
+		//int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, std::function<void(const Material&, PipelineState&)> drawcallback = [](const Material&, PipelineState&) {});
 		int CastShadow(const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
-		int _Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+		int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> staticMeshVs_;

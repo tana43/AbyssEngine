@@ -3,13 +3,13 @@
 
 namespace AbyssEngine
 {
-    class StaticMeshBatching;
+    class GltfStaticMesh;
 
-    class GltfStaticMesh : public Renderer
+    class StaticMesh : public Renderer
     {
     public:
-        GltfStaticMesh() {}
-        ~GltfStaticMesh() = default;
+        StaticMesh() {}
+        ~StaticMesh() = default;
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
         void Render()override;
@@ -18,7 +18,7 @@ namespace AbyssEngine
         void SetActive(const bool value)override;
 
     private:
-        std::unique_ptr<StaticMeshBatching> model_;
+        std::unique_ptr<GltfStaticMesh> model_;
     };
 }
 

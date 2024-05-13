@@ -21,7 +21,10 @@
 
 namespace AbyssEngine
 {
-	enum class DrawPass { Opaque, Transmission, /*emissive*/ };
+	enum class DrawPass { 
+		Opaque,//•s“§–¾ 
+		Transmission, //emissive 
+	};
 
 	struct PipelineState
 	{
