@@ -13,6 +13,7 @@
 #include "StaticMesh.h"
 #include "Bloom.h"
 #include "Skybox.h"
+#include "CascadedShadowMap.h"
 
 #include "imgui/imgui.h"
 
@@ -130,6 +131,9 @@ RenderManager::RenderManager()
 
 	//スカイボックス生成
 	skybox_ = std::make_unique<Skybox>();
+
+	//シャドウマップ生成
+	cascadedShadowMap_ = std::make_unique<CascadedShadowMap>(1024.0f * 4,1024.0f * 4);
 }
 
 void RenderManager::Reset()
@@ -214,6 +218,7 @@ void RenderManager::Render()
 #else
 				bufferScene_->Activate(10,CBufferUsage::vp);
 #endif // 0
+
 
 				//オフスクリーンレンダリング
 				frameBuffer_->Clear(0.4f,0.4f,0.4f,1.0f);

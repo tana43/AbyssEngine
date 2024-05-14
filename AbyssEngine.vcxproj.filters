@@ -206,6 +206,7 @@
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\GltfStaticMesh.h" />
+    <ClInclude Include="Code\Header\CascadedShadowMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -330,6 +331,7 @@
     </ClCompile>
     <ClCompile Include="Code\Source\Skybox.cpp" />
     <ClCompile Include="Code\Source\GltfStaticMesh.cpp" />
+    <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -399,6 +401,9 @@
       <Filter>Shader\Gltf</Filter>
     </FxCompile>
     <FxCompile Include="Shader\SkyboxPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PostEffectsPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

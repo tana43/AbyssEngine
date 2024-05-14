@@ -16,6 +16,7 @@ namespace AbyssEngine
     class FrameBuffer;
     class FullscreenQuad;
     class Skybox;
+    class CascadedShadowMap;
 
     class RenderManager
     {
@@ -98,6 +99,9 @@ namespace AbyssEngine
         //スカイボックス
         std::unique_ptr<Skybox> skybox_;
 
+        //カスケードシャドウマップ
+        std::unique_ptr<CascadedShadowMap> cascadedShadowMap_;
+        bool enableShadow_ = true;
     private:
 
         //2Dオブジェクトのレンダリング
@@ -107,6 +111,8 @@ namespace AbyssEngine
 
         //Rendererの生存確認
         void CheckRenderer();
+
+        void Shadow
 
         void UpdateConstantBuffer()const;
 
