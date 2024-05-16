@@ -84,23 +84,50 @@ namespace AbyssEngine
             float skyboxRoughness_ = 0.0f;
             float time_ = 0.0f;
         };
-
         std::unique_ptr<ConstantBuffer<ConstantBufferScene>> bufferScene_;
+
+        //フォグやシャドウなどのエフェクト定数バッファ
+        //シャドウ以外は現在使っていない
+        struct ConstantEffects
+        {
+            float fogColor_[4] = { 0.5f,0.6f,0.7f,1.0f };
+            float fogDensity_ = 0.0f;
+            float fogHeightFalloff_ = 0.09f;
+            float groundLevel_ = -4.0f;
+            float maxRayLength_ = 1000;
+            float mieG_ = 0.75f; // 0.0 - 0.9
+
+            float noiseScale_ = 0.008f;
+            float timeScale_ = 0.0345f;
+
+            float bokehAperture_ = 0.0f;
+            float bokehFocus_ = 0.824f;
+
+            float shadowDepthBias_ = 0.00002f;
+            float shadowColor_ = 0.25f;
+            float shadowFilterRadius_ = 4.000f;
+            int shadowSampleCount_ = 16;
+            int colorizeCascadedLayer_ = false;
+        };
+        std::unique_ptr<ConstantBuffer<ConstantEffects>> bufferEffects_;
+
         //Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
 
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> iblShaderResourceView_[7];
 
         //オフスクリーンレンダリング
-        std::unique_ptr<FrameBuffer> frameBuffer_;
+        std::unique_ptr<FrameBuffer> baseFrameBuffer_;//エフェクトなしのフレーム格納用バッファ
+        std::unique_ptr<FrameBuffer> postEffectedFrameBuffer_;//ポストエフェクトがついたフレーム格納用バッファ
         std::unique_ptr<FullscreenQuad> bitBlockTransfer_;
         std::unique_ptr<Bloom> bloom_;
-        Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader_;
+        Microsoft::WRL::ComPtr<ID3D11PixelShader> postEffectsPS_;
 
         //スカイボックス
         std::unique_ptr<Skybox> skybox_;
 
         //カスケードシャドウマップ
         std::unique_ptr<CascadedShadowMap> cascadedShadowMap_;
+        float criticalDepthValue_ = 200.0f;
         bool enableShadow_ = true;
     private:
 
@@ -112,7 +139,6 @@ namespace AbyssEngine
         //Rendererの生存確認
         void CheckRenderer();
 
-        void Shadow
 
         void UpdateConstantBuffer()const;
 

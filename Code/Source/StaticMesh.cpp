@@ -23,6 +23,12 @@ void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
 void StaticMesh::Render()
 {
     model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
+    //model_->Draw(DrawPass::Transmission,transform_->CalcWorldMatrix());
+}
+
+void StaticMesh::RenderShadow()
+{
+    model_->CastShadow(transform_->CalcWorldMatrix());
 }
 
 void StaticMesh::SetActive(const bool value)

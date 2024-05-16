@@ -15,6 +15,8 @@ FullscreenQuad::FullscreenQuad()
 void FullscreenQuad::Blit(ID3D11ShaderResourceView** shaderResourceView, uint32_t startSlot, uint32_t numViews, ID3D11PixelShader* replacedPixelShader)
 {
 	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
+#if 0
+
 	deviceContext->IASetVertexBuffers(0, 0, nullptr, nullptr, nullptr);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	deviceContext->IASetInputLayout(nullptr);
@@ -25,4 +27,25 @@ void FullscreenQuad::Blit(ID3D11ShaderResourceView** shaderResourceView, uint32_
 	deviceContext->PSSetShaderResources(startSlot, numViews, shaderResourceView);
 
 	deviceContext->Draw(4, 0);
+#else
+	ID3D11ShaderResourceView* cachedShaderResourceViews[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {};
+	deviceContext->PSGetShaderResources(startSlot, numViews, cachedShaderResourceViews);
+
+	deviceContext->PSSetShaderResources(startSlot, numViews, shaderResourceView);
+
+	deviceContext->IASetVertexBuffers(0, 0, nullptr, nullptr, nullptr);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	deviceContext->IASetInputLayout(nullptr);
+
+	deviceContext->VSSetShader(embeddedVertexShader_.Get(), 0, 0);
+	replacedPixelShader ? deviceContext->PSSetShader(replacedPixelShader, 0, 0) : deviceContext->PSSetShader(embeddedPixelShader_.Get(), 0, 0);
+
+	deviceContext->Draw(4, 0);
+
+	deviceContext->PSSetShaderResources(startSlot, numViews, cachedShaderResourceViews);
+	for (ID3D11ShaderResourceView* cachedShaderResourceView : cachedShaderResourceViews)
+	{
+		if (cachedShaderResourceView) cachedShaderResourceView->Release();
+	}
+#endif // 0
 }

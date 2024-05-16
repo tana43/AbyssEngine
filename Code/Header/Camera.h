@@ -32,6 +32,9 @@ namespace AbyssEngine
         Vector3 focus_;
 
         friend class RenderManager;
+
+    private: 
+        float debCameraSpeed_ = 10.0f;
     };
 }
 

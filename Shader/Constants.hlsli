@@ -53,6 +53,7 @@ struct CsmConstants
 {
     row_major float4x4 viewProjectionMatrices[4];
     float4 cascadePlaneDistances;
+    uint cascadeCount;
 };
 cbuffer csmConstants : register(b12)
 {

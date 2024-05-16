@@ -24,6 +24,8 @@ bool Camera::DrawImGui()
 {
     if (ImGui::TreeNode("Camera"))
     {
+        ImGui::DragFloat("Debug Speed", &debCameraSpeed_, 0.1f, 0.01f);
+
         ImGui::SliderAngle("Fov", &fov_, 30.0f, 120.0f);
         ImGui::DragFloat("Near Z", &nearZ_, 0.01f, 0.01f,1.0f);
         ImGui::DragFloat("Far Z", &farZ_, 1.0f, 0.1f);
@@ -120,9 +122,10 @@ void Camera::DebugCameraController()
         //“ü—Í’l‚ª‚È‚¢ê‡ˆ—‚µ‚È‚¢
         if (input.Length() > 0)
         {
-            const Vector3 move = {
+            Vector3 move = {
                 transform_->GetForward() * input.y + transform_->GetRight() * input.x
             };
+            move = move * Time::deltaTime_ * debCameraSpeed_;
             auto pos = transform_->GetPosition();
             transform_->SetPosition(pos + move);
         }

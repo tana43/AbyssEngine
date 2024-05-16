@@ -7,6 +7,7 @@
 #include "Misc.h"
 #include "Bloom.h"
 #include "Skybox.h"
+#include "CascadedShadowMap.h"
 #include "../External/imgui/ImGuiCtrl.h"
 
 using namespace AbyssEngine;

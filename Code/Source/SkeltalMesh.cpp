@@ -47,6 +47,11 @@ void SkeletalMesh::Render()
 	model_->Draw(DrawPass::Opaque, transform_->CalcWorldMatrix(), animatedNodes_);
 }
 
+void SkeletalMesh::RenderShadow()
+{
+	model_->CastShadow(transform_->CalcWorldMatrix(), animatedNodes_);
+}
+
 void SkeletalMesh::AppendAnimation(const std::string& filename)
 {
 	model_->AppendAnimation(filename);

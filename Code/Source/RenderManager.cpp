@@ -49,7 +49,11 @@ RenderManager::RenderManager()
 		const HRESULT hr = DXSystem::device_->CreateBuffer(&bd, nullptr, constantBufferScene_.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 #else
+		//シーン用
 		bufferScene_ = std::make_unique<ConstantBuffer<ConstantBufferScene>>();
+
+		//エフェクト用
+		bufferEffects_ = std::make_unique<ConstantBuffer<ConstantEffects>>();
 #endif // 0
 	}
 
@@ -122,12 +126,16 @@ RenderManager::RenderManager()
 	IBLInitialize();
 
 	//オフスクリーンレンダリング
-	frameBuffer_ = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight());
+	baseFrameBuffer_ = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight());
 	bitBlockTransfer_ = std::make_unique<FullscreenQuad>();
 	bloom_ = std::make_unique<Bloom>(
 		static_cast<size_t>(DXSystem::GetScreenWidth()), 
 		static_cast<size_t>(DXSystem::GetScreenHeight()));
-	pixelShader_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/FinalPassPS.cso");
+#if 0
+	postEffectsPS_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/FinalPassPS.cso");
+#else
+	postEffectsPS_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/PostEffectsPS.cso");
+#endif // 0
 
 	//スカイボックス生成
 	skybox_ = std::make_unique<Skybox>();
@@ -205,6 +213,34 @@ void RenderManager::Render()
 				camera->viewProjectionMatrix_.Invert(bufferScene_->data_.inverseViewProjection_);
 				bufferScene_->data_.time_ += Time::deltaTime_;
 
+				//シャドウマップ作成
+				cascadedShadowMap_->Clear();
+				if (enableShadow_)
+				{
+					DXSystem::SetDepthStencilState(DS_State::LEqual);
+					DXSystem::SetRasterizerState(RS_State::Cull_None);
+					DXSystem::SetBlendState(BS_State::Off);
+					cascadedShadowMap_->Make(
+						bufferScene_->data_.view_,
+						bufferScene_->data_.projection_,
+						bufferScene_->data_.lightDirection_,
+						criticalDepthValue_,
+						[&]() {
+							for (auto& r : renderer3DList_)
+							{
+								const auto& pRend = r.lock();
+								if (pRend->actor_->GetActiveInHierarchy())
+								{
+									if (pRend)
+									{
+										pRend->RenderShadow();
+									}
+								}
+							}
+						}
+					);
+				}
+
 				//仮のライト
 				//bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
 				//bufferScene_.lightColor_ = Vector3(1, 1, 1);
@@ -218,26 +254,41 @@ void RenderManager::Render()
 #else
 				bufferScene_->Activate(10,CBufferUsage::vp);
 #endif // 0
-
-
 				//オフスクリーンレンダリング
-				frameBuffer_->Clear(0.4f,0.4f,0.4f,1.0f);
-				frameBuffer_->Activate();
+				baseFrameBuffer_->Clear(0.4f,0.4f,0.4f,1.0f);
+				baseFrameBuffer_->Activate();
 
 				//スカイボックス描画
 				skybox_->Render(bitBlockTransfer_.get());
 
 				Render3D(camera);
 
-				frameBuffer_->Deactivate();
-				bloom_->Make(frameBuffer_->shaderResourceViews_[0].Get());
+				baseFrameBuffer_->Deactivate();
+				bloom_->Make(baseFrameBuffer_->shaderResourceViews_[0].Get());
+
+				DXSystem::deviceContext_->PSSetShaderResources(39, 1, baseFrameBuffer_->GetColorMap().GetAddressOf());
+
+#if 0
 				ID3D11ShaderResourceView* shaderResourceViews[] =
 				{
-					frameBuffer_->shaderResourceViews_[0].Get(),
+					baseFrameBuffer_->shaderResourceViews_[0].Get(),
 					bloom_->GetShaderResourceView(),
 				};
-				bitBlockTransfer_->Blit(shaderResourceViews, 0, 2, pixelShader_.Get());
-
+				bitBlockTransfer_->Blit(shaderResourceViews, 0, 2, postEffectsPS_.Get());
+#else
+				bufferEffects_->Activate(11, CBufferUsage::vp);
+				DXSystem::SetDepthStencilState(DS_State::None);
+				DXSystem::SetBlendState(BS_State::Off);
+				DXSystem::SetRasterizerState(RS_State::Cull_None);
+				ID3D11ShaderResourceView* shaderResourceViews[] =
+				{
+					baseFrameBuffer_->GetColorMap().Get(),
+					baseFrameBuffer_->GetDepthMap().Get(),
+					cascadedShadowMap_->DepthMap().Get(),
+					bloom_->GetShaderResourceView()
+				};
+				bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
+#endif // 0
 				break;
 			}
 		}
@@ -267,6 +318,15 @@ void RenderManager::DrawImGui()
 	if (ImGui::BeginMenu("Post Effect"))
 	{
 		bloom_->DrawImGui();
+
+		ImGui::Checkbox("Enable Shadow", &enableShadow_);
+		ImGui::Checkbox("Colorize Cascaded Layer", reinterpret_cast<bool*>(&bufferEffects_->data_.colorizeCascadedLayer_));
+		ImGui::DragFloat("Split Scheme Weight", &cascadedShadowMap_->splitSchemeWeight_, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("Critical Depth Value", &criticalDepthValue_, 1.0f, 0.0f, 1000.0f);
+		ImGui::DragFloat("Shadow Depth Bias", &bufferEffects_->data_.shadowDepthBias_, 0.000001f, 0.0f, 0.01f, "%.8f");
+		ImGui::SliderFloat("Shadow Color", &bufferEffects_->data_.shadowColor_, 0.0f, 1.0f);
+		ImGui::SliderFloat("Shadow Filter Radius", &bufferEffects_->data_.shadowFilterRadius_, 0.0f, 64.0f);
+		ImGui::SliderInt("Shadow Sample Count", reinterpret_cast<int*>(&bufferEffects_->data_.shadowSampleCount_), 0, 64);
 
 		ImGui::EndMenu();
 	}

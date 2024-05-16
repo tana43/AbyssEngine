@@ -14,7 +14,7 @@ namespace AbyssEngine
         ~SkeletalMesh() = default;
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
-        void Render()override;
+        
 
         //アニメーションアセットの追加
         void AppendAnimation(const std::string& filename);
@@ -27,6 +27,8 @@ namespace AbyssEngine
     private:
         void SetActive(const bool value)override;
 
+        void Render()override;
+        void RenderShadow()override;
     private:
 
         //とりあえず描画させてみたいのでユニークポインタ

@@ -47,6 +47,7 @@ namespace AbyssEngine
 		{
 			DirectX::XMFLOAT4X4 viewProjectionMatrices_[4];
 			float cascadePlaneDistances_[4];
+			int cascadeCount = 4;
 		};
 		std::unique_ptr<ConstantBuffer<Constants>> constants_;
 
@@ -60,7 +61,7 @@ namespace AbyssEngine
 		
 	public:
 		const UINT cascadeCount;
-		float splitSchemeWeight = 0.7f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
+		float splitSchemeWeight_ = 0.7f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
 
 	};
 }

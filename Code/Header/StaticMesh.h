@@ -12,10 +12,12 @@ namespace AbyssEngine
         ~StaticMesh() = default;
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
-        void Render()override;
 
     private:
         void SetActive(const bool value)override;
+
+        void Render()override;
+        void RenderShadow()override;
 
     private:
         std::unique_ptr<GltfStaticMesh> model_;

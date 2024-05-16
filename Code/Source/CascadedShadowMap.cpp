@@ -50,24 +50,24 @@ CascadedShadowMap::CascadedShadowMap(UINT width, UINT height, UINT cascade_count
 	hr = device->CreateTexture2D(&texture2d_desc, 0, depthStencilBuffer_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
-	D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc = {};
-	depth_stencil_view_desc.Format = DXGI_FORMAT_D32_FLOAT;
-	depth_stencil_view_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
-	depth_stencil_view_desc.Texture2DArray.FirstArraySlice = 0;
-	depth_stencil_view_desc.Texture2DArray.ArraySize = static_cast<UINT>(cascadeCount);
-	depth_stencil_view_desc.Texture2DArray.MipSlice = 0;
-	depth_stencil_view_desc.Flags = 0;
-	hr = device->CreateDepthStencilView(depthStencilBuffer_.Get(), &depth_stencil_view_desc, depthStencilView_.GetAddressOf());
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
+	depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+	depthStencilViewDesc.Texture2DArray.FirstArraySlice = 0;
+	depthStencilViewDesc.Texture2DArray.ArraySize = static_cast<UINT>(cascadeCount);
+	depthStencilViewDesc.Texture2DArray.MipSlice = 0;
+	depthStencilViewDesc.Flags = 0;
+	hr = device->CreateDepthStencilView(depthStencilBuffer_.Get(), &depthStencilViewDesc, depthStencilView_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC shader_resource_view_desc = {};
-	shader_resource_view_desc.Format = DXGI_FORMAT_R32_FLOAT; // DXGI_FORMAT_R24_UNORM_X8_TYPELESS : DXGI_FORMAT_R32_FLOAT : DXGI_FORMAT_R16_UNORM
-	shader_resource_view_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-	shader_resource_view_desc.Texture2DArray.ArraySize = static_cast<UINT>(cascadeCount);
-	shader_resource_view_desc.Texture2DArray.MipLevels = 1;
-	shader_resource_view_desc.Texture2DArray.FirstArraySlice = 0;
-	shader_resource_view_desc.Texture2DArray.MostDetailedMip = 0;
-	hr = device->CreateShaderResourceView(depthStencilBuffer_.Get(), &shader_resource_view_desc, shaderResourceView_.GetAddressOf());
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
+	shaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT; // DXGI_FORMAT_R24_UNORM_X8_TYPELESS : DXGI_FORMAT_R32_FLOAT : DXGI_FORMAT_R16_UNORM
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	shaderResourceViewDesc.Texture2DArray.ArraySize = static_cast<UINT>(cascadeCount);
+	shaderResourceViewDesc.Texture2DArray.MipLevels = 1;
+	shaderResourceViewDesc.Texture2DArray.FirstArraySlice = 0;
+	shaderResourceViewDesc.Texture2DArray.MostDetailedMip = 0;
+	hr = device->CreateShaderResourceView(depthStencilBuffer_.Get(), &shaderResourceViewDesc, shaderResourceView_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 	viewport_.Width = static_cast<float>(width);
@@ -116,7 +116,7 @@ void CascadedShadowMap::Make(
 		float idc = cascadeIndex / static_cast<float>(cascadeCount);
 		float logarithmicSplitScheme = zn * pow(zf / zn, idc);
 		float uniformSplitScheme = zn + (zf - zn) * idc;
-		distances_.at(cascadeIndex) = logarithmicSplitScheme * splitSchemeWeight + uniformSplitScheme * (1 - splitSchemeWeight);
+		distances_.at(cascadeIndex) = logarithmicSplitScheme * splitSchemeWeight_ + uniformSplitScheme * (1 - splitSchemeWeight_);
 	}
 	// make sure border values are accurate
 	distances_.at(0) = zn;
@@ -210,10 +210,10 @@ void CascadedShadowMap::Make(
 
 	constants_->Activate(12, CBufferUsage::vp);
 
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> null_render_target_view;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> null_depth_stencil_view;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> nullRenderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> nullDepthStencilView;
 	deviceContext->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH, 1, 0);
-	deviceContext->OMSetRenderTargets(1, null_render_target_view.GetAddressOf(), depthStencilView_.Get());
+	deviceContext->OMSetRenderTargets(1, nullRenderTargetView.GetAddressOf(), depthStencilView_.Get());
 	deviceContext->RSSetViewports(1, &viewport_);
 
 	drawcallback();

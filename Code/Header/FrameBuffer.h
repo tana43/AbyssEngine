@@ -17,9 +17,12 @@ namespace AbyssEngine
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceViews_[2];
         D3D11_VIEWPORT viewport_;
 
-        void Clear(float r = 0, float g = 0, float b = 0, float a = 1, float depth = 1);
+        void Clear(float r = 0, float g = 0, float b = 0, float a = 1, float depth = 1, uint8_t stencil = 0);
         void Activate();
         void Deactivate();
+
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetColorMap() { return shaderResourceViews_[0]; }
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetDepthMap() { return shaderResourceViews_[1]; }
 
     private:
         UINT viewportCount_ = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
