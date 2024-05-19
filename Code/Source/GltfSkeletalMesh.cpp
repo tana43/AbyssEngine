@@ -733,7 +733,7 @@ int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, 
 				}
 			}
 		}
-		for (decltype(node.children_)::value_type childIndex : node.children_)
+		for (std::vector<int>::value_type childIndex : node.children_)
 		{
 			traverse(childIndex);
 		}
@@ -889,13 +889,13 @@ int GltfSkeletalMesh::CastShadow(const DirectX::XMFLOAT4X4& world, const std::ve
 					}
 				}
 			}
-			for (decltype(node.children_)::value_type childIndex : node.children_)
+			for (std::vector<int>::value_type childIndex : node.children_)
 			{
 				traverse(childIndex);
 			}
 		};
 		const Scene& scene = scenes_.at(sceneIndex);
-		for (decltype(scene.nodes_)::value_type nodeIndex : scene.nodes_)
+		for (std::vector<int>::value_type nodeIndex : scene.nodes_)
 		{
 			traverse(nodeIndex);
 		}

@@ -156,9 +156,6 @@
     <ClInclude Include="Code\Header\StaticMesh.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\ConstantBuffer.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\GeometricSubstance.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
@@ -198,15 +195,24 @@
     <ClInclude Include="External\imgui\imstb_truetype.h">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Skybox.h" />
     <ClInclude Include="Code\Header\FrameBuffer.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\FullscreenQuad.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\GltfStaticMesh.h" />
-    <ClInclude Include="Code\Header\CascadedShadowMap.h" />
+    <ClInclude Include="Code\Header\CascadedShadowMap.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Skybox.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\GltfStaticMesh.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ConstantBuffer.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -329,9 +335,15 @@
     <ClCompile Include="External\imgui\ImGuiCtrl.cpp">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Skybox.cpp" />
-    <ClCompile Include="Code\Source\GltfStaticMesh.cpp" />
-    <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />
+    <ClCompile Include="Code\Source\CascadedShadowMap.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Skybox.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\GltfStaticMesh.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

@@ -760,7 +760,7 @@ void GeometricSubstance::CumulateTransforms(std::vector<Node>& nodes_, size_t sc
 		DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(Node.rotation_.x, Node.rotation_.y, Node.rotation_.z, Node.rotation_.w));
 		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(Node.translation_.x, Node.translation_.y, Node.translation_.z);
 		DirectX::XMStoreFloat4x4(&Node.globalTransform_, S * R * T * (parent_index > -1 ? DirectX::XMLoadFloat4x4(&nodes_.at(parent_index).globalTransform_) : DirectX::XMMatrixIdentity()));
-		for (decltype(Node.children_)::value_type child_index : Node.children_)
+		for (std::vector<int>::value_type child_index : Node.children_)
 		{
 			traverse(node_index, child_index);
 		}

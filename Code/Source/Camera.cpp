@@ -42,7 +42,7 @@ void Camera::Update()
     DebugCameraController();
 #endif // _DEBUG
 
-    const float aspect = static_cast<float>(DXSystem::GetScreenWidth()) 
+    const float aspect = static_cast<float>(DXSystem::GetScreenWidth())
         / static_cast<float>(DXSystem::GetScreenHeight()); //‰æ–Ê”ä—¦
     projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
 

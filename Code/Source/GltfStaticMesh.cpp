@@ -916,10 +916,10 @@ int GltfStaticMesh::CastShadow(const DirectX::XMFLOAT4X4& transform)
 				deviceContext->IASetVertexBuffers(0, _countof(vertexBuffers), vertexBuffers, strides, offsets);
 
 				ID3D11ShaderResourceView* textureResourceView = NULL;
-				int basecolor_texture_index = material.data_.pbrMetallicRoughness_.basecolorTexture_.index_;
-				if (basecolor_texture_index > -1)
+				int basecolorTextureIndex = material.data_.pbrMetallicRoughness_.basecolorTexture_.index_;
+				if (basecolorTextureIndex > -1)
 				{
-					int image = textures_.at(basecolor_texture_index).source_;
+					int image = textures_.at(basecolorTextureIndex).source_;
 					if (image > -1)
 					{
 						textureResourceView = textureResourceViews_.at(image).Get();

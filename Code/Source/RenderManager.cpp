@@ -213,6 +213,16 @@ void RenderManager::Render()
 				camera->viewProjectionMatrix_.Invert(bufferScene_->data_.inverseViewProjection_);
 				bufferScene_->data_.time_ += Time::deltaTime_;
 
+
+				//定数バッファ更新
+#if 0
+				UpdateConstantBuffer();
+				DXSystem::deviceContext_->VSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
+				DXSystem::deviceContext_->PSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
+#else
+				bufferScene_->Activate(10, CBufferUsage::vp);
+#endif // 0
+
 				//シャドウマップ作成
 				cascadedShadowMap_->Clear();
 				if (enableShadow_)
@@ -246,14 +256,6 @@ void RenderManager::Render()
 				//bufferScene_.lightColor_ = Vector3(1, 1, 1);
 
 
-				//定数バッファ更新
-#if 0
-				UpdateConstantBuffer();
-				DXSystem::deviceContext_->VSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
-				DXSystem::deviceContext_->PSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
-#else
-				bufferScene_->Activate(10,CBufferUsage::vp);
-#endif // 0
 				//オフスクリーンレンダリング
 				baseFrameBuffer_->Clear(0.4f,0.4f,0.4f,1.0f);
 				baseFrameBuffer_->Activate();
