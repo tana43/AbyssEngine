@@ -35,10 +35,10 @@ void TestScene::Initialize()
     //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //);
 
-    const auto& p2 = InstanceActor("testGltf_2");
+   /* const auto& p2 = InstanceActor("testGltf_2");
     p2->AddComponent<StaticMesh>(
         "./Assets/Models/robot_oj.glb"
-    );
+    );*/
     //p2->AddComponent<SkeletalMesh>(
     //    "./Assets/Models/Nico/nico_full_body.glb"
     //    //"./Assets/Models/.glb"
