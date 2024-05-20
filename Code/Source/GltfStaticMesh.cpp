@@ -158,7 +158,13 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 
 	for (decltype(nodes_)::reference node : nodes_)
 	{
-		const XMMATRIX globalTransform = XMLoadFloat4x4(&node.globalTransform_);
+		const DirectX::XMFLOAT4X4 coordinateSystemTransforms[] = {
+			{ -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
+			{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },		// 1:LHS Y-UP
+			{ 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },		// 2:RHS Z-UP
+			{ -1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },	// 3:LHS Z-UP
+		};
+		const XMMATRIX globalTransform = XMLoadFloat4x4(&node.globalTransform_) * XMLoadFloat4x4(&coordinateSystemTransforms[0]);
 
 		if (node.mesh_ > -1 /*&& node.skin < 0*/)
 		{

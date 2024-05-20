@@ -70,8 +70,8 @@ namespace AbyssEngine
             Matrix viewProjectionMatrix_;
             Matrix inverseProjection_;
             Matrix inverseViewProjection_;
-            Vector4 lightDirection_ = {0,0,1,0};
-            Vector4 lightColor_ = {1,1,1,1};
+            Vector4 lightDirection_ = {-0.5f,-0.5f,-0.5f,0};
+            //Vector4 lightColor_ = {1,1,1,1};
             Vector4 eyePosition_;
             Vector4 focusPosition_;
             float exposure_ = 1.0f;

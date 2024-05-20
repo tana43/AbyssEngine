@@ -382,15 +382,6 @@
     <FxCompile Include="Shader\GlowExtractionPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\CsmOpaqueGS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\CsmOpaqueSkeletalMeshVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\CsmOpaqueStaticMeshVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\CsmTransparentGS.hlsl">
       <Filter>Shader\Gltf</Filter>
     </FxCompile>
@@ -421,6 +412,15 @@
     <FxCompile Include="Shader\ToneMapPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\CsmOpaqueGS.hlsl">
+      <Filter>Shader\Gltf</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmOpaqueSkeletalMeshVS.hlsl">
+      <Filter>Shader\Gltf</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\CsmOpaqueStaticMeshVS.hlsl">
+      <Filter>Shader\Gltf</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Mesh.hlsli">
@@ -436,9 +436,6 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\Bloom.hlsli">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="Shader\CsmOpaque.hlsli">
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\Common.hlsli">
@@ -458,6 +455,9 @@
     </None>
     <None Include="Shader\Constants.hlsli">
       <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\CsmOpaque.hlsli">
+      <Filter>Shader\Gltf</Filter>
     </None>
   </ItemGroup>
 </Project>

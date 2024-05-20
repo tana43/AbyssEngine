@@ -50,9 +50,9 @@ namespace AbyssEngine
 		static void SetViewport(int width, int height, int num = 1);//ビューポートをセット
 		static void SetDefaultView();//メインウィンドウのレンダーターゲットをセットする
 
-		static void SetDepthStencilState(DS_State type_);
-		static void SetRasterizerState(RS_State type_);
-		static void SetBlendState(BS_State type_);
+		static void SetDepthStencilState(DS_State type, UINT stencilRef = 1);
+		static void SetRasterizerState(RS_State type);
+		static void SetBlendState(BS_State type);
 	private:
 		static int screenWidth_;
 		static int screenHeight_;

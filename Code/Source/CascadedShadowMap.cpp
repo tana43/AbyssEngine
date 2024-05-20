@@ -102,7 +102,7 @@ void CascadedShadowMap::Make(
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> cachedDepthStencilView;
 	deviceContext->OMGetRenderTargets(1, cachedRenderTargetView.ReleaseAndGetAddressOf(), cachedDepthStencilView.ReleaseAndGetAddressOf());
 
-	// near/far value from perspective projection matrix
+	// 透視投影行列
 	float m33 = cameraProjection._33;
 	float m43 = cameraProjection._43;
 	float zn = -m43 / m33;
@@ -171,26 +171,26 @@ void CascadedShadowMap::Make(
 		}
 
 #if 1
-		// Before creating the actual projection matrix we are going to increase the size of the space covered by the nearand far plane of the light frustum.
-		// We do this by "pulling back" the near plane, and "pushing away" the far plane.In the code we achieve this by dividing or multiplying by zMult.
-		// This is because we want to include geometry which is behind or in front of our frustum in camera space. Think about it : not only geometry which 
-		// is in the frustum can cast shadows on a surface in the frustum!
-		constexpr float z_mult = 50.0f;
+		//実際の射影行列を作成する前に、光錐台の近平面と遠平面によってカバーされる空間のサイズを拡大します。
+		//これは、近い平面を「引き戻す」、遠い平面を「押し出す」ことで行います。コードでは、これを zMult で除算または乗算することによって実現します。
+		//これは、カメラ空間内の錐台の後ろまたは前にあるジオメトリを含めたいためです。 考えてみてください。ジオメトリだけではありません。
+		//錐台内にある場合は、錐台内のサーフェスに影を落とすことができます。
+		constexpr float zMult = 50.0f;
 		if (minZ < 0)
 		{
-			minZ *= z_mult;
+			minZ *= zMult;
 		}
 		else
 		{
-			minZ /= z_mult;
+			minZ /= zMult;
 		}
 		if (maxZ < 0)
 		{
-			maxZ /= z_mult;
+			maxZ /= zMult;
 		}
 		else
 		{
-			maxZ *= z_mult;
+			maxZ *= zMult;
 		}
 #endif
 

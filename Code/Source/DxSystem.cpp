@@ -84,19 +84,19 @@ void DXSystem::SetDefaultView()
     SetViewport(screenWidth_, screenHeight_);
 }
 
-void DXSystem::SetDepthStencilState(DS_State type_)
+void DXSystem::SetDepthStencilState(DS_State type,UINT stencilRef)
 {
-    deviceContext_->OMSetDepthStencilState(depthStencilStates_[static_cast<int>(type_)].Get(),1);
+    deviceContext_->OMSetDepthStencilState(depthStencilStates_[static_cast<int>(type)].Get(),stencilRef);
 }
 
-void DXSystem::SetRasterizerState(RS_State type_)
+void DXSystem::SetRasterizerState(RS_State type)
 {
-    deviceContext_->RSSetState(rasterizerStates_[static_cast<int>(type_)].Get());
+    deviceContext_->RSSetState(rasterizerStates_[static_cast<int>(type)].Get());
 }
 
-void AbyssEngine::DXSystem::SetBlendState(BS_State type_)
+void AbyssEngine::DXSystem::SetBlendState(BS_State type)
 {
-    deviceContext_->OMSetBlendState(blendStates_[static_cast<int>(type_)].Get(),nullptr,0xFFFFFFFF);
+    deviceContext_->OMSetBlendState(blendStates_[static_cast<int>(type)].Get(),nullptr,0xFFFFFFFF);
 }
 
 HRESULT DXSystem::CreateDevice()
@@ -493,7 +493,7 @@ bool DXSystem::CreateRasterizerState()
                 rd.DepthClipEnable = TRUE;
                 rd.ScissorEnable = FALSE;
                 rd.MultisampleEnable = FALSE;
-                rd.AntialiasedLineEnable = FALSE;
+                rd.AntialiasedLineEnable = TRUE;
                 break;
 
             case RS_State::Standard:

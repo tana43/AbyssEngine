@@ -204,8 +204,8 @@ void RenderManager::Render()
 				//シーン用定数バッファの設定
 				Vector3 const eye = camera->eye_;
 				Vector3 const focus = camera->focus_;
-				bufferScene_->data_.eyePosition_ = Vector4(eye.x,eye.y,eye.z,0);
-				bufferScene_->data_.focusPosition_ = Vector4(focus.x, focus.y, focus.z,0);
+				bufferScene_->data_.eyePosition_ = Vector4(eye.x,eye.y,eye.z,1.0f);
+				bufferScene_->data_.focusPosition_ = Vector4(focus.x, focus.y, focus.z,1.0f);
 				bufferScene_->data_.view_ = camera->viewMatrix_;
 				bufferScene_->data_.projection_ = camera->projectionMatrix_;
 				bufferScene_->data_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
@@ -227,7 +227,7 @@ void RenderManager::Render()
 				cascadedShadowMap_->Clear();
 				if (enableShadow_)
 				{
-					DXSystem::SetDepthStencilState(DS_State::LEqual);
+					DXSystem::SetDepthStencilState(DS_State::LEqual,0);
 					DXSystem::SetRasterizerState(RS_State::Cull_None);
 					DXSystem::SetBlendState(BS_State::Off);
 					cascadedShadowMap_->Make(
@@ -305,7 +305,7 @@ void RenderManager::DrawImGui()
 	{
 		auto& buffer = bufferScene_->data_;
 		ImGui::DragFloat3("Light Direction",&buffer.lightDirection_.x,0.01f);
-		ImGui::ColorEdit4("Light Color", &buffer.lightColor_.x, ImGuiColorEditFlags_HDR);
+		//ImGui::ColorEdit4("Light Color", &buffer.lightColor_.x, ImGuiColorEditFlags_HDR);
 
 		ImGui::DragFloat("Exposure", &buffer.exposure_,0.01f,0.0f);
 		ImGui::DragFloat("Pure White", &buffer.pureWhite_,0.01f,0.0f);
@@ -367,7 +367,7 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 
 	DXSystem::SetBlendState(BS_State::Off);
 	DXSystem::SetDepthStencilState(DS_State::LEqual);
-	DXSystem::SetRasterizerState(RS_State::Cull_Back);
+	DXSystem::SetRasterizerState(RS_State::Cull_None);
 
 #if 0
 
