@@ -113,11 +113,13 @@ namespace AbyssEngine
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> iblShaderResourceView_[7];
 
         //オフスクリーンレンダリング
-        std::unique_ptr<FrameBuffer> baseFrameBuffer_;//エフェクトなしのフレーム格納用バッファ
-        std::unique_ptr<FrameBuffer> postEffectedFrameBuffer_;//ポストエフェクトがついたフレーム格納用バッファ
+        std::unique_ptr<FrameBuffer> baseFrameBuffer_[2];//エフェクトなしのフレームバッファ
+        std::unique_ptr<FrameBuffer> postEffectedFrameBuffer_;//ポストエフェクトがついたフレームバッファ
         std::unique_ptr<FullscreenQuad> bitBlockTransfer_;
         std::unique_ptr<Bloom> bloom_;
+
         Microsoft::WRL::ComPtr<ID3D11PixelShader> postEffectsPS_;
+        Microsoft::WRL::ComPtr<ID3D11PixelShader> toneMapPS_;
 
         //スカイボックス
         std::unique_ptr<Skybox> skybox_;

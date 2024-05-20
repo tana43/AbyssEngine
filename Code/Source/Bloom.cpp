@@ -80,20 +80,20 @@ void Bloom::Make(ID3D11ShaderResourceView* colorMap)
 	// Downsampling
 	gaussianBlur_[0][0]->Clear(0, 0, 0, 1);
 	gaussianBlur_[0][0]->Activate();
-	bitBlockTransfer_->Blit(glowExtraction_->shaderResourceViews_[0].GetAddressOf(), 0, 1, gaussianBlurDownsamplingPs_.Get());
+	bitBlockTransfer_->Blit(glowExtraction_->GetColorMap().GetAddressOf(), 0, 1, gaussianBlurDownsamplingPs_.Get());
 	gaussianBlur_[0][0]->Deactivate();
 	deviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
 	// Ping-pong gaussian blur
 	gaussianBlur_[0][1]->Clear(0, 0, 0, 1);
 	gaussianBlur_[0][1]->Activate();
-	bitBlockTransfer_->Blit(gaussianBlur_[0][0]->shaderResourceViews_[0].GetAddressOf(), 0, 1, gaussianBlurHorizontalPs_.Get());
+	bitBlockTransfer_->Blit(gaussianBlur_[0][0]->GetColorMap().GetAddressOf(), 0, 1, gaussianBlurHorizontalPs_.Get());
 	gaussianBlur_[0][1]->Deactivate();
 	deviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
 	gaussianBlur_[0][0]->Clear(0, 0, 0, 1);
 	gaussianBlur_[0][0]->Activate();
-	bitBlockTransfer_->Blit(gaussianBlur_[0][1]->shaderResourceViews_[0].GetAddressOf(), 0, 1, gaussianBlurVerticalPs_.Get());
+	bitBlockTransfer_->Blit(gaussianBlur_[0][1]->GetColorMap().GetAddressOf(), 0, 1, gaussianBlurVerticalPs_.Get());
 	gaussianBlur_[0][0]->Deactivate();
 	deviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
@@ -102,20 +102,20 @@ void Bloom::Make(ID3D11ShaderResourceView* colorMap)
 		// Downsampling
 		gaussianBlur_[downsampled_index][0]->Clear( 0, 0, 0, 1);
 		gaussianBlur_[downsampled_index][0]->Activate();
-		bitBlockTransfer_->Blit(gaussianBlur_[downsampled_index - 1][0]->shaderResourceViews_[0].GetAddressOf(), 0, 1, gaussianBlurDownsamplingPs_.Get());
+		bitBlockTransfer_->Blit(gaussianBlur_[downsampled_index - 1][0]->GetColorMap().GetAddressOf(), 0, 1, gaussianBlurDownsamplingPs_.Get());
 		gaussianBlur_[downsampled_index][0]->Deactivate();
 		deviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
 		// Ping-pong gaussian blur
 		gaussianBlur_[downsampled_index][1]->Clear( 0, 0, 0, 1);
 		gaussianBlur_[downsampled_index][1]->Activate();
-		bitBlockTransfer_->Blit(gaussianBlur_[downsampled_index][0]->shaderResourceViews_[0].GetAddressOf(), 0, 1, gaussianBlurHorizontalPs_.Get());
+		bitBlockTransfer_->Blit(gaussianBlur_[downsampled_index][0]->GetColorMap().GetAddressOf(), 0, 1, gaussianBlurHorizontalPs_.Get());
 		gaussianBlur_[downsampled_index][1]->Deactivate();
 		deviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
 		gaussianBlur_[downsampled_index][0]->Clear( 0, 0, 0, 1);
 		gaussianBlur_[downsampled_index][0]->Activate();
-		bitBlockTransfer_->Blit(gaussianBlur_[downsampled_index][1]->shaderResourceViews_[0].GetAddressOf(), 0, 1, gaussianBlurVerticalPs_.Get());
+		bitBlockTransfer_->Blit(gaussianBlur_[downsampled_index][1]->GetColorMap().GetAddressOf(), 0, 1, gaussianBlurVerticalPs_.Get());
 		gaussianBlur_[downsampled_index][0]->Deactivate();
 		deviceContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 	}
@@ -126,7 +126,7 @@ void Bloom::Make(ID3D11ShaderResourceView* colorMap)
 	std::vector<ID3D11ShaderResourceView*> shaderResourceViews_;
 	for (size_t downsampledIndex = 0; downsampledIndex < DOWNSAMPLED_COUNT; ++downsampledIndex)
 	{
-		shaderResourceViews_.push_back(gaussianBlur_[downsampledIndex][0]->shaderResourceViews_[0].Get());
+		shaderResourceViews_.push_back(gaussianBlur_[downsampledIndex][0]->GetColorMap().Get());
 	}
 	bitBlockTransfer_->Blit(shaderResourceViews_.data(), 0, DOWNSAMPLED_COUNT, gaussianBlurUpsamplingPs_.Get());
 	glowExtraction_->Deactivate();

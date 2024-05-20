@@ -4,17 +4,16 @@
 
 using namespace AbyssEngine;
 
-FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil)
+FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil, bool generateMips)
 {
 	ID3D11Device* device = DXSystem::device_.Get();
 
     HRESULT hr = S_OK;
 
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> renderTargetBuffer_;
     D3D11_TEXTURE2D_DESC texture2dDesc_;
     texture2dDesc_.Width = width;
     texture2dDesc_.Height = height;
-    texture2dDesc_.MipLevels = 1;
+    texture2dDesc_.MipLevels = generateMips ? 0 : 1;
     texture2dDesc_.ArraySize = 1;
     texture2dDesc_.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	texture2dDesc_.SampleDesc.Count = 1;
@@ -22,7 +21,7 @@ FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil)
 	texture2dDesc_.Usage = D3D11_USAGE_DEFAULT;
 	texture2dDesc_.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	texture2dDesc_.CPUAccessFlags = 0;
-	texture2dDesc_.MiscFlags = 0;
+	texture2dDesc_.MiscFlags = generateMips ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
 	hr = device->CreateTexture2D(&texture2dDesc_, 0, renderTargetBuffer_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
@@ -42,7 +41,6 @@ FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil)
 	// BLOOM
 	if (hasDepthstencil)
 	{
-		Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer_;
 		texture2dDesc_.Format = DXGI_FORMAT_R24G8_TYPELESS;
 		texture2dDesc_.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		hr = device->CreateTexture2D(&texture2dDesc_, 0, depthStencilBuffer_.GetAddressOf());
@@ -93,3 +91,24 @@ void FrameBuffer::Deactivate()
 	deviceContext->RSSetViewports(viewportCount_, cachedViewports_);
 	deviceContext->OMSetRenderTargets(1, cachedRenderTargetView_.GetAddressOf(), cachedDepthStencilView_.Get());
 }
+
+void FrameBuffer::GenerateMips()
+{
+	DXSystem::deviceContext_->GenerateMips(shaderResourceViews_[0].Get());
+}
+
+void AbyssEngine::FrameBuffer::CopyFrom(const FrameBuffer* source)
+{
+	if (renderTargetBuffer_ && source->renderTargetBuffer_)
+	{
+		DXSystem::deviceContext_->CopySubresourceRegion(renderTargetBuffer_.Get(), 0, 0, 0, 0, source->renderTargetBuffer_.Get(), 0, NULL);
+	}
+	if (depthStencilBuffer_ && source->depthStencilBuffer_)
+	{
+		DXSystem::deviceContext_->CopySubresourceRegion(depthStencilBuffer_.Get(), 0, 0, 0, 0, source->depthStencilBuffer_.Get(), 0, NULL);
+	}
+}
+
+//void FrameBuffer::Resolve(FrameBuffer* destination)
+//{
+//}

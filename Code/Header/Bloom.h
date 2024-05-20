@@ -25,7 +25,7 @@ namespace AbyssEngine
 		void Make(ID3D11ShaderResourceView* colorMap);
 		ID3D11ShaderResourceView* GetShaderResourceView() const
 		{
-			return glowExtraction_->shaderResourceViews_[0].Get();
+			return glowExtraction_->GetColorMap().Get();
 		}
 
 		void DrawImGui();

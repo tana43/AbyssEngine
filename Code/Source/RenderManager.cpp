@@ -126,7 +126,9 @@ RenderManager::RenderManager()
 	IBLInitialize();
 
 	//オフスクリーンレンダリング
-	baseFrameBuffer_ = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight());
+	baseFrameBuffer_[0] = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight());
+	baseFrameBuffer_[1] = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight(),false,true);
+	postEffectedFrameBuffer_ = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight(),false);
 	bitBlockTransfer_ = std::make_unique<FullscreenQuad>();
 	bloom_ = std::make_unique<Bloom>(
 		static_cast<size_t>(DXSystem::GetScreenWidth()), 
@@ -136,6 +138,8 @@ RenderManager::RenderManager()
 #else
 	postEffectsPS_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/PostEffectsPS.cso");
 #endif // 0
+
+	toneMapPS_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/ToneMapPS.cso");
 
 	//スカイボックス生成
 	skybox_ = std::make_unique<Skybox>();
@@ -257,40 +261,62 @@ void RenderManager::Render()
 
 
 				//オフスクリーンレンダリング
-				baseFrameBuffer_->Clear(0.4f,0.4f,0.4f,1.0f);
-				baseFrameBuffer_->Activate();
+				baseFrameBuffer_[0]->Clear(0.4f, 0.4f, 0.4f, 1.0f);
+				baseFrameBuffer_[0]->Activate();
 
 				//スカイボックス描画
 				skybox_->Render(bitBlockTransfer_.get());
 
 				Render3D(camera);
 
-				baseFrameBuffer_->Deactivate();
-				bloom_->Make(baseFrameBuffer_->shaderResourceViews_[0].Get());
+				baseFrameBuffer_[0]->Deactivate();
 
-				DXSystem::deviceContext_->PSSetShaderResources(39, 1, baseFrameBuffer_->GetColorMap().GetAddressOf());
+				//フレームバッファーをコピー
+				baseFrameBuffer_[1]->CopyFrom(baseFrameBuffer_[0].get());
+				baseFrameBuffer_[1]->GenerateMips();//低レベルのミップマップの生成
+				
 
+				bloom_->Make(baseFrameBuffer_[0]->GetColorMap().Get());
+
+				DXSystem::deviceContext_->PSSetShaderResources(39, 1, baseFrameBuffer_[1]->GetColorMap().GetAddressOf());
+
+				//PostEffect
+				{
 #if 0
-				ID3D11ShaderResourceView* shaderResourceViews[] =
-				{
-					baseFrameBuffer_->shaderResourceViews_[0].Get(),
-					bloom_->GetShaderResourceView(),
-				};
-				bitBlockTransfer_->Blit(shaderResourceViews, 0, 2, postEffectsPS_.Get());
+					ID3D11ShaderResourceView* shaderResourceViews[] =
+					{
+						baseFrameBuffer_->shaderResourceViews_[0].Get(),
+						bloom_->GetShaderResourceView(),
+					};
+					bitBlockTransfer_->Blit(shaderResourceViews, 0, 2, postEffectsPS_.Get());
 #else
-				bufferEffects_->Activate(11, CBufferUsage::vp);
-				DXSystem::SetDepthStencilState(DS_State::None);
-				DXSystem::SetBlendState(BS_State::Off);
-				DXSystem::SetRasterizerState(RS_State::Cull_None);
-				ID3D11ShaderResourceView* shaderResourceViews[] =
-				{
-					baseFrameBuffer_->GetColorMap().Get(),
-					baseFrameBuffer_->GetDepthMap().Get(),
-					cascadedShadowMap_->DepthMap().Get(),
-					bloom_->GetShaderResourceView()
-				};
-				bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
+					postEffectedFrameBuffer_->Activate();
+
+					bufferEffects_->Activate(11, CBufferUsage::vp);
+					DXSystem::SetDepthStencilState(DS_State::None);
+					DXSystem::SetBlendState(BS_State::Off);
+					DXSystem::SetRasterizerState(RS_State::Cull_None);
+					ID3D11ShaderResourceView* shaderResourceViews[] =
+					{
+						baseFrameBuffer_[0]->GetColorMap().Get(),
+						baseFrameBuffer_[0]->GetDepthMap().Get(),
+						cascadedShadowMap_->DepthMap().Get(),
+						bloom_->GetShaderResourceView()
+					};
+					bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
+
+					postEffectedFrameBuffer_->Deactivate();
 #endif // 0
+				}
+
+				//Tone Mapping
+				{
+					DXSystem::SetDepthStencilState(DS_State::LEqual,0);
+					DXSystem::SetBlendState(BS_State::Off);
+					DXSystem::SetRasterizerState(RS_State::Cull_None);
+					bitBlockTransfer_->Blit(postEffectedFrameBuffer_->GetColorMap().GetAddressOf(), 0, 1, toneMapPS_.Get());
+				}
+
 				break;
 			}
 		}
