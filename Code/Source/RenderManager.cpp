@@ -348,6 +348,7 @@ void RenderManager::DrawImGui()
 		bloom_->DrawImGui();
 
 		ImGui::Checkbox("Enable Shadow", &enableShadow_);
+		ImGui::DragFloat("Critical Depth Value", &criticalDepthValue_, 1.0f, 1.0f, 3000.0f);
 		ImGui::Checkbox("Colorize Cascaded Layer", reinterpret_cast<bool*>(&bufferEffects_->data_.colorizeCascadedLayer_));
 		ImGui::DragFloat("Split Scheme Weight", &cascadedShadowMap_->splitSchemeWeight_, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("Critical Depth Value", &criticalDepthValue_, 1.0f, 0.0f, 1000.0f);

@@ -126,7 +126,7 @@ namespace AbyssEngine
 
         //カスケードシャドウマップ
         std::unique_ptr<CascadedShadowMap> cascadedShadowMap_;
-        float criticalDepthValue_ = 200.0f;
+        float criticalDepthValue_ = 800.0f;
         bool enableShadow_ = true;
     private:
 
