@@ -67,7 +67,7 @@ void SkeletalMesh::AppendAnimations(const std::vector<std::string>& filenames)
 void SkeletalMesh::RecalculateFrame()
 {
 	timeStamp_ += Time::deltaTime_;
-	model_->Animate(animationClip_, timeStamp_ * animationSpeed_, animatedNodes_, true);
+	model_->Animate(animationClip_, timeStamp_ * animationSpeed_, animatedNodes_, animationLoop_);
 }
 
 bool SkeletalMesh::DrawImGui()
@@ -83,10 +83,22 @@ bool SkeletalMesh::DrawImGui()
 		std::string t1 = t0 + model_->animations_.at(animationClip_).name_;
 		ImGui::Text(t1.c_str());
 
+		ImGui::InputFloat("Time Stamp" ,&timeStamp_);
+
 		ImGui::TreePop();
 	}
 
 	return false;
+}
+
+void SkeletalMesh::PlayAnimation(int animIndex,bool loop)
+{
+	_ASSERT_EXPR(animIndex < model_->animations_.size(), u8"指定のアニメーションが見つかりません");
+
+	timeStamp_ = 0.0f;
+
+	animationClip_ = animIndex;
+	animationLoop_ = loop;
 }
 
 void SkeletalMesh::SetActive(const bool value)

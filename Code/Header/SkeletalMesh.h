@@ -20,9 +20,17 @@ namespace AbyssEngine
         void AppendAnimation(const std::string& filename);
         void AppendAnimations(const std::vector<std::string>& filenames);
 
+        //アニメーションの再計算
         void RecalculateFrame()override;
 
         bool DrawImGui()override;
+
+        //アニメーションの再生
+        void PlayAnimation(int animIndex,bool loop = true);
+
+        //アニメーションの再生速度設定
+        void SetAnimationSpeed(const float& speed) { animationSpeed_ = speed; }
+
 
     private:
         void SetActive(const bool value)override;
@@ -42,6 +50,8 @@ namespace AbyssEngine
 
         float animationSpeed_ = 1.0f;
         std::vector<GeometricSubstance::Node> animatedNodes_;
+
+        bool animationLoop_ = true;
     };
 
     /*class GltfModel;

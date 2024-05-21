@@ -37,19 +37,24 @@ void TestScene::Initialize()
     //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //);
 
-   /* const auto& p2 = InstanceActor("testGltf_2");
-    p2->AddComponent<StaticMesh>(
+    const auto& p2 = InstanceActor("testGltf_2");
+    /*p2->AddComponent<StaticMesh>(
         "./Assets/Models/robot_oj.glb"
     );*/
-    //p2->AddComponent<SkeletalMesh>(
-    //    "./Assets/Models/Nico/nico_full_body.glb"
-    //    //"./Assets/Models/.glb"
-    //);
-    //SkeletalMesh* model = p2->GetComponent<SkeletalMesh>().get();
+    p2->AddComponent<SkeletalMesh>(
+        //"./Assets/Models/Nico/nico_full_body.glb"
+        "./Assets/Models/UE/Manny/Manny_Idle.glb"
+        //"./Assets/Models/.glb"
+    );
+    SkeletalMesh* model = p2->GetComponent<SkeletalMesh>().get();
     //model->AppendAnimations({
     //    "./Assets/Models/Nico/nico_full_body_Anim_NIC_Attack.glb",
     //    "./Assets/Models/Nico/Hip_Hop_Dancing.glb",
     //    "./Assets/Models/Nico/Death_From_Right.glb" });
+    model->AppendAnimations({
+        "./Assets/Models/UE/Manny/Manny_Walk.glb",
+        "./Assets/Models/UE/Manny/Manny_Run.glb"
+        });
 }
 
 void TestScene::Update()
