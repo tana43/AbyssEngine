@@ -14,6 +14,7 @@
 #include "Bloom.h"
 #include "Skybox.h"
 #include "CascadedShadowMap.h"
+#include "Keyboard.h"
 
 #include "imgui/imgui.h"
 
@@ -327,6 +328,13 @@ void RenderManager::Render()
 
 void RenderManager::DrawImGui()
 {
+	ImGui::Text("Rasterizer State Select");
+	ImGui::Text("1 : Cull None");
+	ImGui::Text("2 : Cull Back");
+	ImGui::Text("3 : Cull Front");
+	ImGui::Text("4 : Wireframe");
+
+	
 	if (ImGui::BeginMenu("Scene Constant"))
 	{
 		auto& buffer = bufferScene_->data_;
@@ -391,10 +399,14 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 	//トポロジー設定
 	//DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+#if _DEBUG
+	DebugRSStateSelect();
+#endif // _DEBUG
 
 	DXSystem::SetBlendState(BS_State::Off);
 	DXSystem::SetDepthStencilState(DS_State::LEqual);
-	DXSystem::SetRasterizerState(RS_State::Cull_None);
+	//DXSystem::SetRasterizerState(RS_State::Cull_None);
+	DXSystem::SetRasterizerState(rasterizerState3D);
 
 #if 0
 
@@ -528,4 +540,24 @@ void RenderManager::IBLSetResources()
 	DXSystem::deviceContext_->PSSetShaderResources(36, 1, iblShaderResourceView_[4].GetAddressOf());
 	DXSystem::deviceContext_->PSSetShaderResources(37, 1, iblShaderResourceView_[5].GetAddressOf());
 	DXSystem::deviceContext_->PSSetShaderResources(38, 1, iblShaderResourceView_[6].GetAddressOf());
+}
+
+void RenderManager::DebugRSStateSelect()
+{
+	if (Keyboard::GetKeyDown(DirectX::Keyboard::D1))
+	{
+		rasterizerState3D = RS_State::Cull_None;
+	}
+	if (Keyboard::GetKeyDown(DirectX::Keyboard::D2))
+	{
+		rasterizerState3D = RS_State::Cull_Back;
+	}
+	if (Keyboard::GetKeyDown(DirectX::Keyboard::D3))
+	{
+		rasterizerState3D = RS_State::Cull_Front;
+	}
+	if (Keyboard::GetKeyDown(DirectX::Keyboard::D4))
+	{
+		rasterizerState3D = RS_State::Wire;
+	}
 }

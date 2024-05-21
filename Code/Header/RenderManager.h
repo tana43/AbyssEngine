@@ -134,6 +134,7 @@ namespace AbyssEngine
         void Render2D() const;
 
         void Render3D(const std::shared_ptr<Camera>& camera_);
+        RS_State rasterizerState3D = RS_State::Cull_None;
 
         //Rendererの生存確認
         void CheckRenderer();
@@ -143,6 +144,9 @@ namespace AbyssEngine
 
         void IBLInitialize();
         void IBLSetResources();
+
+        //デバッグ限定でラスタライザーステートを数字キーで変更できる
+        void DebugRSStateSelect();
     };
 
 }
