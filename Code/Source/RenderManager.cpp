@@ -7,7 +7,6 @@
 #include "Camera.h"
 #include "SkeletalMesh.h"
 #include "GltfSkeletalMesh.h"
-#include "FbxMeshData.h"
 #include "Texture.h"
 #include "GltfStaticMesh.h"
 #include "StaticMesh.h"
@@ -15,6 +14,7 @@
 #include "Skybox.h"
 #include "CascadedShadowMap.h"
 #include "Keyboard.h"
+#include "Engine.h"
 
 #include "imgui/imgui.h"
 
@@ -200,8 +200,9 @@ void RenderManager::Render()
 		{
 			if (camera->actor_->GetActiveInHierarchy())
 			{
-				camera->Update();
+				if (!camera->GetIsMainCamera())continue;
 
+				camera->Update();
 
 				const Vector3& pos = camera->GetTransform()->GetPosition();
 				//const Vector3& dir = camera->GetTransform()->GetForward();
@@ -339,7 +340,7 @@ void RenderManager::DrawImGui()
 	{
 		auto& buffer = bufferScene_->data_;
 		ImGui::DragFloat3("Light Direction",&buffer.lightDirection_.x,0.01f);
-		//ImGui::ColorEdit4("Light Color", &buffer.lightColor_.x, ImGuiColorEditFlags_HDR);
+		ImGui::ColorEdit4("Light Color", &buffer.lightColor_.x, ImGuiColorEditFlags_PickerHueWheel);
 
 		ImGui::DragFloat("Exposure", &buffer.exposure_,0.01f,0.0f);
 		ImGui::DragFloat("Pure White", &buffer.pureWhite_,0.01f,0.0f);
@@ -367,6 +368,16 @@ void RenderManager::DrawImGui()
 
 		ImGui::EndMenu();
 	}
+}
+
+void RenderManager::ChangeMainCamera(Camera* camera)
+{
+	for (auto& c : Engine::renderManager_->cameraList_)
+	{
+		c.lock()->SetIsMainCamera(false);
+	}
+
+	camera->SetIsMainCamera(true);
 }
 
 void RenderManager::Render2D() const
@@ -428,7 +439,7 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 		const auto& pRend = r.lock();
 		if (pRend->actor_->GetActiveInHierarchy())
 		{
-			if (pRend)
+			if (pRend->GetEnabled())
 			{
 				pRend->Render();
 			}

@@ -24,6 +24,12 @@ bool Camera::DrawImGui()
 {
     if (ImGui::TreeNode("Camera"))
     {
+        //使用するカメラをThisに変更
+        if (ImGui::Button("Use This Camera"))
+        {
+            RenderManager::ChangeMainCamera(this);
+        }
+
         ImGui::DragFloat("Debug Speed", &debCameraSpeed_, 0.1f, 0.01f);
 
         ImGui::SliderAngle("Fov", &fov_, 30.0f, 120.0f);
@@ -60,6 +66,8 @@ void Camera::Update()
 
 void Camera::DebugCameraController()
 {
+    if (!enableDebugController_)return;
+
     //マウス、キーボードによるカメラ操作
     {
         auto rot = transform_->GetRotation();
@@ -112,6 +120,9 @@ void Camera::DebugCameraController()
     //移動処理
     if(Mouse::GetButtonState().rightButton)
     {
+        //マウスホイールでの移動
+        const float mouseWheel = Mouse::GetScrollWheelValue();
+
         //WASD
         Vector2 input = {};
         if (Keyboard::GetKeyState().D)input.x += 1.0f;
@@ -120,10 +131,10 @@ void Camera::DebugCameraController()
         if (Keyboard::GetKeyState().S)input.y -= 1.0f;
 
         //入力値がない場合処理しない
-        if (input.Length() > 0)
+        if (input.Length() > 0 || mouseWheel != 0.0f)
         {
             Vector3 move = {
-                transform_->GetForward() * input.y + transform_->GetRight() * input.x
+                transform_->GetForward() * (input.y + mouseWheel * Time::deltaTime_) + transform_->GetRight() * input.x
             };
             move = move * Time::deltaTime_ * debCameraSpeed_;
             auto pos = transform_->GetPosition();

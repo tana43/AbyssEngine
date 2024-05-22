@@ -34,10 +34,9 @@ namespace AbyssEngine
 
         static int GetPosX() { return instance_->state_.x; }
         static int GetPosY() { return instance_->state_.y; }
-
-        //TODO:後で前回転、後回転のどちらが正の値を返すか確認する
-        //マウスホイールの回転値を返す
-        static int GetScrollWheelValue() { return instance_->state_.scrollWheelValue; }
+        
+        //マウスホイールの回転値を返す　奥へ回すと正の値を返す
+        static int GetScrollWheelValue() { return instance_->mouseWheelValue_; }
 
     private:
         //DirectX::Keyboardクラスを生成するためのポインタ
@@ -48,6 +47,11 @@ namespace AbyssEngine
 
         //マウスボタンの入力状態を取ってくる
         DirectX::Mouse::State state_;
+
+        //DirectXTK Mouseのマウスホイール回転値は基準値からどのぐらい回っているかの値を返すので
+        //１フレームでどの程度回ったかを計算するための変数を用意している
+        int curMouseWheelValue_;//１フレーム前のホイール回転値
+        int mouseWheelValue_;//１フレーム間にホイールが回転した値
     };
 }
 

@@ -17,6 +17,11 @@ namespace AbyssEngine
         std::shared_ptr<T> AddComponent(const char* path = NULL);//コンポーネントをアタッチする(レンダラーなどはパスが必要)
 
     public:
+        [[nodiscard]] std::weak_ptr<Actor> GetParent() const;
+        void SetParent(const std::shared_ptr<Actor>& parent);
+        void SetParent(const std::shared_ptr<Transform>& parent);
+
+
         [[nodiscard]] bool GetActive() const { return active_; };   //アクターがアクティブかどうか
         void SetActive(const bool active) { active_ = active; }
         [[nodiscard]] bool GetActiveInHierarchy() const;            //親の状態を考慮してアクティブか
@@ -35,6 +40,10 @@ namespace AbyssEngine
 
         bool active_ = true;    //アクティブ状態
         bool activeOld_ = true; //変更時トリガー用キャッシュ
+
+        //親子関係
+        std::weak_ptr<Actor> parent_;
+        std::vector<std::weak_ptr<Actor>> children_{};
 
         friend class Scene;
     };

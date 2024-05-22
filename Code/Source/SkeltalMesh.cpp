@@ -90,6 +90,8 @@ bool SkeletalMesh::DrawImGui()
 	
 	if (ImGui::TreeNode("Skeletal Mesh"))
 	{
+		ImGui::Checkbox("Enabled",&enabled_);
+
 		static int animClip = animationClip_;
 		ImGui::SliderInt("Anim Clip", &animClip, 0, model_->animations_.size() - 1);
 		animationClip_ = animClip;

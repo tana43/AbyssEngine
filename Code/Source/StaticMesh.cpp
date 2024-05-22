@@ -3,6 +3,7 @@
 #include "GltfStaticMesh.h"
 #include "Engine.h"
 #include "RenderManager.h"
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -18,6 +19,18 @@ void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
     //レンダラーマネージャーに登録
     SetActive(true);
 
+}
+
+bool StaticMesh::DrawImGui()
+{
+    if (ImGui::TreeNode("StaticMesh"))
+    {
+        ImGui::Checkbox("Enabled", &enabled_);
+
+        ImGui::TreePop();
+    }
+
+    return false;
 }
 
 void StaticMesh::Render()

@@ -19,8 +19,14 @@ Mouse::Mouse()
 
 void Mouse::Update()
 {
+    //更新前にマウスホイールの回転値を保存
+    curMouseWheelValue_ = state_.scrollWheelValue;
+
     instance_->state_ = instance_->mouse_->GetState();
     tracker_.Update(state_);
+
+    //マウスホイール回転値の計算
+    mouseWheelValue_ = state_.scrollWheelValue - curMouseWheelValue_;
 }
 
 DirectX::Mouse::State& Mouse::GetButtonState() 

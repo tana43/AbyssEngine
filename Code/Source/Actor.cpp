@@ -54,6 +54,26 @@ void Actor::DrawImGui()
 	}
 }
 
+std::weak_ptr<Actor> Actor::GetParent() const
+{
+	return parent_;
+}
+
+void Actor::SetParent(const std::shared_ptr<Actor>& parent)
+{
+	if (parent != nullptr)
+	{
+		if (parent != parent_.lock())
+		{
+			//親ポインタの寿命が切れている場合、親子関係を解除する
+			if (!parent_.expired())
+			{
+				
+			}
+		}
+	}
+}
+
 bool Actor::GetActiveInHierarchy() const
 {
 	if (active_)

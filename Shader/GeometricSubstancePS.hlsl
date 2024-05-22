@@ -112,8 +112,8 @@ float4 main(VS_OUT pin, bool is_front_face : SV_ISFRONTFACE) : SV_TARGET
 		materialInfo.clearcoatNormal = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
 	}
 #endif
-  
-    float3 lightColor = float3(1, 1, 1);
+    
+    float3 lightColor = sceneData.lightColor.xyz;
     float3 Li = lightColor * sceneData.pureWhite;
     return PhysicallyBasedRendering(materialInfo, L, V, N, P, Li, primitiveData.transform, sceneData.viewProjection, sceneData.emissiveIntensity, sceneData.imageBasedLightingIntensity);
 }

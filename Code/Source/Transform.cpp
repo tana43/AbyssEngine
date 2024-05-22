@@ -7,11 +7,27 @@ using namespace AbyssEngine;
 
 Matrix Transform::CalcWorldMatrix()
 {
-    const auto scale = scale_ * scaleFactor_;
-    const auto S = Matrix::CreateScale(scale);
-    const auto R = Matrix::CreateFromYawPitchRoll(rotation_.y, rotation_.x, rotation_.z);
-    const auto T = Matrix::CreateTranslation(position_);
+    Matrix S, R, T;
 
+    //親子関係の有無
+    if (const auto& parent = actor_->GetParent().lock())
+    {
+        const Matrix localMatrix = CalcLocalMatrix();
+        const auto scale = scale_ * scaleFactor_;
+        worldMatrix_ = localMatrix * parent->GetTransform()->GetWorldMatrix();
+        worldMatrix_.Decompose(scale_, rotation_, position_);
+        
+        R = Matrix::CreateFromQuaternion(rotation_);
+    }
+    else
+    {
+        const auto scale = scale_ * scaleFactor_;
+        S = Matrix::CreateScale(scale);
+        R = Matrix::CreateFromYawPitchRoll(rotation_.y, rotation_.x, rotation_.z);
+        T = Matrix::CreateTranslation(position_);
+        worldMatrix_ = S * R * T;
+    }
+    
     //各方向ベクトルの算出
     forward_ = Vector3::Transform(Vector3::Forward, R);
     forward_.Normalize();
@@ -22,7 +38,16 @@ Matrix Transform::CalcWorldMatrix()
     up_ = Vector3::Transform(Vector3::Up, R);
     up_.Normalize();
 
-    return S * R * T;
+    return worldMatrix_;
+}
+
+Matrix Transform::CalcLocalMatrix()
+{
+    Matrix localS = Matrix::CreateScale(localScale_ * localScaleFactor_);
+    Matrix localR = Matrix::CreateFromQuaternion(localRotation_);
+    Matrix localT = Matrix::CreateTranslation(localPosition_);
+    localMatrix_ = localS * localR * localT;
+    return localMatrix_;
 }
 
 Vector3 Transform::GetEulerAngles() const 

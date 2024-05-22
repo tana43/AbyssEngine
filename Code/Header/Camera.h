@@ -15,6 +15,10 @@ namespace AbyssEngine
         //bool CanMultiple() override;
         void Update();
 
+        void SetEnableDebugController(const bool& enable) { enableDebugController_ = enable; }
+        void SetIsMainCamera(const bool& isMainCamera) { isMainCamera_ = isMainCamera; }
+
+        const bool& GetIsMainCamera() const { return isMainCamera_; }
     private:
         void DebugCameraController();
 
@@ -31,10 +35,13 @@ namespace AbyssEngine
         Vector3 eye_;
         Vector3 focus_;
 
+        bool isMainCamera_ = false;
+
         friend class RenderManager;
 
     private: 
-        float debCameraSpeed_ = 10.0f;
+        float debCameraSpeed_ = 10.0f;//デバッグ中のカメラスピード
+        bool enableDebugController_ = true;//デバッグ操作オン、オフ
     };
 }
 

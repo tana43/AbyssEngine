@@ -45,6 +45,9 @@ namespace AbyssEngine
         //bool renderGame_ = true; //ゲームビューを描画する
         //bool renderScene_ = true; //シーンビューを描画する
 
+        //使用中のカメラを変更
+        static void ChangeMainCamera(Camera* camera);
+
     private:
         struct Vertex
         {
@@ -71,12 +74,12 @@ namespace AbyssEngine
             Matrix inverseProjection_;
             Matrix inverseViewProjection_;
             Vector4 lightDirection_ = {-0.5f,-0.5f,-0.5f,0};
-            //Vector4 lightColor_ = {1,1,1,1};
+            Vector4 lightColor_ = {1,1,1,1};
             Vector4 eyePosition_;
             Vector4 focusPosition_;
             float exposure_ = 1.0f;
             float pureWhite_ = 3.0f;
-            float emissiveIntensity_ = 50.0f;
+            float emissiveIntensity_ = 15.0f;
             float imageBasedLightingIntensity_ = 1.0f;
             float skyboxRoughness_ = 0.0f;
             float time_ = 0.0f;

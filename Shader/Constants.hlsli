@@ -9,7 +9,7 @@ struct SceneConstants
     row_major float4x4 inverseProjection;
     row_major float4x4 inverseViewProjection;
     float4 lightDirection;
-    //float4 lightColor;
+    float4 lightColor;
     float4 eyePosition;
     float4 focusPosition;
     float exposure;

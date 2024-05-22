@@ -11,7 +11,10 @@ namespace AbyssEngine
         Transform(Vector3 position, Vector4 quaternion) {}
         Transform(Vector3 position, Vector3 eular) {}
 
-        Matrix CalcWorldMatrix();
+        Matrix CalcWorldMatrix();//ワールド行列更新
+        Matrix CalcLocalMatrix();//ローカル行列更新
+
+        [[nodiscard]] const Matrix GetWorldMatrix() const { return worldMatrix_; }
 
         //getter setter
         [[nodiscard]] const Vector3& GetPosition() const { return position_; };
@@ -34,6 +37,27 @@ namespace AbyssEngine
         void SetScaleZ(const float& z) { scale_.z = z; }
         void SetScaleFactor(const float& scale_) { scaleFactor_ = scale_; }
 
+        //getter setter
+        [[nodiscard]] const Vector3& GetPosition() const { return localPosition_; };
+        void SetLocalPosition(const Vector3& position) { localPosition_ = position; }
+        void SetLocalPositionX(const float& x) { localPosition_.x = x; }
+        void SetLocalPositionY(const float& y) { localPosition_.y = y; }
+        void SetLocalPositionZ(const float& z) { localPosition_.z = z; }
+
+        [[nodiscard]] const Vector4& GetRotation() const { return localRotation_; };
+        void SetLocalRotation(const Vector4& rotation) { localRotation_ = rotation; }
+        void SetLocalRotationX(const float& x) { localRotation_.x = x; }
+        void SetLocalRotationY(const float& y) { localRotation_.y = y; }
+        void SetLocalRotationZ(const float& z) { localRotation_.z = z; }
+
+        [[nodiscard]] const Vector3& GetScale() const { return localScale_; };
+        [[nodiscard]] const float& GetScaleFactor() const { return localScaleFactor_; };
+        void SetLocalScale(const Vector3& scale) { localScale_ = scale; }
+        void SetLocalScaleX(const float& x) { localScale_.x = x; }
+        void SetLocalScaleY(const float& y) { localScale_.y = y; }
+        void SetLocalScaleZ(const float& z) { localScale_.z = z; }
+        void SetLocalScaleFactor(const float& scale_) { localScaleFactor_ = scale_; }
+
         [[nodiscard]] const Vector3& GetForward() const { return forward_; }
         [[nodiscard]] const Vector3& GetRight() const { return right_; }
         [[nodiscard]] const Vector3& GetUp() const { return up_; }
@@ -48,9 +72,17 @@ namespace AbyssEngine
         Vector3 scale_ = { 1,1,1 };
         float scaleFactor_ = 1.0f;
 
+        Vector3 localPosition_ = { 0,0,0 };
+        Quaternion localRotation_ = { 0,0,0,1 };
+        Vector3 localScale_ = { 1,1,1 };
+        float localScaleFactor_ = 1.0f;
+
         Vector3 forward_ = { 0.0f,0.0f,1.0f };
         Vector3 right_ = { 1.0f,0.0f,0.0f };
         Vector3 up_ = { 0.0f,1.0f,0.0f };
+
+        Matrix worldMatrix_;
+        Matrix localMatrix_;
     };
 }
 

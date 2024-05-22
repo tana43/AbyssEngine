@@ -39,7 +39,6 @@
     <ClInclude Include="Code\Header\Input.h" />
     <ClInclude Include="Code\Header\Keyboard.h" />
     <ClInclude Include="Code\Header\MathHelper.h" />
-    <ClInclude Include="Code\Header\FbxMeshData.h" />
     <ClInclude Include="Code\Header\Misc.h" />
     <ClInclude Include="Code\Header\Asset.h" />
     <ClInclude Include="Code\Header\Mouse.h" />
@@ -87,7 +86,6 @@
     <ClCompile Include="Code\Source\Keyboard.cpp" />
     <ClCompile Include="Code\Source\Main.cpp" />
     <ClCompile Include="Code\Source\MathHelper.cpp" />
-    <ClCompile Include="Code\Source\FbxMeshData.cpp" />
     <ClCompile Include="Code\Source\Asset.cpp" />
     <ClCompile Include="Code\Source\Mouse.cpp" />
     <ClCompile Include="Code\Source\Renderer.cpp" />
@@ -222,20 +220,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\MeshPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Shader\MeshVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
     <FxCompile Include="Shader\PostEffectsPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -296,7 +280,6 @@
     <None Include="Shader\GeometricSubstance.hlsli" />
     <None Include="Shader\ImageBasedLighting.hlsli" />
     <None Include="Shader\Material.hlsli" />
-    <None Include="Shader\Mesh.hlsli" />
     <None Include="Shader\PhysicallyBasedRendering.hlsli" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
