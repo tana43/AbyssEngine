@@ -181,9 +181,10 @@ void RenderManager::Add(const shared_ptr<StaticMesh>& mRend)
 	renderer3DList_.emplace_back(mRend);
 }
 
-void RenderManager::Add(const shared_ptr<Camera>& camera_)
+void RenderManager::Add(const shared_ptr<Camera>& camera)
 {
-	cameraList_.emplace_back(camera_);
+	cameraList_.emplace_back(camera);
+	if (cameraList_.size() == 1)ChangeMainCamera(camera.get());
 }
 
 void RenderManager::Render()

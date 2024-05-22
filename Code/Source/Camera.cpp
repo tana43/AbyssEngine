@@ -83,8 +83,8 @@ void Camera::DebugCameraController()
                 auto mouseVec = Vector2(960, 540) - Vector2(pos.x, pos.y);
                 if (mouseVec.x != 0 || mouseVec.y != 0)
                 {
-                    rot.y -= mouseVec.x * 0.15f * Time::deltaTime_;
-                    rot.x -= mouseVec.y * 0.15f * Time::deltaTime_;
+                    rot.y -= mouseVec.x * Time::deltaTime_;
+                    rot.x -= mouseVec.y * Time::deltaTime_;
                 }
             }
             else
@@ -110,8 +110,8 @@ void Camera::DebugCameraController()
             }
         }
 
-        const float CAMERA_MAX_ROT_X = 1.309f;
-        const float CAMERA_MIN_ROT_X = -1.309f;
+        const float CAMERA_MAX_ROT_X = 30.0f;
+        const float CAMERA_MIN_ROT_X = -30.0f;
         rot.x = std::clamp(rot.x, CAMERA_MIN_ROT_X, CAMERA_MAX_ROT_X);
 
         transform_->SetRotation(rot);
