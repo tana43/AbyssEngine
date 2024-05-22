@@ -213,6 +213,9 @@
     <ClInclude Include="Code\Header\ConstantBuffer.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\Animation.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -342,6 +345,9 @@
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\GltfStaticMesh.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Animation.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
   </ItemGroup>

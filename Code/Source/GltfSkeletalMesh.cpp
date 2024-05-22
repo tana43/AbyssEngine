@@ -908,3 +908,24 @@ int GltfSkeletalMesh::CastShadow(const DirectX::XMFLOAT4X4& world, const std::ve
 
 	return drawcalCount;
 }
+
+void GltfSkeletalMesh::BlendAnimations(const std::vector<Node>& fromNodes, const std::vector<Node>& toNodes, float weight, std::vector<Node>& outNodes,size_t sceneIndex)
+{
+	using namespace DirectX;
+	_ASSERT_EXPR(fromNodes.size() == toNodes.size(), "The size of the two node arrays must be the same.");
+
+	size_t nodeCount{ fromNodes.size() };
+	_ASSERT_EXPR(nodeCount == outNodes.size(), "The size of output nodes must be input nodes.");
+	for (size_t node_index = 0; node_index < nodeCount; ++node_index)
+	{
+		XMVECTOR S[2]{ XMLoadFloat3(&fromNodes.at(node_index).scale_), XMLoadFloat3(&toNodes.at(node_index).scale_) };
+		XMStoreFloat3(&outNodes.at(node_index).scale_, XMVectorLerp(S[0], S[1], weight));
+
+		XMVECTOR R[2]{ XMLoadFloat4(&fromNodes.at(node_index).rotation_), XMLoadFloat4(&toNodes.at(node_index).rotation_) };
+		XMStoreFloat4(&outNodes.at(node_index).rotation_, XMQuaternionSlerp(R[0], R[1], weight));
+
+		XMVECTOR T[2]{ XMLoadFloat3(&fromNodes.at(node_index).translation_), XMLoadFloat3(&toNodes.at(node_index).translation_) };
+		XMStoreFloat3(&outNodes.at(node_index).translation_, XMVectorLerp(T[0], T[1], weight));
+	}
+	CumulateTransforms(outNodes,sceneIndex);
+}

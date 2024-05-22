@@ -1,18 +1,13 @@
 // BLOOM
 #include "Bloom.hlsli"
 
-#define ANISOTROPIC 0
-#define POINT 1
-#define LINEAR 2
-#define LINEAR_BORDER_BLACK 3
-#define LINEAR_BORDER_WHITE 4
-SamplerState samplerStates[5] : register(s0);
+#include "Common.hlsli"
 
 Texture2D hdrColorBufferTexture : register(t0);
 
 float4 main(float4 position : SV_POSITION,float2 texcoord : TEXCOORD) : SV_TARGET
 {
-    float4 sampledColor = hdrColorBufferTexture.Sample(samplerStates[POINT], texcoord);
+    float4 sampledColor = hdrColorBufferTexture.Sample(samplerStates[POINT_WRAP], texcoord);
 	
 #if 1
 	return float4(step(bloomExtractionThreshold,dot(sampledColor.rgb,float3(0.299,0.587,0.114))) * 

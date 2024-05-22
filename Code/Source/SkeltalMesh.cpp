@@ -66,8 +66,23 @@ void SkeletalMesh::AppendAnimations(const std::vector<std::string>& filenames)
 
 void SkeletalMesh::RecalculateFrame()
 {
-	timeStamp_ += Time::deltaTime_;
-	model_->Animate(animationClip_, timeStamp_ * animationSpeed_, animatedNodes_, animationLoop_);
+	timeStamp_ += Time::deltaTime_ * animationSpeed_;
+
+#if 0
+	model_->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
+
+#else
+	//BlendAnimation
+	std::vector<GeometricSubstance::Node> animatedNodes[2];
+	animatedNodes[0] = animatedNodes[1] = model_->nodes_;
+	model_->Animate(animationClip_, timeStamp_, animatedNodes[0]);
+	model_->Animate(animationClip_ + 1, timeStamp_, animatedNodes[1]);
+
+	model_->BlendAnimations(animatedNodes[0], animatedNodes[1], blendWeight_, animatedNodes_);
+
+
+#endif // 0
+
 }
 
 bool SkeletalMesh::DrawImGui()
@@ -84,6 +99,8 @@ bool SkeletalMesh::DrawImGui()
 		ImGui::Text(t1.c_str());
 
 		ImGui::InputFloat("Time Stamp" ,&timeStamp_);
+
+		ImGui::SliderFloat("Blend Weight", &blendWeight_, 0.0f, 1.0f);
 
 		ImGui::TreePop();
 	}

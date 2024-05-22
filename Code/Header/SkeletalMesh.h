@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "GeometricSubstance.h"
+#include "Animation.h"
 
 namespace AbyssEngine
 {
@@ -45,13 +46,15 @@ namespace AbyssEngine
 
         Vector4 color_ = {1,1,1,1};
 
-        size_t animationClip_ = 0;
+        size_t animationClip_ = 0;//再生中のアニメーション番号
         float timeStamp_ = 0.0f;//合計経過時間
 
-        float animationSpeed_ = 1.0f;
+        float animationSpeed_ = 1.0f;//アニメーション再生速度
         std::vector<GeometricSubstance::Node> animatedNodes_;
 
         bool animationLoop_ = true;
+
+        float blendWeight_ = 0.0f;//仮のモーションブレンドの重み
     };
 
     /*class GltfModel;

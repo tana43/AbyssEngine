@@ -18,6 +18,10 @@ namespace AbyssEngine
 		int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4& color = { 1, 1, 1, 1 }, size_t sceneIndex = 0);
 		int CastShadow(const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animatedNodes, size_t sceneIndex = 0);
 
+		//ブレンドアニメーション
+		//ブレンド元ノード、ブレンド後ノード、ブレンドの重さ、からモーションブレンドし、最後の引数に出力結果ノード
+		void BlendAnimations(const std::vector<Node>& fromNodes, const std::vector<Node>& toNodes, float weight, std::vector<Node>& outNodes, size_t sceneIndex = 0);
+
 	private:
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> skeletalMeshVs_;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> skeletalMeshPs_;
