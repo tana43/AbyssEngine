@@ -1,6 +1,8 @@
 #include "CharacterManager.h"
 #include "Engine.h"
 #include "Actor.h"
+#include <algorithm>
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -25,20 +27,53 @@ bool Character::DrawImGui()
     ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 10.0f);
     ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 10.0f);
 
+    ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
+    ImGui::SliderFloat("Max Rot Speed", &Max_Rot_Speed,0.0f,1000.0f);
+    ImGui::SliderFloat("Min Rot Speed", &Min_Rot_Speed,0.0f,1000.0f);
+
     return true;
 }
 
-void Character::Turn(Vector3 dir, bool smooth)
+void Character::TurnY(Vector3 dir, bool smooth)
 {
-    dir.Normalize();
-    auto forward = transform_->GetForward();
-    auto rot = transform_->GetRotation()
+    if (dir.LengthSquared() == 0)return;
 
-    //“àÏ’l‚©‚çÅI“I‚ÉŒü‚«‚½‚¢•ûŒü‚ðŒvŽZ‚·‚é
+    //XZŽ²‚Ì‚Ý‚ÌƒxƒNƒgƒ‹³‹K‰»
+    Vector2 d = { dir.x,dir.z };
+    d.Normalize();
+    dir = { d.x,0,d.y };
+    auto forward = transform_->GetForward();
+
+    float rotY = transform_->GetRotation().y;
+
+    //“àÏ’l‚©‚çÅI“I‚ÉŒü‚«‚½‚¢Šp“x‚ðŒvŽZ‚·‚é
     float dot = forward.Dot(dir);
-    float rotSpeed = dot
+    if (dot > 0.99f)return;
+    float rotAmount = acosf(dot);
+
+    float rotSpeed = 0;
+
+    //‚È‚ß‚ç‚©‚ÈU‚èŒü‚«‚©A‘¦À‚ÉU‚èŒü‚­‚©
+    if (smooth)
+    {
+        //“àÏ’l‚ð0~1‚Ì”ÍˆÍ‚É
+        dot = dot + 1.0f;
+
+        rotSpeed = baseRotSpeed_ * rotAmount;
+        
+    }
+    else
+    {
+        rotSpeed = rotAmount;
+    }
+
+    //‰ñ“]‘¬“x§ŒÀ
+    std::clamp(rotSpeed, Min_Rot_Speed, Max_Rot_Speed);
 
     //ŠOÏ‚ÌYŽ²‚Ì‚Ý‹‚ßA‰ñ“]•ûŒü‚ð‹‚ß‚é
     float crossY = forward.z * dir.x - forward.x * dir.z;
-    if(crossY > 0)
+    if (crossY < 0) rotSpeed = -rotSpeed;
+    
+    rotY += rotSpeed * Time::deltaTime_;
+    transform_->SetRotationY(rotY);
 }

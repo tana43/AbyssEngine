@@ -25,7 +25,7 @@ namespace AbyssEngine
 
     protected:
         //w’è•ûŒü‚É‰ñ“]
-        void Turn(Vector3 dir,bool smooth = true/*‚È‚ß‚ç‚©‚É‰ñ“]‚·‚é‚©*/);
+        void TurnY(Vector3 dir,bool smooth = true/*‚È‚ß‚ç‚©‚É‰ñ“]‚·‚é‚©*/);
 
     public:
         constexpr static float Gravity = 1.0f;
@@ -37,9 +37,11 @@ namespace AbyssEngine
         float acceleration_ = 1.0f;//‰Á‘¬—Í
         float deceleration_ = 5.0f;//Œ¸‘¬—Í
 
-        float Max_Speed = 10.0f;//Å‘å‘¬“x
+        float Max_Speed = 20.0f;//Å‘å‘¬“x
 
-        float baseRotSpeed_ = 360.0f;//‰ñ“]‘¬“x
+        float baseRotSpeed_ = 300.0f;//‰ñ“]‘¬“x
+        float Max_Rot_Speed = 800.0f;//Å‘å‰ñ“]‘¬“x
+        float Min_Rot_Speed = 300.0f;//Å’á‰ñ“]‘¬“x
 
         std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
     };

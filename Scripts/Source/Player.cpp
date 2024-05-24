@@ -10,13 +10,13 @@
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
-
+0
 void Player::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //アクターとトランスフォームの登録
     Character::Initialize(actor);
 
-    transform_->SetLocalPositionY(3.17f);
+    transform_->SetPositionY(3.17f);
 
     //モデル読み込み
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/UE/Manny/Manny_Idle.glb");
@@ -92,6 +92,8 @@ void Player::MoveUpdate()
         transform_->SetPosition(pos);
     }
 
+    //回転
+    TurnY(velocity_);
 
     //走っているか
     Max_Speed = Input::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;

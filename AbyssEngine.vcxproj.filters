@@ -222,6 +222,7 @@
     <ClInclude Include="Code\Header\CharacterManager.h">
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\Animator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -362,6 +363,7 @@
     <ClCompile Include="Code\Source\CharacterManager.cpp">
       <Filter>Code\Source\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\Animator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
