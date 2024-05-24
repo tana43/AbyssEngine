@@ -13,11 +13,11 @@ namespace AbyssEngine
 
         std::string name_;   //シーン名
 
-    protected:
         std::shared_ptr<Actor> InstanceActor(const std::string& name_);      //シーン内にオブジェクト配置する
         void DestroyActor(const std::shared_ptr<Actor>& actor);             //アクターを削除する
         void DestroyComponent(const std::shared_ptr<Component>& component); //コンポーネントを削除する
 
+    protected:
         virtual void Initialize();  //初期化
         virtual void Update();      //更新
         virtual void Reset();       //シーンをリセット

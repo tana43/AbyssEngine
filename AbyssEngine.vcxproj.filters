@@ -213,6 +213,15 @@
     <ClInclude Include="Code\Header\Animation.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\Player.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Character.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\CharacterManager.h">
+      <Filter>Code\Header\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -343,6 +352,15 @@
     </ClCompile>
     <ClCompile Include="Code\Source\Animation.cpp">
       <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\Player.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Character.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\CharacterManager.cpp">
+      <Filter>Code\Source\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -44,12 +44,12 @@ void SkeletalMesh::Render()
 	Animation::Keyframe& keyframe{ animation.sequence_.at(frameIndex) };
 #endif
 	
-	model_->Draw(DrawPass::Opaque, transform_->CalcWorldMatrix(), animatedNodes_);
+	model_->Draw(DrawPass::Opaque, transform_->GetWorldMatrix(), animatedNodes_);
 }
 
 void SkeletalMesh::RenderShadow()
 {
-	model_->CastShadow(transform_->CalcWorldMatrix(), animatedNodes_);
+	model_->CastShadow(transform_->GetWorldMatrix(), animatedNodes_);
 }
 
 void SkeletalMesh::AppendAnimation(const std::string& filename)
@@ -66,6 +66,8 @@ void SkeletalMesh::AppendAnimations(const std::vector<std::string>& filenames)
 
 void SkeletalMesh::RecalculateFrame()
 {
+	transform_->CalcWorldMatrix();//çsóÒçXêV
+
 	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 
 #if 0

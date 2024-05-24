@@ -87,11 +87,11 @@ void Scene::Update()
 
 void Scene::Reset()
 {
-#if 0
+    //親子関係を持ったアクターは親から消されるので、親がいていないアクターのみ解放
     vector<shared_ptr<Actor>> noParentList;
     for (const auto& a : actorList_)
     {
-        if (a->transform->Get_Parent().expired())
+        if (a->GetParent().expired())
         {
             noParentList.emplace_back(a);
         }
@@ -101,12 +101,6 @@ void Scene::Reset()
         a->Release();
     }
     noParentList.clear();
-#else
-    for (const auto& a : actorList_)
-    {
-        a->Release();
-    }
-#endif // 0
 
     actorList_.clear();
 }

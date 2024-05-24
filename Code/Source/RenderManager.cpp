@@ -1,20 +1,21 @@
 #include "RenderManager.h"
 #include "DXSystem.h"
 #include "Engine.h"
-#include "SpriteRenderer.h"
 #include "Actor.h"
 #include "Misc.h"
 #include "Camera.h"
-#include "SkeletalMesh.h"
-#include "GltfSkeletalMesh.h"
+
+#include "SpriteRenderer.h"
 #include "Texture.h"
-#include "GltfStaticMesh.h"
+#include "SkeletalMesh.h"
 #include "StaticMesh.h"
+
 #include "Bloom.h"
 #include "Skybox.h"
 #include "CascadedShadowMap.h"
+
 #include "Keyboard.h"
-#include "Engine.h"
+
 
 #include "imgui/imgui.h"
 
@@ -26,7 +27,7 @@ using namespace std;
 //    DXSystem::SetDefaultView();
 //
 //    //トポロジー設定
-//    DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+//    DXSystem::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 //    
 //    constexpr UINT stride = sizeof(Vertex);
 //    constexpr UINT offset = 0;
@@ -47,7 +48,7 @@ RenderManager::RenderManager()
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = 0;
 		bd.StructureByteStride = 0;
-		const HRESULT hr = DXSystem::device_->CreateBuffer(&bd, nullptr, constantBufferScene_.GetAddressOf());
+		const HRESULT hr = DXSystem::GetDevice()->CreateBuffer(&bd, nullptr, constantBufferScene_.GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 #else
 		//シーン用
@@ -71,15 +72,15 @@ RenderManager::RenderManager()
 		sd.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 		sd.MinLOD = 0;
 		sd.MaxLOD = D3D11_FLOAT32_MAX;
-		HRESULT hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Anisotropic)].GetAddressOf());
+		HRESULT hr = DXSystem::GetDevice()->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Anisotropic)].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 
 		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Point)].GetAddressOf());
+		hr = DXSystem::GetDevice()->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Point)].GetAddressOf());
 
 		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Linear)].GetAddressOf());
+		hr = DXSystem::GetDevice()->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::Linear)].GetAddressOf());
 
 		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		sd.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -89,7 +90,7 @@ RenderManager::RenderManager()
 		sd.BorderColor[1] = 0;
 		sd.BorderColor[2] = 0;
 		sd.BorderColor[3] = 0;
-		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::LinearBorderBlack)].GetAddressOf());
+		hr = DXSystem::GetDevice()->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::LinearBorderBlack)].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 		sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -100,7 +101,7 @@ RenderManager::RenderManager()
 		sd.BorderColor[1] = 1;
 		sd.BorderColor[2] = 1;
 		sd.BorderColor[3] = 1;
-		hr = DXSystem::device_->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::LinearBorderWhite)].GetAddressOf());
+		hr = DXSystem::GetDevice()->CreateSamplerState(&sd, samplers_[static_cast<size_t>(SP_State::LinearBorderWhite)].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 #else
 		D3D11_SAMPLER_DESC sd[]{
@@ -118,7 +119,7 @@ RenderManager::RenderManager()
 		};
 		for (size_t samplerIndex = 0; samplerIndex < _countof(sd); ++samplerIndex)
 		{
-			const HRESULT hr = DXSystem::device_->CreateSamplerState(&sd[samplerIndex], samplers_[samplerIndex].GetAddressOf());
+			const HRESULT hr = DXSystem::GetDevice()->CreateSamplerState(&sd[samplerIndex], samplers_[samplerIndex].GetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 		}
 #endif // 0
@@ -224,8 +225,8 @@ void RenderManager::Render()
 				//定数バッファ更新
 #if 0
 				UpdateConstantBuffer();
-				DXSystem::deviceContext_->VSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
-				DXSystem::deviceContext_->PSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
+				DXSystem::GetDeviceContext()->VSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
+				DXSystem::GetDeviceContext()->PSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
 #else
 				bufferScene_->Activate(10, CBufferUsage::vp);
 #endif // 0
@@ -281,7 +282,7 @@ void RenderManager::Render()
 
 				bloom_->Make(baseFrameBuffer_[0]->GetColorMap().Get());
 
-				DXSystem::deviceContext_->PSSetShaderResources(39, 1, baseFrameBuffer_[1]->GetColorMap().GetAddressOf());
+				DXSystem::GetDeviceContext()->PSSetShaderResources(39, 1, baseFrameBuffer_[1]->GetColorMap().GetAddressOf());
 
 				//PostEffect
 				{
@@ -386,11 +387,11 @@ void RenderManager::Render2D() const
 	if (!renderer2DList_.empty())
 	{
 		//トポロジー設定
-		DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		DXSystem::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-		DXSystem::deviceContext_->OMSetBlendState(DXSystem::GetBlendState(BS_State::Alpha),nullptr,0xFFFFFFFF);
-		DXSystem::deviceContext_->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::None_No_Write),0);
-		DXSystem::deviceContext_->RSSetState(DXSystem::GetRasterizerState(RS_State::Cull_None));
+		DXSystem::GetDeviceContext()->OMSetBlendState(DXSystem::GetBlendState(BS_State::Alpha),nullptr,0xFFFFFFFF);
+		DXSystem::GetDeviceContext()->OMSetDepthStencilState(DXSystem::GetDepthStencilState(DS_State::None_No_Write),0);
+		DXSystem::GetDeviceContext()->RSSetState(DXSystem::GetRasterizerState(RS_State::Cull_None));
 
 		for (auto& r : renderer2DList_)
 		{
@@ -409,7 +410,7 @@ void RenderManager::Render2D() const
 void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 {
 	//トポロジー設定
-	//DXSystem::deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//DXSystem::GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 #if _DEBUG
 	DebugRSStateSelect();
@@ -422,15 +423,15 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 
 #if 0
 
-	DXSystem::deviceContext_->PSSetSamplers(0, 1, samplers_[static_cast<int>(SP_State::Anisotropic)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(1, 1, samplers_[static_cast<int>(SP_State::Point)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(2, 1, samplers_[static_cast<int>(SP_State::Linear)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(3, 1, samplers_[static_cast<int>(SP_State::LinearBorderBlack)].GetAddressOf());
-	DXSystem::deviceContext_->PSSetSamplers(4, 1, samplers_[static_cast<int>(SP_State::LinearBorderWhite)].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetSamplers(0, 1, samplers_[static_cast<int>(SP_State::Anisotropic)].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetSamplers(1, 1, samplers_[static_cast<int>(SP_State::Point)].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetSamplers(2, 1, samplers_[static_cast<int>(SP_State::Linear)].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetSamplers(3, 1, samplers_[static_cast<int>(SP_State::LinearBorderBlack)].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetSamplers(4, 1, samplers_[static_cast<int>(SP_State::LinearBorderWhite)].GetAddressOf());
 #else
 	for (size_t samplerIndex = 0; samplerIndex < _countof(samplers_); ++samplerIndex)
 	{
-		DXSystem::deviceContext_->PSSetSamplers(static_cast<UINT>(samplerIndex), 1, samplers_[samplerIndex].GetAddressOf());
+		DXSystem::GetDeviceContext()->PSSetSamplers(static_cast<UINT>(samplerIndex), 1, samplers_[samplerIndex].GetAddressOf());
 	}
 #endif // 0
 
@@ -500,12 +501,12 @@ void RenderManager::UpdateConstantBuffer() const
 	constexpr UINT subresourceIndex = 0;
 	//D3D11_MAPPED_SUBRESOURCE mapped;
 
-	DXSystem::deviceContext_->UpdateSubresource(constantBufferScene_.Get(),subresourceIndex, 0, &bufferScene_, 0,0);
-	/*const auto hr = DXSystem::deviceContext_->Map(constantBufferScene_.Get(),subresourceIndex, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+	DXSystem::GetDeviceContext()->UpdateSubresource(constantBufferScene_.Get(),subresourceIndex, 0, &bufferScene_, 0,0);
+	/*const auto hr = DXSystem::GetDeviceContext()->Map(constantBufferScene_.Get(),subresourceIndex, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 	if (SUCCEEDED(hr))
 	{
 		memcpy(mapped.pData, &bufferScene_, sizeof(constantBufferScene_));
-		DXSystem::deviceContext_->Unmap(constantBufferScene_.Get(), subresourceIndex);
+		DXSystem::GetDeviceContext()->Unmap(constantBufferScene_.Get(), subresourceIndex);
 	}*/
 #endif // 0
 }
@@ -545,13 +546,13 @@ void RenderManager::IBLInitialize()
 
 void RenderManager::IBLSetResources()
 {
-	DXSystem::deviceContext_->PSSetShaderResources(32, 1, iblShaderResourceView_[0].GetAddressOf());
-	DXSystem::deviceContext_->PSSetShaderResources(33, 1, iblShaderResourceView_[1].GetAddressOf());
-	DXSystem::deviceContext_->PSSetShaderResources(34, 1, iblShaderResourceView_[2].GetAddressOf());
-	DXSystem::deviceContext_->PSSetShaderResources(35, 1, iblShaderResourceView_[3].GetAddressOf());
-	DXSystem::deviceContext_->PSSetShaderResources(36, 1, iblShaderResourceView_[4].GetAddressOf());
-	DXSystem::deviceContext_->PSSetShaderResources(37, 1, iblShaderResourceView_[5].GetAddressOf());
-	DXSystem::deviceContext_->PSSetShaderResources(38, 1, iblShaderResourceView_[6].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetShaderResources(32, 1, iblShaderResourceView_[0].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetShaderResources(33, 1, iblShaderResourceView_[1].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetShaderResources(34, 1, iblShaderResourceView_[2].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetShaderResources(35, 1, iblShaderResourceView_[3].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetShaderResources(36, 1, iblShaderResourceView_[4].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetShaderResources(37, 1, iblShaderResourceView_[5].GetAddressOf());
+	DXSystem::GetDeviceContext()->PSSetShaderResources(38, 1, iblShaderResourceView_[6].GetAddressOf());
 }
 
 void RenderManager::DebugRSStateSelect()

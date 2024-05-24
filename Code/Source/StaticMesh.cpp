@@ -33,16 +33,21 @@ bool StaticMesh::DrawImGui()
     return false;
 }
 
+void StaticMesh::RecalculateFrame()
+{
+    transform_->CalcWorldMatrix();
+}
+
 void StaticMesh::Render()
 {
     //model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
-    model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
+    model_->Draw(DrawPass::Opaque,transform_->GetWorldMatrix());
     //model_->Draw(DrawPass::Transmission,transform_->CalcWorldMatrix());
 }
 
 void StaticMesh::RenderShadow()
 {
-    model_->CastShadow(transform_->CalcWorldMatrix());
+    model_->CastShadow(transform_->GetWorldMatrix());
 }
 
 void StaticMesh::SetActive(const bool value)

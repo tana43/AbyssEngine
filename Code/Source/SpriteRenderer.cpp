@@ -37,7 +37,7 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
     res.pSysMem = v;
 	res.SysMemPitch = 0;
 	res.SysMemSlicePitch = 0;
-    auto hr = DXSystem::device_->CreateBuffer(&bd, &res, vertexBuffer_.GetAddressOf());
+    auto hr = DXSystem::GetDevice()->CreateBuffer(&bd, &res, vertexBuffer_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     
 	D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
@@ -79,18 +79,18 @@ void SpriteRenderer::Render()
     //頂点バッファの指定
     constexpr UINT stride = sizeof(Vertex);
     constexpr UINT offset = 0;
-    DXSystem::deviceContext_->IASetVertexBuffers(0, 1, vertexBuffer_.GetAddressOf(), &stride, &offset);
+    DXSystem::GetDeviceContext()->IASetVertexBuffers(0, 1, vertexBuffer_.GetAddressOf(), &stride, &offset);
 
-	DXSystem::deviceContext_->IASetInputLayout(inputLayout_.Get());
+	DXSystem::GetDeviceContext()->IASetInputLayout(inputLayout_.Get());
 
     //テクスチャの設定
     texture_->Set(1, Shader_Type::Pixel);
 
-	DXSystem::deviceContext_->VSSetShader(vertexShader_.Get(), nullptr, 0);
-	DXSystem::deviceContext_->PSSetShader(pixelShader_.Get(), nullptr, 0);
+	DXSystem::GetDeviceContext()->VSSetShader(vertexShader_.Get(), nullptr, 0);
+	DXSystem::GetDeviceContext()->PSSetShader(pixelShader_.Get(), nullptr, 0);
 
     //描画
-    DXSystem::deviceContext_->Draw(4, 0);
+    DXSystem::GetDeviceContext()->Draw(4, 0);
 }
 
 void SpriteRenderer::RecalculateFrame()
@@ -205,11 +205,11 @@ void SpriteRenderer::RecalculateFrame()
 
 	constexpr UINT subresourceIndex = 0;
 	D3D11_MAPPED_SUBRESOURCE mapped;
-	const auto hr = DXSystem::deviceContext_->Map(vertexBuffer_.Get(), subresourceIndex, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+	const auto hr = DXSystem::GetDeviceContext()->Map(vertexBuffer_.Get(), subresourceIndex, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 	if (SUCCEEDED(hr))
 	{
 		memcpy(mapped.pData, data_, sizeof(data_));
-		DXSystem::deviceContext_->Unmap(vertexBuffer_.Get(), subresourceIndex);
+		DXSystem::GetDeviceContext()->Unmap(vertexBuffer_.Get(), subresourceIndex);
 	}
 }
 

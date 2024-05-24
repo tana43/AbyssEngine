@@ -64,6 +64,37 @@ void Camera::Update()
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }
 
+Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)
+{
+    Vector3 result;
+
+    const auto& forward = transform_->GetForward();
+    const auto& right = transform_->GetForward();
+
+    result.x = forward.x * v.y + right.x * v.x;
+    result.y = forward.y * v.y + right.y * v.x;
+    result.z = forward.z * v.y + right.z * v.x;
+
+    result.Normalize();
+
+    return result;
+}
+
+Vector3 Camera::ConvertTo2DVectorFromCamera(const Vector2& v)
+{
+    Vector2 result;
+
+    const auto& forward = transform_->GetForward();
+    const auto& right = transform_->GetRight();
+
+    result.x = forward.x * v.y + right.x * v.x;
+    result.y = forward.z * v.y + right.z * v.x;
+
+    result.Normalize();
+
+    return Vector3(result.x,0,result.y);
+}
+
 void Camera::DebugCameraController()
 {
     if (!enableDebugController_)return;
@@ -80,7 +111,7 @@ void Camera::DebugCameraController()
             {
                 POINT pos{};
                 GetCursorPos(&pos);
-                auto mouseVec = Vector2(960, 540) - Vector2(pos.x, pos.y);
+                auto mouseVec = Vector2(960.0f, 540.0f) - Vector2(static_cast<float>(pos.x), static_cast<float>(pos.y));
                 if (mouseVec.x != 0 || mouseVec.y != 0)
                 {
                     rot.y -= mouseVec.x * Time::deltaTime_;
@@ -110,8 +141,8 @@ void Camera::DebugCameraController()
             }
         }
 
-        const float CAMERA_MAX_ROT_X = 30.0f;
-        const float CAMERA_MIN_ROT_X = -30.0f;
+        const float CAMERA_MAX_ROT_X = 150.0f;
+        const float CAMERA_MIN_ROT_X = -150.0f;
         rot.x = std::clamp(rot.x, CAMERA_MIN_ROT_X, CAMERA_MAX_ROT_X);
 
         transform_->SetRotation(rot);

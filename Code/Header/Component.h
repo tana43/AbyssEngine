@@ -9,6 +9,9 @@ namespace AbyssEngine
     class Component : public std::enable_shared_from_this<Component>
     {
     public:
+        Component() = default;
+        ~Component() = default;
+
         //Actorにアタッチされたコンポーネントを取得（存在しない場合nullptr）
         template<class T>
         std::shared_ptr<T> GetComponent();
@@ -26,7 +29,6 @@ namespace AbyssEngine
 
     protected:
         virtual void SetActive(bool value) {};//アクティブ状態を切り替える
-        Component() = default;
 
     private:
 
@@ -34,7 +36,7 @@ namespace AbyssEngine
         virtual bool CanMultiple() { return true; }
 
         //初期化
-		virtual void Initialize(const std::shared_ptr<Actor>& actor) {}
+        virtual void Initialize(const std::shared_ptr<Actor>& actor) {}
 
         //ImGui表示用の共通関数
         virtual bool DrawImGui() { return true; }

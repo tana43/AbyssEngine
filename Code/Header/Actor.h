@@ -16,10 +16,12 @@ namespace AbyssEngine
         template<class T>
         std::shared_ptr<T> AddComponent(const char* path = NULL);//コンポーネントをアタッチする(レンダラーなどはパスが必要)
 
+
+        static void Destroy(std::shared_ptr<Actor> actor);//アクターを削除する
     public:
         [[nodiscard]] std::weak_ptr<Actor> GetParent() const;
-        void SetParent(const std::shared_ptr<Actor>& parent);
-        void SetParent(const std::shared_ptr<Transform>& parent);
+        void SetParent(const std::shared_ptr<Actor>& parent);//親を設定
+        void RemoveParent();//親子関係を解除
 
 
         [[nodiscard]] bool GetActive() const { return active_; };   //アクターがアクティブかどうか

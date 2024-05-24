@@ -1,11 +1,10 @@
 #pragma once
 #include "Renderer.h"
-#include "GeometricSubstance.h"
 #include "Animation.h"
+#include "GltfSkeletalMesh.h"
 
 namespace AbyssEngine
 {
-    class GltfSkeletalMesh;
     class Actor;
 
     class SkeletalMesh : public Renderer

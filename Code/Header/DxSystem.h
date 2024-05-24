@@ -24,11 +24,14 @@ namespace AbyssEngine
 	enum class BS_State { Off, Alpha, Alpha_Test, Transparent, Add, Subtract, Replace, Multiply };
 
 	//DirectXラッパークラス
+	//メモリリーク起こすのでstaticやめて素直に作ります...
 	class DXSystem
 	{
+	private:
+		static DXSystem* instance;
 	public:
-		static Microsoft::WRL::ComPtr<ID3D11Device> device_;
-		static Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext_;
+		DXSystem();
+		
 		static HWND hwnd_;
 
 		//MSAA使用時のパラメータ
@@ -39,14 +42,17 @@ namespace AbyssEngine
 		static void Clear();//レンダーターゲットのクリア
 		static void Flip(int n = 0);//フリップ処理
 
+		static ID3D11Device* GetDevice() { return instance->device_.Get(); }
+		static ID3D11DeviceContext* GetDeviceContext() { return instance->deviceContext_.Get(); }
+
 		static int GetScreenWidth() { return screenWidth_; }
 		static int GetScreenHeight() { return screenHeight_; }
-		static ID3D11DepthStencilView* GetDepthStencilView() { return depthStencilView_.Get(); }
-		static ID3D11RenderTargetView* GetRenderTargetView() { return renderTargetView_.Get(); }
-		static ID3D11ShaderResourceView* GetShaderResourceView() { return shaderResourceView_.Get(); }
-		static ID3D11DepthStencilState* GetDepthStencilState(DS_State state) { return depthStencilStates_[static_cast<int>(state)].Get(); }
-		static ID3D11RasterizerState* GetRasterizerState(RS_State state) { return rasterizerStates_[static_cast<int>(state)].Get(); }
-		static ID3D11BlendState* GetBlendState(BS_State state) { return blendStates_[static_cast<int>(state)].Get(); }
+		static ID3D11DepthStencilView* GetDepthStencilView() { return instance->depthStencilView_.Get(); }
+		static ID3D11RenderTargetView* GetRenderTargetView() { return instance->renderTargetView_.Get(); }
+		static ID3D11ShaderResourceView* GetShaderResourceView() { return instance->shaderResourceView_.Get(); }
+		static ID3D11DepthStencilState* GetDepthStencilState(DS_State state) { return instance->depthStencilStates_[static_cast<int>(state)].Get(); }
+		static ID3D11RasterizerState* GetRasterizerState(RS_State state) { return instance->rasterizerStates_[static_cast<int>(state)].Get(); }
+		static ID3D11BlendState* GetBlendState(BS_State state) { return instance->blendStates_[static_cast<int>(state)].Get(); }
 		static void SetViewport(int width, int height, int num = 1);//ビューポートをセット
 		static void SetDefaultView();//メインウィンドウのレンダーターゲットをセットする
 
@@ -54,28 +60,32 @@ namespace AbyssEngine
 		static void SetRasterizerState(RS_State type);
 		static void SetBlendState(BS_State type);
 	private:
+
+		Microsoft::WRL::ComPtr<ID3D11Device> device_;
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext_;
+
 		static int screenWidth_;
 		static int screenHeight_;
 
-		static Microsoft::WRL::ComPtr<IDXGISwapChain>			swapChain_;
-		static Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	renderTargetView_;
-		static Microsoft::WRL::ComPtr<ID3D11Texture2D>			depthStencilTexture_;
-		static Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	depthStencilView_;
-		static Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	shaderResourceView_;
-		static Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	depthStencilStates_[16];
+		Microsoft::WRL::ComPtr<IDXGISwapChain>			swapChain_;
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	renderTargetView_;
+		Microsoft::WRL::ComPtr<ID3D11Texture2D>			depthStencilTexture_;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	depthStencilView_;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	shaderResourceView_;
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	depthStencilStates_[16];
 
-		static Microsoft::WRL::ComPtr<IDXGIDebug>               dxgiDebug_;
+		Microsoft::WRL::ComPtr<IDXGIDebug>               dxgiDebug_;
 
 		static HRESULT CreateDevice();         //デバイスの作成
 		static bool CreateDepthStencil();     //デプスステンシルテクスチャの作成
 		static bool InitializeRenderTarget(); //レンダーターゲットの初期化
 
-		static constexpr int rasterizerType_ = 5; //用意されたラスタライザーステートの数
-		static Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerStates_[rasterizerType_];
+		static constexpr int Rasterizer_Type = 5; //用意されたラスタライザーステートの数
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerStates_[Rasterizer_Type];
 		static bool CreateRasterizerState(); //ラスタライザーステートの作成
 
-		static constexpr int blendType_ = 8; //用意されたブレンドステートの数
-		static Microsoft::WRL::ComPtr<ID3D11BlendState>	blendStates_[blendType_];
+		static constexpr int Blend_Type = 8; //用意されたブレンドステートの数
+		Microsoft::WRL::ComPtr<ID3D11BlendState>	blendStates_[Blend_Type];
 		static bool CreateBlendState(); //ブレンドステートの作成
 
 		// DirectX11の初期化後、メモリリーク検出のために次の関数を呼び出す

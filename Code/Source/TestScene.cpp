@@ -2,9 +2,8 @@
 #include "SpriteRenderer.h"
 #include "Camera.h"
 #include "SkeletalMesh.h"
-#include "GltfSkeletalMesh.h"
 #include "StaticMesh.h"
-#include "GltfStaticMesh.h"
+#include "Player.h"
 //#include "StaticMeshBatching.h"
 
 using namespace AbyssEngine;
@@ -12,7 +11,7 @@ using namespace AbyssEngine;
 void TestScene::Initialize()
 {
     //カメラ
-    const auto& camera_ = InstanceActor("MainCamera");
+    const auto& camera_ = InstanceActor("Debug Camera");
     camera_->AddComponent<Camera>();
     camera_->GetTransform()->SetPosition(Vector3(0, 3, -10));
 
@@ -21,12 +20,13 @@ void TestScene::Initialize()
     p0->AddComponent<SkeltalMesh>("./Assets/Models/nico.fbx");*/
 
     //テスト用のオブジェクト
-    const auto& p1 = InstanceActor("testGltf");
-    p1->AddComponent<StaticMesh>(
+    const auto& stage = InstanceActor("Stage");
+    stage->AddComponent<StaticMesh>(
         //"./Assets/Models/UE/LV_Soul_Slum.glb"
         "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
         //"./Assets/Models/UE/AssetsvilleTown.glb"
     );
+    stage->GetTransform()->SetScaleFactor(0.43f);
     //p1->AddComponent<GltfSkeltalMesh>(
     //    "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //    //"./Assets/Models/UE/AssetsvilleTown.glb"
@@ -36,6 +36,8 @@ void TestScene::Initialize()
     //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //);
 
+    
+#if 0
     const auto& p2 = InstanceActor("testGltf_2");
     /*p2->AddComponent<StaticMesh>(
         "./Assets/Models/robot_oj.glb"
@@ -54,6 +56,17 @@ void TestScene::Initialize()
         "./Assets/Models/UE/Manny/Manny_Walk.glb",
         "./Assets/Models/UE/Manny/Manny_Run.glb"
         });
+
+    const auto& playerCamera = InstanceActor("Player Camera");
+    playerCamera->AddComponent<Camera>();
+    playerCamera->SetParent(p2);
+#else
+    //PlayerComponentによるプレイヤーの実装
+
+    const auto& player = InstanceActor("Player");
+    player->AddComponent<Player>();
+#endif // 0
+
 }
 
 void TestScene::Update()

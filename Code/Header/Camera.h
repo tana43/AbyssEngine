@@ -19,6 +19,12 @@ namespace AbyssEngine
         void SetIsMainCamera(const bool& isMainCamera) { isMainCamera_ = isMainCamera; }
 
         const bool& GetIsMainCamera() const { return isMainCamera_; }
+
+        //カメラが見ている方向が前方向になるような正規化済みベクトルを計算する
+        //基本コントローラーの入力値に対してしか使わない
+        Vector3 ConvertTo2DVectorFromCamera(const Vector2& v);//XZ軸のみ計算
+        Vector3 ConvertTo3DVectorFromCamera(const Vector2& v);//Y軸も計算
+
     private:
         void DebugCameraController();
 

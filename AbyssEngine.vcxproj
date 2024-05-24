@@ -26,6 +26,8 @@
     <ClInclude Include="Code\Header\BoundingBox.h" />
     <ClInclude Include="Code\Header\Camera.h" />
     <ClInclude Include="Code\Header\CascadedShadowMap.h" />
+    <ClInclude Include="Code\Header\Character.h" />
+    <ClInclude Include="Code\Header\CharacterManager.h" />
     <ClInclude Include="Code\Header\Component.h" />
     <ClInclude Include="Code\Header\ConstantBuffer.h" />
     <ClInclude Include="Code\Header\DXSystem.h" />
@@ -65,6 +67,7 @@
     <ClInclude Include="External\imgui\imstb_rectpack.h" />
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
+    <ClInclude Include="Scripts\Header\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp" />
@@ -73,6 +76,8 @@
     <ClCompile Include="Code\Source\Bloom.cpp" />
     <ClCompile Include="Code\Source\Camera.cpp" />
     <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />
+    <ClCompile Include="Code\Source\Character.cpp" />
+    <ClCompile Include="Code\Source\CharacterManager.cpp" />
     <ClCompile Include="Code\Source\Component.cpp" />
     <ClCompile Include="Code\Source\DXSystem.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
@@ -110,6 +115,7 @@
     <ClCompile Include="External\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Scripts\Source\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\CsmOpaqueGS.hlsl">

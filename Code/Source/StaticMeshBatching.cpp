@@ -66,7 +66,7 @@ StaticMeshBatching::StaticMeshBatching(const std::string& filename) : filename_(
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	HRESULT hr;
-	hr = DXSystem::device_->CreateBuffer(&bd, nullptr, primitiveCBuffer_.ReleaseAndGetAddressOf());
+	hr = DXSystem::GetDevice()->CreateBuffer(&bd, nullptr, primitiveCBuffer_.ReleaseAndGetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 
@@ -222,7 +222,7 @@ StaticMeshBatching::BufferView StaticMeshBatching::MakeBufferView(const tinygltf
 }
 void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 {
-	ID3D11Device* device = DXSystem::device_.Get();
+	ID3D11Device* device = DXSystem::GetDevice();
 
 	HRESULT hr = S_OK;
 
@@ -468,7 +468,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 
 void StaticMeshBatching::Render(const Matrix& world)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
+	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
 	deviceContext->PSSetShaderResources(0, 1, materialResourceView_.GetAddressOf());
 
 	deviceContext->VSSetShader(vertexShader_.Get(), nullptr, 0);
@@ -526,7 +526,7 @@ void StaticMeshBatching::Render(const Matrix& world)
 
 void StaticMeshBatching::FetchMaterials(const tinygltf::Model& gltfModel)
 {
-	ID3D11Device* device = DXSystem::device_.Get();
+	ID3D11Device* device = DXSystem::GetDevice();
 
 	for (std::vector<tinygltf::Material>::const_reference gltf_material : gltfModel.materials)
 	{
@@ -593,7 +593,7 @@ void StaticMeshBatching::FetchMaterials(const tinygltf::Model& gltfModel)
 }
 void StaticMeshBatching::FetchTextures(const tinygltf::Model& gltfModel)
 {
-	ID3D11Device* device = DXSystem::device_.Get();
+	ID3D11Device* device = DXSystem::GetDevice();
 
 	HRESULT hr{ S_OK };
 	for (const tinygltf::Texture& gltfTexture : gltfModel.textures)

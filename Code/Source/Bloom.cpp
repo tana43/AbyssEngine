@@ -31,13 +31,13 @@ Bloom::Bloom(uint32_t width, uint32_t height)
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	bd.StructureByteStride = 0;
-	HRESULT hr = DXSystem::device_->CreateBuffer(&bd, nullptr, constantBuffer_.GetAddressOf());
+	HRESULT hr = DXSystem::GetDevice()->CreateBuffer(&bd, nullptr, constantBuffer_.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 }
 
 void Bloom::Make(ID3D11ShaderResourceView* colorMap)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
+	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
 
 	// Store current states
 	ID3D11ShaderResourceView* nullShaderResourceView{};

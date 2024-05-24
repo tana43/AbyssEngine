@@ -20,7 +20,7 @@ HRESULT Texture::LoadTextureFromMemory(const void* data_, size_t size, ID3D11Sha
     HRESULT hr = S_OK;
     Microsoft::WRL::ComPtr<ID3D11Resource> resource;
 
-    auto* device = DXSystem::device_.Get();
+    auto* device = DXSystem::GetDevice();
     hr = CreateDDSTextureFromMemory(device,reinterpret_cast<const uint8_t*>(data_),
         size, resource.GetAddressOf(), shaderResourceView);
     if (hr != S_OK)
@@ -46,7 +46,7 @@ HRESULT Texture::LoadTextureFromFile(const std::string& texturePath, ID3D11Shade
     }
     else
     {
-        auto* device = DXSystem::device_.Get();
+        auto* device = DXSystem::GetDevice();
 
         std::filesystem::path ddsFilename(texturePath);
         ddsFilename.replace_extension("dds");
@@ -98,7 +98,7 @@ HRESULT Texture::MakeDummyTexture(ID3D11ShaderResourceView** shaderResourceView,
     subresourceData.pSysMem = sysmem.get();
     subresourceData.SysMemPitch = sizeof(DWORD) * dimension;
 
-    auto* device = DXSystem::device_.Get();
+    auto* device = DXSystem::GetDevice();
     Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2d;
     hr = device->CreateTexture2D(&texture2dDesc, &subresourceData, &texture2d);
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
@@ -138,12 +138,12 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     ddsFilename.replace_extension("dds");
     if (std::filesystem::exists(ddsFilename.c_str()))
     {
-        hr = CreateDDSTextureFromFile(DXSystem::device_.Get(), ddsFilename.c_str(), resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
+        hr = CreateDDSTextureFromFile(DXSystem::GetDevice(), ddsFilename.c_str(), resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
     else
     {
-        hr = CreateWICTextureFromFile(DXSystem::device_.Get(), fileName, resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
+        hr = CreateWICTextureFromFile(DXSystem::GetDevice(), fileName, resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
 
@@ -164,7 +164,7 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     sd.MinLOD = 0;
     sd.MaxLOD = D3D11_FLOAT32_MAX;
 
-    hr = DXSystem::device_->CreateSamplerState(&sd, texture->samplers_.GetAddressOf());
+    hr = DXSystem::GetDevice()->CreateSamplerState(&sd, texture->samplers_.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     //アセットマネージャーに登録
@@ -181,24 +181,24 @@ void Texture::Set(UINT slot, Shader_Type type_)
         switch (type_)
         {
         case Shader_Type::Vertex:
-            DXSystem::deviceContext_->VSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->VSSetSamplers(slot, 1, samplers_.GetAddressOf());
+            DXSystem::GetDeviceContext()->VSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
+            DXSystem::GetDeviceContext()->VSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Geometry:
-            DXSystem::deviceContext_->GSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->GSSetSamplers(slot, 1, samplers_.GetAddressOf());
+            DXSystem::GetDeviceContext()->GSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
+            DXSystem::GetDeviceContext()->GSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Pixel:
-            DXSystem::deviceContext_->PSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->PSSetSamplers(slot, 1, samplers_.GetAddressOf());
+            DXSystem::GetDeviceContext()->PSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
+            DXSystem::GetDeviceContext()->PSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Hull:
-            DXSystem::deviceContext_->HSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->HSSetSamplers(slot, 1, samplers_.GetAddressOf());
+            DXSystem::GetDeviceContext()->HSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
+            DXSystem::GetDeviceContext()->HSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         case Shader_Type::Domain:
-            DXSystem::deviceContext_->DSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
-            DXSystem::deviceContext_->DSSetSamplers(slot, 1, samplers_.GetAddressOf());
+            DXSystem::GetDeviceContext()->DSSetShaderResources(slot, 1, shaderResourceView_.GetAddressOf());
+            DXSystem::GetDeviceContext()->DSSetSamplers(slot, 1, samplers_.GetAddressOf());
             break;
         }
     }

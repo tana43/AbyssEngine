@@ -37,7 +37,7 @@ Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(c
         HRESULT hr;
 
         Blob cso(name_);
-        hr = DXSystem::device_->CreateVertexShader(cso.data_.get(),cso.size_,nullptr,vertexShader_.GetAddressOf());
+        hr = DXSystem::GetDevice()->CreateVertexShader(cso.data_.get(),cso.size_,nullptr,vertexShader_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
         std::lock_guard<std::mutex> lock(mutex_);
@@ -45,7 +45,7 @@ Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(c
 
         if (inputLayout)
         {
-            hr = DXSystem::device_->CreateInputLayout(inputElementDesc, numElements, cso.data_.get(), cso.size_, inputLayout);
+            hr = DXSystem::GetDevice()->CreateInputLayout(inputElementDesc, numElements, cso.data_.get(), cso.size_, inputLayout);
             _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
             inputLayouts_.emplace(std::make_pair(name_, *inputLayout));
         }
@@ -112,9 +112,9 @@ HRESULT Shader<ID3D11VertexShader>::AutoGenerateInputLayout(const char* name_, I
     const char* target = "vs_5_0";
     hr = D3DCompile(source.c_str(), source.length(), 0, 0, 0, "main", target, flags, 0, compiledShaderBlob.GetAddressOf(), errorMessageBlob.GetAddressOf());
     _ASSERT_EXPR_A(SUCCEEDED(hr), reinterpret_cast<LPCSTR>(errorMessageBlob->GetBufferPointer()));
-    hr = DXSystem::device_->CreateVertexShader(compiledShaderBlob->GetBufferPointer(), compiledShaderBlob->GetBufferSize(), 0, dummyVertexShader.GetAddressOf());
+    hr = DXSystem::GetDevice()->CreateVertexShader(compiledShaderBlob->GetBufferPointer(), compiledShaderBlob->GetBufferSize(), 0, dummyVertexShader.GetAddressOf());
     _ASSERT_EXPR_A(SUCCEEDED(hr), reinterpret_cast<LPCSTR>(errorMessageBlob->GetBufferPointer()));
-    hr = DXSystem::device_->CreateInputLayout(inputElementDesc, static_cast<UINT>(numElements), compiledShaderBlob->GetBufferPointer(), static_cast<UINT>(compiledShaderBlob->GetBufferSize()), inputLayout);
+    hr = DXSystem::GetDevice()->CreateInputLayout(inputElementDesc, static_cast<UINT>(numElements), compiledShaderBlob->GetBufferPointer(), static_cast<UINT>(compiledShaderBlob->GetBufferSize()), inputLayout);
 
     std::lock_guard<std::mutex> lock(mutex_);
     inputLayouts_.emplace(std::make_pair(name_, *inputLayout));

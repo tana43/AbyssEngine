@@ -1,10 +1,9 @@
 #pragma once
 #include "Renderer.h"
+#include "GltfStaticMesh.h"
 
 namespace AbyssEngine
 {
-    class GltfStaticMesh;
-
     class StaticMesh : public Renderer
     {
     public:
@@ -13,6 +12,7 @@ namespace AbyssEngine
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
         bool DrawImGui()override;
+        void RecalculateFrame()override;//çsóÒçXêVìô
 
     private:
         void SetActive(const bool value)override;

@@ -28,7 +28,7 @@
 
 namespace AbyssEngine
 {
-	enum class CBufferUsage : byte
+	enum class CBufferUsage : BYTE
 	{
 		v = 0x01,
 		h = 0x02,
@@ -49,7 +49,7 @@ namespace AbyssEngine
 		T data_;
 		ConstantBuffer()
 		{
-			ID3D11Device* device = DXSystem::device_.Get();
+			ID3D11Device* device = DXSystem::GetDevice();
 #if 0
 			assert(sizeof(T) % 16 == 0 && L"constant buffer's need to be 16 byte aligned");
 #endif
@@ -88,7 +88,7 @@ namespace AbyssEngine
 		}
 		void Activate(int slot, CBufferUsage usage, const T* data_)
 		{
-			ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
+			ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
 
 				HRESULT hr = S_OK;
 #ifdef USAGE_DYNAMIC

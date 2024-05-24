@@ -179,7 +179,7 @@ void GeometricSubstance::ExtractExtensions(const tinygltf::Model& transmissionMo
 
 void GeometricSubstance::ExtractMaterials(const tinygltf::Model& transmissionModel)
 {
-	ID3D11Device* device = DXSystem::device_.Get();
+	ID3D11Device* device = DXSystem::GetDevice();
 
 	for (std::vector<tinygltf::Material>::const_reference transmissionMaterial : transmissionModel.materials)
 	{

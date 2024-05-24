@@ -6,7 +6,7 @@ using namespace AbyssEngine;
 
 FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil, bool generateMips)
 {
-	ID3D11Device* device = DXSystem::device_.Get();
+	ID3D11Device* device = DXSystem::GetDevice();
 
     HRESULT hr = S_OK;
 
@@ -69,15 +69,15 @@ FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil, 
 void FrameBuffer::Clear(float r, float g, float b, float a, float depth, uint8_t stencil)
 {
 	float color_[4]{ r, g, b, a };
-	DXSystem::deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), color_);
+	DXSystem::GetDeviceContext()->ClearRenderTargetView(renderTargetView_.Get(), color_);
 	if (depthStencilView_) // BLOOM
 	{
-		DXSystem::deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, stencil);
+		DXSystem::GetDeviceContext()->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, stencil);
 	}
 }
 void FrameBuffer::Activate()
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
+	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
 	viewportCount_ = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
 	deviceContext->RSGetViewports(&viewportCount_, cachedViewports_);
 	deviceContext->OMGetRenderTargets(1, cachedRenderTargetView_.ReleaseAndGetAddressOf(), cachedDepthStencilView_.ReleaseAndGetAddressOf());
@@ -87,25 +87,25 @@ void FrameBuffer::Activate()
 }
 void FrameBuffer::Deactivate()
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::deviceContext_.Get();
+	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
 	deviceContext->RSSetViewports(viewportCount_, cachedViewports_);
 	deviceContext->OMSetRenderTargets(1, cachedRenderTargetView_.GetAddressOf(), cachedDepthStencilView_.Get());
 }
 
 void FrameBuffer::GenerateMips()
 {
-	DXSystem::deviceContext_->GenerateMips(shaderResourceViews_[0].Get());
+	DXSystem::GetDeviceContext()->GenerateMips(shaderResourceViews_[0].Get());
 }
 
 void AbyssEngine::FrameBuffer::CopyFrom(const FrameBuffer* source)
 {
 	if (renderTargetBuffer_ && source->renderTargetBuffer_)
 	{
-		DXSystem::deviceContext_->CopySubresourceRegion(renderTargetBuffer_.Get(), 0, 0, 0, 0, source->renderTargetBuffer_.Get(), 0, NULL);
+		DXSystem::GetDeviceContext()->CopySubresourceRegion(renderTargetBuffer_.Get(), 0, 0, 0, 0, source->renderTargetBuffer_.Get(), 0, NULL);
 	}
 	if (depthStencilBuffer_ && source->depthStencilBuffer_)
 	{
-		DXSystem::deviceContext_->CopySubresourceRegion(depthStencilBuffer_.Get(), 0, 0, 0, 0, source->depthStencilBuffer_.Get(), 0, NULL);
+		DXSystem::GetDeviceContext()->CopySubresourceRegion(depthStencilBuffer_.Get(), 0, 0, 0, 0, source->depthStencilBuffer_.Get(), 0, NULL);
 	}
 }
 

@@ -2,10 +2,10 @@
 #include <memory>
 #include <unordered_map>
 #include <string>
+#include "Scene.h"
 
 namespace AbyssEngine
 {
-    class Scene;
 
     class SceneManager
     {
