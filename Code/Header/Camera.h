@@ -48,6 +48,11 @@ namespace AbyssEngine
     private: 
         float debCameraSpeed_ = 10.0f;//デバッグ中のカメラスピード
         bool enableDebugController_ = true;//デバッグ操作オン、オフ
+
+        Transform viewTarget_;//ターゲット
+        Vector3 offsetPosition_;//ターゲットオフセット座標
+        Vector3 socketOffset_;//Viewのオフセット座標
+        Vector3 targetOffset_;//Focusのオフセット座標
     };
 }
 
