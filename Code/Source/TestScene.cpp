@@ -23,10 +23,11 @@ void TestScene::Initialize()
     const auto& stage = InstanceActor("Stage");
     stage->AddComponent<StaticMesh>(
         //"./Assets/Models/UE/LV_Soul_Slum.glb"
-        "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
+        //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
+        "./Assets/Models/UE/TestMap.glb"
         //"./Assets/Models/UE/AssetsvilleTown.glb"
     );
-    stage->GetTransform()->SetScaleFactor(0.43f);
+    //stage->GetTransform()->SetScaleFactor(0.43f);
     //p1->AddComponent<GltfSkeltalMesh>(
     //    "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //    //"./Assets/Models/UE/AssetsvilleTown.glb"

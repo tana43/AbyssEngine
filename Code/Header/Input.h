@@ -31,8 +31,9 @@ namespace AbyssEngine
         //ここで複雑な入力値や、アクションに対応する入力を定義していく
 
         //キーボード、コントローラーの入力値からベクトルの取得
-        static Vector2 GetMoveVector();
-        static const bool GetDashButton();
+        static const Vector2 GetMoveVector();
+        static const bool GetDashButton();//ダッシュ操作
+        static const Vector2 GetCameraRollVector();//カメラの回転操作
 
     private:
         GamePad gamePad_;

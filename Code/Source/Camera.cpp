@@ -37,7 +37,7 @@ bool Camera::DrawImGui()
         ImGui::DragFloat("Far Z", &farZ_, 1.0f, 0.1f);
 
         ImGui::DragFloat("Arm Length", &armLength_, 0.1f, 0.1f);
-        ImGui::DragFloat("Camera Lag Speed", &cameraLagSpeed_, 0.1f,0.0f);
+        ImGui::DragFloat("Camera Lag Speed", &cameraLagSpeed_, 0.1f,1.0f);
         ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.1f);
         ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.1f);
 
@@ -195,14 +195,18 @@ void Camera::CameraLagUpdate()
     if (viewTarget_ == nullptr)return;
 
     auto cameraPos = transform_->GetPosition();
-    const auto& target = viewTarget_->GetPosition() + targetOffset_;
+
+    //回転を考慮したオフセット位置を計算
+    const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
+    const auto& target = viewTarget_->GetPosition() + offset;
 
     //カメラからビューターゲットへのベクトル
     const auto& vec = target - cameraPos;
 
+
     //移動ベクトル計算
-    const auto& moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_);
-    cameraPos = cameraPos + moveVec;
+    const auto& moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_) * 100.0f/*単純に値が小さすぎるから増やしてるだけ*/;
+    cameraPos = cameraPos + moveVec * Time::deltaTime_;
 
     transform_->SetPosition(cameraPos);
 }

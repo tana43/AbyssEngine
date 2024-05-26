@@ -68,22 +68,22 @@ void SkeletalMesh::RecalculateFrame()
 {
 	transform_->CalcWorldMatrix();//s—ñXV
 
-	timeStamp_ += Time::deltaTime_ * animationSpeed_;
-
-#if 0
-	model_->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
-
-#else
-	//BlendAnimation
-	std::vector<GeometricSubstance::Node> animatedNodes[2];
-	animatedNodes[0] = animatedNodes[1] = model_->nodes_;
-	model_->Animate(animationClip_, timeStamp_, animatedNodes[0]);
-	model_->Animate(animationClip_ + 1, timeStamp_, animatedNodes[1]);
-
-	model_->BlendAnimations(animatedNodes[0], animatedNodes[1], blendWeight_, animatedNodes_);
-
-
-#endif // 0
+//	timeStamp_ += Time::deltaTime_ * animationSpeed_;
+//
+//#if 0
+//	model_->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
+//
+//#else
+//	//BlendAnimation
+//	std::vector<GeometricSubstance::Node> animatedNodes[2];
+//	animatedNodes[0] = animatedNodes[1] = model_->nodes_;
+//	model_->Animate(animationClip_, timeStamp_, animatedNodes[0]);
+//	model_->Animate(animationClip_ + 1, timeStamp_, animatedNodes[1]);
+//
+//	model_->BlendAnimations(animatedNodes[0], animatedNodes[1], blendWeight_, animatedNodes_);
+//
+//
+//#endif // 0
 
 }
 

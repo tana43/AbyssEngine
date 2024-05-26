@@ -16,7 +16,7 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     //アクターとトランスフォームの登録
     Character::Initialize(actor);
 
-    transform_->SetPositionY(3.17f);
+    //transform_->SetPositionY(3.17f);
 
     //モデル読み込み
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/UE/Manny/Manny_Idle.glb");
@@ -39,6 +39,8 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
 void Player::Update()
 {
     MoveUpdate();
+
+    CameraRollUpdate();
 }
 
 bool Player::DrawImGui()
@@ -100,4 +102,16 @@ void Player::MoveUpdate()
     //走っているか
     Max_Speed = Input::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
 
+}
+
+void Player::CameraRollUpdate()
+{
+    //入力値取得
+    Vector2 input = Input::GetCameraRollVector();
+
+    auto r = camera_->GetTransform()->GetRotation();
+    const float rollSpeed = cameraRollSpeed_ * Time::deltaTime_;
+    r.x = r.x + input.y * rollSpeed;
+    r.y = r.y + input.x * rollSpeed;
+    camera_->GetTransform()->SetRotation(r);
 }

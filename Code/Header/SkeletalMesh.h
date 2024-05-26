@@ -31,6 +31,7 @@ namespace AbyssEngine
         //アニメーションの再生速度設定
         void SetAnimationSpeed(const float& speed) { animationSpeed_ = speed; }
 
+        GltfSkeletalMesh* GetModel() { return model_.get(); }
 
     private:
         void SetActive(const bool value)override;

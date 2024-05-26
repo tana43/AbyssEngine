@@ -42,7 +42,7 @@ GamePad& Input::GetGamePad()
     return Engine::inputManager_->gamePad_;
 }
 
-Vector2 Input::GetMoveVector()
+const Vector2 Input::GetMoveVector()
 {
     //キーボード、コントローラー両方に対応
     Vector2 input;
@@ -74,5 +74,27 @@ const bool Input::GetDashButton()
         input = true;
     }
     
+    return input;
+}
+
+const Vector2 Input::GetCameraRollVector()
+{
+    //キーボード、コントローラー両方に対応
+    Vector2 input;
+    const auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyState().I)input.y = 1.0f;
+    if (i->keyboard_->GetKeyState().J)input.x = -1.0f;
+    if (i->keyboard_->GetKeyState().K)input.y = -1.0f;
+    if (i->keyboard_->GetKeyState().L)input.x = 1.0f;
+
+    input.x += i->gamePad_.GetAxisRX();
+    input.y += i->gamePad_.GetAxisRY();
+
+    //もし入力ベクトルのLengthが1を超えるている場合は正規化しておく
+    if (sqrtf(input.x * input.x + input.y * input.y) > 1)
+    {
+        input.Normalize();
+    }
+
     return input;
 }
