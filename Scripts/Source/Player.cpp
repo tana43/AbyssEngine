@@ -10,7 +10,7 @@
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
-0
+
 void Player::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //アクターとトランスフォームの登録
@@ -29,9 +29,11 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
     const auto& c = Engine::sceneManager_->GetActiveScene().InstanceActor("Player Camera");
     camera_ = c->AddComponent<Camera>();
-    c->SetParent(actor_);
+    //c->SetParent(actor_);
     camera_->fov_ = DirectX::XMConvertToRadians(80.0f);
-    camera_->GetTransform()->SetLocalPosition(Vector3(0.8f, 1.4f, -1.0f));
+    camera_->targetOffset_ = Vector3(0.8f, 1.4f, 0);
+    camera_->SetViewTarget(transform_.get());
+    camera_->SetEnableDebugController(false);
 }
 
 void Player::Update()

@@ -36,6 +36,11 @@ bool Camera::DrawImGui()
         ImGui::DragFloat("Near Z", &nearZ_, 0.01f, 0.01f,1.0f);
         ImGui::DragFloat("Far Z", &farZ_, 1.0f, 0.1f);
 
+        ImGui::DragFloat("Arm Length", &armLength_, 0.1f, 0.1f);
+        ImGui::DragFloat("Camera Lag Speed", &cameraLagSpeed_, 0.1f,0.0f);
+        ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.1f);
+        ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.1f);
+
         ImGui::TreePop();
     }
 
@@ -48,13 +53,24 @@ void Camera::Update()
     DebugCameraController();
 #endif // _DEBUG
 
+    //カメラの遅延追従更新
+    CameraLagUpdate();
+
     const float aspect = static_cast<float>(DXSystem::GetScreenWidth())
         / static_cast<float>(DXSystem::GetScreenHeight()); //画面比率
     projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
 
     //ビュー行列作成
-    eye_ = transform_->GetPosition();
-    focus_ = eye_ + transform_->GetForward();
+    if (viewTarget_)
+    {
+        focus_ = transform_->GetPosition() + socketOffset_;
+        eye_ = focus_ - transform_->GetForward() * armLength_;
+    }
+    else
+    {
+        focus_ = transform_->GetPosition();
+        eye_ = focus_ - transform_->GetForward();
+    }
     const Vector3 up = transform_->GetUp();
 
     //各方向ベクトルの更新
@@ -172,4 +188,21 @@ void Camera::DebugCameraController()
             transform_->SetPosition(pos + move);
         }
     }
+}
+
+void Camera::CameraLagUpdate()
+{
+    if (viewTarget_ == nullptr)return;
+
+    auto cameraPos = transform_->GetPosition();
+    const auto& target = viewTarget_->GetPosition() + targetOffset_;
+
+    //カメラからビューターゲットへのベクトル
+    const auto& vec = target - cameraPos;
+
+    //移動ベクトル計算
+    const auto& moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_);
+    cameraPos = cameraPos + moveVec;
+
+    transform_->SetPosition(cameraPos);
 }

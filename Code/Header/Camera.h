@@ -52,7 +52,7 @@ namespace AbyssEngine
 
         Vector3 socketOffset_;//Viewのオフセット座標
         Vector3 targetOffset_;//Focusのオフセット座標
-        float armLength_;//カメラからターゲットまでの距離
+        float armLength_ = 1.0f;//カメラからターゲットまでの距離
 
         bool enableCameraLag_ = true;//ターゲットへのカメラの追従を遅延させる
         float cameraLagSpeed_ = 10.0f;//カメラの追従速度
