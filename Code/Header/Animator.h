@@ -18,6 +18,13 @@ namespace AbyssEngine
 
         void PlayAnimation(size_t animIndex, bool loop = true);
 
+        //アニメーションデータの再読み込み
+        void ReloadAnimation();
+
+        //アニメーションアセットの追加
+        Animation& AppendAnimation(const std::string& filename,const std::string& motionName);
+        void AppendAnimations(const std::vector<std::string>& filenames,const std::vector<std::string>& motionNames);
+
     private:
         //すべてのアニメーション
         std::vector<Animation> animations_;

@@ -28,3 +28,33 @@ void Animator::AnimatorUpdate()
 
 	model->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
 }
+
+void Animator::ReloadAnimation()
+{
+
+}
+
+Animation& Animator::AppendAnimation(const std::string& filename, const std::string& motionName)
+{
+	const auto& model = skeletalMesh_.lock();
+	if (!model)return;
+	
+	model->GetModel()->AppendAnimation(filename);
+	animatedNodes_ = model->GetModel()->nodes_;
+	
+	Animation anim = Animation(model.get(), motionName, animations_.size());
+	return animations_.emplace_back(anim);
+}
+
+void Animator::AppendAnimations(const std::vector<std::string>& filenames, const std::vector<std::string>& motionNames)
+{
+	const auto& model = skeletalMesh_.lock();
+	if (!model)return;
+
+	model->GetModel()->AppendAnimations(filenames);
+	for (int i = 0; i < filenames.size(); i++)
+	{
+		Animation anim = Animation(model.get(), motionNames[i], animations_.size());
+		animations_.emplace_back(anim);
+	}
+}

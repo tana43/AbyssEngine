@@ -38,6 +38,7 @@ namespace AbyssEngine
 
         void Render()override;
         void RenderShadow()override;
+
     private:
 
         //とりあえず描画させてみたいのでユニークポインタ
@@ -50,30 +51,10 @@ namespace AbyssEngine
         float timeStamp_ = 0.0f;//合計経過時間
 
         float animationSpeed_ = 1.0f;//アニメーション再生速度
-        std::vector<GeometricSubstance::Node> animatedNodes_;
 
         bool animationLoop_ = true;
 
         float blendWeight_ = 0.0f;//仮のモーションブレンドの重み
     };
-
-    /*class GltfModel;
-
-    class GltfSkeltalMesh : public Renderer
-    {
-    public:
-        GltfSkeltalMesh() {}
-        ~GltfSkeltalMesh() = default;
-
-        void Initialize(const std::shared_ptr<Actor>& actor)override;
-        void Render()override;
-
-    private:
-        void SetActive(const bool value)override;
-
-    private:
-
-        std::unique_ptr<GltfModel> model_;
-    };*/
 }
 

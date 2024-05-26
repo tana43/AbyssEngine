@@ -12,7 +12,7 @@ namespace AbyssEngine
     class Animation
     {
     public:
-        Animation(SkeletalMesh* model,const std::string& name,const int& index,bool loop = true);
+        Animation(SkeletalMesh* model,const std::string& name,const int& index,bool loop = false);
         ~Animation() {}
 
         //アニメーションの更新
@@ -23,7 +23,7 @@ namespace AbyssEngine
         int animIndex_;
 
         float animSpeed_ = 1.0f;//各アニメーションごとの再生速度
-        bool loopFlag_ = true;
+        bool loopFlag_;
 
         //モデルの持つノードへアクセスするためのポインタ
         std::vector<GeometricSubstance::Node>* animatedNodes_;
