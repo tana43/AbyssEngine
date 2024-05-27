@@ -6,6 +6,7 @@
 namespace AbyssEngine
 {
     class Actor;
+    class Animator;
 
     class SkeletalMesh : public Renderer
     {
@@ -17,8 +18,8 @@ namespace AbyssEngine
         
 
         //アニメーションアセットの追加
-        void AppendAnimation(const std::string& filename);
-        void AppendAnimations(const std::vector<std::string>& filenames);
+        //void AppendAnimation(const std::string& filename);
+        //void AppendAnimations(const std::vector<std::string>& filenames);
 
         //アニメーションの再計算
         void RecalculateFrame()override;
@@ -33,6 +34,8 @@ namespace AbyssEngine
 
         GltfSkeletalMesh* GetModel() { return model_.get(); }
 
+        std::shared_ptr<Animator>& GetAnimator() { return animator_; }
+
     private:
         void SetActive(const bool value)override;
 
@@ -44,6 +47,9 @@ namespace AbyssEngine
         //とりあえず描画させてみたいのでユニークポインタ
         //std::unique_ptr<FbxMeshData> model_;
         std::unique_ptr<GltfSkeletalMesh> model_;
+
+        //animatorコンポーネント
+        std::shared_ptr<Animator> animator_;
 
         Vector4 color_ = {1,1,1,1};
 

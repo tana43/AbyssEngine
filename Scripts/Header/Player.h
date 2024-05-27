@@ -10,6 +10,13 @@ class Player final : public AbyssEngine::Character
 {
 public:
 
+    enum class AnimState
+    {
+        Idle,
+        Walk,
+        Run
+    };
+
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
     void Update()override;
     bool DrawImGui()override;

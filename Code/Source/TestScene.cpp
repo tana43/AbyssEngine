@@ -24,7 +24,9 @@ void TestScene::Initialize()
     stage->AddComponent<StaticMesh>(
         //"./Assets/Models/UE/LV_Soul_Slum.glb"
         //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
-        "./Assets/Models/UE/TestMap.glb"
+        //"./Assets/Models/UE/Prewiev_Sci_fi_Base_Retopo.glb"
+        "./Assets/Models/UE/Stage_Retopo.glb"
+        //"./Assets/Models/UE/TestMap.glb"
         //"./Assets/Models/UE/AssetsvilleTown.glb"
     );
     //stage->GetTransform()->SetScaleFactor(0.43f);

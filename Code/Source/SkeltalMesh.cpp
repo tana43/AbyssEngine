@@ -5,6 +5,8 @@
 #include "GltfSkeletalMesh.h"
 #include "RenderManager.h"
 #include "AssetManager.h"
+#include "Animator.h"
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -18,6 +20,10 @@ void SkeletalMesh::Initialize(const std::shared_ptr<Actor>& actor)
 
     //model_ = make_unique<FbxMeshData>(DXSystem::device_.Get(), filePath_.c_str());
 	model_ = make_unique<GltfSkeletalMesh>(filePath_.c_str());
+
+	//animatorコンポーネント追加(初期化処理も)
+	animator_ = actor->AddComponent<Animator>();
+	animator_->LatterInitialize(static_pointer_cast<SkeletalMesh>(shared_from_this()));
 
 	//レンダラーマネージャーに登録
 	SetActive(true);
@@ -44,25 +50,25 @@ void SkeletalMesh::Render()
 	Animation::Keyframe& keyframe{ animation.sequence_.at(frameIndex) };
 #endif
 	
-	model_->Draw(DrawPass::Opaque, transform_->GetWorldMatrix(), animatedNodes_);
+	model_->Draw(DrawPass::Opaque, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
 }
 
 void SkeletalMesh::RenderShadow()
 {
-	model_->CastShadow(transform_->GetWorldMatrix(), animatedNodes_);
+	model_->CastShadow(transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
 }
 
-void SkeletalMesh::AppendAnimation(const std::string& filename)
-{
-	model_->AppendAnimation(filename);
-	animatedNodes_ = model_->nodes_;
-}
-
-void SkeletalMesh::AppendAnimations(const std::vector<std::string>& filenames)
-{
-	model_->AppendAnimations(filenames);
-	animatedNodes_ = model_->nodes_;
-}
+//void SkeletalMesh::AppendAnimation(const std::string& filename)
+//{
+//	model_->AppendAnimation(filename);
+//	animatedNodes_ = model_->nodes_;
+//}
+//
+//void SkeletalMesh::AppendAnimations(const std::vector<std::string>& filenames)
+//{
+//	model_->AppendAnimations(filenames);
+//	animatedNodes_ = model_->nodes_;
+//}
 
 void SkeletalMesh::RecalculateFrame()
 {
@@ -114,12 +120,7 @@ bool SkeletalMesh::DrawImGui()
 
 void SkeletalMesh::PlayAnimation(int animIndex,bool loop)
 {
-	_ASSERT_EXPR(animIndex < model_->animations_.size(), u8"指定のアニメーションが見つかりません");
-
-	timeStamp_ = 0.0f;
-
-	animationClip_ = animIndex;
-	animationLoop_ = loop;
+	
 }
 
 void SkeletalMesh::SetActive(const bool value)

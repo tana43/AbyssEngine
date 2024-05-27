@@ -14,17 +14,24 @@ namespace AbyssEngine
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
 
+        //SkeletalMeshから呼ばれる初期化　通常の初期化ではできない処理
+        void LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMesh);
+
         void AnimatorUpdate();
 
         void PlayAnimation(size_t animIndex, bool loop = true);
 
         //アニメーションデータの再読み込み
-        void ReloadAnimation();
+        //void ReloadAnimation();
 
         //アニメーションアセットの追加
         Animation& AppendAnimation(const std::string& filename,const std::string& motionName);
         void AppendAnimations(const std::vector<std::string>& filenames,const std::vector<std::string>& motionNames);
 
+        std::vector<GeometricSubstance::Node>& GetAnimatedNodes() { return animatedNodes_; }
+        void SetAnimatedNodes(const std::vector<GeometricSubstance::Node>& nodes) { animatedNodes_ = nodes; }
+
+        void SetSkeletalMesh(const std::shared_ptr<SkeletalMesh>& mesh) { skeletalMesh_ = mesh; }
     private:
         //すべてのアニメーション
         std::vector<Animation> animations_;

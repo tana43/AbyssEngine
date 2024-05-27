@@ -9,9 +9,21 @@ void Animator::Initialize(const std::shared_ptr<Actor>& actor)
 {
     actor_ = actor;
     transform_ = actor->GetTransform();
-	skeletalMesh_ = actor->GetComponent<SkeletalMesh>();
 
-	animatedNodes_ = skeletalMesh_.lock()->GetModel()->nodes_;
+	//初期化後にコンポーネントはアタッチされるのでGetComponentは機能しない
+	//skeletalMesh_ = actor->GetComponent<SkeletalMesh>();
+	//animatedNodes_ = skeletalMesh_.lock()->GetModel()->nodes_;
+}
+
+void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMesh)
+{
+	skeletalMesh_ = skeletalMesh;
+	animatedNodes_ = skeletalMesh->GetModel()->nodes_;
+
+	//初期モーションをアニメーターに追加
+	//かならず０番目のモーションは待機と仮定
+
+
 }
 
 void Animator::AnimatorUpdate()
@@ -26,18 +38,29 @@ void Animator::AnimatorUpdate()
 	//時間更新
 	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 
-	model->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
+	//model->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
+	animations_[animationClip_].UpdateAnimation(model,timeStamp_);
 }
 
-void Animator::ReloadAnimation()
+void Animator::PlayAnimation(size_t animIndex, bool loop)
 {
+	_ASSERT_EXPR(animIndex < skeletalMesh_.lock()->GetModel()->animations_.size(), u8"指定のアニメーションが見つかりません");
 
+	timeStamp_ = 0.0f;
+
+	animationClip_ = animIndex;
+	animationLoop_ = loop;
 }
+
+//void Animator::ReloadAnimation()
+//{
+//
+//}
 
 Animation& Animator::AppendAnimation(const std::string& filename, const std::string& motionName)
 {
 	const auto& model = skeletalMesh_.lock();
-	if (!model)return;
+	_ASSERT_EXPR(model, "");
 	
 	model->GetModel()->AppendAnimation(filename);
 	animatedNodes_ = model->GetModel()->nodes_;

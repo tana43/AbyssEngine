@@ -7,6 +7,8 @@
 #include "Actor.h"
 #include "Input.h"
 #include "MathHelper.h"
+#include "Animator.h"
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -20,10 +22,13 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
 
     //モデル読み込み
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/UE/Manny/Manny_Idle.glb");
-    model_->AppendAnimations({
+    model_->GetAnimator()->AppendAnimations({
                 "./Assets/Models/UE/Manny/Manny_Walk.glb",
                 "./Assets/Models/UE/Manny/Manny_Run.glb"
-                });
+                },
+        {
+            "Walk","Run"
+        });
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
