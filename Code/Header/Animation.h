@@ -52,11 +52,18 @@ namespace AbyssEngine
 
         void SetMaxWeight(const float& weight) { maxWeight_ = weight; }
         void SetMinWeight(const float& weight) { minWeight_ = weight; }
+        void SetBlendWeight(const float& weight) { blendWeight_ = weight; }
+
+        const float& GetMaxWeight() const { return maxWeight_; }
+        const float& GetMinWeight() const { return minWeight_; }
+        const float& GetBlendWeight() const { return blendWeight_; }
 
     private:
         float blendWeight_ = 0.0f;//ブレンドの重さ
         float maxWeight_ = 1.0f;//ブレンドの最大値
         float minWeight_ = 0.0f;//ブレンドの最小値
+
+        float lastBlendWeight_ = 0.0f;//最後のブレンドの重さ
 
         //ブレンドするアニメーション
         struct BlendAnim

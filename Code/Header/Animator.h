@@ -30,7 +30,7 @@ namespace AbyssEngine
         //アニメーションアセットの追加
         void AppendAnimation(const std::string& filename,const std::string& motionName);
         void AppendAnimations(const std::vector<std::string>& filenames,const std::vector<std::string>& motionNames);
-        void AppendAnimation(AnimBlendSpace1D anim);
+        AnimBlendSpace1D* AppendAnimation(AnimBlendSpace1D anim);
 
         std::vector<GeometricSubstance::Node>& GetAnimatedNodes() { return animatedNodes_; }
         void SetAnimatedNodes(const std::vector<GeometricSubstance::Node>& nodes) { animatedNodes_ = nodes; }

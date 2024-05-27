@@ -117,13 +117,15 @@ void Animator::AppendAnimations(const std::vector<std::string>& filenames, const
 	}
 }
 
-void Animator::AppendAnimation(AnimBlendSpace1D anim)
+AnimBlendSpace1D* Animator::AppendAnimation(AnimBlendSpace1D anim)
 {
 	_ASSERT_EXPR(anim.animIndex_ < skeletalMesh_.lock()->GetModel()->animations_.size(),
 		u8"指定のアニメーションは存在しません");
 
 	const auto& model = skeletalMesh_.lock();
-	if (!model)return;
+	if (!model)return nullptr;
 
-	animations_.emplace_back(std::make_unique<AnimBlendSpace1D>(model.get(),anim));
+	auto* p = new AnimBlendSpace1D(model.get(), anim);
+	animations_.emplace_back(p);
+	return p;
 }

@@ -14,7 +14,8 @@ public:
     {
         Idle,
         Walk,
-        Run
+        Run,
+        Move,
     };
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;

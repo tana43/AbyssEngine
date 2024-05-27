@@ -7,6 +7,7 @@
 namespace AbyssEngine
 {
     class SkeletalMesh;
+    class AnimBlendSpace1D;
 
     class Character : public AbyssEngine::Component
     {
@@ -44,6 +45,8 @@ namespace AbyssEngine
         float Min_Rot_Speed = 300.0f;//ç≈í·âÒì]ë¨ìx
 
         std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
+
+        AnimBlendSpace1D* moveAnimation_;
     };
 }
 

@@ -20,8 +20,6 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     //アクターとトランスフォームの登録
     Character::Initialize(actor);
 
-    //transform_->SetPositionY(3.17f);
-
     //モデル読み込み
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/UE/Manny/Manny_Idle.glb");
     model_->GetAnimator()->AppendAnimations({
@@ -32,8 +30,10 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
             "Walk","Run"
         });
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
-    moveAnim.AddBlendAnimation(1, 0.5f);
-    model_->GetAnimator()->AppendAnimation(moveAnim);
+    moveAnim.AddBlendAnimation(1, 0.6f);
+    moveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);
+
+    model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -112,6 +112,7 @@ void Player::MoveUpdate()
     //走っているか
     Max_Speed = Input::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
 
+    moveAnimation_->SetBlendWeight(velocity_.Length() / Run_Max_Speed);
 }
 
 void Player::CameraRollUpdate()

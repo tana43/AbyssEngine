@@ -29,6 +29,7 @@ void TestScene::Initialize()
         //"./Assets/Models/UE/TestMap.glb"
         //"./Assets/Models/UE/AssetsvilleTown.glb"
     );
+    stage->GetTransform()->SetScaleFactor(0.56f);
     //stage->GetTransform()->SetScaleFactor(0.43f);
     //p1->AddComponent<GltfSkeltalMesh>(
     //    "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
@@ -68,6 +69,7 @@ void TestScene::Initialize()
 
     const auto& player = InstanceActor("Player");
     player->AddComponent<Player>();
+    player->GetTransform()->SetPositionY(4.2f);
 #endif // 0
 
 }

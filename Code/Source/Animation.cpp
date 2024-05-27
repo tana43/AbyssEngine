@@ -3,6 +3,8 @@
 #include "Engine.h"
 #include "Animator.h"
 
+#include <algorithm>
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -79,13 +81,24 @@ void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     }
     
     //二つのモーションデータから実際に補完率に使われる値を計算
+    //急なブレンドの重さの変化を防ぐように前回の値から変動する値に上限を設ける
+
+    //ブレンドの制限速度
+    const float blendMaxSpeed = 5.0f * Time::deltaTime_;
+    const float blendSpeed = std::clamp(blendWeight_ - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
+
+    const float nextBlendWeight = lastBlendWeight_ + blendSpeed;
+
     const float maxBlendWeight = blendAnims[1].weight_ - blendAnims[0].weight_;
-    const float blendWeight = (blendWeight_ - blendAnims[0].weight_) / maxBlendWeight;
+    const float blendWeight = std::clamp((nextBlendWeight - blendAnims[0].weight_) / maxBlendWeight
+                                        ,0.0f,1.0f);
 
     //モーションブレンド
     model->Animate(blendAnims[0].index_, timeStamp, blendAnimNodes_[0]);
     model->Animate(blendAnims[1].index_, timeStamp, blendAnimNodes_[1]);
     model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight, *animatedNodes_);
+
+    lastBlendWeight_ = nextBlendWeight;
 }
 
 void AnimBlendSpace1D::AddBlendAnimation(const int& index, const float& weight)
