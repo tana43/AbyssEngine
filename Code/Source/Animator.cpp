@@ -3,6 +3,8 @@
 #include "SkeletalMesh.h"
 #include "Engine.h"
 
+#include "imgui/imgui.h"
+
 using namespace AbyssEngine;
 
 void Animator::Initialize(const std::shared_ptr<Actor>& actor)
@@ -15,6 +17,28 @@ void Animator::Initialize(const std::shared_ptr<Actor>& actor)
 	//animatedNodes_ = skeletalMesh_.lock()->GetModel()->nodes_;
 }
 
+bool Animator::DrawImGui()
+{
+	if (ImGui::TreeNode("Animator"))
+	{
+		ImGui::InputFloat("Time Stamp", &timeStamp_);
+		ImGui::SliderFloat("Global Anim Speed", &animationSpeed_,0.0f,2.0f);
+
+		ImGui::Text("----------Current Anim-----------");
+		animations_[animationClip_]->DrawImGui(this);
+
+		ImGui::Text("----------Animations----------");
+		for (auto& anim : animations_)
+		{
+			if (animations_[animationClip_]->name_ == anim->name_)continue;
+			anim->DrawImGui(this);
+		}
+
+		ImGui::TreePop();
+	}
+	return false;
+}
+
 void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMesh)
 {
 	skeletalMesh_ = skeletalMesh;
@@ -22,8 +46,7 @@ void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMes
 
 	//初期モーションをアニメーターに追加
 	//かならず０番目のモーションは待機と仮定
-	Animation anim(skeletalMesh.get(), "Idle", 0,true);
-	animations_.emplace_back(anim);
+	animations_.emplace_back(std::make_unique<Animation>(skeletalMesh.get(), "Idle", 0, true));
 }
 
 void Animator::AnimatorUpdate()
@@ -39,17 +62,31 @@ void Animator::AnimatorUpdate()
 	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 
 	//model->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
-	animations_[animationClip_].UpdateAnimation(model,timeStamp_);
+	animations_[animationClip_]->UpdateAnimation(model,timeStamp_);
 }
 
-void Animator::PlayAnimation(size_t animIndex, bool loop)
+void Animator::PlayAnimation(const size_t& animIndex)
 {
-	_ASSERT_EXPR(animIndex < skeletalMesh_.lock()->GetModel()->animations_.size(), u8"指定のアニメーションが見つかりません");
+	_ASSERT_EXPR(animIndex < animations_.size(), u8"指定のアニメーションが見つかりません");
 
 	timeStamp_ = 0.0f;
 
 	animationClip_ = animIndex;
-	animationLoop_ = loop;
+}
+
+void Animator::PlayAnimation(const std::string& animName)
+{
+	for (int index = 0; index < animations_.size(); index++)
+	{
+		if (animations_[index]->name_ == animName)
+		{
+			timeStamp_ = 0.0f;
+			animationClip_ = index;
+			return;
+		}
+	}
+	
+	_ASSERT_EXPR(false, u8"指定のアニメーションが見つかりません");
 }
 
 //void Animator::ReloadAnimation()
@@ -57,7 +94,7 @@ void Animator::PlayAnimation(size_t animIndex, bool loop)
 //
 //}
 
-Animation& Animator::AppendAnimation(const std::string& filename, const std::string& motionName)
+void Animator::AppendAnimation(const std::string& filename, const std::string& motionName)
 {
 	const auto& model = skeletalMesh_.lock();
 	_ASSERT_EXPR(model, "");
@@ -65,8 +102,7 @@ Animation& Animator::AppendAnimation(const std::string& filename, const std::str
 	model->GetModel()->AppendAnimation(filename);
 	animatedNodes_ = model->GetModel()->nodes_;
 	
-	Animation anim = Animation(model.get(), motionName, animations_.size());
-	return animations_.emplace_back(anim);
+	animations_.emplace_back(std::make_unique<Animation>(model.get(), motionName, animations_.size()));
 }
 
 void Animator::AppendAnimations(const std::vector<std::string>& filenames, const std::vector<std::string>& motionNames)
@@ -77,7 +113,17 @@ void Animator::AppendAnimations(const std::vector<std::string>& filenames, const
 	model->GetModel()->AppendAnimations(filenames);
 	for (int i = 0; i < filenames.size(); i++)
 	{
-		Animation anim = Animation(model.get(), motionNames[i], animations_.size());
-		animations_.emplace_back(anim);
+		animations_.emplace_back(std::make_unique<Animation>(model.get(), motionNames[i], animations_.size()));
 	}
+}
+
+void Animator::AppendAnimation(AnimBlendSpace1D anim)
+{
+	_ASSERT_EXPR(anim.animIndex_ < skeletalMesh_.lock()->GetModel()->animations_.size(),
+		u8"指定のアニメーションは存在しません");
+
+	const auto& model = skeletalMesh_.lock();
+	if (!model)return;
+
+	animations_.emplace_back(std::make_unique<AnimBlendSpace1D>(model.get(),anim));
 }

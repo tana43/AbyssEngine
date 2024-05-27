@@ -6,24 +6,27 @@ namespace AbyssEngine
 {
     class SkeletalMesh;
     class GltfSkeletalMesh;
+    class Animator;
 
     //アニメーションデータの基底クラス
     //シンプルな再生の場合このクラスをそのまま使う
     class Animation
     {
     public:
-        Animation(SkeletalMesh* model,const std::string& name,const int& index,bool loop = false);
+        Animation(SkeletalMesh* model,const std::string& name,const int& index,bool loop = true);
         ~Animation() {}
 
         //アニメーションの更新
         virtual void UpdateAnimation(GltfSkeletalMesh* model,float& timeStamp);
+        virtual void DrawImGui(Animator* animator);
 
-    protected:
+    public:
         std::string name_;
-        int animIndex_;
+        int animIndex_;//モデル本体が持っているこのモーションの要素数
+    protected: 
 
-        float animSpeed_ = 1.0f;//各アニメーションごとの再生速度
         bool loopFlag_;
+        float animSpeed_ = 1.0f;//各アニメーションごとの再生速度
 
         //モデルの持つノードへアクセスするためのポインタ
         std::vector<GeometricSubstance::Node>* animatedNodes_;
@@ -35,10 +38,12 @@ namespace AbyssEngine
     {
     public:
         AnimBlendSpace1D(SkeletalMesh* model, const std::string& name, const int& index0, const int& index1);
+        AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animData);
         ~AnimBlendSpace1D() {}
 
         //アニメーションの更新
         void UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp);
+        void DrawImGui(Animator* animator)override;
 
         //ブレンドするアニメーションの数を増やす
         void AddBlendAnimation(

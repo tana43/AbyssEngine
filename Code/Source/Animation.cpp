@@ -1,26 +1,56 @@
 #include "Animation.h"
 #include "SkeletalMesh.h"
 #include "Engine.h"
+#include "Animator.h"
+
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 
 Animation::Animation(SkeletalMesh* model, const std::string& name, const int& index, bool loop) :
     name_(name),animIndex_(index),loopFlag_(loop)
 {
-    animatedNodes_ = &model->GetModel()->nodes_;
+    animatedNodes_ = &model->GetAnimator()->GetAnimatedNodes();
 }
 
 void Animation::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
     timeStamp += (animSpeed_ - 1.0f) * Time::deltaTime_;
-    model->Animate(animIndex_, timeStamp, *animatedNodes_, loopFlag_);
+    model->Animate(animIndex_, timeStamp, *(animatedNodes_), loopFlag_);
+}
+
+void Animation::DrawImGui(Animator* animator)
+{
+    if (ImGui::BeginMenu(name_.c_str()))
+    {
+        if (ImGui::Button("Play This Animation"))
+        {
+            animator->PlayAnimation(name_);
+        }
+
+        ImGui::SliderFloat("Anim Speed", &animSpeed_, 0.0f, 2.0f);
+        ImGui::Checkbox("Loop Flag", &loopFlag_);
+        ImGui::Text(std::to_string(static_cast<long double>(animIndex_)).c_str());
+
+        ImGui::EndMenu();
+    }
 }
 
 AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name, const int& index0, const int& index1)
     : Animation(model, name, index0, true) 
 {
     blendAnimNodes_[0] = blendAnimNodes_[1] = *animatedNodes_;
+    blendAnims_.emplace_back(BlendAnim(index0, 0.0f));
+    blendAnims_.emplace_back(BlendAnim(index1, 1.0f));
 }
+
+AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animData) : Animation(model,animData.name_,animData.animIndex_,true)
+{
+    blendAnimNodes_[0] = animData.blendAnimNodes_[0];
+    blendAnimNodes_[1] = animData.blendAnimNodes_[1];
+    blendAnims_ = animData.blendAnims_;
+}
+
 
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
 void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
@@ -53,13 +83,30 @@ void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     const float blendWeight = (blendWeight_ - blendAnims[0].weight_) / maxBlendWeight;
 
     //モーションブレンド
-    model->Animate(blendAnims[0].index_, timeStamp, animatedNodes_[0]);
-    model->Animate(blendAnims[1].index_, timeStamp, animatedNodes_[1]);
-    model->BlendAnimations(animatedNodes_[0], animatedNodes_[1], blendWeight, *animatedNodes_);
+    model->Animate(blendAnims[0].index_, timeStamp, blendAnimNodes_[0]);
+    model->Animate(blendAnims[1].index_, timeStamp, blendAnimNodes_[1]);
+    model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight, *animatedNodes_);
 }
 
 void AnimBlendSpace1D::AddBlendAnimation(const int& index, const float& weight)
 {
     BlendAnim anim = { index,weight };
     blendAnims_.emplace_back(anim);
+}
+
+void AnimBlendSpace1D::DrawImGui(Animator* animator)
+{
+    if (ImGui::BeginMenu(name_.c_str()))
+    {
+        if (ImGui::Button("Play This Animation"))
+        {
+            animator->PlayAnimation(name_);
+        }
+        ImGui::SliderFloat("Blend Weight", &blendWeight_, minWeight_, maxWeight_);
+        ImGui::SliderFloat("Anim Speed", &animSpeed_, 0.0f, 2.0f);
+        ImGui::Checkbox("Loop Flag", &loopFlag_);
+        ImGui::Text(std::to_string(static_cast<long double>(animIndex_)).c_str());
+
+        ImGui::EndMenu();
+    }
 }

@@ -31,25 +31,6 @@ void SkeletalMesh::Initialize(const std::shared_ptr<Actor>& actor)
 
 void SkeletalMesh::Render()
 {
-#if 0
-	int clipIndex{ 0 };
-	int frameIndex{ 0 };
-	static float animationTick{ 0 };
-
-	Animation& animation{ model_->animationClips_.at(clipIndex) };
-	frameIndex = static_cast<int>(animationTick * animation.samplingRate_);
-	if (frameIndex > animation.sequence_.size() - 1)
-	{
-		frameIndex = 0;
-		animationTick = 0;
-	}
-	else
-	{
-		animationTick += Time::deltaTime_;
-	}
-	Animation::Keyframe& keyframe{ animation.sequence_.at(frameIndex) };
-#endif
-	
 	model_->Draw(DrawPass::Opaque, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
 }
 
@@ -103,7 +84,7 @@ bool SkeletalMesh::DrawImGui()
 	{
 		ImGui::Checkbox("Enabled",&enabled_);
 
-		static int animClip = animationClip_;
+		/*static int animClip = animationClip_;
 		ImGui::SliderInt("Anim Clip", &animClip, 0, model_->animations_.size() - 1);
 		animationClip_ = animClip;
 
@@ -113,12 +94,12 @@ bool SkeletalMesh::DrawImGui()
 
 		ImGui::InputFloat("Time Stamp" ,&timeStamp_);
 
-		ImGui::SliderFloat("Blend Weight", &blendWeight_, 0.0f, 1.0f);
+		ImGui::SliderFloat("Blend Weight", &blendWeight_, 0.0f, 1.0f);*/
 
 		ImGui::TreePop();
 	}
 
-	return false;
+	return true;
 }
 
 void SkeletalMesh::PlayAnimation(int animIndex,bool loop)

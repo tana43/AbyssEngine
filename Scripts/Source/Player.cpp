@@ -7,7 +7,9 @@
 #include "Actor.h"
 #include "Input.h"
 #include "MathHelper.h"
+
 #include "Animator.h"
+#include "Animation.h"
 
 #include "imgui/imgui.h"
 
@@ -29,6 +31,9 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
         {
             "Walk","Run"
         });
+    AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
+    moveAnim.AddBlendAnimation(1, 0.5f);
+    model_->GetAnimator()->AppendAnimation(moveAnim);
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
