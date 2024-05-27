@@ -72,6 +72,9 @@ void SkeletalMesh::RenderShadow()
 
 void SkeletalMesh::RecalculateFrame()
 {
+	//アニメーション更新
+	animator_->AnimatorUpdate();
+
 	transform_->CalcWorldMatrix();//行列更新
 
 //	timeStamp_ += Time::deltaTime_ * animationSpeed_;

@@ -16,7 +16,7 @@ namespace AbyssEngine
         ~Animation() {}
 
         //アニメーションの更新
-        virtual void UpdateAnimation(GltfSkeletalMesh* model,float timeStamp);
+        virtual void UpdateAnimation(GltfSkeletalMesh* model,float& timeStamp);
 
     protected:
         std::string name_;
@@ -38,7 +38,7 @@ namespace AbyssEngine
         ~AnimBlendSpace1D() {}
 
         //アニメーションの更新
-        void UpdateAnimation(GltfSkeletalMesh* model, float timeStamp);
+        void UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp);
 
         //ブレンドするアニメーションの数を増やす
         void AddBlendAnimation(

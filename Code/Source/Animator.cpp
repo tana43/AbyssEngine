@@ -22,8 +22,8 @@ void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMes
 
 	//初期モーションをアニメーターに追加
 	//かならず０番目のモーションは待機と仮定
-
-
+	Animation anim(skeletalMesh.get(), "Idle", 0,true);
+	animations_.emplace_back(anim);
 }
 
 void Animator::AnimatorUpdate()

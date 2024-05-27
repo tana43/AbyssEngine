@@ -10,7 +10,7 @@ Animation::Animation(SkeletalMesh* model, const std::string& name, const int& in
     animatedNodes_ = &model->GetModel()->nodes_;
 }
 
-void Animation::UpdateAnimation(GltfSkeletalMesh* model, float timeStamp)
+void Animation::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
     timeStamp += (animSpeed_ - 1.0f) * Time::deltaTime_;
     model->Animate(animIndex_, timeStamp, *animatedNodes_, loopFlag_);
@@ -23,7 +23,7 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name,
 }
 
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
-void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float timeStamp)
+void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
     //ブレンドする２つのモーションを取る blendWeightが[0]と[1]のweight値に収まる範囲のアニメーションを探す
     BlendAnim blendAnims[2] = {blendAnims_[0],blendAnims_[1]};
