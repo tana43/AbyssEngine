@@ -607,7 +607,7 @@ void StaticMeshBatching::FetchTextures(const tinygltf::Model& gltfModel)
 		Image& image{ images_.emplace_back() };
 		image.name_ = gltfImage.name;
 		image.width_ = gltfImage.width;
-		image.height_ = gltfImage.height_;
+		image.height_ = gltfImage.height;
 		image.component_ = gltfImage.component;
 		image.bits_ = gltfImage.bits;
 		image.pixelType_ = gltfImage.pixel_type;

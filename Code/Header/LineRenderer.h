@@ -13,6 +13,8 @@ namespace AbyssEngine
 		LineRenderer(ID3D11Device* device, UINT vertexCount);
 		~LineRenderer() {}
 
+		//レンダラーマネージャーが持っているLineRendererを取得
+		static LineRenderer& Get();
 	public:
 		// 描画実行
 		void Render(ID3D11DeviceContext* context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);

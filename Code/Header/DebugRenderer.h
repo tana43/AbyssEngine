@@ -13,6 +13,8 @@ namespace AbyssEngine
 		DebugRenderer(ID3D11Device* device);
 		~DebugRenderer() {}
 
+		static DebugRenderer& Get();
+
 	public:
 		// ï`âÊé¿çs
 		void Render(ID3D11DeviceContext* context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);

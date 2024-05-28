@@ -2,6 +2,8 @@
 #include <memory>
 #include "Misc.h"
 #include "DebugRenderer.h"
+#include "Engine.h"
+#include "RenderManager.h"
 
 using namespace AbyssEngine;
 
@@ -11,7 +13,7 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 	{
 		// ファイルを開く
 		FILE* fp = nullptr;
-		fopen_s(&fp, "Shader\\DebugVS.cso", "rb");
+		fopen_s(&fp, "./Resources/Shader/DebugVS.cso", "rb");
 		_ASSERT_EXPR_A(fp, "CSO File not found");
 
 		// ファイルのサイズを求める
@@ -26,7 +28,7 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 
 		// 頂点シェーダー生成
 		HRESULT hr = device->CreateVertexShader(csoData.get(), csoSize, nullptr, vertexShader_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 		// 入力レイアウト
 		D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
@@ -34,14 +36,14 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 		hr = device->CreateInputLayout(inputElementDesc, ARRAYSIZE(inputElementDesc), csoData.get(), csoSize, inputLayout_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 
 	// ピクセルシェーダー
 	{
 		// ファイルを開く
 		FILE* fp = nullptr;
-		fopen_s(&fp, "Shader\\DebugPS.cso", "rb");
+		fopen_s(&fp, "./Resources/Shader/DebugPS.cso", "rb");
 		_ASSERT_EXPR_A(fp, "CSO File not found");
 
 		// ファイルのサイズを求める
@@ -56,7 +58,7 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 
 		// ピクセルシェーダー生成
 		HRESULT hr = device->CreatePixelShader(csoData.get(), csoSize, nullptr, pixelShader_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 
 	// 定数バッファ
@@ -72,7 +74,7 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 		desc.StructureByteStride = 0;
 
 		HRESULT hr = device->CreateBuffer(&desc, 0, constantBuffer_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 
 	// ブレンドステート
@@ -91,7 +93,7 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 		desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		HRESULT hr = device->CreateBlendState(&desc, blendState_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 
 	// 深度ステンシルステート
@@ -103,7 +105,7 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 		desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
 		HRESULT hr = device->CreateDepthStencilState(&desc, depthStencilState_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 
 	// ラスタライザーステート
@@ -122,7 +124,7 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 		desc.AntialiasedLineEnable = false;
 
 		HRESULT hr = device->CreateRasterizerState(&desc, rasterizerState_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 
 	// 球メッシュ作成
@@ -130,6 +132,11 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 
 	// 円柱メッシュ作成
 	CreateCylinderMesh(device, 1.0f, 1.0f, 0.0f, 1.0f, 16, 1);
+}
+
+DebugRenderer& DebugRenderer::Get()
+{
+	return *(Engine::renderManager_->debugRenderer_.get());
 }
 
 // 描画開始
@@ -292,7 +299,7 @@ void DebugRenderer::CreateSphereMesh(ID3D11Device* device, float radius_, int sl
 		subresourceData.SysMemSlicePitch = 0;
 
 		HRESULT hr = device->CreateBuffer(&desc, &subresourceData, sphereVertexBuffer_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 }
 
@@ -363,6 +370,6 @@ void DebugRenderer::CreateCylinderMesh(ID3D11Device* device, float radius1, floa
 		subresourceData.SysMemSlicePitch = 0;
 
 		HRESULT hr = device->CreateBuffer(&desc, &subresourceData, cylinderVertexBuffer_.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 	}
 }

@@ -20,7 +20,7 @@ namespace AbyssEngine
 
         //getter setter
         [[nodiscard]] const Vector3& GetPosition() const { return position_; };
-        void SetPosition(const Vector3& position_) { position_ = position_; }
+        void SetPosition(const Vector3& position) { position_ = position; }
         void SetPositionX(const float& x) { position_.x = x; }
         void SetPositionY(const float& y) { position_.y = y; }
         void SetPositionZ(const float& z) { position_.z = z; }

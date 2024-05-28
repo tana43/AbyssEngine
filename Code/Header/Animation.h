@@ -32,6 +32,7 @@ namespace AbyssEngine
         std::vector<GeometricSubstance::Node>* animatedNodes_;
     };
 
+
     //ブレンドスペース1D
     //BlendWeightが１つのみのモーションブレンド
     class AnimBlendSpace1D final : public Animation
@@ -42,7 +43,7 @@ namespace AbyssEngine
         ~AnimBlendSpace1D() {}
 
         //アニメーションの更新
-        void UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp);
+        void UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)override;
         void DrawImGui(Animator* animator)override;
 
         //ブレンドするアニメーションの数を増やす
@@ -63,17 +64,50 @@ namespace AbyssEngine
         float maxWeight_ = 1.0f;//ブレンドの最大値
         float minWeight_ = 0.0f;//ブレンドの最小値
 
-        float lastBlendWeight_ = 0.0f;//最後のブレンドの重さ
+        float lastBlendWeight_ = 0.0f;//前回のブレンドの重さ
 
         //ブレンドするアニメーション
-        struct BlendAnim
+        struct BlendAnimData
         {
             int index_;
             float weight_;//個々のモーションが持っているブレンドの重さ
         };
-        std::vector<BlendAnim> blendAnims_;
+        std::vector<BlendAnimData> blendAnims_;
 
         std::vector<GeometricSubstance::Node> blendAnimNodes_[2];
     };
+
+    //ブレンドスペース2D
+    //BlendWeightが２次元のモーションブレンド
+    class AnimBlendSpace2D final : public Animation
+    {
+        AnimBlendSpace2D(SkeletalMesh* model, const std::string& name, const int& index, Vector2 weight = Vector2(0.0f,0.0f));
+        ~AnimBlendSpace2D() {}
+
+        //アニメーションの更新
+        void UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)override;
+
+        void AddBlendAnimation(
+            const int& index,   /*モデルの追加アニメーション要素番号*/
+            const Vector2& weight/*設定する重み*/);
+
+        
+    private:
+        Vector2 maxWeight_ = { 180.0f,180.0f };//ブレンドの最大値
+        Vector2 minWeight_ = { -180.0f,-180.0f };//ブレンドの最小値
+        Vector2 blendWeight_ = { 0.0f,0.0f };//ブレンドの重み
+
+        struct BlendAnimData
+        {
+            int index_;
+            Vector2 weight_;
+        };
+        std::vector<BlendAnimData> blendAnims_;
+
+
+        Vector2 lastBlendWeight_ = {0,0};//前回のブレンドの重さ
+    };
 }
+
+
 

@@ -16,6 +16,10 @@
 
 #include "Keyboard.h"
 
+#if _DEBUG
+#include "DebugRenderer.h"
+#include "LineRenderer.h"
+#endif // _DEBUG
 
 #include "imgui/imgui.h"
 
@@ -148,6 +152,10 @@ RenderManager::RenderManager()
 
 	//シャドウマップ生成
 	cascadedShadowMap_ = std::make_unique<CascadedShadowMap>(1024.0f * 4,1024.0f * 4);
+
+	//デバッグ用レンダラー生成
+	debugRenderer_ = std::make_unique<DebugRenderer>(DXSystem::GetDevice());
+	lineRenderer_ = std::make_unique<LineRenderer>(DXSystem::GetDevice(),1024);
 }
 
 void RenderManager::Reset()
@@ -309,6 +317,19 @@ void RenderManager::Render()
 					};
 					bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
 
+#if _DEBUG
+					//デバッグレンダラー
+					if (Keyboard::GetKeyDown(DirectX::Keyboard::D5))
+					{
+						enableDebugRender_ = !enableDebugRender_;
+					}
+					if (enableDebugRender_)
+					{
+						debugRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
+						lineRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
+					}
+#endif // _DEBUG
+
 					postEffectedFrameBuffer_->Deactivate();
 #endif // 0
 				}
@@ -336,6 +357,7 @@ void RenderManager::DrawImGui()
 	ImGui::Text("2 : Cull Back");
 	ImGui::Text("3 : Cull Front");
 	ImGui::Text("4 : Wireframe");
+	ImGui::Text("5 : DebugPrimitive On/Off");
 
 	
 	if (ImGui::BeginMenu("Scene Constant"))

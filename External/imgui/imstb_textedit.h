@@ -558,7 +558,7 @@ static void stb_textedit_find_charpos(StbFindState *find, IMSTB_TEXTEDIT_STRING 
 
    find->first_char = first = i;
    find->length = r.num_chars;
-   find->height_ = r.ymax - r.ymin;
+   find->height = r.ymax - r.ymin;
    find->prev_first = prev_start;
 
    // now scan to find xpos

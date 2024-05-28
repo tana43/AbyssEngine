@@ -4,6 +4,7 @@
 #include "SkeletalMesh.h"
 #include "StaticMesh.h"
 #include "Player.h"
+#include "DebugRenderer.h"
 //#include "StaticMeshBatching.h"
 
 using namespace AbyssEngine;
@@ -72,9 +73,10 @@ void TestScene::Initialize()
     player->GetTransform()->SetPositionY(4.2f);
 #endif // 0
 
+    
 }
 
 void TestScene::Update()
 {
-
+    DebugRenderer::Get().DrawSphere(Vector3(0, 0, 0), 10.0f, Vector4(1, 0, 0, 0));
 }

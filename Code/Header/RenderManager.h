@@ -18,6 +18,9 @@ namespace AbyssEngine
     class Skybox;
     class CascadedShadowMap;
 
+    class DebugRenderer;
+    class LineRenderer;
+
     class RenderManager
     {
     private:
@@ -131,6 +134,14 @@ namespace AbyssEngine
         std::unique_ptr<CascadedShadowMap> cascadedShadowMap_;
         float criticalDepthValue_ = 800.0f;
         bool enableShadow_ = true;
+
+        public:
+#if _DEBUG
+        //デバッグレンダラー
+        std::unique_ptr<DebugRenderer> debugRenderer_;
+        std::unique_ptr<LineRenderer> lineRenderer_;
+        bool enableDebugRender_ = false;
+#endif // _DEBUG
     private:
 
         //2Dオブジェクトのレンダリング

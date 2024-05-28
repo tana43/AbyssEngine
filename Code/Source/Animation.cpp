@@ -42,8 +42,8 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name,
     : Animation(model, name, index0, true) 
 {
     blendAnimNodes_[0] = blendAnimNodes_[1] = *animatedNodes_;
-    blendAnims_.emplace_back(BlendAnim(index0, 0.0f));
-    blendAnims_.emplace_back(BlendAnim(index1, 1.0f));
+    blendAnims_.emplace_back(BlendAnimData(index0, 0.0f));
+    blendAnims_.emplace_back(BlendAnimData(index1, 1.0f));
 }
 
 AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animData) : Animation(model,animData.name_,animData.animIndex_,true)
@@ -62,10 +62,10 @@ void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     const float blendSpeed = std::clamp(blendWeight_ - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
 
     //実際のブレンド値の計算
-    const float nextBlendWeight = std::clamp(lastBlendWeight_ + blendSpeed, 0.0f, 1.0f);
+    const float nextBlendWeight = std::clamp(lastBlendWeight_ + blendSpeed, minWeight_, maxWeight_);
 
     //ブレンドする２つのモーションを取る blendWeightが[0]と[1]のweight値に収まる範囲のアニメーションを探す
-    BlendAnim blendAnims[2] = {blendAnims_[0],blendAnims_[1]};
+    BlendAnimData blendAnims[2] = {blendAnims_[0],blendAnims_[1]};
     if (blendAnims_.size() >= 2)
     {
         for (int i = 2; i < blendAnims_.size(); i++)
@@ -103,7 +103,7 @@ void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
 
 void AnimBlendSpace1D::AddBlendAnimation(const int& index, const float& weight)
 {
-    BlendAnim anim = { index,weight };
+    BlendAnimData anim = { index,weight };
     blendAnims_.emplace_back(anim);
 }
 
@@ -122,4 +122,68 @@ void AnimBlendSpace1D::DrawImGui(Animator* animator)
 
         ImGui::EndMenu();
     }
+}
+
+AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name, const int& index,Vector2 weight)
+    : Animation(model,name,index)
+{
+    //引数から渡される初期モーションのみ登録
+    blendAnims_.emplace_back(BlendAnimData(index,weight));
+}
+
+void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
+{
+    //ブレンドの速度制限
+    const float blendMaxSpeed = 2.0f * Time::deltaTime_;
+    const Vector2 blendSpeed = { 
+        std::clamp(blendWeight_.x - lastBlendWeight_.x, -blendMaxSpeed, blendMaxSpeed),
+        std::clamp(blendWeight_.y - lastBlendWeight_.y, -blendMaxSpeed, blendMaxSpeed)
+        };
+
+    //実際のブレンド値の計算
+    const Vector2 nextBlendWeight = {
+        std::clamp(lastBlendWeight_.x + blendSpeed.x, minWeight_.x, maxWeight_.x),
+        std::clamp(lastBlendWeight_.y + blendSpeed.y, minWeight_.y, maxWeight_.y)
+    };
+
+    //ブレンドする２つのモーションを取る blendWeightが[0]と[1]のweight値に収まる範囲のアニメーションを探す
+    BlendAnimData blendAnims[2] = { blendAnims_[0],blendAnims_[1] };
+    if (blendAnims_.size() >= 2)
+    {
+        for (int i = 2; i < blendAnims_.size(); i++)
+        {
+            if (blendAnims_[i].weight_ < nextBlendWeight)
+            {
+                if (blendAnims_[i].weight_ > blendAnims[0].weight_)
+                {
+                    blendAnims[0] = blendAnims_[i];
+                }
+            }
+            else
+            {
+                if (blendAnims_[i].weight_ < blendAnims[1].weight_)
+                {
+                    blendAnims[1] = blendAnims_[i];
+                }
+            }
+        }
+    }
+
+    //二つのモーションデータから実際に補完率に使われる値を計算
+    //急なブレンドの重さの変化を防ぐように前回の値から変動する値に上限を設ける
+    const float maxBlendWeight = blendAnims[1].weight_ - blendAnims[0].weight_;
+    const float blendWeight = std::clamp((nextBlendWeight - blendAnims[0].weight_) / maxBlendWeight
+        , 0.0f, 1.0f);
+
+    //モーションブレンド
+    model->Animate(blendAnims[0].index_, timeStamp, blendAnimNodes_[0]);
+    model->Animate(blendAnims[1].index_, timeStamp, blendAnimNodes_[1]);
+    model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight, *animatedNodes_);
+
+    lastBlendWeight_ = nextBlendWeight;
+}
+
+void AnimBlendSpace2D::AddBlendAnimation(const int& index, const Vector2& weight)
+{
+    blendAnims_.emplace_back(BlendAnimData(index, weight));
 }
