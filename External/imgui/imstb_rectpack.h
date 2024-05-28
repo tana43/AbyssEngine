@@ -131,7 +131,7 @@ struct stbrp_rect
 }; // 16 bytes, nominally
 
 
-STBRP_DEF void stbrp_init_target (stbrp_context *context, int width, int height, stbrp_node *nodes, int num_nodes);
+STBRP_DEF void stbrp_init_target (stbrp_context *context, int width, int height_, stbrp_node *nodes, int num_nodes);
 // Initialize a rectangle packer to:
 //    pack a rectangle that is 'width' by 'height' in dimensions
 //    using temporary storage provided by the array 'nodes', which is 'num_nodes' long
@@ -185,7 +185,7 @@ struct stbrp_node
 struct stbrp_context
 {
    int width;
-   int height;
+   int height_;
    int align;
    int init_mode;
    int heuristic;
@@ -262,7 +262,7 @@ STBRP_DEF void stbrp_setup_allow_out_of_mem(stbrp_context *context, int allow_ou
    }
 }
 
-STBRP_DEF void stbrp_init_target(stbrp_context *context, int width, int height, stbrp_node *nodes, int num_nodes)
+STBRP_DEF void stbrp_init_target(stbrp_context *context, int width, int height_, stbrp_node *nodes, int num_nodes)
 {
    int i;
 
@@ -274,7 +274,7 @@ STBRP_DEF void stbrp_init_target(stbrp_context *context, int width, int height, 
    context->free_head = &nodes[0];
    context->active_head = &context->extra[0];
    context->width = width;
-   context->height = height;
+   context->height_ = height_;
    context->num_nodes = num_nodes;
    stbrp_setup_allow_out_of_mem(context, 0);
 
@@ -344,7 +344,7 @@ typedef struct
    stbrp_node **prev_link;
 } stbrp__findresult;
 
-static stbrp__findresult stbrp__skyline_find_best_pos(stbrp_context *c, int width, int height)
+static stbrp__findresult stbrp__skyline_find_best_pos(stbrp_context *c, int width, int height_)
 {
    int best_waste = (1<<30), best_x, best_y = (1 << 30);
    stbrp__findresult fr;
@@ -356,7 +356,7 @@ static stbrp__findresult stbrp__skyline_find_best_pos(stbrp_context *c, int widt
    STBRP_ASSERT(width % c->align == 0);
 
    // if it can't possibly fit, bail immediately
-   if (width > c->width || height > c->height) {
+   if (width > c->width || height_ > c->height_) {
       fr.prev_link = NULL;
       fr.x = fr.y = 0;
       return fr;
@@ -375,7 +375,7 @@ static stbrp__findresult stbrp__skyline_find_best_pos(stbrp_context *c, int widt
          }
       } else {
          // best-fit
-         if (y + height <= c->height) {
+         if (y + height_ <= c->height_) {
             // can only use it if it first vertically
             if (y < best_y || (y == best_y && waste < best_waste)) {
                best_y = y;
@@ -425,7 +425,7 @@ static stbrp__findresult stbrp__skyline_find_best_pos(stbrp_context *c, int widt
          }
          STBRP_ASSERT(node->next->x > xpos && node->x <= xpos);
          y = stbrp__skyline_find_min_y(c, node, xpos, width, &waste);
-         if (y + height <= c->height) {
+         if (y + height_ <= c->height_) {
             if (y <= best_y) {
                if (y < best_y || waste < best_waste || (waste==best_waste && xpos < best_x)) {
                   best_x = xpos;
@@ -446,17 +446,17 @@ static stbrp__findresult stbrp__skyline_find_best_pos(stbrp_context *c, int widt
    return fr;
 }
 
-static stbrp__findresult stbrp__skyline_pack_rectangle(stbrp_context *context, int width, int height)
+static stbrp__findresult stbrp__skyline_pack_rectangle(stbrp_context *context, int width, int height_)
 {
    // find best position according to heuristic
-   stbrp__findresult res = stbrp__skyline_find_best_pos(context, width, height);
+   stbrp__findresult res = stbrp__skyline_find_best_pos(context, width, height_);
    stbrp_node *node, *cur;
 
    // bail if:
    //    1. it failed
    //    2. the best node doesn't fit (we don't always check this)
    //    3. we're out of memory
-   if (res.prev_link == NULL || res.y + height > context->height || context->free_head == NULL) {
+   if (res.prev_link == NULL || res.y + height_ > context->height_ || context->free_head == NULL) {
       res.prev_link = NULL;
       return res;
    }
@@ -464,7 +464,7 @@ static stbrp__findresult stbrp__skyline_pack_rectangle(stbrp_context *context, i
    // on success, create new node
    node = context->free_head;
    node->x = (stbrp_coord) res.x;
-   node->y = (stbrp_coord) (res.y + height);
+   node->y = (stbrp_coord) (res.y + height_);
 
    context->free_head = node->next;
 

@@ -8,15 +8,15 @@
 using namespace AbyssEngine;
 
 
-Bloom::Bloom(uint32_t width, uint32_t height)
+Bloom::Bloom(uint32_t width, uint32_t height_)
 {
 	bitBlockTransfer_ = std::make_unique<FullscreenQuad>();
 
-	glowExtraction_ = std::make_unique<FrameBuffer>(width, height, false);
+	glowExtraction_ = std::make_unique<FrameBuffer>(width, height_, false);
 	for (size_t downsampledIndex = 0; downsampledIndex < DOWNSAMPLED_COUNT; ++downsampledIndex)
 	{
-		gaussianBlur_[downsampledIndex][0] = std::make_unique<FrameBuffer>(width >> downsampledIndex, height >> downsampledIndex, false);
-		gaussianBlur_[downsampledIndex][1] = std::make_unique<FrameBuffer>(width >> downsampledIndex, height >> downsampledIndex, false);
+		gaussianBlur_[downsampledIndex][0] = std::make_unique<FrameBuffer>(width >> downsampledIndex, height_ >> downsampledIndex, false);
+		gaussianBlur_[downsampledIndex][1] = std::make_unique<FrameBuffer>(width >> downsampledIndex, height_ >> downsampledIndex, false);
 	}
 	glowExtractionPs_			= Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GlowExtractionPS.cso");
 	gaussianBlurDownsamplingPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GaussianBlurDownsamplingPS.cso");

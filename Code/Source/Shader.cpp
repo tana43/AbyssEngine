@@ -9,23 +9,23 @@ using namespace AbyssEngine;
 //template <class T>
 //std::mutex Shader<T>::mutex_;
 
-Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(const char* name_, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements)
+Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(const char* name_, ID3D11InputLayout** inputLayout_, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements)
 {
     Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader_;
     if (vertexShaders_.find(name_) != vertexShaders_.end())
     {
         vertexShader_ = vertexShaders_.at(name_);
-        if (inputLayout)
+        if (inputLayout_)
         {
             if (inputLayouts_.find(name_) != inputLayouts_.end())
             {
-                *inputLayout = inputLayouts_.at(name_).Get();
-                (*inputLayout)->AddRef();
+                *inputLayout_ = inputLayouts_.at(name_).Get();
+                (*inputLayout_)->AddRef();
             }
             else
             {
 #if 1
-                AutoGenerateInputLayout(name_,inputLayout,inputElementDesc,numElements);
+                AutoGenerateInputLayout(name_,inputLayout_,inputElementDesc,numElements);
 #else
                 _ASSERT_EXPR(FALSE, L"");
 #endif // 1
@@ -43,11 +43,11 @@ Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader<ID3D11VertexShader>::Emplace(c
         std::lock_guard<std::mutex> lock(mutex_);
         vertexShaders_.emplace(std::make_pair(name_, vertexShader_));
 
-        if (inputLayout)
+        if (inputLayout_)
         {
-            hr = DXSystem::GetDevice()->CreateInputLayout(inputElementDesc, numElements, cso.data_.get(), cso.size_, inputLayout);
+            hr = DXSystem::GetDevice()->CreateInputLayout(inputElementDesc, numElements, cso.data_.get(), cso.size_, inputLayout_);
             _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
-            inputLayouts_.emplace(std::make_pair(name_, *inputLayout));
+            inputLayouts_.emplace(std::make_pair(name_, *inputLayout_));
         }
     }
     return vertexShader_;
@@ -57,12 +57,12 @@ std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D11VertexShader>> Shad
 std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D11InputLayout>> Shader<ID3D11VertexShader>::inputLayouts_;
 std::mutex Shader<ID3D11VertexShader>::mutex_;
 
-HRESULT Shader<ID3D11VertexShader>::AutoGenerateInputLayout(const char* name_, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, size_t numElements)
+HRESULT Shader<ID3D11VertexShader>::AutoGenerateInputLayout(const char* name_, ID3D11InputLayout** inputLayout_, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, size_t numElements)
 {
     if (inputLayouts_.find(name_) != inputLayouts_.end())
     {
-        *inputLayout = inputLayouts_.at(name_).Get();
-        (*inputLayout)->AddRef();
+        *inputLayout_ = inputLayouts_.at(name_).Get();
+        (*inputLayout_)->AddRef();
         return S_OK;
     }
 
@@ -114,10 +114,10 @@ HRESULT Shader<ID3D11VertexShader>::AutoGenerateInputLayout(const char* name_, I
     _ASSERT_EXPR_A(SUCCEEDED(hr), reinterpret_cast<LPCSTR>(errorMessageBlob->GetBufferPointer()));
     hr = DXSystem::GetDevice()->CreateVertexShader(compiledShaderBlob->GetBufferPointer(), compiledShaderBlob->GetBufferSize(), 0, dummyVertexShader.GetAddressOf());
     _ASSERT_EXPR_A(SUCCEEDED(hr), reinterpret_cast<LPCSTR>(errorMessageBlob->GetBufferPointer()));
-    hr = DXSystem::GetDevice()->CreateInputLayout(inputElementDesc, static_cast<UINT>(numElements), compiledShaderBlob->GetBufferPointer(), static_cast<UINT>(compiledShaderBlob->GetBufferSize()), inputLayout);
+    hr = DXSystem::GetDevice()->CreateInputLayout(inputElementDesc, static_cast<UINT>(numElements), compiledShaderBlob->GetBufferPointer(), static_cast<UINT>(compiledShaderBlob->GetBufferSize()), inputLayout_);
 
     std::lock_guard<std::mutex> lock(mutex_);
-    inputLayouts_.emplace(std::make_pair(name_, *inputLayout));
+    inputLayouts_.emplace(std::make_pair(name_, *inputLayout_));
 
     return hr;
 }

@@ -240,7 +240,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 			std::vector<Vector4> tangents;
 			std::vector<Vector2> texcoords;
 		};
-		StructureOfArrays vertices;
+		StructureOfArrays vertices_;
 	};
 	std::unordered_map<int/*material*/, combinedBuffer> combinedBuffers;
 
@@ -267,7 +267,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 						continue;
 					}
 
-					const size_t vertexOffset = combinedBuffer.vertices.positions.size();
+					const size_t vertexOffset = combinedBuffer.vertices_.positions.size();
 					if (gltfAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE)
 					{
 						const unsigned char* buffer_ = gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset;
@@ -315,9 +315,9 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 						const Vector3* buffer_ = reinterpret_cast<const Vector3*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							Vector3 position = buffer_[accessorIndex];
-							DirectX::XMStoreFloat3(&position, XMVector3TransformCoord(XMLoadFloat3(&position), transform));
-							combinedBuffer.vertices.positions.emplace_back(position);
+							Vector3 position_ = buffer_[accessorIndex];
+							DirectX::XMStoreFloat3(&position_, XMVector3TransformCoord(XMLoadFloat3(&position_), transform));
+							combinedBuffer.vertices_.positions.emplace_back(position_);
 						}
 					}
 					else if (gltf_attribute.first == "NORMAL")
@@ -328,7 +328,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 						{
 							Vector3 normal = buffer_[accessorIndex];
 							XMStoreFloat3(&normal, XMVector3TransformNormal(XMLoadFloat3(&normal), transform));
-							combinedBuffer.vertices.normals.emplace_back(normal);
+							combinedBuffer.vertices_.normals.emplace_back(normal);
 						}
 					}
 					else if (gltf_attribute.first == "TANGENT")
@@ -342,7 +342,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 							tangent.w = 0;
 							XMStoreFloat4(&tangent, XMVector4Transform(XMLoadFloat4(&tangent), transform));
 							tangent.w = sigma;
-							combinedBuffer.vertices.tangents.emplace_back(tangent);
+							combinedBuffer.vertices_.tangents.emplace_back(tangent);
 						}
 					}
 					else if (gltf_attribute.first == "TEXCOORD_0")
@@ -351,7 +351,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 						const Vector2* buffer_ = reinterpret_cast<const Vector2*>(gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset);
 						for (size_t accessorIndex = 0; accessorIndex < gltfAccessor.count; ++accessorIndex)
 						{
-							combinedBuffer.vertices.texcoords.emplace_back(buffer_[accessorIndex]);
+							combinedBuffer.vertices_.texcoords.emplace_back(buffer_[accessorIndex]);
 						}
 					}
 				}
@@ -363,7 +363,7 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 	for (decltype(combinedBuffers)::const_reference combinedBuffer : combinedBuffers)
 	{
 #if 1
-		if (combinedBuffer.second.vertices.positions.size() == 0)
+		if (combinedBuffer.second.vertices_.positions.size() == 0)
 		{
 			continue;
 		}
@@ -394,54 +394,54 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 		}
 
 		BufferView vertexBufferView;
-		if (combinedBuffer.second.vertices.positions.size() > 0)
+		if (combinedBuffer.second.vertices_.positions.size() > 0)
 		{
 			vertexBufferView.format_ = DXGI_FORMAT_R32G32B32_FLOAT;
 			vertexBufferView.strideInBytes_ = sizeof(FLOAT) * 3;
-			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices.positions.size() * vertexBufferView.strideInBytes_;
+			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices_.positions.size() * vertexBufferView.strideInBytes_;
 
 			buffer_desc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer.second.vertices.positions.data();
+			subresource_data.pSysMem = combinedBuffer.second.vertices_.positions.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			Primitive.vertexBufferViews_.emplace(std::make_pair("POSITION", vertexBufferView));
 		}
-		if (combinedBuffer.second.vertices.normals.size() > 0)
+		if (combinedBuffer.second.vertices_.normals.size() > 0)
 		{
 			vertexBufferView.format_ = DXGI_FORMAT_R32G32B32_FLOAT;
 			vertexBufferView.strideInBytes_ = sizeof(FLOAT) * 3;
-			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices.normals.size() * vertexBufferView.strideInBytes_;
+			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices_.normals.size() * vertexBufferView.strideInBytes_;
 
 			buffer_desc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer.second.vertices.normals.data();
+			subresource_data.pSysMem = combinedBuffer.second.vertices_.normals.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			Primitive.vertexBufferViews_.emplace(std::make_pair("NORMAL", vertexBufferView));
 		}
-		if (combinedBuffer.second.vertices.tangents.size() > 0)
+		if (combinedBuffer.second.vertices_.tangents.size() > 0)
 		{
 			vertexBufferView.format_ = DXGI_FORMAT_R32G32B32A32_FLOAT;
 			vertexBufferView.strideInBytes_ = sizeof(FLOAT) * 4;
-			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices.tangents.size() * vertexBufferView.strideInBytes_;
+			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices_.tangents.size() * vertexBufferView.strideInBytes_;
 
 			buffer_desc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer.second.vertices.tangents.data();
+			subresource_data.pSysMem = combinedBuffer.second.vertices_.tangents.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			Primitive.vertexBufferViews_.emplace(std::make_pair("TANGENT", vertexBufferView));
 		}
-		if (combinedBuffer.second.vertices.texcoords.size() > 0)
+		if (combinedBuffer.second.vertices_.texcoords.size() > 0)
 		{
 			vertexBufferView.format_ = DXGI_FORMAT_R32G32_FLOAT;
 			vertexBufferView.strideInBytes_ = sizeof(FLOAT) * 2;
-			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices.texcoords.size() * vertexBufferView.strideInBytes_;
+			vertexBufferView.sizeInBytes_ = combinedBuffer.second.vertices_.texcoords.size() * vertexBufferView.strideInBytes_;
 
 			buffer_desc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer.second.vertices.texcoords.data();
+			subresource_data.pSysMem = combinedBuffer.second.vertices_.texcoords.data();
 			hr = device->CreateBuffer(&buffer_desc, &subresource_data, vertexBufferView.buffer_.ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			Primitive.vertexBufferViews_.emplace(std::make_pair("TEXCOORD_0", vertexBufferView));
@@ -478,7 +478,7 @@ void StaticMeshBatching::Render(const Matrix& world)
 
 	for (decltype(primitives_)::const_reference Primitive : primitives_)
 	{
-		ID3D11Buffer* vertexBuffer[] = {
+		ID3D11Buffer* vertexBuffer_[] = {
 			Primitive.vertexBufferViews_.at("POSITION").buffer_.Get(),
 			Primitive.vertexBufferViews_.at("NORMAL").buffer_.Get(),
 			Primitive.vertexBufferViews_.at("TANGENT").buffer_.Get(),
@@ -490,8 +490,8 @@ void StaticMeshBatching::Render(const Matrix& world)
 			static_cast<UINT>(Primitive.vertexBufferViews_.at("TANGENT").strideInBytes_),
 			static_cast<UINT>(Primitive.vertexBufferViews_.at("TEXCOORD_0").strideInBytes_),
 		};
-		UINT offsets[_countof(vertexBuffer)] = {};
-		deviceContext->IASetVertexBuffers(0, _countof(vertexBuffer), vertexBuffer, strides, offsets);
+		UINT offsets[_countof(vertexBuffer_)] = {};
+		deviceContext->IASetVertexBuffers(0, _countof(vertexBuffer_), vertexBuffer_, strides, offsets);
 		deviceContext->IASetIndexBuffer(Primitive.indexBufferView_.buffer_.Get(), Primitive.indexBufferView_.format_, 0);
 
 		PrimitiveConstants primitiveData_ = {};
@@ -607,7 +607,7 @@ void StaticMeshBatching::FetchTextures(const tinygltf::Model& gltfModel)
 		Image& image{ images_.emplace_back() };
 		image.name_ = gltfImage.name;
 		image.width_ = gltfImage.width;
-		image.height_ = gltfImage.height;
+		image.height_ = gltfImage.height_;
 		image.component_ = gltfImage.component;
 		image.bits_ = gltfImage.bits;
 		image.pixelType_ = gltfImage.pixel_type;

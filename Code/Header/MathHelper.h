@@ -473,7 +473,7 @@ namespace AbyssEngine
 		static Matrix CreateConstrainedBillboard(const Vector3& object, const Vector3& cameraPosition, const Vector3& rotateAxis,
 			_In_opt_ const Vector3* cameraForward = nullptr, _In_opt_ const Vector3* objectForward = nullptr);
 
-		static Matrix CreateTranslation(const Vector3& position);
+		static Matrix CreateTranslation(const Vector3& position_);
 		static Matrix CreateTranslation(float x, float y, float z);
 
 		static Matrix CreateScale(const Vector3& scales);
@@ -487,13 +487,13 @@ namespace AbyssEngine
 		static Matrix CreateFromAxisAngle(const Vector3& axis, float angle);
 
 		static Matrix CreatePerspectiveFieldOfView(float fov, float aspectRatio, float nearPlane, float farPlane);
-		static Matrix CreatePerspective(float width, float height, float nearPlane, float farPlane);
+		static Matrix CreatePerspective(float width, float height_, float nearPlane, float farPlane);
 		static Matrix CreatePerspectiveOffCenter(float left, float right, float bottom, float top, float nearPlane, float farPlane);
-		static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane);
+		static Matrix CreateOrthographic(float width, float height_, float zNearPlane, float zFarPlane);
 		static Matrix CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane);
 
-		static Matrix CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up);
-		static Matrix CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up);
+		static Matrix CreateLookAt(const Vector3& position_, const Vector3& target, const Vector3& up);
+		static Matrix CreateWorld(const Vector3& position_, const Vector3& forward, const Vector3& up);
 
 		static Matrix CreateFromQuaternion(const Quaternion& quat);
 
@@ -2909,11 +2909,11 @@ namespace AbyssEngine
 		return R;
 	}
 
-	inline Matrix Matrix::CreateTranslation(const Vector3& position)
+	inline Matrix Matrix::CreateTranslation(const Vector3& position_)
 	{
 		using namespace DirectX;
 		Matrix R;
-		XMStoreFloat4x4(&R, XMMatrixTranslation(position.x, position.y, position.z));
+		XMStoreFloat4x4(&R, XMMatrixTranslation(position_.x, position_.y, position_.z));
 		return R;
 	}
 
@@ -2990,11 +2990,11 @@ namespace AbyssEngine
 		return R;
 	}
 
-	inline Matrix Matrix::CreatePerspective(float width, float height, float nearPlane, float farPlane)
+	inline Matrix Matrix::CreatePerspective(float width, float height_, float nearPlane, float farPlane)
 	{
 		using namespace DirectX;
 		Matrix R;
-		XMStoreFloat4x4(&R, XMMatrixPerspectiveRH(width, height, nearPlane, farPlane));
+		XMStoreFloat4x4(&R, XMMatrixPerspectiveRH(width, height_, nearPlane, farPlane));
 		return R;
 	}
 
@@ -3006,11 +3006,11 @@ namespace AbyssEngine
 		return R;
 	}
 
-	inline Matrix Matrix::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane)
+	inline Matrix Matrix::CreateOrthographic(float width, float height_, float zNearPlane, float zFarPlane)
 	{
 		using namespace DirectX;
 		Matrix R;
-		XMStoreFloat4x4(&R, XMMatrixOrthographicRH(width, height, zNearPlane, zFarPlane));
+		XMStoreFloat4x4(&R, XMMatrixOrthographicRH(width, height_, zNearPlane, zFarPlane));
 		return R;
 	}
 
@@ -3033,7 +3033,7 @@ namespace AbyssEngine
 		return R;
 	}
 
-	inline Matrix Matrix::CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up)
+	inline Matrix Matrix::CreateWorld(const Vector3& position_, const Vector3& forward, const Vector3& up)
 	{
 		using namespace DirectX;
 		XMVECTOR zaxis = XMVector3Normalize(XMVectorNegate(XMLoadFloat3(&forward)));
@@ -3046,7 +3046,7 @@ namespace AbyssEngine
 		XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&R._21), yaxis);
 		XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&R._31), zaxis);
 		R._14 = R._24 = R._34 = 0.f;
-		R._41 = position.x; R._42 = position.y; R._43 = position.z;
+		R._41 = position_.x; R._42 = position_.y; R._43 = position_.z;
 		R._44 = 1.f;
 		return R;
 	}

@@ -29,7 +29,7 @@ std::array<XMFLOAT4, 8> MakeFrustumCornersWorldSpace(const XMFLOAT4X4& view, con
 	return frustumCorners;
 }
 
-CascadedShadowMap::CascadedShadowMap(UINT width, UINT height, UINT cascade_count) : cascadeCount(cascade_count)
+CascadedShadowMap::CascadedShadowMap(UINT width, UINT height_, UINT cascade_count) : cascadeCount(cascade_count)
 {
 	ID3D11Device* device = DXSystem::GetDevice();
 
@@ -37,7 +37,7 @@ CascadedShadowMap::CascadedShadowMap(UINT width, UINT height, UINT cascade_count
 
 	D3D11_TEXTURE2D_DESC texture2d_desc = {};
 	texture2d_desc.Width = width;
-	texture2d_desc.Height = height;
+	texture2d_desc.Height = height_;
 	texture2d_desc.MipLevels = 1;
 	texture2d_desc.ArraySize = cascadeCount;
 	texture2d_desc.Format = DXGI_FORMAT_R32_TYPELESS;
@@ -71,7 +71,7 @@ CascadedShadowMap::CascadedShadowMap(UINT width, UINT height, UINT cascade_count
 	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 	viewport_.Width = static_cast<float>(width);
-	viewport_.Height = static_cast<float>(height);
+	viewport_.Height = static_cast<float>(height_);
 	viewport_.MinDepth = 0.0f;
 	viewport_.MaxDepth = 1.0f;
 	viewport_.TopLeftX = 0.0f;
@@ -135,21 +135,21 @@ void CascadedShadowMap::Make(
 
 		std::array<XMFLOAT4, 8> corners = MakeFrustumCornersWorldSpace(cameraView, cascadedProjection);
 
-		DirectX::XMFLOAT4 center = { 0, 0, 0, 1 };
+		DirectX::XMFLOAT4 center_ = { 0, 0, 0, 1 };
 		for (decltype(corners)::const_reference v : corners)
 		{
-			center.x += v.x;
-			center.y += v.y;
-			center.z += v.z;
+			center_.x += v.x;
+			center_.y += v.y;
+			center_.z += v.z;
 		}
-		center.x /= corners.size();
-		center.y /= corners.size();
-		center.z /= corners.size();
+		center_.x /= corners.size();
+		center_.y /= corners.size();
+		center_.z /= corners.size();
 
 		XMMATRIX V;
 		V = XMMatrixLookAtLH(
-			XMVectorSet(center.x - lightDirection.x, center.y - lightDirection.y, center.z - lightDirection.z, 1.0f),
-			XMVectorSet(center.x, center.y, center.z, 1.0f),
+			XMVectorSet(center_.x - lightDirection.x, center_.y - lightDirection.y, center_.z - lightDirection.z, 1.0f),
+			XMVectorSet(center_.x, center_.y, center_.z, 1.0f),
 			XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
 		float minX = FLT_MAX;

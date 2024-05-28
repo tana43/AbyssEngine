@@ -31,6 +31,7 @@
     <ClInclude Include="Code\Header\CharacterManager.h" />
     <ClInclude Include="Code\Header\Component.h" />
     <ClInclude Include="Code\Header\ConstantBuffer.h" />
+    <ClInclude Include="Code\Header\DebugRenderer.h" />
     <ClInclude Include="Code\Header\DXSystem.h" />
     <ClInclude Include="Code\Header\Engine.h" />
     <ClInclude Include="Code\Header\FrameBuffer.h" />
@@ -41,6 +42,7 @@
     <ClInclude Include="Code\Header\GltfStaticMesh.h" />
     <ClInclude Include="Code\Header\Input.h" />
     <ClInclude Include="Code\Header\Keyboard.h" />
+    <ClInclude Include="Code\Header\LineRenderer.h" />
     <ClInclude Include="Code\Header\MathHelper.h" />
     <ClInclude Include="Code\Header\Misc.h" />
     <ClInclude Include="Code\Header\Asset.h" />
@@ -81,6 +83,7 @@
     <ClCompile Include="Code\Source\Character.cpp" />
     <ClCompile Include="Code\Source\CharacterManager.cpp" />
     <ClCompile Include="Code\Source\Component.cpp" />
+    <ClCompile Include="Code\Source\DebugRenderer.cpp" />
     <ClCompile Include="Code\Source\DXSystem.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
     <ClCompile Include="Code\Source\FrameBuffer.cpp" />
@@ -91,6 +94,7 @@
     <ClCompile Include="Code\Source\GltfStaticMesh.cpp" />
     <ClCompile Include="Code\Source\Input.cpp" />
     <ClCompile Include="Code\Source\Keyboard.cpp" />
+    <ClCompile Include="Code\Source\LineRenderer.cpp" />
     <ClCompile Include="Code\Source\Main.cpp" />
     <ClCompile Include="Code\Source\MathHelper.cpp" />
     <ClCompile Include="Code\Source\Asset.cpp" />
@@ -175,6 +179,8 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\DebugPS.hlsl" />
+    <FxCompile Include="Shader\DebugVS.hlsl" />
     <FxCompile Include="Shader\FinalPassPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -228,6 +234,8 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="Shader\LinePS.hlsl" />
+    <FxCompile Include="Shader\LineVS.hlsl" />
     <FxCompile Include="Shader\PostEffectsPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -284,9 +292,11 @@
     <None Include="Shader\Constants.hlsli" />
     <None Include="Shader\CsmOpaque.hlsli" />
     <None Include="Shader\CsmTransparent.hlsli" />
+    <None Include="Shader\Debug.hlsli" />
     <None Include="Shader\FullscreenQuad.hlsli" />
     <None Include="Shader\GeometricSubstance.hlsli" />
     <None Include="Shader\ImageBasedLighting.hlsli" />
+    <None Include="Shader\Line.hlsli" />
     <None Include="Shader\Material.hlsli" />
     <None Include="Shader\PhysicallyBasedRendering.hlsli" />
   </ItemGroup>

@@ -18028,13 +18028,13 @@ static void ImGui::DockNodePreviewDockRender(ImGuiWindow* host_window, ImGuiDock
             ImU32 overlay_col = (data->SplitDir == (ImGuiDir)dir && data->IsSplitDirExplicit) ? overlay_col_drop_hovered : overlay_col_drop;
             for (int overlay_n = 0; overlay_n < overlay_draw_lists_count; overlay_n++)
             {
-                ImVec2 center = ImFloor(draw_r_in.GetCenter());
+                ImVec2 center_ = ImFloor(draw_r_in.GetCenter());
                 overlay_draw_lists[overlay_n]->AddRectFilled(draw_r.Min, draw_r.Max, overlay_col, overlay_rounding);
                 overlay_draw_lists[overlay_n]->AddRect(draw_r_in.Min, draw_r_in.Max, overlay_col_lines, overlay_rounding);
                 if (dir == ImGuiDir_Left || dir == ImGuiDir_Right)
-                    overlay_draw_lists[overlay_n]->AddLine(ImVec2(center.x, draw_r_in.Min.y), ImVec2(center.x, draw_r_in.Max.y), overlay_col_lines);
+                    overlay_draw_lists[overlay_n]->AddLine(ImVec2(center_.x, draw_r_in.Min.y), ImVec2(center_.x, draw_r_in.Max.y), overlay_col_lines);
                 if (dir == ImGuiDir_Up || dir == ImGuiDir_Down)
-                    overlay_draw_lists[overlay_n]->AddLine(ImVec2(draw_r_in.Min.x, center.y), ImVec2(draw_r_in.Max.x, center.y), overlay_col_lines);
+                    overlay_draw_lists[overlay_n]->AddLine(ImVec2(draw_r_in.Min.x, center_.y), ImVec2(draw_r_in.Max.x, center_.y), overlay_col_lines);
             }
         }
 

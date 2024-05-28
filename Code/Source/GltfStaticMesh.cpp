@@ -265,9 +265,9 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 						const XMFLOAT3* buffer = reinterpret_cast<const XMFLOAT3*>(transmissionModel.buffers.at(transmissionBufferView.buffer).data.data() + transmissionBufferView.byteOffset + transmissionAccessor.byteOffset);
 						for (size_t accessor_index = 0; accessor_index < transmissionAccessor.count; ++accessor_index)
 						{
-							XMFLOAT3 position = buffer[accessor_index];
-							DirectX::XMStoreFloat3(&position, XMVector3TransformCoord(XMLoadFloat3(&position), globalTransform));
-							combinedBuffer_.vertices_.positions_.emplace_back(position);
+							XMFLOAT3 position_ = buffer[accessor_index];
+							DirectX::XMStoreFloat3(&position_, XMVector3TransformCoord(XMLoadFloat3(&position_), globalTransform));
+							combinedBuffer_.vertices_.positions_.emplace_back(position_);
 						}
 #if 1
 						// Constructing a bounding box

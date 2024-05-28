@@ -17,7 +17,7 @@ namespace AbyssEngine
 	{
 
 	public:
-		CascadedShadowMap(UINT width, UINT height, UINT cascadeCount = 4);
+		CascadedShadowMap(UINT width, UINT height_, UINT cascadeCount = 4);
 		virtual ~CascadedShadowMap() = default;
 		CascadedShadowMap(const CascadedShadowMap&) = delete;
 		CascadedShadowMap& operator =(const CascadedShadowMap&) = delete;

@@ -836,15 +836,15 @@ bool ImGui::CloseButton(ImGuiID id, const ImVec2& pos)
     // Render
     // FIXME: Clarify this mess
     ImU32 col = GetColorU32(held ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered);
-    ImVec2 center = bb.GetCenter();
+    ImVec2 center_ = bb.GetCenter();
     if (hovered)
-        window->DrawList->AddCircleFilled(center, ImMax(2.0f, g.FontSize * 0.5f + 1.0f), col);
+        window->DrawList->AddCircleFilled(center_, ImMax(2.0f, g.FontSize * 0.5f + 1.0f), col);
 
     float cross_extent = g.FontSize * 0.5f * 0.7071f - 1.0f;
     ImU32 cross_col = GetColorU32(ImGuiCol_Text);
-    center -= ImVec2(0.5f, 0.5f);
-    window->DrawList->AddLine(center + ImVec2(+cross_extent, +cross_extent), center + ImVec2(-cross_extent, -cross_extent), cross_col, 1.0f);
-    window->DrawList->AddLine(center + ImVec2(+cross_extent, -cross_extent), center + ImVec2(-cross_extent, +cross_extent), cross_col, 1.0f);
+    center_ -= ImVec2(0.5f, 0.5f);
+    window->DrawList->AddLine(center_ + ImVec2(+cross_extent, +cross_extent), center_ + ImVec2(-cross_extent, -cross_extent), cross_col, 1.0f);
+    window->DrawList->AddLine(center_ + ImVec2(+cross_extent, -cross_extent), center_ + ImVec2(-cross_extent, +cross_extent), cross_col, 1.0f);
 
     return pressed;
 }
@@ -1236,10 +1236,10 @@ bool ImGui::RadioButton(const char* label, bool active)
     if (!ItemAdd(total_bb, id))
         return false;
 
-    ImVec2 center = check_bb.GetCenter();
-    center.x = IM_ROUND(center.x);
-    center.y = IM_ROUND(center.y);
-    const float radius = (square_sz - 1.0f) * 0.5f;
+    ImVec2 center_ = check_bb.GetCenter();
+    center_.x = IM_ROUND(center_.x);
+    center_.y = IM_ROUND(center_.y);
+    const float radius_ = (square_sz - 1.0f) * 0.5f;
 
     bool hovered, held;
     bool pressed = ButtonBehavior(total_bb, id, &hovered, &held);
@@ -1247,18 +1247,18 @@ bool ImGui::RadioButton(const char* label, bool active)
         MarkItemEdited(id);
 
     RenderNavHighlight(total_bb, id);
-    const int num_segment = window->DrawList->_CalcCircleAutoSegmentCount(radius);
-    window->DrawList->AddCircleFilled(center, radius, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), num_segment);
+    const int num_segment = window->DrawList->_CalcCircleAutoSegmentCount(radius_);
+    window->DrawList->AddCircleFilled(center_, radius_, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), num_segment);
     if (active)
     {
         const float pad = ImMax(1.0f, IM_TRUNC(square_sz / 6.0f));
-        window->DrawList->AddCircleFilled(center, radius - pad, GetColorU32(ImGuiCol_CheckMark));
+        window->DrawList->AddCircleFilled(center_, radius_ - pad, GetColorU32(ImGuiCol_CheckMark));
     }
 
     if (style.FrameBorderSize > 0.0f)
     {
-        window->DrawList->AddCircle(center + ImVec2(1, 1), radius, GetColorU32(ImGuiCol_BorderShadow), num_segment, style.FrameBorderSize);
-        window->DrawList->AddCircle(center, radius, GetColorU32(ImGuiCol_Border), num_segment, style.FrameBorderSize);
+        window->DrawList->AddCircle(center_ + ImVec2(1, 1), radius_, GetColorU32(ImGuiCol_BorderShadow), num_segment, style.FrameBorderSize);
+        window->DrawList->AddCircle(center_, radius_, GetColorU32(ImGuiCol_Border), num_segment, style.FrameBorderSize);
     }
 
     ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
@@ -7423,8 +7423,8 @@ bool ImGui::BeginMainMenuBar()
     // FIXME: Consider removing support for safe area down the line... it's messy. Nowadays consoles have support for TV calibration in OS settings.
     g.NextWindowData.MenuBarOffsetMinVal = ImVec2(g.Style.DisplaySafeAreaPadding.x, ImMax(g.Style.DisplaySafeAreaPadding.y - g.Style.FramePadding.y, 0.0f));
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
-    float height = GetFrameHeight();
-    bool is_open = BeginViewportSideBar("##MainMenuBar", viewport, ImGuiDir_Up, height, window_flags);
+    float height_ = GetFrameHeight();
+    bool is_open = BeginViewportSideBar("##MainMenuBar", viewport, ImGuiDir_Up, height_, window_flags);
     g.NextWindowData.MenuBarOffsetMinVal = ImVec2(0.0f, 0.0f);
 
     if (is_open)

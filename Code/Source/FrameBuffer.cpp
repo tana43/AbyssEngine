@@ -4,7 +4,7 @@
 
 using namespace AbyssEngine;
 
-FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil, bool generateMips)
+FrameBuffer::FrameBuffer(uint32_t width, uint32_t height_, bool hasDepthstencil, bool generateMips)
 {
 	ID3D11Device* device = DXSystem::GetDevice();
 
@@ -12,7 +12,7 @@ FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil, 
 
     D3D11_TEXTURE2D_DESC texture2dDesc_;
     texture2dDesc_.Width = width;
-    texture2dDesc_.Height = height;
+    texture2dDesc_.Height = height_;
     texture2dDesc_.MipLevels = generateMips ? 0 : 1;
     texture2dDesc_.ArraySize = 1;
     texture2dDesc_.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
@@ -60,7 +60,7 @@ FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil, 
 	}
 
 	viewport_.Width = static_cast<float>(width);
-	viewport_.Height = static_cast<float>(height);
+	viewport_.Height = static_cast<float>(height_);
 	viewport_.MinDepth = 0.0f;
 	viewport_.MaxDepth = 1.0f;
 	viewport_.TopLeftX = 0.0f;

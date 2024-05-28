@@ -37,7 +37,7 @@ namespace AbyssEngine
 		//MSAA使用時のパラメータ
 		static DXGI_SAMPLE_DESC MSAA_; 
 
-		static bool Initialize(HWND hWnd, int width, int height);//初期化
+		static bool Initialize(HWND hWnd, int width, int height_);//初期化
 		static void Release();//後始末
 		static void Clear();//レンダーターゲットのクリア
 		static void Flip(int n = 0);//フリップ処理
@@ -53,7 +53,7 @@ namespace AbyssEngine
 		static ID3D11DepthStencilState* GetDepthStencilState(DS_State state) { return instance->depthStencilStates_[static_cast<int>(state)].Get(); }
 		static ID3D11RasterizerState* GetRasterizerState(RS_State state) { return instance->rasterizerStates_[static_cast<int>(state)].Get(); }
 		static ID3D11BlendState* GetBlendState(BS_State state) { return instance->blendStates_[static_cast<int>(state)].Get(); }
-		static void SetViewport(int width, int height, int num = 1);//ビューポートをセット
+		static void SetViewport(int width, int height_, int num = 1);//ビューポートをセット
 		static void SetDefaultView();//メインウィンドウのレンダーターゲットをセットする
 
 		static void SetDepthStencilState(DS_State type, UINT stencilRef = 1);

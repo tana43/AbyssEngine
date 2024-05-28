@@ -25,7 +25,7 @@ DXSystem::DXSystem()
     instance = this;
 }
 
-bool DXSystem::Initialize(HWND hWnd, int width, int height)
+bool DXSystem::Initialize(HWND hWnd, int width, int height_)
 {
     hwnd_ = hWnd;
     CreateDevice();
@@ -64,11 +64,11 @@ void DXSystem::Flip(int n)
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 }
 
-void DXSystem::SetViewport(int width, int height, int num)
+void DXSystem::SetViewport(int width, int height_, int num)
 {
     D3D11_VIEWPORT vp;
     vp.Width = static_cast<FLOAT>(width);
-    vp.Height = static_cast<FLOAT>(height);
+    vp.Height = static_cast<FLOAT>(height_);
     vp.MinDepth = 0.0f;
     vp.MaxDepth = 1.0f;
     vp.TopLeftX = 0;

@@ -471,7 +471,7 @@ void GeometricSubstance::ExtractTextures(const tinygltf::Model& transmissionMode
 		Image& image = images_.emplace_back();
 		image.name_ = transmission_image.name;
 		image.width_ = transmission_image.width;
-		image.height_ = transmission_image.height;
+		image.height_ = transmission_image.height_;
 		image.component_ = transmission_image.component;
 		image.bits_ = transmission_image.bits;
 		image.pixelType_ = transmission_image.pixel_type;

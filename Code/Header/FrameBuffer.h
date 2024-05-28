@@ -9,7 +9,7 @@ namespace AbyssEngine
     class FrameBuffer
     {
     public:
-        FrameBuffer(uint32_t width, uint32_t height, bool hasDepthstencil = true,bool generateMips = false);
+        FrameBuffer(uint32_t width, uint32_t height_, bool hasDepthstencil = true,bool generateMips = false);
         virtual ~FrameBuffer() = default;
 
         void Clear(float r = 0, float g = 0, float b = 0, float a = 1, float depth = 1, uint8_t stencil = 0);

@@ -109,10 +109,10 @@ namespace AbyssEngine
 
     public:
         //マップの中にある指定されたシェーダーを返す　一度も使用していないシェーダーならマップに追加した後に返す
-        static Microsoft::WRL::ComPtr<ID3D11VertexShader> Emplace(const char* name_, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements);
+        static Microsoft::WRL::ComPtr<ID3D11VertexShader> Emplace(const char* name_, ID3D11InputLayout** inputLayout_, D3D11_INPUT_ELEMENT_DESC* inputElementDesc, UINT numElements);
         
         //インプットレイアウト生成
-        static HRESULT AutoGenerateInputLayout(const char* name_, ID3D11InputLayout** inputLayout, D3D11_INPUT_ELEMENT_DESC* inputElemetDesc, size_t numElements);
+        static HRESULT AutoGenerateInputLayout(const char* name_, ID3D11InputLayout** inputLayout_, D3D11_INPUT_ELEMENT_DESC* inputElemetDesc, size_t numElements);
 
         static void Exterminate();
     };

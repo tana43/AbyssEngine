@@ -8,8 +8,8 @@ namespace AbyssEngine
     {
     public:
         Transform() {}
-        Transform(Vector3 position, Vector4 quaternion) {}
-        Transform(Vector3 position, Vector3 eular) {}
+        Transform(Vector3 position_, Vector4 quaternion) {}
+        Transform(Vector3 position_, Vector3 eular) {}
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
 
@@ -20,7 +20,7 @@ namespace AbyssEngine
 
         //getter setter
         [[nodiscard]] const Vector3& GetPosition() const { return position_; };
-        void SetPosition(const Vector3& position) { position_ = position; }
+        void SetPosition(const Vector3& position_) { position_ = position_; }
         void SetPositionX(const float& x) { position_.x = x; }
         void SetPositionY(const float& y) { position_.y = y; }
         void SetPositionZ(const float& z) { position_.z = z; }
@@ -41,7 +41,7 @@ namespace AbyssEngine
 
         //getter setter
         [[nodiscard]] const Vector3& GetLocalPosition() const { return localPosition_; };
-        void SetLocalPosition(const Vector3& position) { localPosition_ = position; }
+        void SetLocalPosition(const Vector3& position_) { localPosition_ = position_; }
         void SetLocalPositionX(const float& x) { localPosition_.x = x; }
         void SetLocalPositionY(const float& y) { localPosition_.y = y; }
         void SetLocalPositionZ(const float& z) { localPosition_.z = z; }

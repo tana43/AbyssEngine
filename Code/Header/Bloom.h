@@ -15,7 +15,7 @@ namespace AbyssEngine
 	class Bloom
 	{
 	public:
-		Bloom(uint32_t width, uint32_t height);
+		Bloom(uint32_t width, uint32_t height_);
 		~Bloom() = default;
 		Bloom(const Bloom&) = delete;
 		Bloom& operator =(const Bloom&) = delete;

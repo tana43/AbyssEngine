@@ -1752,14 +1752,14 @@ int ImGui::TableGetHoveredRow()
     return (int)table_instance->HoveredRowLast;
 }
 
-void ImGui::TableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n)
+void ImGui::TableSetBgColor(ImGuiTableBgTarget target, ImU32 color_, int column_n)
 {
     ImGuiContext& g = *GImGui;
     ImGuiTable* table = g.CurrentTable;
     IM_ASSERT(target != ImGuiTableBgTarget_None);
 
-    if (color == IM_COL32_DISABLE)
-        color = 0;
+    if (color_ == IM_COL32_DISABLE)
+        color_ = 0;
 
     // We cannot draw neither the cell or row background immediately as we don't know the row height at this point in time.
     switch (target)
@@ -1775,7 +1775,7 @@ void ImGui::TableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n
         if (table->RowCellDataCurrent < 0 || table->RowCellData[table->RowCellDataCurrent].Column != column_n)
             table->RowCellDataCurrent++;
         ImGuiTableCellData* cell_data = &table->RowCellData[table->RowCellDataCurrent];
-        cell_data->BgColor = color;
+        cell_data->BgColor = color_;
         cell_data->Column = (ImGuiTableColumnIdx)column_n;
         break;
     }
@@ -1786,7 +1786,7 @@ void ImGui::TableSetBgColor(ImGuiTableBgTarget target, ImU32 color, int column_n
             return;
         IM_ASSERT(column_n == -1);
         int bg_idx = (target == ImGuiTableBgTarget_RowBg1) ? 1 : 0;
-        table->RowBgColor[bg_idx] = color;
+        table->RowBgColor[bg_idx] = color_;
         break;
     }
     default:

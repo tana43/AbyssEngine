@@ -973,8 +973,8 @@ void ImGui_ImplWin32_EnableAlphaCompositing(void* hwnd)
         return;
 
     BOOL opaque;
-    DWORD color;
-    if (_IsWindows8OrGreater() || (SUCCEEDED(::DwmGetColorizationColor(&color, &opaque)) && !opaque))
+    DWORD color_;
+    if (_IsWindows8OrGreater() || (SUCCEEDED(::DwmGetColorizationColor(&color_, &opaque)) && !opaque))
     {
         HRGN region = ::CreateRectRgn(0, 0, -1, -1);
         DWM_BLURBEHIND bb = {};

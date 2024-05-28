@@ -57,13 +57,20 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animDat
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
 void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
+    //ブレンドの速度制限
+    const float blendMaxSpeed = 2.0f * Time::deltaTime_;
+    const float blendSpeed = std::clamp(blendWeight_ - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
+
+    //実際のブレンド値の計算
+    const float nextBlendWeight = std::clamp(lastBlendWeight_ + blendSpeed, 0.0f, 1.0f);
+
     //ブレンドする２つのモーションを取る blendWeightが[0]と[1]のweight値に収まる範囲のアニメーションを探す
     BlendAnim blendAnims[2] = {blendAnims_[0],blendAnims_[1]};
     if (blendAnims_.size() >= 2)
     {
         for (int i = 2; i < blendAnims_.size(); i++)
         {
-            if (blendAnims_[i].weight_ < blendWeight_)
+            if (blendAnims_[i].weight_ < nextBlendWeight)
             {
                 if (blendAnims_[i].weight_ > blendAnims[0].weight_)
                 {
@@ -82,13 +89,6 @@ void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     
     //二つのモーションデータから実際に補完率に使われる値を計算
     //急なブレンドの重さの変化を防ぐように前回の値から変動する値に上限を設ける
-
-    //ブレンドの制限速度
-    const float blendMaxSpeed = 5.0f * Time::deltaTime_;
-    const float blendSpeed = std::clamp(blendWeight_ - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
-
-    const float nextBlendWeight = lastBlendWeight_ + blendSpeed;
-
     const float maxBlendWeight = blendAnims[1].weight_ - blendAnims[0].weight_;
     const float blendWeight = std::clamp((nextBlendWeight - blendAnims[0].weight_) / maxBlendWeight
                                         ,0.0f,1.0f);

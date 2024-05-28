@@ -223,6 +223,12 @@
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Animator.h" />
+    <ClInclude Include="Code\Header\DebugRenderer.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\LineRenderer.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -364,6 +370,12 @@
       <Filter>Code\Source\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Animator.cpp" />
+    <ClCompile Include="Code\Source\DebugRenderer.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\LineRenderer.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -435,6 +447,18 @@
     <FxCompile Include="Shader\CsmOpaqueStaticMeshVS.hlsl">
       <Filter>Shader\Gltf</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\DebugPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DebugVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LinePS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LineVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
@@ -469,6 +493,12 @@
     </None>
     <None Include="Shader\CsmOpaque.hlsli">
       <Filter>Shader\Gltf</Filter>
+    </None>
+    <None Include="Shader\Debug.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\Line.hlsli">
+      <Filter>Shader</Filter>
     </None>
   </ItemGroup>
 </Project>
