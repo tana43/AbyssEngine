@@ -48,6 +48,9 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
 
 void Player::Update()
 {
+    //プレイヤーカメラがメインになっていなければ更新しない
+    if (!camera_->GetIsMainCamera())return;
+
     MoveUpdate();
 
     CameraRollUpdate();

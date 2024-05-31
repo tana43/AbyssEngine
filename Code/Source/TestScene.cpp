@@ -41,11 +41,14 @@ void TestScene::Initialize()
     //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //);
 
+#if 0//ヴィテスモデル仮生成
     const auto& vitesse = InstanceActor("Vitesse");
     vitesse->AddComponent<SkeletalMesh>(
         "./Assets/Models/Vitesse/Vitesse_v01.glb"
         //"./Assets/Models/Vitesse/Animations/G_Idle.glb"
     );
+#endif // 0//ヴィテスモデル仮生成
+
     
 #if 0
     const auto& p2 = InstanceActor("testGltf_2");

@@ -106,6 +106,9 @@ namespace AbyssEngine
 
 
         Vector2 lastBlendWeight_ = {0,0};//前回のブレンドの重さ
+
+        std::vector<GeometricSubstance::Node> blendAnimNodes_[2];//ブレンドに使うノード
+        std::vector<GeometricSubstance::Node> secondBlendAnimNodes_[2];//さらにブレンドするのに使うノード
     };
 }
 
