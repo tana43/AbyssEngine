@@ -229,6 +229,12 @@
     <ClInclude Include="Code\Header\LineRenderer.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\Effect.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\EffectManager.h">
+      <Filter>Code\Header\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -375,6 +381,12 @@
     </ClCompile>
     <ClCompile Include="Code\Source\LineRenderer.cpp">
       <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Effect.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\EffectManager.cpp">
+      <Filter>Code\Source\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

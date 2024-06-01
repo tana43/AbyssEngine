@@ -33,6 +33,7 @@ namespace AbyssEngine
 
     public:
         RenderManager();
+        ~RenderManager();
 
         void Reset();
         void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラーを登録する

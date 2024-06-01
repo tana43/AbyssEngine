@@ -16,6 +16,8 @@
 
 #include "Keyboard.h"
 
+#include "EffectManager.h"
+
 #if _DEBUG
 #include "DebugRenderer.h"
 #include "LineRenderer.h"
@@ -156,6 +158,14 @@ RenderManager::RenderManager()
 	//デバッグ用レンダラー生成
 	debugRenderer_ = std::make_unique<DebugRenderer>(DXSystem::GetDevice());
 	lineRenderer_ = std::make_unique<LineRenderer>(DXSystem::GetDevice(),1024);
+
+	//エフェクシア初期化
+	EffectManager::Instance().Initialize();
+}
+
+RenderManager::~RenderManager()
+{
+	EffectManager::Instance().Finalize();
 }
 
 void RenderManager::Reset()
@@ -203,6 +213,9 @@ void RenderManager::Render()
 	IBLSetResources();
 
 	CheckRenderer();
+
+	//エフェクト更新処理
+	EffectManager::Instance().Update(Time::deltaTime_);
 
 	for (auto& c : cameraList_)
 	{
@@ -279,6 +292,10 @@ void RenderManager::Render()
 				//スカイボックス描画
 				skybox_->Render(bitBlockTransfer_.get());
 
+				//3Dエフェクト描画
+				EffectManager::Instance().Render(camera->viewMatrix_,camera->projectionMatrix_);
+
+				//3Dオブジェクト描画
 				Render3D(camera);
 
 				baseFrameBuffer_[0]->Deactivate();

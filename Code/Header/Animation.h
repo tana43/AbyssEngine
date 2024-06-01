@@ -93,8 +93,8 @@ namespace AbyssEngine
 
         
     private:
-        Vector2 maxWeight_ = { 180.0f,180.0f };//ブレンドの最大値
-        Vector2 minWeight_ = { -180.0f,-180.0f };//ブレンドの最小値
+        Vector2 maxWeight_ = { 180.0f,1.0f };//ブレンドの最大値
+        Vector2 minWeight_ = { -180.0f,0.0f };//ブレンドの最小値
         Vector2 blendWeight_ = { 0.0f,0.0f };//ブレンドの重み
 
         struct BlendAnimData

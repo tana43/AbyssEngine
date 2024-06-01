@@ -33,6 +33,8 @@
     <ClInclude Include="Code\Header\ConstantBuffer.h" />
     <ClInclude Include="Code\Header\DebugRenderer.h" />
     <ClInclude Include="Code\Header\DXSystem.h" />
+    <ClInclude Include="Code\Header\Effect.h" />
+    <ClInclude Include="Code\Header\EffectManager.h" />
     <ClInclude Include="Code\Header\Engine.h" />
     <ClInclude Include="Code\Header\FrameBuffer.h" />
     <ClInclude Include="Code\Header\FullscreenQuad.h" />
@@ -85,6 +87,8 @@
     <ClCompile Include="Code\Source\Component.cpp" />
     <ClCompile Include="Code\Source\DebugRenderer.cpp" />
     <ClCompile Include="Code\Source\DXSystem.cpp" />
+    <ClCompile Include="Code\Source\Effect.cpp" />
+    <ClCompile Include="Code\Source\EffectManager.cpp" />
     <ClCompile Include="Code\Source\Engine.cpp" />
     <ClCompile Include="Code\Source\FrameBuffer.cpp" />
     <ClCompile Include="Code\Source\FullscreenQuad.cpp" />
@@ -396,15 +400,16 @@
       <ConformanceMode>true</ConformanceMode>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External;.\External\Effekseer170e\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;dxgi.lib;DirectXTK.lib;windowsapp.lib;zlib-md.lib;libxml2-md.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Debug;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Debug;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\debug;.\External\Effekseer170e\lib\vs2022\MT\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <AssemblerOutput>AssemblyCode</AssemblerOutput>
@@ -424,15 +429,16 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Scripts\Header;.\Code\Header;.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External;.\External\Effekseer170e\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Release;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Release;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\release;.\External\Effekseer170e\lib\vs2022\MT\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d11.lib;dxgi.lib;DirectXTK.lib;windowsapp.lib;zlib-md.lib;libxml2-md.lib;libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>

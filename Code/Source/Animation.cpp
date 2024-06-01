@@ -53,7 +53,6 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animDat
     blendAnims_ = animData.blendAnims_;
 }
 
-
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
 void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
