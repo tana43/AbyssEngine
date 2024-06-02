@@ -51,37 +51,14 @@ void TestScene::Initialize()
     );
 #endif // 0//ヴィテスモデル仮生成
 
-    
-#if 0
-    const auto& p2 = InstanceActor("testGltf_2");
-    /*p2->AddComponent<StaticMesh>(
-        "./Assets/Models/robot_oj.glb"
-    );*/
-    p2->AddComponent<SkeletalMesh>(
-        //"./Assets/Models/Nico/nico_full_body.glb"
-        "./Assets/Models/UE/Manny/Manny_Idle.glb"
-        //"./Assets/Models/.glb"
-    );
-    SkeletalMesh* model = p2->GetComponent<SkeletalMesh>().get();
-    //model->AppendAnimations({
-    //    "./Assets/Models/Nico/nico_full_body_Anim_NIC_Attack.glb",
-    //    "./Assets/Models/Nico/Hip_Hop_Dancing.glb",
-    //    "./Assets/Models/Nico/Death_From_Right.glb" });
-    model->AppendAnimations({
-        "./Assets/Models/UE/Manny/Manny_Walk.glb",
-        "./Assets/Models/UE/Manny/Manny_Run.glb"
-        });
-
-    const auto& playerCamera = InstanceActor("Player Camera");
-    playerCamera->AddComponent<Camera>();
-    playerCamera->SetParent(p2);
-#else
-    //PlayerComponentによるプレイヤーの実装
-
+    //Player
     const auto& player = InstanceActor("Player");
     player->AddComponent<Player>();
     player->GetTransform()->SetPositionY(4.2f);
-#endif // 0
+
+    //F-14
+    const auto& fighterJet = InstanceActor("F-14A");
+    fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
 
     swordEfe_ = std::make_unique<Effect>("./Assets/Effects/MoonLightSword.efk");
 }
