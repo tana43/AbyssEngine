@@ -29,19 +29,25 @@ void SceneManager::Update()
     }
 }
 
-void SceneManager::AddScene(Scene* Scene, string name_)
+void SceneManager::AddScene(Scene* scene, string name)
 {
-    sceneMap_[name_].reset(Scene);
+    sceneMap_[name].reset(scene);
+    scene->name_ = name;
 }
 
-void SceneManager::SetNextScene(std::string name_)
+void SceneManager::SetNextScene(std::string name)
 {
-    nextSceneName_ = name_;
+    nextSceneName_ = name;
 }
 
 void SceneManager::DrawImGui()
 {
     if (activeScene_)activeScene_->DrawImGui();
+}
+
+void SceneManager::DrawWorldOutLinerImGui()
+{
+    if (activeScene_)activeScene_->DrawWorldOutLinerImGui();
 }
 
 Scene& SceneManager::GetActiveScene()

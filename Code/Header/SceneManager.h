@@ -22,12 +22,13 @@ namespace AbyssEngine
         void Update(); //更新
 
         //シーンの追加
-        void AddScene(Scene* Scene,std::string name_);
+        void AddScene(Scene* scene,std::string name);
 
         //シーンの変更
-        void SetNextScene(std::string name_);
+        void SetNextScene(std::string name);
 
-        void DrawImGui();
+        void DrawImGui();//シーンのデバッグ表示
+        void DrawWorldOutLinerImGui();//ワールド上に生成されるアクターのデバッグ表示
 
     private:
 

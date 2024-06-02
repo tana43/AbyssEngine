@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "Effect.h"
 
 namespace AbyssEngine
 {
@@ -8,6 +9,9 @@ namespace AbyssEngine
     private:
         void Initialize()override;
         void Update()override;
+        void DrawImGui()override;
+
+        std::unique_ptr<Effect> swordEfe_;
     };
 }
 

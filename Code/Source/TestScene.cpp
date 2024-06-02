@@ -5,6 +5,8 @@
 #include "StaticMesh.h"
 #include "Player.h"
 #include "DebugRenderer.h"
+
+#include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
 
 using namespace AbyssEngine;
@@ -81,10 +83,25 @@ void TestScene::Initialize()
     player->GetTransform()->SetPositionY(4.2f);
 #endif // 0
 
-    
+    swordEfe_ = std::make_unique<Effect>("./Assets/Effects/MoonLightSword.efk");
 }
 
 void TestScene::Update()
 {
     DebugRenderer::Get().DrawSphere(Vector3(0, 0, 0), 10.0f, Vector4(1, 0, 0, 0));
+}
+
+void TestScene::DrawImGui()
+{
+    static Vector3 pos = {};
+    static float scale = 1.0f;
+
+    if(ImGui::Button("Play Effect"))
+    {
+        swordEfe_->Play(pos, scale);
+    }
+
+    ImGui::DragFloat3("Effect Position", &pos.x);
+    ImGui::DragFloat("Effect Scale", &scale,0.1f,0.01f);
+
 }

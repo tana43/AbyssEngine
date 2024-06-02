@@ -106,6 +106,13 @@ void Engine::DrawDebug()
         //ワールドに存在するアクターを対象
         if (ImGui::BeginMenu("World OutLiner"))
         {
+            sceneManager_->DrawWorldOutLinerImGui();
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu(sceneManager_->GetActiveScene().name_.c_str()))
+        {
             sceneManager_->DrawImGui();
 
             ImGui::EndMenu();

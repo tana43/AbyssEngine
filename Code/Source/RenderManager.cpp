@@ -292,11 +292,11 @@ void RenderManager::Render()
 				//スカイボックス描画
 				skybox_->Render(bitBlockTransfer_.get());
 
-				//3Dエフェクト描画
-				EffectManager::Instance().Render(camera->viewMatrix_,camera->projectionMatrix_);
-
 				//3Dオブジェクト描画
 				Render3D(camera);
+
+				//3Dエフェクト描画
+				EffectManager::Instance().Render(camera->viewMatrix_, camera->projectionMatrix_);
 
 				baseFrameBuffer_[0]->Deactivate();
 
