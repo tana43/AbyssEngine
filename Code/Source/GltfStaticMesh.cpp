@@ -20,6 +20,7 @@
 #include "Texture.h"
 #include "BoundingBox.h"
 #include "DXSystem.h"
+#include "RenderManager.h"
 
 using namespace DirectX;
 using namespace AbyssEngine;
@@ -76,10 +77,10 @@ GltfStaticMesh::GltfStaticMesh(const std::string& filename) : GeometricSubstance
 		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 4, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	staticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/StaticMeshVS.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
-#if 1
-	staticMeshPs_ =  Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstancePS.cso");
+#if ENABLE_DIFFERD_RENDERING
+	staticMeshPs_ =  Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstanceGBufferPS.cso");
 #else
-	staticMeshPscreatePS = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/FilamentPS.cso");
+	staticMeshPs_ =  Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstancePS.cso");
 #endif
 
 	D3D11_INPUT_ELEMENT_DESC csmOpaqueInputElementDesc[] =

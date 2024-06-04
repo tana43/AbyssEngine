@@ -309,9 +309,6 @@
     <ClCompile Include="Code\Source\Keyboard.cpp">
       <Filter>Code\Source\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\DXSystem.cpp">
-      <Filter>Code\Source\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\StaticMesh.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
@@ -387,6 +384,9 @@
     </ClCompile>
     <ClCompile Include="Code\Source\EffectManager.cpp">
       <Filter>Code\Source\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\DXSystem.cpp">
+      <Filter>Code\Source\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -471,6 +471,9 @@
     <FxCompile Include="Shader\LineVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\GeometricSubstanceGBufferPS.hlsl">
+      <Filter>Shader\Gltf</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
@@ -510,6 +513,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\Line.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\GBuffer.hlsli">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

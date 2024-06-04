@@ -161,6 +161,54 @@ RenderManager::RenderManager()
 
 	//エフェクシア初期化
 	EffectManager::Instance().Initialize();
+
+	//G-Buffer生成
+#if ENABLE_DIFFERD_RENDERING
+	{
+		HRESULT hr = S_OK;
+
+		D3D11_TEXTURE2D_DESC texture2dDesc{};
+		texture2dDesc.Width = DXSystem::GetScreenWidth();
+		texture2dDesc.Height = DXSystem::GetScreenHeight();
+		texture2dDesc.MipLevels = 1;
+		texture2dDesc.ArraySize = 1;
+		texture2dDesc.SampleDesc.Count = 1;
+		texture2dDesc.SampleDesc.Quality = 0;
+		texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
+		texture2dDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		texture2dDesc.CPUAccessFlags = 0;
+		texture2dDesc.MiscFlags = 0;
+
+		DXGI_FORMAT formats[] =
+		{
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			DXGI_FORMAT_R32_FLOAT,
+		};
+		for (int i = GB_BaseColor; i < GB_Max; ++i)
+		{
+			texture2dDesc.Format = formats[i];
+
+			Microsoft::WRL::ComPtr<ID3D11Texture2D> color_buffer{};
+			hr = DXSystem::GetDevice()->CreateTexture2D(&texture2dDesc, NULL, color_buffer.GetAddressOf());
+			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+			//	レンダーターゲットビュー生成
+			hr = DXSystem::GetDevice()->CreateRenderTargetView(color_buffer.Get(), NULL, gBufferRenderTargetView_[i].GetAddressOf());
+			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+			//	シェーダーリソースビュー生成
+			hr = DXSystem::GetDevice()->CreateShaderResourceView(color_buffer.Get(), NULL, gBufferShaderResourceView_[i].GetAddressOf());
+			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+		}
+	}
+
+	//シェーダーの読み込み
+	{
+	 
+	}
+
+#endif // ENABLE_DIFFERD_RENDERING
 }
 
 RenderManager::~RenderManager()
@@ -285,10 +333,28 @@ void RenderManager::Render()
 				//bufferScene_.lightColor_ = Vector3(1, 1, 1);
 
 
+#if ENABLE_DIFFERD_RENDERING 
+				//出力先をGBufferに変更
+				ID3D11RenderTargetView* renderTargets[GB_Max] =
+				{
+					gBufferRenderTargetView_[GB_BaseColor].Get(),
+					gBufferRenderTargetView_[GB_Emissive].Get(),
+					gBufferRenderTargetView_[GB_Normal].Get(),
+					gBufferRenderTargetView_[GB_Parameters].Get(),
+					gBufferRenderTargetView_[GB_Depth].Get()
+				};
+				FLOAT clearColor[] = { 0.0f,0.0f,0.0f,0.0f };
+				for (int i = GB_BaseColor; i < GB_Max; i++)
+				{
+					DXSystem::GetDeviceContext()->ClearRenderTargetView(renderTargets[i], clearColor);
+				}
+				DXSystem::GetDeviceContext()->OMSetRenderTargets(GB_Max, renderTargets, DXSystem::GetDepthStencilView());
+#else
 				//オフスクリーンレンダリング
 				baseFrameBuffer_[0]->Clear(0.4f, 0.4f, 0.4f, 1.0f);
 				baseFrameBuffer_[0]->Activate();
-
+#endif // ENABLE_DIFFERD_RENDERING 
+				
 				//スカイボックス描画
 				skybox_->Render(bitBlockTransfer_.get());
 
@@ -297,6 +363,19 @@ void RenderManager::Render()
 
 				//3Dエフェクト描画
 				EffectManager::Instance().Render(camera->viewMatrix_, camera->projectionMatrix_);
+
+#if _DEBUG
+				//デバッグレンダラー
+				if (Keyboard::GetKeyDown(DirectX::Keyboard::D5))
+				{
+					enableDebugRender_ = !enableDebugRender_;
+				}
+				if (enableDebugRender_)
+				{
+					debugRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
+					lineRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
+				}
+#endif // _DEBUG
 
 				baseFrameBuffer_[0]->Deactivate();
 
@@ -334,18 +413,7 @@ void RenderManager::Render()
 					};
 					bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
 
-#if _DEBUG
-					//デバッグレンダラー
-					if (Keyboard::GetKeyDown(DirectX::Keyboard::D5))
-					{
-						enableDebugRender_ = !enableDebugRender_;
-					}
-					if (enableDebugRender_)
-					{
-						debugRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
-						lineRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
-					}
-#endif // _DEBUG
+
 
 					postEffectedFrameBuffer_->Deactivate();
 #endif // 0
@@ -409,6 +477,25 @@ void RenderManager::DrawImGui()
 
 		ImGui::EndMenu();
 	}
+
+	//GBufferをテクスチャ表示
+	if (ImGui::Begin("G-Buffer"))
+	{
+		static const char* GBufferNames[] = 
+		{
+			"Base Color",
+			"Emissive",
+			"Normal",
+			"Parameters",
+			"Depth",
+		};
+		for (int i = GB_BaseColor; i < GB_Max; ++i)
+		{
+			ImGui::Text(GBufferNames[i]);
+			ImGui::Image(gBufferShaderResourceView_[i].Get(), { 256, 144 }, { 0, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
+		}
+		ImGui::End();
+	}
 }
 
 void RenderManager::ChangeMainCamera(Camera* camera)
@@ -455,7 +542,12 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 	DebugRSStateSelect();
 #endif // _DEBUG
 
+#if ENABLE_DIFFERD_RENDERING
+	DXSystem::SetBlendState(BS_State::GBuffer);
+#else
 	DXSystem::SetBlendState(BS_State::Off);
+#endif // ENABLE_DIFFERD_RENDERING
+
 	DXSystem::SetDepthStencilState(DS_State::LEqual);
 	//DXSystem::SetRasterizerState(RS_State::Cull_None);
 	DXSystem::SetRasterizerState(rasterizerState3D);

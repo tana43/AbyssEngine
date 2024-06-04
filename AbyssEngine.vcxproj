@@ -230,6 +230,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="Shader\GeometricSubstanceGBufferPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\GeometricSubstancePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -306,6 +312,7 @@
     <None Include="Shader\CsmTransparent.hlsli" />
     <None Include="Shader\Debug.hlsli" />
     <None Include="Shader\FullscreenQuad.hlsli" />
+    <None Include="Shader\GBuffer.hlsli" />
     <None Include="Shader\GeometricSubstance.hlsli" />
     <None Include="Shader\ImageBasedLighting.hlsli" />
     <None Include="Shader\Line.hlsli" />

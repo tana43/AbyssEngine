@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "BoundingBox.h"
+#include "RenderManager.h"
 
 using namespace AbyssEngine;
 using namespace DirectX;
@@ -64,7 +65,12 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 		{ "WEIGHTS", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 6, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	skeletalMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/SkeletalMeshVS.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
+#if ENABLE_DIFFERD_RENDERING
+	skeletalMeshPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstanceGBufferPS.cso");
+#else
 	skeletalMeshPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstancePS.cso");
+#endif // ENABLE_DIFFERD_RENDRING
+
 
 	D3D11_INPUT_ELEMENT_DESC csmOpaqueInputElementDesc[] =
 	{

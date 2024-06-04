@@ -1,5 +1,8 @@
 #pragma once
 
+//ディファードレンダリング オン・オフ
+#define ENABLE_DIFFERD_RENDERING 0
+
 #include <vector>
 #include "MathHelper.h"
 #include "Renderer.h"
@@ -136,6 +139,10 @@ namespace AbyssEngine
         float criticalDepthValue_ = 800.0f;
         bool enableShadow_ = true;
 
+        //G-Buffer
+        Microsoft::WRL::ComPtr<ID3D11RenderTargetView> gBufferRenderTargetView_[GB_Max];
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> gBufferShaderResourceView_[GB_Max];
+
         public:
 #if _DEBUG
         //デバッグレンダラー
@@ -143,6 +150,8 @@ namespace AbyssEngine
         std::unique_ptr<LineRenderer> lineRenderer_;
         bool enableDebugRender_ = false;
 #endif // _DEBUG
+
+        
     private:
 
         //2Dオブジェクトのレンダリング

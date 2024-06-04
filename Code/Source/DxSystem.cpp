@@ -669,6 +669,22 @@ bool DXSystem::CreateBlendState()
             bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
             break;
+        case BS_State::GBuffer:
+            ZeroMemory(&bd, sizeof(bd));
+            bd.AlphaToCoverageEnable = FALSE;
+            bd.IndependentBlendEnable = FALSE;
+            for (int i = GB_BaseColor; i < GB_Max; i++)
+            {
+                bd.RenderTarget[i].BlendEnable = FALSE;
+                bd.RenderTarget[i].SrcBlend = D3D11_BLEND_ONE;
+                bd.RenderTarget[i].DestBlend = D3D11_BLEND_ZERO;
+                bd.RenderTarget[i].BlendOp = D3D11_BLEND_OP_ADD;
+                bd.RenderTarget[i].SrcBlendAlpha = D3D11_BLEND_ONE;
+                bd.RenderTarget[i].DestBlendAlpha = D3D11_BLEND_ZERO;
+                bd.RenderTarget[i].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+                bd.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+            break;
         }
         //ブレンドステート生成
         const HRESULT hr = instance->device_->CreateBlendState(&bd, instance->blendStates_[state].GetAddressOf());

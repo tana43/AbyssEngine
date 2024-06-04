@@ -21,7 +21,19 @@ namespace AbyssEngine
 	//RastarizerState
 	enum class RS_State {Cull_Back,Cull_Front,Cull_None,Standard,Wire};
 	//BlendState
-	enum class BS_State { Off, Alpha, Alpha_Test, Transparent, Add, Subtract, Replace, Multiply };
+	enum class BS_State { Off, Alpha, Alpha_Test, Transparent, Add, Subtract, Replace, Multiply ,GBuffer};
+
+	//G-Buffer
+	enum GBufferId
+	{
+		GB_BaseColor = 0,
+		GB_Emissive,
+		GB_Normal,
+		GB_Parameters,
+		GB_Depth,
+		//必要なら追加（シェーダー側の対応も必須）
+		GB_Max,
+	};
 
 	//DirectXラッパークラス
 	//メモリリーク起こすのでstaticやめて素直に作ります...
@@ -40,6 +52,7 @@ namespace AbyssEngine
 		static bool Initialize(HWND hWnd, int width, int height_);//初期化
 		static void Release();//後始末
 		static void Clear();//レンダーターゲットのクリア
+		static void GBufferClearAndSetTarget();//GBufferのクリアと出力先の変更
 		static void Flip(int n = 0);//フリップ処理
 
 		static ID3D11Device* GetDevice() { return instance->device_.Get(); }
@@ -84,7 +97,7 @@ namespace AbyssEngine
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerStates_[Rasterizer_Type];
 		static bool CreateRasterizerState(); //ラスタライザーステートの作成
 
-		static constexpr int Blend_Type = 8; //用意されたブレンドステートの数
+		static constexpr int Blend_Type = 9; //用意されたブレンドステートの数
 		Microsoft::WRL::ComPtr<ID3D11BlendState>	blendStates_[Blend_Type];
 		static bool CreateBlendState(); //ブレンドステートの作成
 
