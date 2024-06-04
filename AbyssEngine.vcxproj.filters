@@ -235,6 +235,7 @@
     <ClInclude Include="Code\Header\EffectManager.h">
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -388,6 +389,7 @@
     <ClCompile Include="Code\Source\DXSystem.cpp">
       <Filter>Code\Source\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
