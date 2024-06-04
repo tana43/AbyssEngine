@@ -78,7 +78,7 @@ void Player::MoveUpdate()
     //入力値がある場合は加速
     if (inputVec.LengthSquared() > 0.01f)
     {
-        auto moveVec = camera_->ConvertTo2DVectorFromCamera(inputVec);
+        moveVec_ = camera_->ConvertTo2DVectorFromCamera(inputVec);
 
         //スティックを少しだけ倒しているなら、加速も緩く、遅い速度を保たせる
         ///速力更新
@@ -86,7 +86,7 @@ void Player::MoveUpdate()
             //スティックの入力の大きさに応じて加速度を変更
             acceleration_ = baseAcceleration_ * inputVec.Length();
 
-            velocity_ = velocity_ + moveVec * (acceleration_ * Time::deltaTime_);
+            velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
 
             //速度制限
             if (velocity_.Length() > Max_Speed)
@@ -100,6 +100,12 @@ void Player::MoveUpdate()
     {
         //入力値がほぼない場合は減速処理
         velocity_ = velocity_ - (velocity_ * (deceleration_ * Time::deltaTime_));
+
+        //速度が０に近いときは完全に０にする
+        if (velocity_.LengthSquared() > 0.01f)
+        {
+            velocity_ = {};
+        }
     }
 
     //座標更新
@@ -116,6 +122,8 @@ void Player::MoveUpdate()
     Max_Speed = Input::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
 
     moveAnimation_->SetBlendWeight(velocity_.Length() / Run_Max_Speed);
+
+    moveVec_ = {};
 }
 
 void Player::CameraRollUpdate()

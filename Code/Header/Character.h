@@ -28,12 +28,17 @@ namespace AbyssEngine
         //指定方向に回転
         void TurnY(Vector3 dir,bool smooth = true/*なめらかに回転するか*/);
 
+        void Move();//移動処理
+
+        void UpdateVelocity();//速力更新
+        void UpdateMove();//移動処理による位置更新
     public:
         constexpr static float Gravity = 1.0f;
 
     protected:
         bool isActive_ = true;
 
+        Vector3 moveVec_;//移動方向
         Vector3 velocity_;//速度
         float acceleration_ = 1.0f;//加速力
         float deceleration_ = 5.0f;//減速力

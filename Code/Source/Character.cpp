@@ -77,3 +77,51 @@ void Character::TurnY(Vector3 dir, bool smooth)
     rotY += rotSpeed * Time::deltaTime_;
     transform_->SetRotationY(rotY);
 }
+
+void Character::Move()
+{
+    UpdateVelocity();
+    UpdateMove(); 
+}
+
+void Character::UpdateVelocity()
+{
+    //速力更新
+    {
+        if (moveVec_.LengthSquared() < 0.01f)
+        {
+            velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
+
+            //速度制限
+            if (velocity_.Length() > Max_Speed)
+            {
+                velocity_.Normalize();
+                velocity_ = velocity_ * Max_Speed;
+            }
+        }
+        else//減速処理
+        {
+            //入力値がほぼない場合は減速処理
+            velocity_ = velocity_ - (velocity_ * (deceleration_ * Time::deltaTime_));
+
+            //速度が０に近いときは完全に０にする
+            if (velocity_.LengthSquared() > 0.01f)
+            {
+                velocity_ = {};
+            }
+        }
+    }
+}
+
+void Character::UpdateMove()
+{
+    //座標更新
+    {
+        auto pos = transform_->GetPosition();
+        pos = pos + velocity_ * Time::deltaTime_;
+        transform_->SetPosition(pos);
+    }
+
+    //回転
+    TurnY(velocity_);
+}
