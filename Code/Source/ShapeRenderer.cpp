@@ -1,6 +1,8 @@
 #include "Misc.h"
-#include "GpuResourceUtils.h"
+#include "Shader.h"
 #include "ShapeRenderer.h"
+
+using namespace AbyssEngine;
 
 // コンストラクタ
 ShapeRenderer::ShapeRenderer(ID3D11Device* device)
@@ -12,25 +14,18 @@ ShapeRenderer::ShapeRenderer(ID3D11Device* device)
 	};
 
 	// 頂点シェーダー
-	GpuResourceUtils::LoadVertexShader(
-		device,
+	vertexShader = Shader<ID3D11VertexShader>::Emplace(
 		"Data/Shader/ShapeRendererVS.cso",
-		inputElementDesc,
-		_countof(inputElementDesc),
 		inputLayout.GetAddressOf(),
-		vertexShader.GetAddressOf());
+		inputElementDesc,
+		_countof(inputElementDesc)
+		);
 
 	// ピクセルシェーダー
-	GpuResourceUtils::LoadPixelShader(
-		device,
-		"Data/Shader/ShapeRendererPS.cso",
-		pixelShader.GetAddressOf());
+	pixelShader = Shader<ID3D11PixelShader>::Emplace("Data/Shader/ShapeRendererPS.cso");
 
 	// 定数バッファ
-	GpuResourceUtils::CreateConstantBuffer(
-		device,
-		sizeof(CbMesh),
-		constantBuffer.GetAddressOf());
+	constantBuffer_ = std::make_unique<ConstantBuffer<CbMesh>>();
 
 	// 箱メッシュ生成
 	CreateBoxMesh(device, 1.0f, 1.0f, 1.0f);
@@ -161,7 +156,7 @@ void ShapeRenderer::CreateMesh(ID3D11Device* device, const std::vector<DirectX::
 	subresourceData.SysMemSlicePitch = 0;
 
 	HRESULT hr = device->CreateBuffer(&desc, &subresourceData, mesh.vertexBuffer.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+	_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
 	mesh.vertexCount = static_cast<UINT>(vertices.size());
 }
@@ -426,11 +421,10 @@ void ShapeRenderer::CreateBoneMesh(ID3D11Device* device, float length)
 }
 
 // 描画実行
-void ShapeRenderer::Render(
-	ID3D11DeviceContext* dc,
-	const DirectX::XMFLOAT4X4& view,
-	const DirectX::XMFLOAT4X4& projection)
+void ShapeRenderer::Render(const DirectX::XMFLOAT4X4& viewProjection)
 {
+	ID3D11DeviceContext* dc = DXSystem::GetDeviceContext();
+
 	// シェーダー設定
 	dc->VSSetShader(vertexShader.Get(), nullptr, 0);
 	dc->PSSetShader(pixelShader.Get(), nullptr, 0);
@@ -438,11 +432,6 @@ void ShapeRenderer::Render(
 
 	// 定数バッファ設定
 	dc->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
-
-	// ビュープロジェクション行列作成
-	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&view);
-	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&projection);
-	DirectX::XMMATRIX VP = V * P;
 
 	// プリミティブ設定
 	UINT stride = sizeof(DirectX::XMFLOAT3);
@@ -456,14 +445,13 @@ void ShapeRenderer::Render(
 
 		// ワールドビュープロジェクション行列作成
 		DirectX::XMMATRIX W = DirectX::XMLoadFloat4x4(&instance.worldTransform);
-		DirectX::XMMATRIX WVP = W * VP;
+		DirectX::XMMATRIX WVP = W * DirectX::XMLoadFloat4x4(&viewProjection);
 
 		// 定数バッファ更新
-		CbMesh cbMesh;
-		DirectX::XMStoreFloat4x4(&cbMesh.worldViewProjection, WVP);
-		cbMesh.color = instance.color;
+		DirectX::XMStoreFloat4x4(&constantBuffer_->data_.worldViewProjection, WVP);
+		constantBuffer_->data_.color = instance.color;
 
-		dc->UpdateSubresource(constantBuffer.Get(), 0, 0, &cbMesh, 0, 0);
+		constantBuffer_->Activate(0, CBufferUsage::v);
 
 		// 描画
 		dc->Draw(instance.mesh->vertexCount, 0);

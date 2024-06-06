@@ -25,9 +25,7 @@ namespace AbyssEngine
 
 		// ï`âÊé¿çs
 		void Render(
-			ID3D11DeviceContext* dc,
-			const DirectX::XMFLOAT4X4& view,
-			const DirectX::XMFLOAT4X4& projection,
+			const DirectX::XMFLOAT4X4& viewProjection,
 			D3D11_PRIMITIVE_TOPOLOGY primitiveTopology);
 
 	private:
@@ -38,7 +36,7 @@ namespace AbyssEngine
 			DirectX::XMFLOAT4X4		viewProjection;
 			DirectX::XMFLOAT4		color;
 		};
-		ConstantBuffer<CbScene> constantBuffer_;
+		std::unique_ptr<ConstantBuffer<CbScene>> constantBuffer_;
 
 		struct Vertex
 		{

@@ -6,8 +6,6 @@ using namespace AbyssEngine;
 HumanoidWeapon::HumanoidWeapon()
 {
     Max_Speed = 1000.0f;
-    acceleration_ = 5.0f;
-    deceleration_ = 10.0f;
 }
 
 void HumanoidWeapon::Update()
@@ -17,10 +15,37 @@ void HumanoidWeapon::Update()
 
 void HumanoidWeapon::UpdateVelocity()
 {
+    //moveVecは飛行中以外でY軸に値が入ることはない
+
+    //垂直移動処理
+    //if (flyingMode_)
+    //{
+    //    //飛行中
+    //    
+    //    //落下速度を徐々に小さくする
+    //    if (fallSpeed_ > 0.1f)
+    //    {
+    //        fallSpeed_ -= propulsion_ * moveVec_.y * Time::deltaTime_;
+    //    }
+    //    else
+    //    {
+    //        fallSpeed_ = 0.0f;
+    //    }
+    //}
+    //else
+    //{
+    //    //落下速度の更新
+    //    fallSpeed_ -= Gravity * Time::deltaTime_;
+    //    if (fallSpeed_ > Fall_Max_Speed)
+    //    {
+    //        fallSpeed_ = Fall_Max_Speed;
+    //    }
+    //}
+
     //速力更新
     if (moveVec_.LengthSquared() < 0.01f)
     {
-        velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
+        velocity_ = velocity_ + moveVec_ * (acceleration_ * propulsion_ * Time::deltaTime_);
 
         //速度制限
         if (velocity_.Length() > Max_Speed)
@@ -31,8 +56,16 @@ void HumanoidWeapon::UpdateVelocity()
     }
     else//減速処理
     {
+        //if (flyingMode_)
+        //{
+
+        //}
+        //else
+        //{
+
+        //}
         //入力値がほぼない場合は減速処理
-        velocity_ = velocity_ - (velocity_ * (deceleration_ * Time::deltaTime_));
+        velocity_ = velocity_ - (velocity_ * (deceleration_ * propulsion_ * Time::deltaTime_));
 
         //速度が０に近いときは完全に０にする
         if (velocity_.LengthSquared() > 0.01f)
@@ -41,10 +74,8 @@ void HumanoidWeapon::UpdateVelocity()
         }
     }
 
-
+    
 }
 
-void HumanoidWeapon::UpadteInputMove()
-{
-}
+
 

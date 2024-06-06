@@ -23,6 +23,8 @@ namespace AbyssEngine
 
     class DebugRenderer;
     class LineRenderer;
+    class PrimitiveRenderer;
+    class ShapeRenderer;
 
     class RenderManager
     {
@@ -146,8 +148,10 @@ namespace AbyssEngine
         public:
 #if _DEBUG
         //デバッグレンダラー
-        std::unique_ptr<DebugRenderer> debugRenderer_;
-        std::unique_ptr<LineRenderer> lineRenderer_;
+        std::unique_ptr<DebugRenderer>      debugRenderer_;
+        std::unique_ptr<LineRenderer>       lineRenderer_;
+        std::unique_ptr<PrimitiveRenderer>  primitiveRenderer_;
+        std::unique_ptr<ShapeRenderer>      shapeRenderer_;
         bool enableDebugRender_ = false;
 #endif // _DEBUG
 

@@ -23,10 +23,7 @@ PrimitiveRenderer::PrimitiveRenderer(ID3D11Device* device)
 	pixelShader = Shader<ID3D11PixelShader>::Emplace("Data/Shader/PrimitiveRendererPS.cso");
 
 	// 定数バッファ
-	GpuResourceUtils::CreateConstantBuffer(
-		device,
-		sizeof(CbScene),
-		constantBuffer.GetAddressOf());
+	constantBuffer_ = std::make_unique<ConstantBuffer<CbScene>>();
 
 	// 頂点バッファ
 	D3D11_BUFFER_DESC desc;
@@ -161,11 +158,11 @@ void PrimitiveRenderer::DrawGrid(int subdivisions, float scale)
 
 // 描画実行
 void PrimitiveRenderer::Render(
-	ID3D11DeviceContext* dc,
-	const DirectX::XMFLOAT4X4& view,
-	const DirectX::XMFLOAT4X4& projection,
+	const DirectX::XMFLOAT4X4& viewProjection,
 	D3D11_PRIMITIVE_TOPOLOGY primitiveTopology)
 {
+	ID3D11DeviceContext* dc = DXSystem::GetDeviceContext();
+
 	// シェーダー設定
 	dc->VSSetShader(vertexShader.Get(), nullptr, 0);
 	dc->PSSetShader(pixelShader.Get(), nullptr, 0);
@@ -174,15 +171,9 @@ void PrimitiveRenderer::Render(
 	// 定数バッファ設定
 	dc->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
-	// ビュープロジェクション行列作成
-	DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&view);
-	DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&projection);
-	DirectX::XMMATRIX VP = V * P;
-
 	// 定数バッファ更新
-	CbScene cbScene;
-	DirectX::XMStoreFloat4x4(&cbScene.viewProjection, VP);
-	dc->UpdateSubresource(constantBuffer.Get(), 0, 0, &cbScene, 0, 0);
+	constantBuffer_->data_.viewProjection = viewProjection;
+	constantBuffer_->Activate(0,CBufferUsage::vp);
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(Vertex);

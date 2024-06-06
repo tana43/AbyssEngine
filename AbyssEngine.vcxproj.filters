@@ -252,6 +252,7 @@
     <ClInclude Include="Code\Header\PrimitiveRenderer.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\Vitesse.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -416,6 +417,7 @@
     <ClCompile Include="Code\Source\PrimitiveRenderer.cpp">
       <Filter>Code\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\Vitesse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

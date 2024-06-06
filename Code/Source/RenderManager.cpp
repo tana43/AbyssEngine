@@ -21,6 +21,8 @@
 #if _DEBUG
 #include "DebugRenderer.h"
 #include "LineRenderer.h"
+#include "PrimitiveRenderer.h"
+#include "ShapeRenderer.h"
 #endif // _DEBUG
 
 #include "imgui/imgui.h"
@@ -155,10 +157,15 @@ RenderManager::RenderManager()
 	//シャドウマップ生成
 	cascadedShadowMap_ = std::make_unique<CascadedShadowMap>(1024.0f * 4,1024.0f * 4);
 
+#if _DEBUG
 	//デバッグ用レンダラー生成
-	debugRenderer_ = std::make_unique<DebugRenderer>(DXSystem::GetDevice());
-	lineRenderer_ = std::make_unique<LineRenderer>(DXSystem::GetDevice(),1024);
+	debugRenderer_     = std::make_unique<DebugRenderer>(DXSystem::GetDevice());
+	lineRenderer_      = std::make_unique<LineRenderer>(DXSystem::GetDevice(), 1024);
+	primitiveRenderer_ = std::make_unique<PrimitiveRenderer>(DXSystem::GetDevice());
+	shapeRenderer_     = std::make_unique<ShapeRenderer>(DXSystem::GetDevice());
+#endif // _DEBUG
 
+	
 	//エフェクシア初期化
 	EffectManager::Instance().Initialize();
 
@@ -374,6 +381,8 @@ void RenderManager::Render()
 				{
 					debugRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
 					lineRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
+					primitiveRenderer_->Render(camera->viewProjectionMatrix_,D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+					shapeRenderer_->Render(camera->viewProjectionMatrix_);
 				}
 #endif // _DEBUG
 

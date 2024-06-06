@@ -1,5 +1,3 @@
-#include "Constants.hlsli"
-
 struct VS_IN
 {
 	float4 position : POSITION;
@@ -10,4 +8,10 @@ struct VS_OUT
 {
 	float4 position : SV_POSITION;
 	float4 color : COLOR;
+};
+
+cbuffer CbScene : register(b0)
+{
+    row_major float4x4 worldViewProjection;
+    float4 color;
 };
