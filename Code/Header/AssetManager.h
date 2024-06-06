@@ -8,7 +8,8 @@ namespace AbyssEngine
 {
     class Asset;
     class Texture;
-
+    class GltfSkeletalMesh;
+    class GltfStaticMesh;
 
     //アセットを管理するクラス
     class AssetManager
@@ -19,6 +20,8 @@ namespace AbyssEngine
         std::weak_ptr<Asset> GetAssetFromId(const std::string& id);
         
         std::unordered_map<std::string, std::shared_ptr<Texture>> cacheTexture_{}; //テクスチャのキャッシュ
+        std::unordered_map<std::string, std::shared_ptr<GltfSkeletalMesh>> cacheSkeletalMesh_{}; //スケルタルメッシュのキャッシュ
+        std::unordered_map<std::string, std::shared_ptr<GltfStaticMesh>> cacheStaticMesh_{}; //スタティックメッシュのキャッシュ
 
 
         void Exit();//後始末

@@ -220,6 +220,8 @@ RenderManager::RenderManager()
 
 RenderManager::~RenderManager()
 {
+	Reset();
+
 	EffectManager::Instance().Finalize();
 }
 
@@ -233,6 +235,17 @@ void RenderManager::Reset()
 		}
 	}
 	renderer2DList_.clear();
+
+	for (auto& r : renderer3DList_)
+	{
+		if (const auto& rend = r.lock())
+		{
+			rend->isCalled_ = false;
+		}
+	}
+	renderer3DList_.clear();
+	
+	cameraList_.clear();
 }
 
 void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)

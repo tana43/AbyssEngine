@@ -15,14 +15,14 @@ ShapeRenderer::ShapeRenderer(ID3D11Device* device)
 
 	// 頂点シェーダー
 	vertexShader = Shader<ID3D11VertexShader>::Emplace(
-		"Data/Shader/ShapeRendererVS.cso",
+		"./Resources/Shader/ShapeRendererVS.cso",
 		inputLayout.GetAddressOf(),
 		inputElementDesc,
 		_countof(inputElementDesc)
 		);
 
 	// ピクセルシェーダー
-	pixelShader = Shader<ID3D11PixelShader>::Emplace("Data/Shader/ShapeRendererPS.cso");
+	pixelShader = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/ShapeRendererPS.cso");
 
 	// 定数バッファ
 	constantBuffer_ = std::make_unique<ConstantBuffer<CbMesh>>();

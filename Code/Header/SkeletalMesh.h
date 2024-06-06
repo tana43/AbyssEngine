@@ -46,7 +46,7 @@ namespace AbyssEngine
 
         //とりあえず描画させてみたいのでユニークポインタ
         //std::unique_ptr<FbxMeshData> model_;
-        std::unique_ptr<GltfSkeletalMesh> model_;
+        std::shared_ptr<GltfSkeletalMesh> model_;
 
         //animatorコンポーネント
         std::shared_ptr<Animator> animator_;

@@ -3,6 +3,8 @@
 #include "GltfStaticMesh.h"
 #include "Engine.h"
 #include "RenderManager.h"
+#include "AssetManager.h"
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -14,7 +16,18 @@ void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
     actor_ = actor;
     transform_ = actor->GetTransform();
 
-    model_ = make_unique<GltfStaticMesh>(filePath_.c_str());
+    //モデル読み込み
+    const auto it = Engine::assetManager_->cacheStaticMesh_.find(filePath_);
+    if (it != Engine::assetManager_->cacheStaticMesh_.end())
+    {
+        model_ = it->second;
+    }
+    else
+    {
+        //一度も読み込まれていないモデルなら新たに読み込み、アセットマネージャーに登録
+        model_ = make_shared<GltfStaticMesh>(filePath_.c_str());
+        Engine::assetManager_->cacheStaticMesh_[filePath_] = model_;
+    }
 
     //レンダラーマネージャーに登録
     SetActive(true);

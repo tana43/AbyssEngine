@@ -14,13 +14,13 @@ PrimitiveRenderer::PrimitiveRenderer(ID3D11Device* device)
 	};
 	// 頂点シェーダー
 	vertexShader = Shader<ID3D11VertexShader>::Emplace(
-		"Data/Shader/PrimitiveRendererVS.cso",
+		"./Resources/Shader/PrimitiveRendererVS.cso",
 		inputLayout.GetAddressOf(),
 		inputElementDesc,
 		_countof(inputElementDesc));
 
 	// ピクセルシェーダー
-	pixelShader = Shader<ID3D11PixelShader>::Emplace("Data/Shader/PrimitiveRendererPS.cso");
+	pixelShader = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/PrimitiveRendererPS.cso");
 
 	// 定数バッファ
 	constantBuffer_ = std::make_unique<ConstantBuffer<CbScene>>();

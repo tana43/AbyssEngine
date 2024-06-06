@@ -55,7 +55,7 @@ Engine::~Engine()
 
 void Engine::Update()
 {
-    //ImGuiXV
+    ////ImGuiXV
     IMGUI_CTRL_CLEAR_FRAME();
 
     DXSystem::Clear();
@@ -68,7 +68,7 @@ void Engine::Update()
 
     renderManager_->Render();
 
-    //ImGui•`‰æ
+    ////ImGui•`‰æ
     DrawDebug();
     IMGUI_CTRL_DISPLAY();
 

@@ -21,7 +21,7 @@ namespace AbyssEngine
         void RenderShadow()override;
 
     private:
-        std::unique_ptr<GltfStaticMesh> model_;
+        std::shared_ptr<GltfStaticMesh> model_;
     };
 }
 

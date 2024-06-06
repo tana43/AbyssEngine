@@ -5,12 +5,19 @@ using namespace AbyssEngine;
 
 HumanoidWeapon::HumanoidWeapon()
 {
-    Max_Speed = 1000.0f;
+    Max_Speed = 40.0f;
+    deceleration_ = 1.5f;
 }
 
 void HumanoidWeapon::Update()
 {
-    Character::UpdateMove();
+    UpdateInputMove();
+    Move();
+}
+
+void HumanoidWeapon::Move()
+{
+    Character::Move();
 }
 
 void HumanoidWeapon::UpdateVelocity()
@@ -43,7 +50,7 @@ void HumanoidWeapon::UpdateVelocity()
     //}
 
     //速力更新
-    if (moveVec_.LengthSquared() < 0.01f)
+    if (moveVec_.LengthSquared() > 0.01f)
     {
         velocity_ = velocity_ + moveVec_ * (acceleration_ * propulsion_ * Time::deltaTime_);
 
@@ -65,10 +72,12 @@ void HumanoidWeapon::UpdateVelocity()
 
         //}
         //入力値がほぼない場合は減速処理
-        velocity_ = velocity_ - (velocity_ * (deceleration_ * propulsion_ * Time::deltaTime_));
+        Vector3 veloNormal = velocity_;
+        veloNormal.Normalize();
+        velocity_ = velocity_ - (veloNormal * (deceleration_ * propulsion_ * Time::deltaTime_));
 
         //速度が０に近いときは完全に０にする
-        if (velocity_.LengthSquared() > 0.01f)
+        if (velocity_.LengthSquared() < 0.1f)
         {
             velocity_ = {};
         }

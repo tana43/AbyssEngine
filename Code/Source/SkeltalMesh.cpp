@@ -18,8 +18,18 @@ void SkeletalMesh::Initialize(const std::shared_ptr<Actor>& actor)
     actor_ = actor;
     transform_ = actor->GetTransform();
 
-    //model_ = make_unique<FbxMeshData>(DXSystem::device_.Get(), filePath_.c_str());
-	model_ = make_unique<GltfSkeletalMesh>(filePath_.c_str());
+	//モデル読み込み
+	const auto it = Engine::assetManager_->cacheSkeletalMesh_.find(filePath_);
+	if (it != Engine::assetManager_->cacheSkeletalMesh_.end())
+	{
+		model_ = it->second;
+	}
+	else
+	{
+		//一度も読み込まれていないモデルなら新たに読み込み、アセットマネージャーに登録
+		model_ = make_shared<GltfSkeletalMesh>(filePath_.c_str());
+		Engine::assetManager_->cacheSkeletalMesh_[filePath_] = model_;
+	}
 
 	//animatorコンポーネント追加(初期化処理も)
 	animator_ = actor->AddComponent<Animator>();

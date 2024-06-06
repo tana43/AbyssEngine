@@ -88,7 +88,7 @@ void Character::UpdateVelocity()
 {
     //ë¨óÕçXêV
     {
-        if (moveVec_.LengthSquared() < 0.01f)
+        if (moveVec_.LengthSquared() > 0.01f)
         {
             velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
 
