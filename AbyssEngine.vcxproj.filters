@@ -73,6 +73,12 @@
     <Filter Include="Code\Libraries\ImGui">
       <UniqueIdentifier>{d5209d72-b2a8-466b-98c0-89f53010a198}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Debug">
+      <UniqueIdentifier>{20e772bb-e8ec-49e0-bc43-2ce5b64d0ed7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PostEffect">
+      <UniqueIdentifier>{2b0072f5-045e-4d4d-b36f-fcb14e23b8b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -222,7 +228,6 @@
     <ClInclude Include="Code\Header\CharacterManager.h">
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Animator.h" />
     <ClInclude Include="Code\Header\DebugRenderer.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
@@ -235,7 +240,18 @@
     <ClInclude Include="Code\Header\EffectManager.h">
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
+    <ClInclude Include="Code\Header\Animator.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\HumanoidWeapon.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ShapeRenderer.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\PrimitiveRenderer.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -373,7 +389,6 @@
     <ClCompile Include="Code\Source\CharacterManager.cpp">
       <Filter>Code\Source\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Animator.cpp" />
     <ClCompile Include="Code\Source\DebugRenderer.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
@@ -389,7 +404,18 @@
     <ClCompile Include="Code\Source\DXSystem.cpp">
       <Filter>Code\Source\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
+    <ClCompile Include="Code\Source\Animator.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\ShapeRenderer.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\PrimitiveRenderer.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -399,27 +425,6 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\FinalPassPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FullscreenQuadPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FullscreenQuadVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GaussianBlurDownsamplingPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GaussianBlurHorizontalPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GaussianBlurUpsamplingPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GaussianBlurVerticalPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GlowExtractionPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\CsmTransparentGS.hlsl">
@@ -446,9 +451,6 @@
     <FxCompile Include="Shader\SkyboxPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\PostEffectsPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\ToneMapPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
@@ -461,20 +463,56 @@
     <FxCompile Include="Shader\CsmOpaqueStaticMeshVS.hlsl">
       <Filter>Shader\Gltf</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\DebugPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\DebugVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\LinePS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\LineVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\GeometricSubstanceGBufferPS.hlsl">
       <Filter>Shader\Gltf</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DebugPS.hlsl">
+      <Filter>Shader\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DebugVS.hlsl">
+      <Filter>Shader\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PrimitiveRendererPS.hlsl">
+      <Filter>Shader\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PrimitiveRendererVS.hlsl">
+      <Filter>Shader\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LinePS.hlsl">
+      <Filter>Shader\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LineVS.hlsl">
+      <Filter>Shader\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurDownsamplingPS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurHorizontalPS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurUpsamplingPS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurVerticalPS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FullscreenQuadPS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FullscreenQuadVS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PostEffectsPS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GlowExtractionPS.hlsl">
+      <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ShapeRendererPS.hlsl">
+      <Filter>Shader\Debug</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ShapeRendererVS.hlsl">
+      <Filter>Shader\Debug</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -482,12 +520,6 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\ImageBasedLighting.hlsli">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="Shader\FullscreenQuad.hlsli">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="Shader\Bloom.hlsli">
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\Common.hlsli">
@@ -511,14 +543,26 @@
     <None Include="Shader\CsmOpaque.hlsli">
       <Filter>Shader\Gltf</Filter>
     </None>
-    <None Include="Shader\Debug.hlsli">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="Shader\Line.hlsli">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="Shader\GBuffer.hlsli">
       <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\Debug.hlsli">
+      <Filter>Shader\Debug</Filter>
+    </None>
+    <None Include="Shader\PrimitiveRenderer.hlsli">
+      <Filter>Shader\Debug</Filter>
+    </None>
+    <None Include="Shader\Line.hlsli">
+      <Filter>Shader\Debug</Filter>
+    </None>
+    <None Include="Shader\Bloom.hlsli">
+      <Filter>Shader\PostEffect</Filter>
+    </None>
+    <None Include="Shader\FullscreenQuad.hlsli">
+      <Filter>Shader\PostEffect</Filter>
+    </None>
+    <None Include="Shader\ShapeRenderer.hlsli">
+      <Filter>Shader\Debug</Filter>
     </None>
   </ItemGroup>
 </Project>

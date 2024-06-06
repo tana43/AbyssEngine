@@ -49,11 +49,13 @@
     <ClInclude Include="Code\Header\Misc.h" />
     <ClInclude Include="Code\Header\Asset.h" />
     <ClInclude Include="Code\Header\Mouse.h" />
+    <ClInclude Include="Code\Header\PrimitiveRenderer.h" />
     <ClInclude Include="Code\Header\Renderer.h" />
     <ClInclude Include="Code\Header\RenderManager.h" />
     <ClInclude Include="Code\Header\Scene.h" />
     <ClInclude Include="Code\Header\SceneManager.h" />
     <ClInclude Include="Code\Header\Shader.h" />
+    <ClInclude Include="Code\Header\ShapeRenderer.h" />
     <ClInclude Include="Code\Header\SkeletalMesh.h" />
     <ClInclude Include="Code\Header\Skybox.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
@@ -104,11 +106,13 @@
     <ClCompile Include="Code\Source\MathHelper.cpp" />
     <ClCompile Include="Code\Source\Asset.cpp" />
     <ClCompile Include="Code\Source\Mouse.cpp" />
+    <ClCompile Include="Code\Source\PrimitiveRenderer.cpp" />
     <ClCompile Include="Code\Source\Renderer.cpp" />
     <ClCompile Include="Code\Source\RenderManager.cpp" />
     <ClCompile Include="Code\Source\Scene.cpp" />
     <ClCompile Include="Code\Source\SceneManager.cpp" />
     <ClCompile Include="Code\Source\Shader.cpp" />
+    <ClCompile Include="Code\Source\ShapeRenderer.cpp" />
     <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
     <ClCompile Include="Code\Source\Skybox.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
@@ -263,6 +267,10 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\PrimitiveRendererPS.hlsl" />
+    <FxCompile Include="Shader\PrimitiveRendererVS.hlsl" />
+    <FxCompile Include="Shader\ShapeRendererPS.hlsl" />
+    <FxCompile Include="Shader\ShapeRendererVS.hlsl" />
     <FxCompile Include="Shader\SkeletalMeshVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -320,6 +328,8 @@
     <None Include="Shader\Line.hlsli" />
     <None Include="Shader\Material.hlsli" />
     <None Include="Shader\PhysicallyBasedRendering.hlsli" />
+    <None Include="Shader\PrimitiveRenderer.hlsli" />
+    <None Include="Shader\ShapeRenderer.hlsli" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
