@@ -1,6 +1,8 @@
 #include <mutex>
 #include "Effect.h"
 #include "EffectManager.h"
+#include "Engine.h"
+#include "RenderManager.h"
 
 Effect::Effect(const char* filename)
 {
@@ -9,7 +11,7 @@ Effect::Effect(const char* filename)
     //フリーズする可能性があるので排他制御する
 
     //TODO:排他制御後でする
-    //std::lock_guard<std::mutex> lock(Graphics::Instance().GetMutex());
+    std::lock_guard<std::mutex> lock(AbyssEngine::Engine::renderManager_->GetMutex());
 
     //Effekseerのリソースを読み込む
     //EffekseerはUTF-16のファイルパス以外は対応していないため文字コード変換が必要

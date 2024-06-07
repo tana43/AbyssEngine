@@ -81,10 +81,10 @@ void TestScene::DrawImGui()
 
 }
 
-void AbyssEngine::TestScene::Finalize()
+void TestScene::Finalize()
 {
     Scene::Finalize();
 
-    //‚È‚ñ‚Å‰ð•ú‚È‚¢‚Ì‚©•ª‚©‚ç‚ñ
+    //‚È‚ñ‚ÅŽ©“®‚Å‰ð•ú‚µ‚È‚¢‚Ì‚©•ª‚©‚ç‚ñ
     swordEfe_.reset();
 }

@@ -56,6 +56,10 @@ namespace AbyssEngine
 
         //使用中のカメラを変更
         static void ChangeMainCamera(Camera* camera);
+    
+    public:
+        //ミューテックス取得
+        std::mutex& GetMutex() { return mutex_; }
 
     private:
         struct Vertex
@@ -145,6 +149,8 @@ namespace AbyssEngine
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView> gBufferRenderTargetView_[GB_Max];
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> gBufferShaderResourceView_[GB_Max];
 
+        std::mutex mutex_;
+
         public:
 #if _DEBUG
         //デバッグレンダラー
@@ -154,7 +160,6 @@ namespace AbyssEngine
         std::unique_ptr<ShapeRenderer>      shapeRenderer_;
         bool enableDebugRender_ = false;
 #endif // _DEBUG
-
         
     private:
 

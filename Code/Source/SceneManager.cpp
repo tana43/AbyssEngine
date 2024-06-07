@@ -20,7 +20,11 @@ SceneManager::~SceneManager()
 
 void SceneManager::Exit() const
 {
-    if (activeScene_)activeScene_->Reset();
+    if (activeScene_)
+    {
+        activeScene_->Finalize();
+        activeScene_->Reset();
+    }
 }
 
 void SceneManager::Update()

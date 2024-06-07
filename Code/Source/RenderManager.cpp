@@ -276,6 +276,10 @@ void RenderManager::Add(const shared_ptr<Camera>& camera)
 
 void RenderManager::Render()
 {
+	//別スレッド中にデバイスコンテキストが使われていた場合に
+	//同時アクセスしないように排他制御する
+	std::lock_guard<std::mutex> lock(mutex_);
+
 	DXSystem::SetDefaultView();
 
 	IBLSetResources();
