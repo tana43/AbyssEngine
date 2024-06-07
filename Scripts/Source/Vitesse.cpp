@@ -27,7 +27,8 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         {
             "Walk","FrontFly","RightFly","LeftFly","SkyIdle","Jump"
         });
-    AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 1);
+    AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 
+        static_cast<int>(AnimState::Idle), static_cast<int>(AnimState::FlyFront));
     moveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));

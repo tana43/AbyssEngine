@@ -16,10 +16,10 @@ using namespace AbyssEngine;
 DXSystem*           DXSystem::instance = nullptr;
 HWND				DXSystem::hwnd_;
 DXGI_SAMPLE_DESC	DXSystem::MSAA_;
-//int DXSystem::screenWidth_  = 1920;
-int DXSystem::screenWidth_  = 3840;
-//int DXSystem::screenHeight_ = 1080;
-int DXSystem::screenHeight_ = 2160;
+int DXSystem::screenWidth_  = 1920;
+//int DXSystem::screenWidth_  = 3840;
+int DXSystem::screenHeight_ = 1080;
+//int DXSystem::screenHeight_ = 2160;
 
 DXSystem::DXSystem()
 {
