@@ -44,19 +44,19 @@ void TestScene::Initialize()
     //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
     //);
 
-#if 0//ヴィテスモデル仮生成
+#if 1//ヴィテスモデル仮生成
     const auto& vitesse = InstanceActor("Vitesse");
     vitesse->AddComponent<Vitesse>();
 #endif // 0//ヴィテスモデル仮生成
 
-    ////Player
-    //const auto& player = InstanceActor("Player");
-    //player->AddComponent<Player>();
-    //player->GetTransform()->SetPositionY(4.2f);
+    //Player
+    const auto& player = InstanceActor("Player");
+    player->AddComponent<Player>();
+    player->GetTransform()->SetPositionY(4.2f);
 
-    ////F-14
-    //const auto& fighterJet = InstanceActor("F-14A");
-    //fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
+    //F-14
+    const auto& fighterJet = InstanceActor("F-14A");
+    fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
 
     swordEfe_ = std::make_unique<Effect>("./Assets/Effects/MoonLightSword.efk");
 }

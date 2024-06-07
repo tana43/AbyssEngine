@@ -28,7 +28,7 @@ namespace AbyssEngine
         //指定方向に回転
         void TurnY(Vector3 dir,bool smooth = true/*なめらかに回転するか*/);
 
-        virtual void Move();//移動処理
+        virtual  void Move();//移動処理
 
         virtual void UpdateVelocity();//速力更新
         virtual void UpdateMove();//移動処理による位置更新
