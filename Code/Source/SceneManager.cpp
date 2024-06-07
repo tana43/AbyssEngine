@@ -14,6 +14,10 @@ SceneManager::SceneManager()
     SetNextScene("test");
 }
 
+SceneManager::~SceneManager()
+{
+}
+
 void SceneManager::Exit() const
 {
     if (activeScene_)activeScene_->Reset();

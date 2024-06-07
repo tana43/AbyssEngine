@@ -31,5 +31,7 @@ std::weak_ptr<Asset> AssetManager::GetAssetFromId(const std::string& id)
 void AssetManager::Exit()
 {
     cacheTexture_.clear();
+    cacheSkeletalMesh_.clear();
+    cacheStaticMesh_.clear();
     cacheAsset_.clear();
 }

@@ -43,7 +43,7 @@ namespace AbyssEngine
 		static DXSystem* instance;
 	public:
 		DXSystem();
-		~DXSystem() = default;
+		~DXSystem();
 		
 		static HWND hwnd_;
 

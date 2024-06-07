@@ -25,6 +25,11 @@ DXSystem::DXSystem()
     instance = this;
 }
 
+AbyssEngine::DXSystem::~DXSystem()
+{
+    //instance->deviceContext_->Flush();
+}
+
 bool DXSystem::Initialize(HWND hWnd, int width, int height_)
 {
     hwnd_ = hWnd;
@@ -38,6 +43,7 @@ bool DXSystem::Initialize(HWND hWnd, int width, int height_)
 
 void DXSystem::Release()
 {
+    instance->deviceContext_->ClearState();
     ReportLiveObjectsWrapper();
 }
 
@@ -163,25 +169,24 @@ HRESULT DXSystem::CreateDevice()
     }
 
     //インターフェース対応
-    IDXGIDevice1* hpDXGI = nullptr;
-    if (FAILED(instance->device_.Get()->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&hpDXGI))))
+    Microsoft::WRL::ComPtr<IDXGIDevice1> hpDXGI;
+    if (FAILED(instance->device_.Get()->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(hpDXGI.GetAddressOf()))))
     {
         MessageBoxW(hwnd_, L"GetAdaper", L"Err", MB_ICONSTOP);
         return S_FALSE;
     }
 
     //アダプター取得
-    IDXGIAdapter* hpAdapter = nullptr;
-    if (FAILED(hpDXGI->GetAdapter(&hpAdapter)))
+    Microsoft::WRL::ComPtr<IDXGIAdapter> hpAdapter;
+    if (FAILED(hpDXGI->GetAdapter(hpAdapter.GetAddressOf())))
     {
         MessageBoxW(hwnd_, L"GetAdapter", L"Err", MB_ICONSTOP);
         return S_FALSE;
     }
 
     //ファクトリー取得
-    IDXGIFactory* hpDXGIFactory = nullptr;
-    hpAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&hpDXGIFactory));
-    if (hpDXGIFactory == nullptr)
+    Microsoft::WRL::ComPtr<IDXGIFactory> hpDXGIFactory;
+    if (FAILED(hpAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(hpDXGIFactory.GetAddressOf()))))
     {
         MessageBoxW(hwnd_, L"GetParent", L"Err", MB_ICONSTOP);
         return S_FALSE;

@@ -9,6 +9,9 @@ namespace AbyssEngine
     class Scene
     {
     public:
+        Scene() {}
+        ~Scene() = default;
+
         std::weak_ptr<Actor> Find(const std::string& name_);  //指定した名前のアクターを返す
 
         std::string name_;   //シーン名

@@ -117,7 +117,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 	RoInitializeWrapper initialize(RO_INIT_MULTITHREADED);
 
 	//DXSystem生成
-	AbyssEngine::DXSystem* DxSystem = new AbyssEngine::DXSystem();
+	std::unique_ptr<AbyssEngine::DXSystem> DxSystem = std::make_unique<AbyssEngine::DXSystem>();
+
 
 	//デバイス初期化
 	if (!AbyssEngine::DXSystem::Initialize(hwnd,AbyssEngine::DXSystem::GetScreenWidth(), AbyssEngine::DXSystem::GetScreenHeight()))
@@ -170,7 +171,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 
 	engine.reset();
 
-	delete DxSystem;
+	//delete DxSystem;
 
 	return 0;
 }
