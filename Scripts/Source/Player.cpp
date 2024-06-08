@@ -21,10 +21,10 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     Character::Initialize(actor);
 
     //ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
-    model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/UE/Manny/Manny_Idle.glb");
+    model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb");
     model_->GetAnimator()->AppendAnimations({
-                "./Assets/Models/UE/Manny/Manny_Walk.glb",
-                "./Assets/Models/UE/Manny/Manny_Run.glb"
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_WalkFwd.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_RunFwd.glb"
                 },
         {
             "Walk","Run"

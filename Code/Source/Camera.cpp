@@ -37,7 +37,7 @@ bool Camera::DrawImGui()
         ImGui::DragFloat("Far Z", &farZ_, 1.0f, 0.1f);
 
         ImGui::DragFloat("Arm Length", &armLength_, 0.1f, 0.1f);
-        ImGui::DragFloat("Camera Lag Speed", &cameraLagSpeed_, 0.1f,1.0f);
+        ImGui::DragFloat("Camera Lag Speed", &cameraLagSpeed_, 0.1f,0.1f);
         ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.1f);
         ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.1f);
 
