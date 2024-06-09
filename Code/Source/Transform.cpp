@@ -4,8 +4,8 @@
 #include "imgui/imgui.h"
 
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
 using namespace AbyssEngine;
 using namespace std;
@@ -15,32 +15,61 @@ void Transform::Initialize(const std::shared_ptr<Actor>& actor)
     actor_ = actor;
     transform_ = std::static_pointer_cast<Transform>(shared_from_this());
 
-    //Jsonファイル読み込み
+    //初期位置を保存し、読み込み
+    //Jsonファイル読み込み、書き出し
     {
-        ifstream ifs(actor_->name_.c_str());
+        //ファイルの読み込み
+        string filename = actor_->name_.c_str();
+        string Extension = ".json";
+        filename += Extension;
+        ifstream ifs(filename);
         if (ifs.good())
         {
-            json m_json;
-            ifs >> m_json;
+            //ファイル
+            nlohmann::json mJson;
+            ifs >> mJson;
 
             //読み込んだデータをそれぞれの変数に代入する
-            string name = m_json["Name"];
-            float speed = m_json["Speed"];
-            float firingangle = m_json["Firingangle"];
+            auto& data    = mJson["Transform"];
+            position_    = { data["Position"][0],data["Position"][1],data["Position"][2] };
+            rotation_    = { data["Rotation"][0], data["Rotation"][1], data["Rotation"][2]};
+            scale_       = { data["Scale"][0], data["Scale"][1], data["Scale"][2] };
+            scaleFactor_ = data["ScaleFactor"];
 
-            //代入されたデータを表示する
-            cout << "Name:" << name << endl;
-            cout << "Speed:" << speed << endl;
-            cout << "Firingangle:" << firingangle << endl;
+            localPosition_      = { data["L_Position"][0],data["L_Position"][1],data["L_Position"][2] };
+            localRotation_      = { data["L_Rotation"][0], data["L_Rotation"][1], data["L_Rotation"][2] };
+            localScale_         = { data["L_Scale"][0], data["L_Scale"][1], data["L_Scale"][2] };
+            localScaleFactor_   = data["L_ScaleFactor"];
         }
         else
         {
-            cout << "ファイルの読み込みに失敗しました" << endl;
+            //ファイルが見つからなかったので新たにファイルを作成
+            nlohmann::json mJson = {
+                {"Transform",{
+                    {"Position",{0.0f,0.0f,0.0f}},
+                    {"Rotation",{0.0f,0.0f,0.0f}},
+                    {"Scale",{1.0f,1.0f,1.0f}},
+                    {"ScaleFactor",1.0f},
+
+                    {"L_Position",{0.0f,0.0f,0.0f}},
+                    {"L_Rotation",{0.0f,0.0f,0.0f}},
+                    {"L_Scale",{1.0f,1.0f,1.0f}},
+                    {"L_ScaleFactor",1.0f},
+                }}
+            };
+
+            ////ここでファイルを作成
+            //string filename = actor_->name_.c_str();
+            //string Extension = ".json";
+            //filename += Extension;
+
+            //作成したファイルに内容を書き込む
+            ofstream writingFile;
+            writingFile.open(filename, ios::out);
+            writingFile << mJson.dump() << endl;
+            writingFile.close();
         }
     }
-
-    //親子関係の有無でワールド座標の読み込みをしないか判断する
-    if (const auto& parent = actor_->GetParent().lock())
 }
 
 Matrix Transform::CalcWorldMatrix()
@@ -106,6 +135,34 @@ bool Transform::DrawImGui()
         ImGui::DragFloat3("Rotation", &rotation_.x, 0.5f, -FLT_MAX, FLT_MAX);
         ImGui::DragFloat("ScaleFactor", &scaleFactor_, 0.01f, 0.01f, 100.0f);
 
+        //セーブ
+        if (ImGui::Button("Save", ImVec2(100.0f, 20.0f)))
+        {
+            //ファイルの読み込み
+            string filename = actor_->name_.c_str();
+            string Extension = ".json";
+            filename += Extension;
+            ifstream ifs(filename);
+            if (ifs.good())
+            {
+                //ファイル
+                nlohmann::json mJson;
+                ifs >> mJson;
+
+                auto& data = mJson["Transform"];
+                data["Position"] = { position_.x,position_.y,position_.z };
+                data["Rotation"] = { rotation_.x,rotation_.y,rotation_.z };
+                data["Scale"] = { scale_.x,scale_.y,scale_.z };
+                data["ScaleFactor"] = scaleFactor_;
+
+                //ファイルに内容を書き込む
+                ofstream writingFile;
+                writingFile.open(filename, ios::out);
+                writingFile << mJson.dump() << endl;
+                writingFile.close();
+            }
+        }
+
         //親がいるならローカル座標も表示
         if (actor_->GetParent().lock())
         {
@@ -114,6 +171,34 @@ bool Transform::DrawImGui()
             ImGui::DragFloat3("LScale", &localScale_.x, 0.01f, -FLT_MAX, FLT_MAX);
             ImGui::DragFloat3("LRotation", &localRotation_.x, 0.5f, -FLT_MAX, FLT_MAX);
             ImGui::DragFloat("LScaleFactor", &localScaleFactor_, 0.01f, 0.01f, 100.0f);
+
+            //セーブ
+            if (ImGui::Button("Local Save", ImVec2(100.0f, 20.0f)))
+            {
+                //ファイルの読み込み
+                string filename = actor_->name_.c_str();
+                string Extension = ".json";
+                filename += Extension;
+                ifstream ifs(filename);
+                if (ifs.good())
+                {
+                    //ファイル
+                    nlohmann::json mJson;
+                    ifs >> mJson;
+
+                    auto& data = mJson["Transform"];
+                    data["L_Position"] = { localPosition_.x,localPosition_.y,localPosition_.z };
+                    data["L_Rotation"] = { localRotation_.x,localRotation_.y,localRotation_.z };
+                    data["L_Scale"] = { localScale_.x,localScale_.y,localScale_.z };
+                    data["L_ScaleFactor"] = localScaleFactor_;
+
+                    //ファイルに内容を書き込む
+                    ofstream writingFile;
+                    writingFile.open(filename, ios::out);
+                    writingFile << mJson.dump() << endl;
+                    writingFile.close();
+                }
+            }
         }
 
         ImGui::TreePop();

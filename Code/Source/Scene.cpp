@@ -22,8 +22,8 @@ shared_ptr<Actor> Scene::InstanceActor(const std::string& name_)
 {
     //オブジェクトを生成して登録する
     auto actor = make_shared<Actor>();
-    actor->transform_ = actor->AddComponent<Transform>();
     actor->name_ = name_;
+    actor->transform_ = actor->AddComponent<Transform>();
     actorList_.emplace_back(actor);
 
     return actor;

@@ -33,12 +33,10 @@ void TestScene::Initialize()
         //"./Assets/Models/UE/TestMap.glb"
         //"./Assets/Models/UE/AssetsvilleTown.glb"
     );
-    stage_00->GetTransform()->SetScaleFactor(0.56f);
     const auto& stage_01 = InstanceActor("Stage_00");
     stage_01->AddComponent<StaticMesh>(
         "./Assets/Models/Stage/Burj_Crown.glb"
     );
-    stage_01->GetTransform()->SetScaleFactor(0.56f);
     
 
 #if 1//ヴィテスモデル仮生成
@@ -49,7 +47,6 @@ void TestScene::Initialize()
     //Player
     const auto& player = InstanceActor("Player");
     player->AddComponent<Player>();
-    player->GetTransform()->SetPositionY(4.2f);
 
     //F-14
     const auto& fighterJet = InstanceActor("F-14A");
