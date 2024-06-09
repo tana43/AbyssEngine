@@ -19,33 +19,26 @@ void Transform::Initialize(const std::shared_ptr<Actor>& actor)
     //Jsonファイル読み込み、書き出し
     {
         //ファイルの読み込み
-        string filename = actor_->name_.c_str();
-        string Extension = ".json";
-        filename += Extension;
-        ifstream ifs(filename);
-        if (ifs.good())
+        nlohmann::json mJson = actor_->ReadingJsonFile();
+        if (mJson.find("Transform") != mJson.end())
         {
-            //ファイル
-            nlohmann::json mJson;
-            ifs >> mJson;
-
             //読み込んだデータをそれぞれの変数に代入する
-            auto& data    = mJson["Transform"];
-            position_    = { data["Position"][0],data["Position"][1],data["Position"][2] };
-            rotation_    = { data["Rotation"][0], data["Rotation"][1], data["Rotation"][2]};
-            scale_       = { data["Scale"][0], data["Scale"][1], data["Scale"][2] };
+            auto& data = mJson["Transform"];
+            position_ = { data["Position"][0],data["Position"][1],data["Position"][2] };
+            rotation_ = { data["Rotation"][0], data["Rotation"][1], data["Rotation"][2] };
+            scale_ = { data["Scale"][0], data["Scale"][1], data["Scale"][2] };
             scaleFactor_ = data["ScaleFactor"];
 
-            localPosition_      = { data["L_Position"][0],data["L_Position"][1],data["L_Position"][2] };
-            localRotation_      = { data["L_Rotation"][0], data["L_Rotation"][1], data["L_Rotation"][2] };
-            localScale_         = { data["L_Scale"][0], data["L_Scale"][1], data["L_Scale"][2] };
-            localScaleFactor_   = data["L_ScaleFactor"];
+            localPosition_ = { data["L_Position"][0],data["L_Position"][1],data["L_Position"][2] };
+            localRotation_ = { data["L_Rotation"][0], data["L_Rotation"][1], data["L_Rotation"][2] };
+            localScale_ = { data["L_Scale"][0], data["L_Scale"][1], data["L_Scale"][2] };
+            localScaleFactor_ = data["L_ScaleFactor"];
         }
         else
         {
-            //ファイルが見つからなかったので新たにファイルを作成
-            nlohmann::json mJson = {
-                {"Transform",{
+            //データが見つからなかったので作成
+            mJson["Transform"] = {
+                {
                     {"Position",{0.0f,0.0f,0.0f}},
                     {"Rotation",{0.0f,0.0f,0.0f}},
                     {"Scale",{1.0f,1.0f,1.0f}},
@@ -55,19 +48,11 @@ void Transform::Initialize(const std::shared_ptr<Actor>& actor)
                     {"L_Rotation",{0.0f,0.0f,0.0f}},
                     {"L_Scale",{1.0f,1.0f,1.0f}},
                     {"L_ScaleFactor",1.0f},
-                }}
+                }
             };
 
-            ////ここでファイルを作成
-            //string filename = actor_->name_.c_str();
-            //string Extension = ".json";
-            //filename += Extension;
-
-            //作成したファイルに内容を書き込む
-            ofstream writingFile;
-            writingFile.open(filename, ios::out);
-            writingFile << mJson.dump() << endl;
-            writingFile.close();
+            //ファイルに内容を書き込む
+            actor_->WritingJsonFile(mJson);
         }
     }
 }
@@ -136,31 +121,20 @@ bool Transform::DrawImGui()
         ImGui::DragFloat("ScaleFactor", &scaleFactor_, 0.01f, 0.01f, 100.0f);
 
         //セーブ
-        if (ImGui::Button("Save", ImVec2(100.0f, 20.0f)))
+        static bool buttonFlag = false;
+        if (ImGui::ButtonDoubleChecking("Save",buttonFlag))
         {
             //ファイルの読み込み
-            string filename = actor_->name_.c_str();
-            string Extension = ".json";
-            filename += Extension;
-            ifstream ifs(filename);
-            if (ifs.good())
-            {
-                //ファイル
-                nlohmann::json mJson;
-                ifs >> mJson;
+            nlohmann::json mJson = actor_->ReadingJsonFile();
 
-                auto& data = mJson["Transform"];
-                data["Position"] = { position_.x,position_.y,position_.z };
-                data["Rotation"] = { rotation_.x,rotation_.y,rotation_.z };
-                data["Scale"] = { scale_.x,scale_.y,scale_.z };
-                data["ScaleFactor"] = scaleFactor_;
+            auto& data = mJson["Transform"];
+            data["Position"] = { position_.x,position_.y,position_.z };
+            data["Rotation"] = { rotation_.x,rotation_.y,rotation_.z };
+            data["Scale"] = { scale_.x,scale_.y,scale_.z };
+            data["ScaleFactor"] = scaleFactor_;
 
-                //ファイルに内容を書き込む
-                ofstream writingFile;
-                writingFile.open(filename, ios::out);
-                writingFile << mJson.dump() << endl;
-                writingFile.close();
-            }
+            //ファイルに内容を書き込む
+            actor_->WritingJsonFile(mJson);
         }
 
         //親がいるならローカル座標も表示
@@ -173,31 +147,19 @@ bool Transform::DrawImGui()
             ImGui::DragFloat("LScaleFactor", &localScaleFactor_, 0.01f, 0.01f, 100.0f);
 
             //セーブ
-            if (ImGui::Button("Local Save", ImVec2(100.0f, 20.0f)))
+            if (ImGui::ButtonDoubleChecking("Local Save", buttonFlag))
             {
                 //ファイルの読み込み
-                string filename = actor_->name_.c_str();
-                string Extension = ".json";
-                filename += Extension;
-                ifstream ifs(filename);
-                if (ifs.good())
-                {
-                    //ファイル
-                    nlohmann::json mJson;
-                    ifs >> mJson;
+                nlohmann::json mJson = actor_->ReadingJsonFile();
 
-                    auto& data = mJson["Transform"];
-                    data["L_Position"] = { localPosition_.x,localPosition_.y,localPosition_.z };
-                    data["L_Rotation"] = { localRotation_.x,localRotation_.y,localRotation_.z };
-                    data["L_Scale"] = { localScale_.x,localScale_.y,localScale_.z };
-                    data["L_ScaleFactor"] = localScaleFactor_;
+                auto& data = mJson["Transform"];
+                data["L_Position"] = { localPosition_.x,localPosition_.y,localPosition_.z };
+                data["L_Rotation"] = { localRotation_.x,localRotation_.y,localRotation_.z };
+                data["L_Scale"] = { localScale_.x,localScale_.y,localScale_.z };
+                data["L_ScaleFactor"] = localScaleFactor_;
 
-                    //ファイルに内容を書き込む
-                    ofstream writingFile;
-                    writingFile.open(filename, ios::out);
-                    writingFile << mJson.dump() << endl;
-                    writingFile.close();
-                }
+                //ファイルに内容を書き込む
+                actor_->WritingJsonFile(mJson);
             }
         }
 

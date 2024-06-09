@@ -2,6 +2,9 @@
 #include "imgui/imgui.h"
 #include "SceneManager.h"
 
+#include <iostream>
+#include <fstream>
+
 using namespace AbyssEngine;
 using namespace std;
 
@@ -69,6 +72,36 @@ void Actor::DrawImGui()
 			}
 		}
 	}
+}
+
+nlohmann::json Actor::ReadingJsonFile()
+{
+	//ファイルの読み込み
+	ifstream ifs(jsonFilename_);
+	if (ifs.good())
+	{
+		//ファイル読み込み
+		nlohmann::json mJson;
+		ifs >> mJson;
+		return mJson;
+	}
+	else
+	{
+		//なければ作成して、空のjsonを返す
+		ofstream writingFile;
+		writingFile.open(jsonFilename_, ios::out);
+		writingFile.close();
+
+		return nlohmann::json();
+	}
+}
+
+void Actor::WritingJsonFile(const nlohmann::json& json)
+{
+	ofstream writingFile;
+	writingFile.open(jsonFilename_, ios::out);
+	writingFile << json.dump() << endl;
+	writingFile.close();
 }
 
 void Actor::Destroy(std::shared_ptr<Actor> actor)

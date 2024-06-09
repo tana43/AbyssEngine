@@ -4,6 +4,8 @@
 #include "Transform.h"
 #include "Renderer.h"
 
+#include <nlohmann/json.hpp>
+
 namespace AbyssEngine
 {
     class Actor final : public std::enable_shared_from_this<Actor>
@@ -16,6 +18,10 @@ namespace AbyssEngine
         template<class T>
         std::shared_ptr<T> AddComponent(const char* path = NULL);//コンポーネントをアタッチする(レンダラーなどはパスが必要)
 
+        //json読み込み
+        nlohmann::json ReadingJsonFile();
+        //json書き込み
+        void WritingJsonFile(const nlohmann::json& json);
 
         static void Destroy(std::shared_ptr<Actor> actor);//アクターを削除する
     public:
@@ -46,6 +52,8 @@ namespace AbyssEngine
         //親子関係
         std::weak_ptr<Actor> parent_;
         std::vector<std::weak_ptr<Actor>> children_{};
+
+        std::string jsonFilename_;
 
         friend class Scene;
     };

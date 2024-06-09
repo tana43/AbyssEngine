@@ -324,6 +324,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli" />
     <None Include="Shader\Bloom.hlsli" />
     <None Include="Shader\Common.hlsli" />

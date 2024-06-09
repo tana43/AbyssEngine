@@ -566,5 +566,6 @@
     <None Include="Shader\ShapeRenderer.hlsli">
       <Filter>Shader\Debug</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

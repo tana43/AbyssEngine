@@ -23,6 +23,13 @@ shared_ptr<Actor> Scene::InstanceActor(const std::string& name_)
     //オブジェクトを生成して登録する
     auto actor = make_shared<Actor>();
     actor->name_ = name_;
+
+    //Jsonファイル初期設定
+    actor->jsonFilename_ = "./Resources/Json/";
+    actor->jsonFilename_ += name_.c_str();
+    string Extension = ".json";
+    actor->jsonFilename_ += Extension;
+
     actor->transform_ = actor->AddComponent<Transform>();
     actorList_.emplace_back(actor);
 

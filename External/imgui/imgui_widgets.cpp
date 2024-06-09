@@ -38,6 +38,8 @@ Index of this file:
 #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
 
+#include "DxSystem.h"
+
 #include "imgui.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_internal.h"
@@ -1361,6 +1363,43 @@ void ImGui::Bullet()
     ImU32 text_col = GetColorU32(ImGuiCol_Text);
     RenderBullet(window->DrawList, bb.Min + ImVec2(style.FramePadding.x + g.FontSize * 0.5f, line_height * 0.5f), text_col);
     SameLine(0, style.FramePadding.x * 2.0f);
+}
+
+bool ImGui::ButtonDoubleChecking(const char* label,bool& staticFlag)
+{
+    if (Button(label))
+    {
+        staticFlag = true;
+    }
+
+    if (staticFlag)
+    {
+        ImGui::SetNextWindowSize(ImVec2(440, 160));
+        ImGui::SetNextWindowPos(ImVec2(
+            AbyssEngine::DXSystem::GetScreenWidth() / 2,
+            AbyssEngine::DXSystem::GetScreenHeight() / 2),
+            ImGuiCond_::ImGuiCond_Always,
+            ImVec2(0.5f, 0.5f));
+        ImGui::Begin("Really?");
+
+        if(ImGui::Button(" Yes ",ImVec2(180,100)))
+        {
+            staticFlag = false;
+            ImGui::End();
+            return true;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button(" No ", ImVec2(180, 100)))
+        {
+            staticFlag = false;
+        }
+
+        ImGui::End();
+    }
+
+    return false;
 }
 
 //-------------------------------------------------------------------------
