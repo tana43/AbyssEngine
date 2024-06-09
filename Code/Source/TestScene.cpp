@@ -24,8 +24,8 @@ void TestScene::Initialize()
     p0->AddComponent<SkeltalMesh>("./Assets/Models/nico.fbx");*/
 
     //テスト用のオブジェクト
-    const auto& stage = InstanceActor("Stage");
-    stage->AddComponent<StaticMesh>(
+    const auto& stage_00 = InstanceActor("Stage");
+    stage_00->AddComponent<StaticMesh>(
         //"./Assets/Models/UE/LV_Soul_Slum.glb"
         //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
         //"./Assets/Models/UE/Prewiev_Sci_fi_Base_Retopo.glb"
@@ -33,16 +33,13 @@ void TestScene::Initialize()
         //"./Assets/Models/UE/TestMap.glb"
         //"./Assets/Models/UE/AssetsvilleTown.glb"
     );
-    stage->GetTransform()->SetScaleFactor(0.56f);
-    //stage->GetTransform()->SetScaleFactor(0.43f);
-    //p1->AddComponent<GltfSkeltalMesh>(
-    //    "./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
-    //    //"./Assets/Models/UE/AssetsvilleTown.glb"
-    //    //"./Assets/Models/UE/SKM_Manny.glb"
-    //    //"./Assets/Models/CesiumMan.glb"
-    //    //"./Assets/Models/DamagedHelmet.glb"
-    //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
-    //);
+    stage_00->GetTransform()->SetScaleFactor(0.56f);
+    const auto& stage_01 = InstanceActor("Stage_00");
+    stage_01->AddComponent<StaticMesh>(
+        "./Assets/Models/Stage/Burj_Crown.glb"
+    );
+    stage_01->GetTransform()->SetScaleFactor(0.56f);
+    
 
 #if 1//ヴィテスモデル仮生成
     const auto& vitesse = InstanceActor("Vitesse");

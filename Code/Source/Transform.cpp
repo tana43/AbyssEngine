@@ -3,12 +3,44 @@
 
 #include "imgui/imgui.h"
 
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <fstream>
+
 using namespace AbyssEngine;
+using namespace std;
 
 void Transform::Initialize(const std::shared_ptr<Actor>& actor)
 {
     actor_ = actor;
     transform_ = std::static_pointer_cast<Transform>(shared_from_this());
+
+    //Jsonファイル読み込み
+    {
+        ifstream ifs(actor_->name_.c_str());
+        if (ifs.good())
+        {
+            json m_json;
+            ifs >> m_json;
+
+            //読み込んだデータをそれぞれの変数に代入する
+            string name = m_json["Name"];
+            float speed = m_json["Speed"];
+            float firingangle = m_json["Firingangle"];
+
+            //代入されたデータを表示する
+            cout << "Name:" << name << endl;
+            cout << "Speed:" << speed << endl;
+            cout << "Firingangle:" << firingangle << endl;
+        }
+        else
+        {
+            cout << "ファイルの読み込みに失敗しました" << endl;
+        }
+    }
+
+    //親子関係の有無でワールド座標の読み込みをしないか判断する
+    if (const auto& parent = actor_->GetParent().lock())
 }
 
 Matrix Transform::CalcWorldMatrix()
