@@ -6,6 +6,8 @@
 #include "AssetManager.h"
 
 #include "imgui/imgui.h"
+#include "ShapeRenderer.h"
+
 
 using namespace AbyssEngine;
 using namespace std;
@@ -56,6 +58,11 @@ void StaticMesh::Render()
     //model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
     model_->Draw(DrawPass::Opaque,transform_->GetWorldMatrix());
     //model_->Draw(DrawPass::Transmission,transform_->CalcWorldMatrix());
+
+#if _DEBUG
+
+#endif // _DEBUG
+
 }
 
 void StaticMesh::RenderShadow()
