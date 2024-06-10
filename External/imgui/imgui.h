@@ -549,8 +549,8 @@ namespace ImGui
     IMGUI_API void          ProgressBar(float fraction, const ImVec2& size_arg = ImVec2(-FLT_MIN, 0), const char* overlay = NULL);
     IMGUI_API void          Bullet();                                                       // draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses
     
-    //二重確認ボタン この関数を呼ぶ直前でstatic変数生成し、引数へ
-    IMGUI_API bool          ButtonDoubleChecking(const char* label,bool& staticFlag);
+    //二重確認ボタン この関数を使うクラスのメンバ変数にフラグを持たせて引数へ
+    IMGUI_API bool          ButtonDoubleChecking(const char* label,bool& flag);
 
     // Widgets: Images
     // - Read about ImTextureID here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples

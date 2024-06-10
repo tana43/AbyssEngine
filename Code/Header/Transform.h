@@ -85,6 +85,11 @@ namespace AbyssEngine
 
         Matrix worldMatrix_;
         Matrix localMatrix_;
+
+#if _DEBUG
+        bool doubleCheckFlag_ = false;
+#endif // _DEBUG
+
     };
 }
 

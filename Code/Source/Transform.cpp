@@ -38,17 +38,15 @@ void Transform::Initialize(const std::shared_ptr<Actor>& actor)
         {
             //データが見つからなかったので作成
             mJson["Transform"] = {
-                {
-                    {"Position",{0.0f,0.0f,0.0f}},
-                    {"Rotation",{0.0f,0.0f,0.0f}},
-                    {"Scale",{1.0f,1.0f,1.0f}},
-                    {"ScaleFactor",1.0f},
+                {"Position",{0.0f,0.0f,0.0f}},
+                {"Rotation",{0.0f,0.0f,0.0f}},
+                {"Scale",{1.0f,1.0f,1.0f}},
+                {"ScaleFactor",1.0f},
 
-                    {"L_Position",{0.0f,0.0f,0.0f}},
-                    {"L_Rotation",{0.0f,0.0f,0.0f}},
-                    {"L_Scale",{1.0f,1.0f,1.0f}},
-                    {"L_ScaleFactor",1.0f},
-                }
+                {"L_Position",{0.0f,0.0f,0.0f}},
+                {"L_Rotation",{0.0f,0.0f,0.0f}},
+                {"L_Scale",{1.0f,1.0f,1.0f}},
+                {"L_ScaleFactor",1.0f}
             };
 
             //ファイルに内容を書き込む
@@ -113,6 +111,9 @@ Vector3 Transform::GetEulerAngles() const
 
 bool Transform::DrawImGui()
 {
+#if _DEBUG
+
+
     if (ImGui::TreeNode("Transform"))
     {
         ImGui::DragFloat3("Position", &position_.x, 0.1f, -FLT_MAX, FLT_MAX);
@@ -121,8 +122,7 @@ bool Transform::DrawImGui()
         ImGui::DragFloat("ScaleFactor", &scaleFactor_, 0.01f, 0.01f, 100.0f);
 
         //セーブ
-        static bool buttonFlag = false;
-        if (ImGui::ButtonDoubleChecking("Save",buttonFlag))
+        if (ImGui::ButtonDoubleChecking("Save",doubleCheckFlag_))
         {
             //ファイルの読み込み
             nlohmann::json mJson = actor_->ReadingJsonFile();
@@ -147,7 +147,7 @@ bool Transform::DrawImGui()
             ImGui::DragFloat("LScaleFactor", &localScaleFactor_, 0.01f, 0.01f, 100.0f);
 
             //セーブ
-            if (ImGui::ButtonDoubleChecking("Local Save", buttonFlag))
+            if (ImGui::ButtonDoubleChecking("Local Save", doubleCheckFlag_))
             {
                 //ファイルの読み込み
                 nlohmann::json mJson = actor_->ReadingJsonFile();
@@ -167,4 +167,5 @@ bool Transform::DrawImGui()
     }
 
     return false;
+#endif // _DEBUG
 }

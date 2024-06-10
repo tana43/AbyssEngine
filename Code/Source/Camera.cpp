@@ -165,18 +165,19 @@ void Camera::DebugCameraController()
     }
 
     //移動処理
-    if(Mouse::GetButtonState().rightButton)
     {
         //マウスホイールでの移動
         const float mouseWheel = Mouse::GetScrollWheelValue();
 
-        //WASD
         Vector2 input = {};
-        if (Keyboard::GetKeyState().D)input.x += 1.0f;
-        if (Keyboard::GetKeyState().A)input.x -= 1.0f;
-        if (Keyboard::GetKeyState().W)input.y += 1.0f;
-        if (Keyboard::GetKeyState().S)input.y -= 1.0f;
-
+        if (Mouse::GetButtonState().rightButton)
+        {
+            //WASD
+            if (Keyboard::GetKeyState().D)input.x += 1.0f;
+            if (Keyboard::GetKeyState().A)input.x -= 1.0f;
+            if (Keyboard::GetKeyState().W)input.y += 1.0f;
+            if (Keyboard::GetKeyState().S)input.y -= 1.0f;
+        }
         //入力値がない場合処理しない
         if (input.Length() > 0 || mouseWheel != 0.0f)
         {

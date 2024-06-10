@@ -1365,35 +1365,37 @@ void ImGui::Bullet()
     SameLine(0, style.FramePadding.x * 2.0f);
 }
 
-bool ImGui::ButtonDoubleChecking(const char* label,bool& staticFlag)
+bool ImGui::ButtonDoubleChecking(const char* label,bool& flag)
 {
     if (Button(label))
     {
-        staticFlag = true;
+        flag = true;
     }
 
-    if (staticFlag)
+    if (flag)
     {
-        ImGui::SetNextWindowSize(ImVec2(440, 160));
+        ImGui::SetNextWindowSize(ImVec2(340, 130));
         ImGui::SetNextWindowPos(ImVec2(
             AbyssEngine::DXSystem::GetScreenWidth() / 2,
             AbyssEngine::DXSystem::GetScreenHeight() / 2),
             ImGuiCond_::ImGuiCond_Always,
             ImVec2(0.5f, 0.5f));
-        ImGui::Begin("Really?");
+        ImGui::SetNextWindowBgAlpha(1.0f);
+        static bool open = true;
+        ImGui::Begin("Really?",&open,ImGuiWindowFlags_NoCollapse);
 
-        if(ImGui::Button(" Yes ",ImVec2(180,100)))
+        if(ImGui::Button(" Yes ",ImVec2(150,75)))
         {
-            staticFlag = false;
+            flag = false;
             ImGui::End();
             return true;
         }
 
         ImGui::SameLine();
 
-        if (ImGui::Button(" No ", ImVec2(180, 100)))
+        if (ImGui::Button(" No ", ImVec2(150, 75)))
         {
-            staticFlag = false;
+            flag = false;
         }
 
         ImGui::End();

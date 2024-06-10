@@ -44,8 +44,8 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     camera_->SetEnableDebugController(false);
 
     //トランスフォーム設定
-    transform_->SetScaleFactor(7.0f);
-    transform_->SetPosition(Vector3(0, 3.5f, 4.0f));
+    /*transform_->SetScaleFactor(7.0f);
+    transform_->SetPosition(Vector3(0, 3.5f, 4.0f));*/
 
     //カメラ設定
     camera_->armLength_ = 18.0f;
