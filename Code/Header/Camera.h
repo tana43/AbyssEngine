@@ -27,6 +27,8 @@ namespace AbyssEngine
         Vector3 ConvertTo2DVectorFromCamera(const Vector2& v);//XZé≤ÇÃÇ›åvéZ
         Vector3 ConvertTo3DVectorFromCamera(const Vector2& v);//Yé≤Ç‡åvéZ
 
+        void UpdateFrustum();
+
     public:
         void SetViewTarget(Transform* t) { viewTarget_ = t; }
         [[nodiscared]] Transform* GetViewTarget() { return viewTarget_; }

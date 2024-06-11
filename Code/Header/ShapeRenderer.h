@@ -44,6 +44,7 @@ namespace AbyssEngine
 		// ï`âÊé¿çs
 		void Render(const DirectX::XMFLOAT4X4& viewProjection);
 
+		void Clear() { instances.clear(); }
 	private:
 		struct Mesh
 		{

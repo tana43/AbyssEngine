@@ -25,6 +25,7 @@ namespace AbyssEngine
 		// ‰~’Œ•`‰æ
 		void DrawCylinder(const DirectX::XMFLOAT3& position_, float radius_, float height_, const DirectX::XMFLOAT4& color_);
 
+		void Clear();
 	private:
 		// ‹…ƒƒbƒVƒ…ì¬
 		void CreateSphereMesh(ID3D11Device* device, float radius_, int slices, int stacks);

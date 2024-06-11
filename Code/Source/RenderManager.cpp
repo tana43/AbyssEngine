@@ -401,6 +401,13 @@ void RenderManager::Render()
 					primitiveRenderer_->Render(camera->viewProjectionMatrix_,D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 					shapeRenderer_->Render(camera->viewProjectionMatrix_);
 				}
+				else
+				{
+					debugRenderer_->Clear();
+					lineRenderer_->Clear();
+					primitiveRenderer_->Clear();
+					shapeRenderer_->Clear();
+				}
 #endif // _DEBUG
 
 				baseFrameBuffer_[0]->Deactivate();

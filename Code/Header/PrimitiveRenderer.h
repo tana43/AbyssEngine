@@ -28,6 +28,7 @@ namespace AbyssEngine
 			const DirectX::XMFLOAT4X4& viewProjection,
 			D3D11_PRIMITIVE_TOPOLOGY primitiveTopology);
 
+		void Clear() { vertices.clear(); }
 	private:
 		static const UINT VertexCapacity = 3 * 1024;
 

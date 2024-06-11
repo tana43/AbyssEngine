@@ -22,6 +22,7 @@ namespace AbyssEngine
 		// ’¸“_’Ç‰Á
 		void AddVertex(const DirectX::XMFLOAT3& position_, const DirectX::XMFLOAT4& color_);
 
+		void Clear() { vertices_.clear(); }
 	private:
 		struct ConstantBuffer
 		{

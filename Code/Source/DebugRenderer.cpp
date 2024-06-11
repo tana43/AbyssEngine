@@ -229,6 +229,12 @@ void DebugRenderer::DrawCylinder(const DirectX::XMFLOAT3& position_, float radiu
 	cylinders_.emplace_back(cylinder);
 }
 
+void DebugRenderer::Clear()
+{
+	spheres_.clear();
+	cylinders_.clear();
+}
+
 // ‹…ƒƒbƒVƒ…ì¬
 void DebugRenderer::CreateSphereMesh(ID3D11Device* device, float radius_, int slices, int stacks)
 {

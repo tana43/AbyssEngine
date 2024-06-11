@@ -48,6 +48,8 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
 
 void Player::Update()
 {
+    camera_->UpdateFrustum();
+
     //プレイヤーカメラがメインになっていなければ更新しない
     if (!camera_->GetIsMainCamera())return;
 

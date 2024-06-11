@@ -15,9 +15,9 @@ using namespace AbyssEngine;
 void TestScene::Initialize()
 {
     //カメラ
-    const auto& camera_ = InstanceActor("Debug Camera");
+    const auto& camera_ = InstanceActor("Debug_Camera");
     camera_->AddComponent<Camera>();
-    camera_->GetTransform()->SetPosition(Vector3(0, 3, -10));
+    //camera_->GetTransform()->SetPosition(Vector3(0, 3, -10));
 
     //テスト用のオブジェクト
     /*const auto& p0 = InstanceActor("testModel");

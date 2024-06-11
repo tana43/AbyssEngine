@@ -5,6 +5,7 @@
 #include "RenderManager.h"
 #include "Engine.h"
 #include "Input.h"
+#include "LineRenderer.h"
 
 #include <algorithm>
 #include <Windows.h>
@@ -80,19 +81,25 @@ void Camera::Update()
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 
     //初回時のみフラスタム生成
-    if (frustum_.Far == 0)//Farが０のときは生成されていないとみなす
-    {
-        DirectX::BoundingFrustum::CreateFromMatrix(frustum_, projectionMatrix_);
-    }
-
-    //フラスタム更新
-    frustum_.Transform(frustum_, worldMatrix);
-
-    //デバッグ表示
-#if _DEBUG
-    Vector3 corners[8];
-    frustum_.GetCorners(corners);
-#endif // _DEBUG
+//    if (frustum_.Far == 0)//Farが０のときは生成されていないとみなす
+//    {
+//        DirectX::BoundingFrustum::CreateFromMatrix(frustum_, projectionMatrix_);
+//    }
+//
+//    //フラスタム更新
+//    frustum_.Transform(frustum_, worldMatrix);
+//
+//    //デバッグ表示
+//#if _DEBUG
+//    Vector3 corners[8];
+//    frustum_.GetCorners(corners);
+//
+//    auto& lineRenderer = Engine::renderManager_->lineRenderer_;
+//    for (int i = 0; i < 8; i++)
+//    {
+//        lineRenderer->AddVertex(corners[i], Vector4(1, 1, 1, 1));
+//    }
+//#endif // _DEBUG
 
 }
 
@@ -110,6 +117,88 @@ Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)
     result.Normalize();
 
     return result;
+}
+
+void Camera::UpdateFrustum()
+{
+    //初回時のみフラスタム生成
+    if (frustum_.Near == 0)//Neが０のときは生成されていないとみなす
+    {
+        const float aspect = static_cast<float>(DXSystem::GetScreenWidth())
+            / static_cast<float>(DXSystem::GetScreenHeight()); //画面比率
+        projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
+        DirectX::BoundingFrustum::CreateFromMatrix(frustum_, projectionMatrix_);
+    }
+
+    //フラスタム更新
+    DirectX::BoundingFrustum frustum;
+    Vector4 rotation = transform_->GetRotation();
+    Vector3 euler = { rotation.x,rotation.y,rotation.z };
+    frustum_.Transform(frustum, 1.0f, Quaternion::Euler(euler), eye_);
+
+    //デバッグ表示
+#if _DEBUG
+    Vector3 corners[8];
+    frustum.GetCorners(corners);
+
+    auto& renderer = Engine::renderManager_->lineRenderer_;
+    //手前
+    {
+        //上
+        renderer->AddVertex(corners[0], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[1], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //右
+        renderer->AddVertex(corners[1], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[2], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //下
+        renderer->AddVertex(corners[2], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[3], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //左
+        renderer->AddVertex(corners[3], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[0], DirectX::XMFLOAT4(1, 1, 1, 1));
+    }
+
+    //奥
+    {
+        //上
+        renderer->AddVertex(corners[4], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[5], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //右
+        renderer->AddVertex(corners[5], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[6], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //下
+        renderer->AddVertex(corners[6], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[7], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //左
+        renderer->AddVertex(corners[7], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[4], DirectX::XMFLOAT4(1, 1, 1, 1));
+    }
+
+    //上下左右
+    {
+        //上
+        renderer->AddVertex(corners[0], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[4], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //右
+        renderer->AddVertex(corners[1], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[5], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //下
+        renderer->AddVertex(corners[2], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[6], DirectX::XMFLOAT4(1, 1, 1, 1));
+
+        //左
+        renderer->AddVertex(corners[3], DirectX::XMFLOAT4(1, 1, 1, 1));
+        renderer->AddVertex(corners[7], DirectX::XMFLOAT4(1, 1, 1, 1));
+    }
+#endif // _DEBUG
 }
 
 Vector3 Camera::ConvertTo2DVectorFromCamera(const Vector2& v)
