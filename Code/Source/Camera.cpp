@@ -74,10 +74,26 @@ void Camera::Update()
     const Vector3 up = transform_->GetUp();
 
     //各方向ベクトルの更新
-    transform_->CalcWorldMatrix();
+    const auto& worldMatrix = transform_->CalcWorldMatrix();
 
     viewMatrix_ = XMMatrixLookAtLH(eye_, focus_, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
+
+    //初回時のみフラスタム生成
+    if (frustum_.Far == 0)//Farが０のときは生成されていないとみなす
+    {
+        DirectX::BoundingFrustum::CreateFromMatrix(frustum_, projectionMatrix_);
+    }
+
+    //フラスタム更新
+    frustum_.Transform(frustum_, worldMatrix);
+
+    //デバッグ表示
+#if _DEBUG
+    Vector3 corners[8];
+    frustum_.GetCorners(corners);
+#endif // _DEBUG
+
 }
 
 Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)

@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "MathHelper.h"
 #include "SystemFunction.h"
+#include <DirectXCollision.h>
 
 namespace AbyssEngine
 {
@@ -58,6 +59,8 @@ namespace AbyssEngine
         float cameraLagSpeed_ = 10.0f;//カメラの追従速度
         CONSTANT_FLOAT Camera_Lag_Max_Distance = 3.0f;//カメラが遅延することができる最大距離
 
+        //フラスタムカリング用
+        DirectX::BoundingFrustum frustum_;
 
         friend class RenderManager;
 
