@@ -3,6 +3,8 @@
 #include <directxmath.h>
 #include <array>
 
+#include <DirectXCollision.h>
+
 namespace AbyssEngine
 {
 	// Fill our scratchpad array with the corners of an axis-aligned bounding box.  
@@ -34,5 +36,18 @@ namespace AbyssEngine
 			minValue = DirectX::XMVectorMin(minValue, transformed);
 			maxValue = DirectX::XMVectorMax(maxValue, transformed);
 		}
+	}
+
+	//ボックスの最大値、最小値からDirectX::BoundingBoxへ変換する関数
+	inline DirectX::BoundingBox ConvertToDXBoundingBox(const Vector3& minValue,const Vector3& maxValue)
+	{
+		DirectX::BoundingBox boundingBox;
+
+		//ボックスのサイズ
+		const Vector3 boxSize = maxValue - minValue;
+		//中心座標を算出
+		Vector3 center = minValue + (boxSize * 0.5f);
+
+
 	}
 }
