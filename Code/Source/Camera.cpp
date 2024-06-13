@@ -122,24 +122,23 @@ Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)
 void Camera::UpdateFrustum()
 {
     //初回時のみフラスタム生成
-    if (frustum_.Near == 0)//Neが０のときは生成されていないとみなす
+    if (initialFrustum_.Near == 0)//Neが０のときは生成されていないとみなす
     {
         const float aspect = static_cast<float>(DXSystem::GetScreenWidth())
             / static_cast<float>(DXSystem::GetScreenHeight()); //画面比率
         projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
-        DirectX::BoundingFrustum::CreateFromMatrix(frustum_, projectionMatrix_);
+        DirectX::BoundingFrustum::CreateFromMatrix(initialFrustum_, projectionMatrix_);
     }
 
     //フラスタム更新
-    DirectX::BoundingFrustum frustum;
     Vector4 rotation = transform_->GetRotation();
     Vector3 euler = { rotation.x,rotation.y,rotation.z };
-    frustum_.Transform(frustum, 1.0f, Quaternion::Euler(euler), eye_);
+    initialFrustum_.Transform(frustum_, 1.0f, Quaternion::Euler(euler), eye_);
 
     //デバッグ表示
 #if _DEBUG
     Vector3 corners[8];
-    frustum.GetCorners(corners);
+    frustum_.GetCorners(corners);
 
     auto& renderer = Engine::renderManager_->lineRenderer_;
     //手前

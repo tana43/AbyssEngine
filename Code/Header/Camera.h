@@ -71,6 +71,9 @@ namespace AbyssEngine
         bool enableDebugController_ = true; //デバッグ操作オン、オフ
 
         Transform* viewTarget_;             //ビューターゲット
+
+        //フラスタムの初期状態
+        DirectX::BoundingFrustum initialFrustum_;
     };
 }
 

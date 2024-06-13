@@ -246,14 +246,14 @@
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\ShapeRenderer.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\PrimitiveRenderer.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Scripts\Header\Vitesse.h">
       <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ShapeRenderer.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\PrimitiveRenderer.h">
+      <Filter>Code\Header\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -413,14 +413,14 @@
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\ShapeRenderer.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\PrimitiveRenderer.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Scripts\Source\Vitesse.cpp">
       <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\ShapeRenderer.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\PrimitiveRenderer.cpp">
+      <Filter>Code\Source\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

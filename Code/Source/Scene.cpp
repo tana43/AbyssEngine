@@ -22,6 +22,12 @@ shared_ptr<Actor> Scene::InstanceActor(const std::string& name_)
 {
     //オブジェクトを生成して登録する
     auto actor = make_shared<Actor>();
+
+    //名前被りが存在しないか
+    for (const auto& a  : actorList_)
+    {
+        _ASSERT_EXPR(a->name_ != actor->name_, L"同じ名前のアクターを生成しようとしています");
+    }
     actor->name_ = name_;
 
     //Jsonファイル初期設定

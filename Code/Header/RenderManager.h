@@ -145,6 +145,9 @@ namespace AbyssEngine
         float criticalDepthValue_ = 800.0f;
         bool enableShadow_ = true;
 
+        //フラスタムカリング
+        bool enableFrustumCulling_ = true;
+
         //G-Buffer
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView> gBufferRenderTargetView_[GB_Max];
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> gBufferShaderResourceView_[GB_Max];
@@ -180,6 +183,8 @@ namespace AbyssEngine
 
         //デバッグ限定でラスタライザーステートを数字キーで変更できる
         void DebugRSStateSelect();
+
+        void FrustumCulling(const std::shared_ptr<Camera>& camera);
     };
 
 }

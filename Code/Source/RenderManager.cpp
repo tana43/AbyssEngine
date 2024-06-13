@@ -324,6 +324,9 @@ void RenderManager::Render()
 				bufferScene_->Activate(10, CBufferUsage::vp);
 #endif // 0
 
+				//フラスタムカリングを済ませておく
+				FrustumCulling(cameraList_.at(2).lock());
+
 				//シャドウマップ作成
 				cascadedShadowMap_->Clear();
 				if (enableShadow_)
@@ -344,7 +347,10 @@ void RenderManager::Render()
 								{
 									if (pRend)
 									{
-										pRend->RenderShadow();
+										if (pRend->GetEnabled())
+										{
+											pRend->RenderShadow();
+										}
 									}
 								}
 							}
@@ -510,6 +516,8 @@ void RenderManager::DrawImGui()
 
 		ImGui::EndMenu();
 	}
+
+	ImGui::Checkbox("Enable Frustum Culling", &enableFrustumCulling_);
 
 	//GBufferをテクスチャ表示
 	if (ImGui::Begin("G-Buffer"))
@@ -738,3 +746,30 @@ void RenderManager::DebugRSStateSelect()
 		rasterizerState3D = RS_State::Wire;
 	}
 }
+
+void RenderManager::FrustumCulling(const std::shared_ptr<Camera>& camera)
+{
+	//フラスタムカリング
+	if (!enableFrustumCulling_)return;
+
+	for (auto& r : renderer3DList_)
+	{
+		const auto& pRend = r.lock();
+		if (pRend->actor_->GetActiveInHierarchy())
+		{
+			if (pRend)
+			{
+				if (pRend->FrustumCulling(camera->frustum_))
+				{
+					pRend->SetEnable(true);
+				}
+				else
+				{
+					pRend->SetEnable(false);
+				}
+			}
+		}
+	}
+	
+}
+

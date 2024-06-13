@@ -9,6 +9,7 @@
 #include "ShapeRenderer.h"
 
 
+
 using namespace AbyssEngine;
 using namespace std;
 
@@ -50,7 +51,17 @@ bool StaticMesh::DrawImGui()
 
 void StaticMesh::RecalculateFrame()
 {
-    transform_->CalcWorldMatrix();
+    const auto& world = transform_->CalcWorldMatrix();
+
+    //バウンディングボックス更新
+    DirectX::XMVECTOR MinValue, MaxValue;
+    MinValue = DirectX::XMLoadFloat3(&model_->minValue_);
+    MaxValue = DirectX::XMLoadFloat3(&model_->maxValue_);
+    ComputeTransformedBounds(MinValue,MaxValue, world /** coordinateSystemTransforms[0]*/);
+    DirectX::XMStoreFloat3(&minValue_, MinValue);
+    DirectX::XMStoreFloat3(&maxValue_, MaxValue);
+
+    boundingBox_ = ConvertToDXBoundingBox(minValue_,maxValue_);
 }
 
 void StaticMesh::Render()
@@ -60,7 +71,13 @@ void StaticMesh::Render()
     //model_->Draw(DrawPass::Transmission,transform_->CalcWorldMatrix());
 
 #if _DEBUG
-
+    //バウンディングボックス表示
+    Engine::renderManager_->shapeRenderer_->DrawBox(
+        boundingBox_.Center,
+        Vector3(0,0,0),
+        boundingBox_.Extents,
+        Vector4(0,1,1,1)
+    );
 #endif // _DEBUG
 
 }
@@ -68,6 +85,16 @@ void StaticMesh::Render()
 void StaticMesh::RenderShadow()
 {
     model_->CastShadow(transform_->GetWorldMatrix());
+}
+
+bool StaticMesh::FrustumCulling(const DirectX::BoundingFrustum& frustum)
+{
+    DirectX::ContainmentType ret = boundingBox_.Contains(frustum);
+    if (ret >= DirectX::INTERSECTS)
+    {
+        return true;
+    }
+    return false;
 }
 
 void StaticMesh::SetActive(const bool value)

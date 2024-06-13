@@ -1,6 +1,7 @@
 #pragma once
 #include "Renderer.h"
 #include "GltfStaticMesh.h"
+#include "BoundingBox.h"
 
 namespace AbyssEngine
 {
@@ -19,9 +20,15 @@ namespace AbyssEngine
 
         void Render()override;
         void RenderShadow()override;
+        bool FrustumCulling(const DirectX::BoundingFrustum& frustum);
 
     private:
         std::shared_ptr<GltfStaticMesh> model_;
+
+        Vector3 minValue_;
+        Vector3 maxValue_;
+        DirectX::BoundingBox boundingBox_;//AABB
+
     };
 }
 

@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "MathHelper.h"
 #include "Shader.h"
+#include <DirectXCollision.h>
 
 namespace AbyssEngine
 {
@@ -30,7 +31,8 @@ namespace AbyssEngine
         //virtual void Render(const int subsetNumber = 0) {}          //描画実行
         virtual void Render() = 0;          //描画実行
         virtual void RenderShadow() {}    //シャドウマップ描画実行
-        virtual void RecalculateFrame() {};                         //頂点データを再計算
+        virtual void RecalculateFrame() {}                         //頂点データを再計算
+        virtual bool FrustumCulling(const DirectX::BoundingFrustum& frustum) { return true; }//フラスタムカリング
 
         friend class RenderManager;
     };

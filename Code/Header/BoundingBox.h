@@ -39,7 +39,7 @@ namespace AbyssEngine
 	}
 
 	//ボックスの最大値、最小値からDirectX::BoundingBoxへ変換する関数
-	inline DirectX::BoundingBox ConvertToDXBoundingBox(const Vector3& minValue,const Vector3& maxValue)
+	inline DirectX::BoundingBox ConvertToDXBoundingBox(const Vector3& minValue, const Vector3& maxValue)
 	{
 		DirectX::BoundingBox boundingBox;
 
@@ -48,6 +48,10 @@ namespace AbyssEngine
 		//中心座標を算出
 		Vector3 center = minValue + (boxSize * 0.5f);
 
+		//バウンディングボックスに設定
+		boundingBox.Center = center;
+		boundingBox.Extents = boxSize * 0.5;
 
+		return boundingBox;
 	}
 }

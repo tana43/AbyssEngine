@@ -40,6 +40,13 @@ namespace AbyssEngine
 		ID3D11RasterizerState* rasterizerState_ = NULL;
 	};
 
+	static constexpr DirectX::XMFLOAT4X4 coordinateSystemTransforms[] = {
+			{ -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
+			{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },		// 1:LHS Y-UP
+			{ 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },		// 2:RHS Z-UP
+			{ -1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },	// 3:LHS Z-UP
+	};
+
 	class GeometricSubstance
 	{
 	protected:
