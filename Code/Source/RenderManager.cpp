@@ -297,7 +297,9 @@ void RenderManager::Render()
 			{
 				if (!camera->GetIsMainCamera())continue;
 
+
 				camera->Update();
+				camera->UpdateFrustum();
 
 				const Vector3& pos = camera->GetTransform()->GetPosition();
 				//const Vector3& dir = camera->GetTransform()->GetForward();
@@ -325,7 +327,7 @@ void RenderManager::Render()
 #endif // 0
 
 				//フラスタムカリングを済ませておく
-				FrustumCulling(cameraList_.at(2).lock());
+				FrustumCulling(camera);
 
 				//シャドウマップ作成
 				cascadedShadowMap_->Clear();
