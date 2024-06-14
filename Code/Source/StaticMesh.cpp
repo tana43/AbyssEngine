@@ -68,7 +68,7 @@ void StaticMesh::Render()
 {
     //model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
     model_->Draw(DrawPass::Opaque,transform_->GetWorldMatrix());
-    //model_->Draw(DrawPass::Transmission,transform_->CalcWorldMatrix());
+    model_->Draw(DrawPass::Transmission,transform_->GetWorldMatrix());
 
 #if _DEBUG
     //バウンディングボックス表示

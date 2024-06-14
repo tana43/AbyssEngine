@@ -107,7 +107,8 @@ void CascadedShadowMap::Make(
 	float m43 = cameraProjection._43;
 	float zn = -m43 / m33;
 	float zf = (m33 * zn) / (m33 - 1);
-	zf = criticalDepthValue > 0 ? min(zf, criticalDepthValue) : zf;
+	//zf = criticalDepthValue > 0 ? min(zf, criticalDepthValue) : zf;
+	zf = criticalDepthValue;
 
 	// calculates split plane distances in view space
 	distances_.resize(static_cast<size_t>(cascadeCount) + 1);
