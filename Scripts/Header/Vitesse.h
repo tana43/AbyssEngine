@@ -16,19 +16,28 @@ public:
 public:
     enum class AnimState
     {
-        Idle,
-        FlyFront,
-        FlyRight,
-        FlyLeft,
-        SkyIdle,
-        Jump,
-        Move,
+        Stand,
+        Run_F,
+        Run_R,
+        Run_L,
+        Run_B,
+        Fly_Idle,
+        Fly_F,
+        Fly_R,
+        Fly_L,
+        Fly_B,
+        Fly_Up,
+        Run_Move,
+        Fly_Move,
     };
 
 private:
     void UpdateInputMove()override;
+    void CameraRollUpdate();
 
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
+
+    float cameraRollSpeed_ = 90.0f;
 };
 

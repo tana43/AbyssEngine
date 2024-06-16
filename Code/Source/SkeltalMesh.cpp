@@ -42,6 +42,7 @@ void SkeletalMesh::Initialize(const std::shared_ptr<Actor>& actor)
 void SkeletalMesh::Render()
 {
 	model_->Draw(DrawPass::Opaque, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
+	model_->Draw(DrawPass::Transmission, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
 }
 
 void SkeletalMesh::RenderShadow()

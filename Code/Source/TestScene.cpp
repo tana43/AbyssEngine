@@ -55,7 +55,8 @@ void TestScene::Initialize()
         std::string name = "Building_";
         name += std::to_string(i);
         const auto& building = InstanceActor(name);
-        building->AddComponent<StaticMesh>("./Assets/Models/Stage/Building_001.glb");
+        //building->AddComponent<StaticMesh>("./Assets/Models/Stage/Building_001.glb");
+        building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_002.glb");
         //building->GetTransform()->SetScaleFactor(scale);
     }
     //–Ø
@@ -76,7 +77,7 @@ void TestScene::Initialize()
         name += std::to_string(i);
         const auto& asphalt = InstanceActor(name);
         asphalt->AddComponent<StaticMesh>("./Assets/Models/Stage/Asphalt.glb");
-        asphalt->GetTransform()->SetScaleFactor(30.0f);
+        //asphalt->GetTransform()->SetScaleFactor(30.0f);
     }
     
 

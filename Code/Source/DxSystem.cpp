@@ -16,10 +16,16 @@ using namespace AbyssEngine;
 DXSystem*           DXSystem::instance = nullptr;
 HWND				DXSystem::hwnd_;
 DXGI_SAMPLE_DESC	DXSystem::MSAA_;
+
+
+#if 0 //4K
+int DXSystem::screenWidth_  = 3840;
+int DXSystem::screenHeight_ = 2160;
+#else //HD
 int DXSystem::screenWidth_  = 1920;
-//int DXSystem::screenWidth_  = 3840;
 int DXSystem::screenHeight_ = 1080;
-//int DXSystem::screenHeight_ = 2160;
+#endif // 0
+
 
 DXSystem::DXSystem()
 {
@@ -27,7 +33,7 @@ DXSystem::DXSystem()
     instance = this;
 }
 
-AbyssEngine::DXSystem::~DXSystem()
+DXSystem::~DXSystem()
 {
     //instance->deviceContext_->Flush();
 }

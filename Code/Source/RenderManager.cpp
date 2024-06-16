@@ -297,7 +297,6 @@ void RenderManager::Render()
 			{
 				if (!camera->GetIsMainCamera())continue;
 
-
 				camera->Update();
 				camera->UpdateFrustum();
 
@@ -315,7 +314,6 @@ void RenderManager::Render()
 				camera->projectionMatrix_.Invert(bufferScene_->data_.inverseProjection_);
 				camera->viewProjectionMatrix_.Invert(bufferScene_->data_.inverseViewProjection_);
 				bufferScene_->data_.time_ += Time::deltaTime_;
-
 
 				//定数バッファ更新
 #if 0

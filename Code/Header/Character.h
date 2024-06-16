@@ -51,7 +51,8 @@ namespace AbyssEngine
 
         std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 
-        AnimBlendSpace1D* moveAnimation_;
+        AnimBlendSpace1D* runMoveAnimation_;//‘–‚èˆÚ“®
+        AnimBlendSpace1D* flyMoveAnimation_;//‹ó’†ˆÚ“®
     };
 }
 

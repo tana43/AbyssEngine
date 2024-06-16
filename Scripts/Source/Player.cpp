@@ -31,7 +31,7 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
         });
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
     moveAnim.AddBlendAnimation(1, 0.6f);
-    moveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);
+    runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));
 
@@ -121,7 +121,7 @@ void Player::MoveUpdate()
     //‘–‚Á‚Ä‚¢‚é‚©
     Max_Speed = Input::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
 
-    moveAnimation_->SetBlendWeight(velocity_.Length() / Run_Max_Speed);
+    runMoveAnimation_->SetBlendWeight(velocity_.Length() / Run_Max_Speed);
 
     moveVec_ = {};
 }

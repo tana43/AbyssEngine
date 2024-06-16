@@ -8,8 +8,6 @@
 #include "imgui/imgui.h"
 #include "ShapeRenderer.h"
 
-
-
 using namespace AbyssEngine;
 using namespace std;
 
@@ -68,7 +66,7 @@ void StaticMesh::Render()
 {
     //model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
     model_->Draw(DrawPass::Opaque,transform_->GetWorldMatrix());
-    model_->Draw(DrawPass::Transmission,transform_->GetWorldMatrix());
+    //model_->Draw(DrawPass::Transmission,transform_->GetWorldMatrix());
 
 #if _DEBUG
     //バウンディングボックス表示
