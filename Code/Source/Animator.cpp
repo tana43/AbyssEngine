@@ -129,3 +129,16 @@ AnimBlendSpace1D* Animator::AppendAnimation(AnimBlendSpace1D anim)
 	animations_.emplace_back(p);
 	return p;
 }
+
+AnimBlendSpace2D* Animator::AppendAnimation(AnimBlendSpace2D anim)
+{
+	_ASSERT_EXPR(anim.animIndex_ < skeletalMesh_.lock()->GetModel()->animations_.size(),
+		u8"指定のアニメーションは存在しません");
+
+	const auto& model = skeletalMesh_.lock();
+	if (!model)return nullptr;
+
+	auto* p = new AnimBlendSpace2D(model.get(), anim.name_,anim.animIndex_,anim.GetBlendAnims()[0].weight_);
+	animations_.emplace_back(p);
+	return p;
+}

@@ -81,6 +81,7 @@ namespace AbyssEngine
     //BlendWeightが２次元のモーションブレンド
     class AnimBlendSpace2D final : public Animation
     {
+    public:
         AnimBlendSpace2D(SkeletalMesh* model, const std::string& name, const int& index, Vector2 weight = Vector2(0.0f,0.0f));
         ~AnimBlendSpace2D() {}
 
@@ -91,17 +92,21 @@ namespace AbyssEngine
             const int& index,   /*モデルの追加アニメーション要素番号*/
             const Vector2& weight/*設定する重み*/);
 
-        
-    private:
-        Vector2 maxWeight_ = { 180.0f,1.0f };//ブレンドの最大値
-        Vector2 minWeight_ = { -180.0f,0.0f };//ブレンドの最小値
-        Vector2 blendWeight_ = { 0.0f,0.0f };//ブレンドの重み
+        void SetBlendWeight(const Vector2& weight) { blendWeight_ = weight; }
 
         struct BlendAnimData
         {
             int index_;
             Vector2 weight_;
         };
+        std::vector<BlendAnimData>& GetBlendAnims() { return blendAnims_; }
+
+    private:
+        Vector2 maxWeight_ = { 180.0f,1.0f };//ブレンドの最大値
+        Vector2 minWeight_ = { -180.0f,0.0f };//ブレンドの最小値
+        Vector2 blendWeight_ = { 0.0f,0.0f };//ブレンドの重み
+
+        
         std::vector<BlendAnimData> blendAnims_;
 
 

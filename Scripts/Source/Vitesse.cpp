@@ -44,9 +44,17 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         });
 
     //ínè„à⁄ìÆ
-    AnimBlendSpace1D rmoveAnim = AnimBlendSpace1D(model_.get(), "RunMove", 
-        static_cast<int>(AnimState::Stand), static_cast<int>(AnimState::Run_F));
-    runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rmoveAnim);
+    AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimState::Stand),Vector2(0,0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(90, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(180, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(-90, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(-180, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_F), Vector2(0, 1.0f));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_R), Vector2(90, 1.0f));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_L), Vector2(-90, 1.0f));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(180, 1.0f));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(-180, 1.0f));
+    runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
 
     //ãÛíÜà⁄ìÆ
     AnimBlendSpace1D fmoveAnim = AnimBlendSpace1D(model_.get(), "FlyMove",
@@ -78,7 +86,9 @@ void Vitesse::Move()
 {
     HumanoidWeapon::Move();
 
-    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
+    //åªç›å¸Ç¢ÇƒÇ¢ÇÈï˚å¸Ç∆ë¨óÕÇÃå¸Ç´Ç∆ÇÃç∑
+    
+    runMoveAnimation_->SetBlendWeight(,(velocity_.Length() / Max_Speed) * 2);
     flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
 
     CameraRollUpdate();
