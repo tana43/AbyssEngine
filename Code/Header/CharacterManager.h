@@ -14,6 +14,7 @@ namespace AbyssEngine
 
         void AddCharacter(const std::shared_ptr<Character>& chara);
 
+        void Clear();
     private:
         std::vector<std::shared_ptr<Character>> characterList_;
 

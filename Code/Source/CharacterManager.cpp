@@ -16,3 +16,8 @@ void CharacterManager::AddCharacter(const std::shared_ptr<Character>& chara)
 {
 	characterList_.emplace_back(chara);
 }
+
+void CharacterManager::Clear()
+{
+	characterList_.clear();
+}

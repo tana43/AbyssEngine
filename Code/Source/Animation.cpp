@@ -215,7 +215,6 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
         return;
     }
 
-
     //ブレンドの速度制限
     const float blendMaxSpeed = 2.0f * Time::deltaTime_;
     const Vector2 blendSpeed = {
@@ -302,7 +301,9 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
             }
 
             //weight値の距離を比較
-            float dist = Vector2(anim->weight_ - nextBlendWeight).Length();
+            Vector2 Dist = anim->weight_ - nextBlendWeight;
+            Dist.y *= 50.0f;
+            float dist = Dist.Length();
             if (dist < nearestDist)
             {
                 animData[i] = anim;

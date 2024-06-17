@@ -2,6 +2,9 @@
 #include "Component.h"
 #include "imgui/imgui.h"
 
+#include "Engine.h"
+#include "CharacterManager.h"
+
 using namespace AbyssEngine;
 using namespace std;
 
@@ -124,6 +127,8 @@ void Scene::Finalize()
     {
         a->Release();
     }
+
+    Engine::characterManager_->Clear();
 }
 
 void Scene::DrawImGui()

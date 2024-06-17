@@ -76,6 +76,8 @@
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
     <ClInclude Include="Scripts\Header\Player.h" />
+    <ClInclude Include="Scripts\Header\SceneGame.h" />
+    <ClInclude Include="Scripts\Header\SceneTitle.h" />
     <ClInclude Include="Scripts\Header\Vitesse.h" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +135,8 @@
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
     <ClCompile Include="Scripts\Source\Player.cpp" />
+    <ClCompile Include="Scripts\Source\SceneGame.cpp" />
+    <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
     <ClCompile Include="Scripts\Source\Vitesse.cpp" />
   </ItemGroup>
   <ItemGroup>

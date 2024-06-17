@@ -543,7 +543,10 @@ void RenderManager::ChangeMainCamera(Camera* camera)
 {
 	for (auto& c : Engine::renderManager_->cameraList_)
 	{
-		c.lock()->SetIsMainCamera(false);
+		if (const auto& camera = c.lock())
+		{
+			camera->SetIsMainCamera(false);
+		}
 	}
 
 	camera->SetIsMainCamera(true);

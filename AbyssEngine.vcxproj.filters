@@ -255,6 +255,10 @@
     <ClInclude Include="Code\Header\PrimitiveRenderer.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\SceneGame.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\SceneTitle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -422,6 +426,10 @@
     <ClCompile Include="Code\Source\PrimitiveRenderer.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\SceneGame.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

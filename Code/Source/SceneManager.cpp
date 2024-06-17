@@ -3,15 +3,22 @@
 #include "Scene.h"
 
 #include "TestScene.h"
+#include "SceneGame.h"
+#include "SceneTitle.h"
+
 #include "RenderManager.h"
+
+#include "imgui/imgui.h"
 
 using namespace std;
 using namespace AbyssEngine;
 
 SceneManager::SceneManager()
 {
-    AddScene(new TestScene,"test");
-    SetNextScene("test");
+    AddScene(new TestScene,"Test");
+    AddScene(new SceneGame,"Game");
+    AddScene(new SceneTitle,"Title");
+    SetNextScene("Test");
 }
 
 SceneManager::~SceneManager()
@@ -50,6 +57,18 @@ void SceneManager::SetNextScene(std::string name)
 
 void SceneManager::DrawImGui()
 {
+    if (ImGui::BeginMenu("SceneManager"))
+    {
+        static char sceneName[128] = "Empty";
+        ImGui::InputText("Change Scene Name",sceneName,ARRAYSIZE(sceneName));
+        if (ImGui::Button("Change Scene"))
+        {
+            SetNextScene(sceneName);
+        }
+
+        ImGui::EndMenu();
+    }
+
     if (activeScene_)activeScene_->DrawImGui();
 }
 
