@@ -86,9 +86,31 @@ void Vitesse::Move()
 {
     HumanoidWeapon::Move();
 
-    //現在向いている方向と速力の向きとの差
+    //ブレンドアニメーションのWeight更新
+    if (fabsf(velocity_.LengthSquared()) < 0.01f)
+    {
+        runMoveAnimation_->SetBlendWeight(Vector2(0, (velocity_.Length() / Max_Speed) * 2));
+    }
+    else
+    {
+        //現在向いている方向と速力の向きとの差
+        float direction;
+        const auto& forward = transform_->GetForward();
+
+        Vector3 velocityNormal;
+        velocity_.Normalize(velocityNormal);
+
+        //角度の差
+        float angleDiff = acosf(forward.Dot(velocityNormal));
+        angleDiff = DirectX::XMConvertToDegrees(angleDiff);
+
+        //左右判定
+        float crossY = forward.z * velocityNormal.x - forward.x * velocityNormal.z;
+        angleDiff = crossY > 0 ? angleDiff : -angleDiff;
+
+        runMoveAnimation_->SetBlendWeight(Vector2(angleDiff, (velocity_.Length() / Max_Speed) * 2));
+    }
     
-    runMoveAnimation_->SetBlendWeight(,(velocity_.Length() / Max_Speed) * 2);
     flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
 
     CameraRollUpdate();

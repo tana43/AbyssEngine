@@ -128,6 +128,15 @@ AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name,
 {
     //引数から渡される初期モーションのみ登録
     blendAnims_.emplace_back(BlendAnimData(index,weight));
+
+    for(auto& animNode : blendAnimNodes_)
+    {
+        animNode = *animatedNodes_;
+    }
+    for (auto& animNode : secondBlendAnimNodes_)
+    {
+        animNode = *animatedNodes_;
+    }
 }
 
 void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
@@ -195,6 +204,18 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     model->BlendAnimations(secondBlendAnimNodes_[0], secondBlendAnimNodes_[1], blendWeight, secondBlendAnimNodes_[loop]);
 
 #endif // 0
+    //条件が完全に当てはまっているアニメーションはないか
+    for (auto& animData : blendAnims_)
+    {
+        if (blendWeight_.x != animData.weight_.x)continue;
+        if (blendWeight_.y != animData.weight_.y)continue;
+
+        model->Animate(animData.index_, timeStamp,*animatedNodes_);
+
+        return;
+    }
+
+
     //ブレンドの速度制限
     const float blendMaxSpeed = 2.0f * Time::deltaTime_;
     const Vector2 blendSpeed = {
@@ -265,8 +286,10 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     BlendAnimData* animData[4] = {};
     for (int i = 0; i < 4; i++)
     {
-        //とりあえず最低でも要素数が一つはある想定で考える
+        if (blendAnimDatas[i].size() == 0)continue;
+
         animData[i] = blendAnimDatas[i].at(0);
+
         float nearestDist = FLT_MAX;
         int j = 0;
         for (auto& anim : blendAnimDatas[i])
@@ -292,6 +315,7 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
 
     //4つのモーションデータから実際に補完率に使われる値を計算
     //急なブレンドの重さの変化を防ぐように前回の値から変動する値に上限を設ける
+
     const Vector2 maxBlendWeight = {
         (animData[0]->weight_.x > animData[3]->weight_.x) ? animData[0]->weight_.x : animData[3]->weight_.x,
         (animData[0]->weight_.y > animData[1]->weight_.y) ? animData[0]->weight_.y : animData[1]->weight_.y,
@@ -338,7 +362,24 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     lastBlendWeight_ = nextBlendWeight;
 }
 
+void AnimBlendSpace2D::DrawImGui(Animator* animator)
+{
+    if (ImGui::BeginMenu(name_.c_str()))
+    {
+        if (ImGui::Button("Play This Animation"))
+        {
+            animator->PlayAnimation(name_);
+        }
+        ImGui::SliderFloat2("Blend Weight", &blendWeight_.x, minWeight_.x, maxWeight_.x);
+        ImGui::SliderFloat("Anim Speed", &animSpeed_, 0.0f, 2.0f);
+        ImGui::Checkbox("Loop Flag", &loopFlag_);
+        ImGui::Text(std::to_string(static_cast<long double>(animIndex_)).c_str());
+
+        ImGui::EndMenu();
+    }
+}
+
 void AnimBlendSpace2D::AddBlendAnimation(const int& index, const Vector2& weight)
 {
-    blendAnims_.emplace_back(BlendAnimData(index, weight));
+    auto& a = blendAnims_.emplace_back(BlendAnimData(index, weight));
 }

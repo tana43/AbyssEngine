@@ -87,6 +87,7 @@ namespace AbyssEngine
 
         //アニメーションの更新
         void UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)override;
+        void DrawImGui(Animator* animator)override;
 
         void AddBlendAnimation(
             const int& index,   /*モデルの追加アニメーション要素番号*/
@@ -94,12 +95,14 @@ namespace AbyssEngine
 
         void SetBlendWeight(const Vector2& weight) { blendWeight_ = weight; }
 
+
         struct BlendAnimData
         {
             int index_;
             Vector2 weight_;
         };
         std::vector<BlendAnimData>& GetBlendAnims() { return blendAnims_; }
+        void SetBlendAnims(std::vector<BlendAnimData>& anims) { blendAnims_ = anims; }
 
     private:
         Vector2 maxWeight_ = { 180.0f,1.0f };//ブレンドの最大値

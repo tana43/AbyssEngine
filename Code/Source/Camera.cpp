@@ -122,7 +122,7 @@ Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)
 void Camera::UpdateFrustum()
 {
     //‰‰ñ‚Ì‚İƒtƒ‰ƒXƒ^ƒ€¶¬
-    if (initialFrustum_.Near == 0)//Ne‚ª‚O‚Ì‚Æ‚«‚Í¶¬‚³‚ê‚Ä‚¢‚È‚¢‚Æ‚İ‚È‚·
+    if (initialFrustum_.Near == 0)//Near‚ª‚O‚Ì‚Æ‚«‚Í¶¬‚³‚ê‚Ä‚¢‚È‚¢‚Æ‚İ‚È‚·
     {
         const float aspect = static_cast<float>(DXSystem::GetScreenWidth())
             / static_cast<float>(DXSystem::GetScreenHeight()); //‰æ–Ê”ä—¦

@@ -99,7 +99,6 @@ void TestScene::Initialize()
 
 void TestScene::Update()
 {
-    //DebugRenderer::Get().DrawSphere(Vector3(0, 0, 0), 10.0f, Vector4(1, 0, 0, 0));
 }
 
 void TestScene::DrawImGui()

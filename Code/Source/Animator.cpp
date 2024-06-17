@@ -139,6 +139,7 @@ AnimBlendSpace2D* Animator::AppendAnimation(AnimBlendSpace2D anim)
 	if (!model)return nullptr;
 
 	auto* p = new AnimBlendSpace2D(model.get(), anim.name_,anim.animIndex_,anim.GetBlendAnims()[0].weight_);
+	p->SetBlendAnims(anim.GetBlendAnims());
 	animations_.emplace_back(p);
 	return p;
 }
