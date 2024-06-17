@@ -258,7 +258,9 @@
     <ClInclude Include="Scripts\Header\SceneGame.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\SceneTitle.h" />
+    <ClInclude Include="Scripts\Header\SceneTitle.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -429,7 +431,9 @@
     <ClCompile Include="Scripts\Source\SceneGame.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
+    <ClCompile Include="Scripts\Source\SceneTitle.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
