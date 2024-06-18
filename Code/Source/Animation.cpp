@@ -141,70 +141,6 @@ AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name,
 
 void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
-#if 0
-    int loop = 0;
-    while (loop < 2)
-    {
-        const float nextWeight = loop ? nextBlendWeight.y : nextBlendWeight.x;
-
-        //X,Y軸それぞれでブレンドする２つのモーションを取る blendWeightが[0]と[1]のweight値に収まる範囲のアニメーションを探す
-        BlendAnimData blendAnims[2] = { blendAnims_[0],blendAnims_[1] };
-        if (blendAnims_.size() >= 2)
-        {
-            for (int i = 2; i < blendAnims_.size(); i++)
-            {
-                const float weight = loop ? blendAnims_[i].weight_.y : blendAnims_[i].weight_.x;
-                if (weight < nextWeight)
-                {
-                    const float blendAnimWeight = loop ? blendAnims[0].weight_.y : blendAnims[0].weight_.x;
-                    if (weight > blendAnimWeight)
-                    {
-                        blendAnims[0] = blendAnims_[i];
-                    }
-                }
-                else
-                {
-                    const float blendAnimWeight = loop ? blendAnims[1].weight_.y : blendAnims[1].weight_.x;
-                    if (weight < blendAnimWeight)
-                    {
-                        blendAnims[1] = blendAnims_[i];
-                    }
-                }
-            }
-        }
-
-        //もしブレンドするデータのアニメインデックスが同じならモーションブレンド処理を省く
-        if (blendAnims[0].index_ == blendAnims[1].index_)
-        {
-            model->Animate(blendAnims[0].index_, timeStamp, secondBlendAnimNodes_[loop]);
-        }
-        else
-        {
-            //二つのモーションデータから実際に補完率に使われる値を計算
-            //急なブレンドの重さの変化を防ぐように前回の値から変動する値に上限を設ける
-            const float blendAnimWeights[2] =
-            {
-                loop ? blendAnims[0].weight_.y : blendAnims[0].weight_.x,
-                loop ? blendAnims[1].weight_.y : blendAnims[1].weight_.x
-            };
-            const float maxBlendWeight = blendAnimWeights[1] - blendAnimWeights[0];
-            const float blendWeight = std::clamp((nextWeight - blendAnimWeights[0]) / maxBlendWeight
-                , 0.0f, 1.0f);
-
-            //モーションブレンド
-            model->Animate(blendAnims[0].index_, timeStamp, blendAnimNodes_[0]);
-            model->Animate(blendAnims[1].index_, timeStamp, blendAnimNodes_[1]);
-            model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight, secondBlendAnimNodes_[loop]);
-        }
-
-        loop++;
-    }
-
-    //計算したx軸、y軸のブレンドモーションをさらにブレンドする
-    model->BlendAnimations(secondBlendAnimNodes_[0], secondBlendAnimNodes_[1], blendWeight, secondBlendAnimNodes_[loop]);
-
-#endif // 0
-    
     //ブレンドの速度制限
     const float blendMaxSpeed = 2.0f * Time::deltaTime_;
     const Vector2 blendSpeed = {
@@ -230,9 +166,6 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
         return;
     }
 
-
-    //没
-#if 1
     //Weight値を原点として第一～四象限にモーションデータを分ける   
     //---------------------------------|------------------------------------
     //                                 |
@@ -249,149 +182,29 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     //---------------------------------|------------------------------------
     std::vector<BlendAnimData*> blendAnimDatas[4];
 
-    for (auto& anim : blendAnims_)
+    for (auto& animData : blendAnims_)
     {
-        const Vector2 weight = anim.weight_;
+        //現在のブレンド値からこのアニメーションのブレンド値を見たときの相対値
+        Vector2 relative = animData.weight_ - blendWeight_;
 
-        if (weight.y > nextBlendWeight.y)
+        //各象限にアニメーションでデータを追加
+        if (relative.x > 0 && relative.y > 0)
         {
-            //第一象限
-            if (weight.x > nextBlendWeight.x)
-            {
-                blendAnimDatas[0].emplace_back(&anim);
-                continue;
-            }
-            //第二象限
-            else
-            {
-                blendAnimDatas[1].emplace_back(&anim);
-                continue;
-            }
+            blendAnimDatas[0].emplace_back(animData);
+        }
+        else if (relative.x < 0 && relative.y > 0)
+        {
+            blendAnimDatas[1].emplace_back(animData);
+        }
+        else if(relative.x < 0 && relative.y < 0)
+        {
+            blendAnimDatas[2].emplace_back(animData);
         }
         else
         {
-            //第三象限
-            if (weight.x < nextBlendWeight.x)
-            {
-                blendAnimDatas[2].emplace_back(&anim);
-                continue;
-            }
-            //第四象限
-            else
-            {
-                blendAnimDatas[3].emplace_back(&anim);
-                continue;
-            }
+            blendAnimDatas[3].emplace_back(animData);
         }
     }
-
-
-    //各象限で最もweight値に近いアニメーションを取得する
-    BlendAnimData* animData[4] = {};
-    for (int i = 0; i < 4; i++)
-    {
-        if (blendAnimDatas[i].size() == 0)continue;
-
-        animData[i] = blendAnimDatas[i].at(0);
-
-        float nearestDist = FLT_MAX;
-        for (auto& anim : blendAnimDatas[i])
-        {
-            //weight値の距離を比較
-            Vector2 Dist = anim->weight_ - nextBlendWeight;
-            Dist.x = fabsf(Dist.x) > 0 ? Dist.x / maxWeight_.x : Dist.x;//０除算を防ぐ
-            float dist = Dist.Length();
-            if (dist < nearestDist)
-            {
-                animData[i] = anim;
-                nearestDist = dist;
-            }
-        }
-    }
-
-    //4つのモーションデータから実際に補完率に使われる値を計算
-    //急なブレンドの重さの変化を防ぐように前回の値から変動する値に上限を設ける
-
-    //まずはブレンドさせる１，２象限のモーションのブレンド値を計算する
-    Vector2 maxBlendWeight_0a1;
-    Vector2 minBlendWeight_0a1;
-
-    //第１、２象限の関係から最大値、最小値を決めつけてしまう
-    maxBlendWeight_0a1.x = animData[0]->weight_.x;
-    minBlendWeight_0a1.x = animData[1]->weight_.x;
-
-    //Y値は比較する
-    if (animData[0]->weight_.y > animData[1]->weight_.y)
-    {
-        maxBlendWeight_0a1.y = animData[0]->weight_.y;
-        minBlendWeight_0a1.y = animData[1]->weight_.y;
-    }
-    else
-    {
-        maxBlendWeight_0a1.y = animData[1]->weight_.y;
-        minBlendWeight_0a1.y = animData[0]->weight_.y;
-    }
-    const Vector2 limitBlendWeight_0a1 = maxBlendWeight_0a1 - minBlendWeight_0a1;
-
-    const Vector2 blendWeight_0a1 = {
-        std::clamp((nextBlendWeight.x - minBlendWeight_0a1.x) / limitBlendWeight_0a1.x, 0.0f, 1.0f),
-        std::clamp((nextBlendWeight.y - minBlendWeight_0a1.y) / limitBlendWeight_0a1.y, 0.0f, 1.0f)
-    };
-
-    //同じようにあと二つ作成する
-    Vector2 maxBlendWeight_2a3;
-    Vector2 minBlendWeight_2a3;
-
-    maxBlendWeight_2a3.x = animData[0]->weight_.x;
-    minBlendWeight_2a3.x = animData[1]->weight_.x;
-
-    if (animData[0]->weight_.y > animData[1]->weight_.y)
-    {
-        maxBlendWeight_2a3.y = animData[0]->weight_.y;
-        minBlendWeight_2a3.y = animData[1]->weight_.y;
-    }
-    else
-    {
-        maxBlendWeight_2a3.y = animData[1]->weight_.y;
-        minBlendWeight_2a3.y = animData[0]->weight_.y;
-    }
-    const Vector2 limitBlendWeight_2a3 = maxBlendWeight_2a3 - minBlendWeight_2a3;
-
-    const Vector2 blendWeight_2a3 = {
-        std::clamp((nextBlendWeight.x - minBlendWeight_2a3.x) / limitBlendWeight_2a3.x, 0.0f, 1.0f),
-        std::clamp((nextBlendWeight.y - minBlendWeight_2a3.y) / limitBlendWeight_2a3.y, 0.0f, 1.0f)
-    };
-
-    //モーションブレンド
-    // //第一、第二象限のブレンドモーションと第三、第四象限のブレンドモーションを作成
-    //その二つのモーションから最終的なモーションを算出
-    //同一モーションを参照している場合計算を省く
-    if (animData[0]->index_ == animData[1]->index_)
-    {
-        model->Animate(animData[0]->index_, timeStamp, secondBlendAnimNodes_[0]);
-    }
-    else
-    {
-        model->Animate(animData[0]->index_, timeStamp, blendAnimNodes_[0]);
-        model->Animate(animData[1]->index_, timeStamp, blendAnimNodes_[1]);
-        model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight_0a1.x, secondBlendAnimNodes_[0]);
-    }
-
-    if (animData[2]->index_ == animData[3]->index_)
-    {
-        model->Animate(animData[2]->index_, timeStamp, secondBlendAnimNodes_[1]);
-    }
-    else
-    {
-        model->Animate(animData[2]->index_, timeStamp, blendAnimNodes_[0]);
-        model->Animate(animData[3]->index_, timeStamp, blendAnimNodes_[1]);
-        model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight_2a3.x, secondBlendAnimNodes_[1]);
-    }
-
-    float blendWeightFinal = (nextBlendWeight.y - limitBlendWeight_2a3.y) / (limitBlendWeight_0a1.y - limitBlendWeight_2a3.y);
-    model->BlendAnimations(secondBlendAnimNodes_[1],secondBlendAnimNodes_[0], blendWeightFinal,*animatedNodes_);
-#endif // 0
-
 }
 
 void AnimBlendSpace2D::DrawImGui(Animator* animator)
