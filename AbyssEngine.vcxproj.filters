@@ -261,6 +261,9 @@
     <ClInclude Include="Scripts\Header\SceneTitle.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\Stage.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -432,6 +435,9 @@
       <Filter>Script\Source</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\SceneTitle.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\Stage.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
   </ItemGroup>

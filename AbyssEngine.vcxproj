@@ -78,6 +78,7 @@
     <ClInclude Include="Scripts\Header\Player.h" />
     <ClInclude Include="Scripts\Header\SceneGame.h" />
     <ClInclude Include="Scripts\Header\SceneTitle.h" />
+    <ClInclude Include="Scripts\Header\Stage.h" />
     <ClInclude Include="Scripts\Header\Vitesse.h" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +138,7 @@
     <ClCompile Include="Scripts\Source\Player.cpp" />
     <ClCompile Include="Scripts\Source\SceneGame.cpp" />
     <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
+    <ClCompile Include="Scripts\Source\Stage.cpp" />
     <ClCompile Include="Scripts\Source\Vitesse.cpp" />
   </ItemGroup>
   <ItemGroup>

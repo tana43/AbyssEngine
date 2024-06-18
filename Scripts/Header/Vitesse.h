@@ -38,7 +38,11 @@ private:
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
 
+#if 1
+    AbyssEngine::AnimBlendSpace2D* runMoveAnimation_;//‘–‚èˆÚ“®
+#else
     AbyssEngine::AnimBlendSpace1D* runMoveAnimation_;//‘–‚èˆÚ“®
+#endif // 0
     AbyssEngine::AnimBlendSpace1D* flyMoveAnimation_;//‹ó’†ˆÚ“®
 
     float cameraRollSpeed_ = 90.0f;
