@@ -108,10 +108,8 @@ namespace AbyssEngine
         Vector2 maxWeight_ = { 180.0f,1.0f };//ブレンドの最大値
         Vector2 minWeight_ = { -180.0f,0.0f };//ブレンドの最小値
         Vector2 blendWeight_ = { 0.0f,0.0f };//ブレンドの重み
-
         
         std::vector<BlendAnimData> blendAnims_;
-
 
         Vector2 lastBlendWeight_ = {0,0};//前回のブレンドの重さ
 

@@ -185,7 +185,7 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     for (auto& animData : blendAnims_)
     {
         //現在のブレンド値からこのアニメーションのブレンド値を見たときの相対値
-        Vector2 relative = animData.weight_ - blendWeight_;
+        Vector2 relative = animData.weight_ - nextBlendWeight;
 
         //各象限にアニメーションでデータを追加
         if (relative.x > 0 && relative.y > 0)
@@ -203,6 +203,61 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
         else
         {
             blendAnimDatas[3].emplace_back(animData);
+        }
+    }
+
+    //各象限で最も近いアニメーションを取得する
+    BlendAnimData* animData[4];
+    float distToNextWeight[4];
+
+    //要素数０の象限をビット演算で登録　１ビット目を第一象限として考える
+    for (int i = 0; i < 4; i++)
+    {
+        float nearestDist = FLT_MAX;
+
+        if (blendAnimDatas[i].size() == 0)
+        {
+            continue;
+        }
+
+        animData[i] = blendAnimDatas[i].at(0);
+
+        for (auto& a : blendAnimDatas[i])
+        {
+            Vector2 relative = animData[i]->weight_ - nextBlendWeight;
+            float dist = relative.Length();
+            
+            //距離を比較
+            if (nearestDist > dist)
+            {
+                //最近値と登録されているアニメーションを再設定
+                nearestDist = dist;
+                animData[i] = a;
+            }
+        }
+
+        //このアニメーションデータから最終的なブレンド率までの長さを設定
+        distToNextWeight[i] = nearestDist;
+    }
+
+    //取得したアニメーションをブレンドしていく
+
+    //まずデータから現在のアニメーションを取得
+    for (int i = 0; i < 4; i++)
+    {
+        if (animData[i]) 
+        {
+            model->Animate(animData[i]->index_, timeStamp, blendAnimNodes_[i]);
+        }
+    }
+
+    //取得したアニメーションを使って順番にブレンドしていく
+    //中身が空の象限をスキップする
+    for (int i = 0; i < 4; i++)
+    {
+        if (animData[i])
+        {
+            
         }
     }
 }
