@@ -188,26 +188,26 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
         Vector2 relative = animData.weight_ - nextBlendWeight;
 
         //各象限にアニメーションでデータを追加
-        if (relative.x > 0 && relative.y > 0)
+        if (relative.x >= 0 && relative.y >= 0)
         {
-            blendAnimDatas[0].emplace_back(animData);
+            blendAnimDatas[0].emplace_back(&animData);
         }
-        else if (relative.x < 0 && relative.y > 0)
+        else if (relative.x < 0 && relative.y >= 0)
         {
-            blendAnimDatas[1].emplace_back(animData);
+            blendAnimDatas[1].emplace_back(&animData);
         }
         else if(relative.x < 0 && relative.y < 0)
         {
-            blendAnimDatas[2].emplace_back(animData);
+            blendAnimDatas[2].emplace_back(&animData);
         }
         else
         {
-            blendAnimDatas[3].emplace_back(animData);
+            blendAnimDatas[3].emplace_back(&animData);
         }
     }
 
     //各象限で最も近いアニメーションを取得する
-    BlendAnimData* animData[4];
+    BlendAnimData* animData[4] = {};
     float distToNextWeight[4];
     int emptyCount = 0;//要素が０の象限の数
     //要素数０の象限をビット演算で登録　１ビット目を第一象限として考える
@@ -266,9 +266,16 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
             float weight = distToNextWeight[j] / (distToNextWeight[i] + distToNextWeight[j]);
             model->BlendAnimations(blendAnimNodes_[i], blendAnimNodes_[j], weight, secondBlendAnimNodes_[secondNodesNo]);
             secondNodesNo++;
+            i = j;
+            goto skip;
         }
 
-        secondBlendAnimNodes_[secondNodesNo] = blendAnimNodes_[i];
+        //ブレンドするモーションが何もなかった場合はそのまま代入
+        secondBlendAnimNodes_[secondNodesNo] = blendAnimNodes_[i];             
+
+        //しっかりモーションブレンドされている場合は処理を飛ばす
+    skip:
+        continue;
     }
 
     //ブレンドした結果、２つのモーションが出来ているはずなので、さらにブレンドする
@@ -276,21 +283,24 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     switch (emptyCount)
     {
     case 0:
-    case 1:
-        //0と1の時の処理は同じ
-
+    {
         //ブレンド率の計算
+        float weight1 = distToNextWeight[0] + distToNextWeight[1];
+        float weight2 = distToNextWeight[2] + distToNextWeight[3];
+        float weight = weight2 / (weight1 + weight2);
 
         //さらにブレンドし、モデルへ渡す
-        model->BlendAnimations(secondBlendAnimNodes_[0], secondBlendAnimNodes_[1], 0, model->nodes_);
+        model->BlendAnimations(secondBlendAnimNodes_[0], secondBlendAnimNodes_[1], weight, *animatedNodes_);
+
 
         break;
+    }
+    case 1:
     case 2:
     case 3:
         //2と3の時の処理は同じ
         //そのままさっきブレンドした、もしくはそのままの結果をモデルへ渡す
-
-
+        
 
         break;
     }
