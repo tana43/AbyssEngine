@@ -209,7 +209,7 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     //各象限で最も近いアニメーションを取得する
     BlendAnimData* animData[4];
     float distToNextWeight[4];
-
+    int emptyCount = 0;//要素が０の象限の数
     //要素数０の象限をビット演算で登録　１ビット目を第一象限として考える
     for (int i = 0; i < 4; i++)
     {
@@ -217,6 +217,7 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
 
         if (blendAnimDatas[i].size() == 0)
         {
+            emptyCount++;
             continue;
         }
 
@@ -241,8 +242,7 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     }
 
     //取得したアニメーションをブレンドしていく
-
-    //まずデータから現在のアニメーションを取得
+    //まずデータからアニメーションを取得
     for (int i = 0; i < 4; i++)
     {
         if (animData[i]) 
@@ -253,12 +253,46 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
 
     //取得したアニメーションを使って順番にブレンドしていく
     //中身が空の象限をスキップする
+    int secondNodesNo = 0;//ブレンドされたノードを入れる変数の要素番号
     for (int i = 0; i < 4; i++)
     {
-        if (animData[i])
+        if (!animData[i])continue;
+        for (int j = i + 1; j < 4; j++)
         {
-            
+            if (!animData[j])continue;
+
+            //ブレンド率を算出する
+            //少し前に計算したanimData[i]のブレンド率の距離とanimData[j]のブレンド率の距離の比率から求めていく
+            float weight = distToNextWeight[j] / (distToNextWeight[i] + distToNextWeight[j]);
+            model->BlendAnimations(blendAnimNodes_[i], blendAnimNodes_[j], weight, secondBlendAnimNodes_[secondNodesNo]);
+            secondNodesNo++;
         }
+
+        secondBlendAnimNodes_[secondNodesNo] = blendAnimNodes_[i];
+    }
+
+    //ブレンドした結果、２つのモーションが出来ているはずなので、さらにブレンドする
+    //ただし空の象限の数が２つ以上あるときはブレンドされた結果は１つしかないのでそのままモデルに送る
+    switch (emptyCount)
+    {
+    case 0:
+    case 1:
+        //0と1の時の処理は同じ
+
+        //ブレンド率の計算
+
+        //さらにブレンドし、モデルへ渡す
+        model->BlendAnimations(secondBlendAnimNodes_[0], secondBlendAnimNodes_[1], 0, model->nodes_);
+
+        break;
+    case 2:
+    case 3:
+        //2と3の時の処理は同じ
+        //そのままさっきブレンドした、もしくはそのままの結果をモデルへ渡す
+
+
+
+        break;
     }
 }
 
