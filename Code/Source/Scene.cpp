@@ -142,6 +142,9 @@ void Scene::DrawWorldOutLinerImGui()
     ImVec2 wSize = { 400.0f,1080.0f };
     for (const auto& a : actorList_)
     {
+        //子アクターは親から呼び出せるようにしておく
+        if (a->GetParent().lock())continue;
+
         if (ImGui::BeginMenu(a->name_.c_str()))
         {
             //ImGui::DockSpace(myDockspace, wSize);

@@ -264,6 +264,9 @@
     <ClInclude Include="Scripts\Header\Stage.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\CollisionMesh.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -439,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="Scripts\Source\Stage.cpp">
       <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\CollisionMesh.cpp">
+      <Filter>Code\Source\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
