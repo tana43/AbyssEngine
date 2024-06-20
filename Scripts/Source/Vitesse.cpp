@@ -46,6 +46,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //地上移動
 #if 1
     AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimState::Stand),Vector2(0,0));
+#if 0
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(0, 0));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(90, 0));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(180, 0));
@@ -61,6 +62,13 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(180, 1.0f));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(-180, 0.8f));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(-180, 1.0f));
+#else //仮で斜め移動
+    //前、右、左、後の順に追加
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_F), Vector2(0, 1));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_R), Vector2(1, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_L), Vector2(-1, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(0, -1));
+#endif // 0
     runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
 #else
     AnimBlendSpace1D rMoveAnim = AnimBlendSpace1D(model_.get(), "RunMove",
@@ -103,26 +111,34 @@ void Vitesse::Move()
     //ブレンドアニメーションのWeight更新
     if (fabsf(velocity_.LengthSquared()) < 0.01f)
     {
-        //runMoveAnimation_->SetBlendWeight(Vector2(0, (velocity_.Length() / Max_Speed) * 2));
+        runMoveAnimation_->SetBlendWeight(Vector2(0,0));
     }
     else
     {
-        //現在向いている方向と速力の向きとの差
-        float direction;
+        //前方向と進行方向の差のベクトルを算出
         const auto& forward = transform_->GetForward();
+        const auto& right = transform_->GetRight();
+        Vector3 moveDirection;
+        velocity_.Normalize(moveDirection);
 
-        Vector3 velocityNormal;
-        velocity_.Normalize(velocityNormal);
+        Vector2 result;
 
-        //角度の差
-        float angleDiff = acosf(forward.Dot(velocityNormal));
-        angleDiff = DirectX::XMConvertToDegrees(angleDiff);
+        //result.x = (forward.x * moveDirection.z + right.x * moveDirection.x);
+        //result.y = forward.z * moveDirection.z + right.z * moveDirection.x;
+        //result.Normalize();
+        //result = result * (velocity_.Length() / Max_Speed);
+
+        //内積による計算
+        float dot = forward.Dot(moveDirection);
+        float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
 
         //左右判定
-        float crossY = forward.z * velocityNormal.x - forward.x * velocityNormal.z;
-        angleDiff = crossY > 0 ? -angleDiff : angleDiff;
-
-        //runMoveAnimation_->SetBlendWeight(Vector2(angleDiff, (velocity_.Length() / Max_Speed) * 0.99f));
+        //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
+        if (crossY < 0)dot = DirectX::XM_PI - dot;
+        result = { cosf(dot),sinf(dot) };
+        result = result * (velocity_.Length() / Max_Speed);
+        
+        runMoveAnimation_->SetBlendWeight(result);
     }
 #else
     runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
