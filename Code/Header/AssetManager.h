@@ -10,6 +10,7 @@ namespace AbyssEngine
     class Texture;
     class GltfSkeletalMesh;
     class GltfStaticMesh;
+    class GltfCollisionMesh;
 
     //アセットを管理するクラス
     class AssetManager
@@ -22,6 +23,7 @@ namespace AbyssEngine
         std::unordered_map<std::string, std::shared_ptr<Texture>> cacheTexture_{}; //テクスチャのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<GltfSkeletalMesh>> cacheSkeletalMesh_{}; //スケルタルメッシュのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<GltfStaticMesh>> cacheStaticMesh_{}; //スタティックメッシュのキャッシュ
+        std::unordered_map<std::string, std::shared_ptr<GltfCollisionMesh>> cacheCollisionMesh_{}; //コリジョンメッシュのキャッシュ
 
 
         void Exit();//後始末

@@ -1,17 +1,18 @@
 #pragma once
 #include "Component.h"
 #include "StaticMesh.h"
+#include "CollisionMesh.h"
 
 class Stage : public AbyssEngine::Component
 {
 public:
     Stage() {}
-    ~Stage() { models_.clear(); }
+    ~Stage() { collisionModels_.clear(); }
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
 private:
 
-	struct CollisionMesh
+	struct GltfCollisionMesh
 	{
 		struct Triangle
 		{
@@ -35,6 +36,6 @@ private:
 	void RegisterTriangles();
 
     //配置するモデルを登録しておくためのベクター変数
-    std::vector<std::shared_ptr<AbyssEngine::GltfStaticMesh>> models_;
+    std::vector<std::shared_ptr<AbyssEngine::GltfCollisionMesh>> collisionModels_;
 };
 

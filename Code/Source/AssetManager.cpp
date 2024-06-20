@@ -33,5 +33,6 @@ void AssetManager::Exit()
     cacheTexture_.clear();
     cacheSkeletalMesh_.clear();
     cacheStaticMesh_.clear();
+    cacheCollisionMesh_.clear();
     cacheAsset_.clear();
 }

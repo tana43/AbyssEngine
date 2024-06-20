@@ -264,9 +264,10 @@
     <ClInclude Include="Scripts\Header\Stage.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\CollisionMesh.h">
+    <ClInclude Include="Code\Header\GltfCollisionMesh.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\CollisionMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -443,9 +444,10 @@
     <ClCompile Include="Scripts\Source\Stage.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\CollisionMesh.cpp">
+    <ClCompile Include="Code\Source\GltfCollisionMesh.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\CollisionMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
