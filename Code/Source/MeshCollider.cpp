@@ -21,7 +21,7 @@ void MeshCollider::Initialize(const std::shared_ptr<Actor>& actor)
     else
     {
         //一度も読み込まれていないモデルなら新たに読み込み、アセットマネージャーに登録
-        model_ = std::make_shared<GltfCollisionMesh>(filePath_.c_str());
+        model_ = std::make_shared<GltfCollisionMesh>(DXSystem::GetDevice(), filePath_.c_str());
         Engine::assetManager_->cacheCollisionMesh_[filePath_] = model_;
     }
 

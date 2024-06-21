@@ -24,7 +24,7 @@ void Stage::AddStageModel(const std::string& actorName, const std::string& model
 
 void Stage::RegisterTriangles()
 {
-    for (const auto& model : meshColliders_)
+    /*for (const auto& model : meshColliders_)
     {
         for (const auto& mesh : model->meshes_)
         {
@@ -36,5 +36,5 @@ void Stage::RegisterTriangles()
                 }
             }
         }
-    }
+    }*/
 }

@@ -1,14 +1,16 @@
 #pragma once
-#include "Component.h"
 #include "GltfCollisionMesh.h"
-#include "Renderer.h"
+#include "Collider.h"
 
 namespace AbyssEngine
 {
     //当たり判定用モデルクラス　レンダラーを継承させた方が都合がいいのでそうしている
-    class MeshCollider : public Renderer
+    class MeshCollider : public AbyssEngine::Collider
     {
     public:
+        MeshCollider() {}
+        ~MeshCollider() {}
+
         void Initialize(const std::shared_ptr<Actor>& actor)override;
 
         const std::shared_ptr<GltfCollisionMesh>& GetModel() { return model_; }

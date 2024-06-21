@@ -1,8 +1,7 @@
-#include "CollisionMesh.h"
+#include "GltfCollisionMesh.h"
 
 #include <stack>
 #include <functional>
-#include <fbxsdk.h>
 
 #include "GeometricSubstance.h"
 
