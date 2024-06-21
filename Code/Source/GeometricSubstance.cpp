@@ -45,7 +45,7 @@ void GeometricSubstance::ExtractNodes(const tinygltf::Model& transmissionModel)
 		Node.name_ = transmission_node.name;
 		Node.camera_ = transmission_node.camera;
 		Node.skin_ = transmission_node.skin;
-		Node.mesh_ = transmission_node.mesh;
+		Node.model_ = transmission_node.mesh;
 		Node.children_ = transmission_node.children;
 
 		if (!transmission_node.matrix.empty())

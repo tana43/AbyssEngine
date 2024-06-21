@@ -584,9 +584,9 @@ void GltfSkeletalMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 	// Rebuild bounding boxes (min_value / man_value) computationally.
 	for (decltype(nodes_)::reference node : nodes_)
 	{
-		if (node.mesh_ > -1)
+		if (node.model_ > -1)
 		{
-			const Mesh& mesh = meshes_.at(node.mesh_);
+			const Mesh& mesh = meshes_.at(node.model_);
 
 			XMMATRIX transform = DirectX::XMLoadFloat4x4(&node.globalTransform_);
 			for (std::vector<Primitive>::const_reference primitive : mesh.primitives_)
@@ -645,9 +645,9 @@ int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, 
 			}
 			jointConstants_->Activate(Joint_Slot, CBufferUsage::v);
 		}
-		if (node.mesh_ > -1)
+		if (node.model_ > -1)
 		{
-			const Mesh& mesh = meshes_.at(node.mesh_);
+			const Mesh& mesh = meshes_.at(node.model_);
 			for (std::vector<Primitive>::const_reference primitive : mesh.primitives_)
 			{
 				const Material& material = materials_.at(primitive.material_ < 0 ? materials_.size() - 1 : primitive.material_);
@@ -782,9 +782,9 @@ int GltfSkeletalMesh::CastShadow(const DirectX::XMFLOAT4X4& world, const std::ve
 				}
 				jointConstants_->Activate(Joint_Slot, CBufferUsage::v);
 			}
-			if (node.mesh_ > -1)
+			if (node.model_ > -1)
 			{
-				const Mesh& mesh = meshes_.at(node.mesh_);
+				const Mesh& mesh = meshes_.at(node.model_);
 				for (std::vector<Primitive>::const_reference primitive : mesh.primitives_)
 				{
 					const Material& material = materials_.at(primitive.material_ < 0 ? materials_.size() - 1 : primitive.material_);

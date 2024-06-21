@@ -38,5 +38,7 @@ namespace AbyssEngine
 		bool Raycast(_In_ DirectX::XMFLOAT3 rayPosition, _In_ DirectX::XMFLOAT3 rayDirection, _In_ const DirectX::XMFLOAT4X4& transform, _Out_ DirectX::XMFLOAT3& intersectionPosition, _Out_ DirectX::XMFLOAT3& intersectionNormal,
 			_Out_ std::string& intersectionMesh, _Out_ std::string& intersectionMaterial, _Out_ float& distance, _In_ float rayLengthLimit = 1.0e+7f, _In_ bool skipIf = false/*Once the first intersection is found, the process is interrupted.*/) const;
 
+		//äeí∏ì_ÇçsóÒïœä∑
+		void Transform(const DirectX::XMFLOAT4X4& worldTransform);
 	};
 }

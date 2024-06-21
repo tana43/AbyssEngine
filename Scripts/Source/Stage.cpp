@@ -16,15 +16,15 @@ void Stage::AddStageModel(const std::string& actorName, const std::string& model
     const auto& a = Engine::sceneManager_->GetActiveScene().InstanceActor(actorName);
     a->AddComponent<StaticMesh>(modelPath.c_str());
     std::string collisionModelPath = modelPath + "_Collision";
-    const auto& mesh = a->AddComponent<CollisionMesh>(collisionModelPath.c_str());
+    const auto& mesh = a->AddComponent<MeshCollider>(collisionModelPath.c_str());
     a->SetParent(actor_);
 
-    collisionModels_.emplace_back(mesh);
+    meshColliders_.emplace_back(mesh);
 }
 
 void Stage::RegisterTriangles()
 {
-    for (const auto& model : collisionModels_)
+    for (const auto& model : meshColliders_)
     {
         for (const auto& mesh : model->meshes_)
         {

@@ -248,3 +248,19 @@ bool GltfCollisionMesh::Raycast(_In_ DirectX::XMFLOAT3 rayPosition, _In_ DirectX
 	}
 	return intersectionCount > 0;
 }
+
+void GltfCollisionMesh::Transform(const DirectX::XMFLOAT4X4& worldTransform)
+{
+	for (auto& mesh : meshes_)
+	{
+		for (auto& subset : mesh.subsets)
+		{
+			for (auto& vertex : subset.positions_)
+			{
+				DirectX::XMStoreFloat3(&vertex, XMVector3TransformCoord(XMLoadFloat3(&vertex), DirectX::XMLoadFloat4x4(&worldTransform)));
+			}
+		}
+	}
+}
+
+

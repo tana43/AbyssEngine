@@ -35,7 +35,7 @@ namespace AbyssEngine
         {
             std::string name_;
             int skin_ = -1;
-            int mesh_ = -1;
+            int model_ = -1;
 
             std::vector<int> children_;
 

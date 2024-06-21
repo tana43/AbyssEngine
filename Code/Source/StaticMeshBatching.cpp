@@ -78,7 +78,7 @@ void StaticMeshBatching::FetchNodes(const tinygltf::Model& gltfModel)
 		Node& Node{ nodes_.emplace_back() };
 		Node.name_ = gltfNode.name;
 		Node.skin_ = gltfNode.skin;
-		Node.mesh_ = gltfNode.mesh;
+		Node.model_ = gltfNode.mesh;
 		Node.children_ = gltfNode.children;
 		if (!gltfNode.matrix.empty())
 		{
@@ -250,9 +250,9 @@ void StaticMeshBatching::FetchMeshes(const tinygltf::Model& gltfModel)
 	{
 		const Matrix transform = Node.globalTransform_;
 
-		if (Node.mesh_ > -1)
+		if (Node.model_ > -1)
 		{
-			const tinygltf::Mesh& gltfMesh = gltfModel.meshes.at(Node.mesh_);
+			const tinygltf::Mesh& gltfMesh = gltfModel.meshes.at(Node.model_);
 
 			for (std::vector<tinygltf::Primitive>::const_reference gltfPrimitive : gltfMesh.primitives)
 			{

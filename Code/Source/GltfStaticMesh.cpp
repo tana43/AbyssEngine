@@ -167,12 +167,12 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 		//};
 		const XMMATRIX globalTransform = XMLoadFloat4x4(&node.globalTransform_) * XMLoadFloat4x4(&coordinateSystemTransforms[1]);
 
-		if (node.mesh_ > -1 /*&& node.skin < 0*/)
+		if (node.model_ > -1 /*&& node.skin < 0*/)
 		{
-			const tinygltf::Mesh& transmissionMesh = transmissionModel.meshes.at(node.mesh_);
+			const tinygltf::Mesh& transmissionMesh = transmissionModel.meshes.at(node.model_);
 
 			// Assign a new mesh index to the node.
-			node.mesh_ = static_cast<int>(meshes_.size());
+			node.model_ = static_cast<int>(meshes_.size());
 
 			Mesh& mesh = meshes_.emplace_back();
 			mesh.name_ = transmissionMesh.name;
@@ -584,10 +584,10 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 	// Rebuild bounding boxes (min_value / man_value) computationally.
 	for (decltype(nodes_)::reference node : nodes_)
 	{
-		if (node.mesh_ > -1)
+		if (node.model_ > -1)
 		{
 			DirectX::XMMATRIX globalTransform_ = DirectX::XMLoadFloat4x4(&node.globalTransform_);
-			const Mesh& mesh = meshes_.at(node.mesh_);
+			const Mesh& mesh = meshes_.at(node.model_);
 			for (std::vector<Primitive>::const_reference primitive : mesh.primitives_)
 			{
 				DirectX::XMVECTOR maxValue = DirectX::XMLoadFloat3(&primitive.maxValue_);
