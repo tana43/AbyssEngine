@@ -41,6 +41,9 @@ namespace AbyssEngine
         //ImGui表示用の共通関数
         virtual bool DrawImGui() { return true; }
 
+        //デバッグ表示の関数
+        virtual void DrawDebug() {}
+
         friend class Actor;
 
     protected:

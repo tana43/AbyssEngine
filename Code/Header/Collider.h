@@ -12,10 +12,13 @@ namespace AbyssEngine
 
         //void Initialize(const std::shared_ptr<Actor>& actor);
 
-        void SetFailePath(const char* path) { filePath_ = path; }
+        void SetFilePath(const char* path) { filePath_ = path; }
 
         void SetEnable(bool value) { enabled_ = value; }
         [[nodiscard]] bool GetEnabled() const { return enabled_; }
+
+    public:
+
 
     protected:
         bool enabled_ = true;//”»’èˆ—‚·‚é‚©

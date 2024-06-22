@@ -28,7 +28,8 @@ namespace AbyssEngine
         //シーンの変更
         void SetNextScene(std::string name);
 
-        void DrawImGui();//シーンのデバッグ表示
+        void DrawImGui();//シーンのImGUi表示
+        void DrawDebug();//シーンのデバッグ表示
         void DrawWorldOutLinerImGui();//ワールド上に生成されるアクターのデバッグ表示
 
     private:

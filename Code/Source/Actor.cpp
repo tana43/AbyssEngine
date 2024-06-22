@@ -51,6 +51,7 @@ void Actor::DrawImGui()
 {
 	for (auto& c : componentList_)
 	{
+		//ImGui表示
 		ImGui::SetNextItemOpen(true,ImGuiCond_Once);
 		c->DrawImGui();
 	}
@@ -71,6 +72,15 @@ void Actor::DrawImGui()
 				ImGui::TreePop();
 			}
 		}
+	}
+}
+
+void Actor::DrawDebug()
+{
+	for (auto& c : componentList_)
+	{
+		//デバッグ表示
+		c->DrawDebug();
 	}
 }
 

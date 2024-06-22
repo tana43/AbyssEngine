@@ -131,9 +131,17 @@ void Scene::Finalize()
     Engine::characterManager_->Clear();
 }
 
+void Scene::DrawDebug()
+{
+    for (const auto& a : actorList_)
+    {
+        a->DrawDebug();
+    }
+}
+
 void Scene::DrawImGui()
 {
-    //各Sceneクラスで定義
+
 }
 
 void Scene::DrawWorldOutLinerImGui()

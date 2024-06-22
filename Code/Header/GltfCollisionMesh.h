@@ -26,10 +26,10 @@ namespace AbyssEngine
 				{ -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX }
 			};
 		};
-		std::vector<Mesh> meshes_;
+		std::vector<Mesh> meshes_;  
 
 	public:
-		GltfCollisionMesh(ID3D11Device* device, const std::string& fileName, bool triangulate = false);
+		GltfCollisionMesh (ID3D11Device* device, const std::string& fileName, bool triangulate = false);
 
 		// The coordinate system of all function arguments is world space.
 		bool Raycast(_In_ DirectX::XMFLOAT3 rayPosition, _In_ DirectX::XMFLOAT3 rayDirection, _In_ const DirectX::XMFLOAT4X4& transform, _Out_ DirectX::XMFLOAT3& intersectionPosition, _Out_ DirectX::XMFLOAT3& intersectionNormal,

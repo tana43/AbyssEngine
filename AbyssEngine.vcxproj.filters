@@ -283,9 +283,6 @@
     <ClCompile Include="Code\Source\Scene.cpp">
       <Filter>Code\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\TestScene.cpp">
-      <Filter>Code\Source\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\SpriteRenderer.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
@@ -450,6 +447,9 @@
     </ClCompile>
     <ClCompile Include="Code\Source\MeshCollider.cpp" />
     <ClCompile Include="Code\Source\Collider.cpp" />
+    <ClCompile Include="Code\Source\TestScene.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "DebugRenderer.h"
 #include "Vitesse.h"
+#include "MeshCollider.h"
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
@@ -39,7 +40,7 @@ void TestScene::Initialize()
     //);
 
 
-    const float scale = 0.3f;
+    const float scale = 0.2f;
     //çÇëwÉrÉã
     for (int i = 0; i < 10; i++)
     {
@@ -47,7 +48,7 @@ void TestScene::Initialize()
         name += std::to_string(i);
         const auto& skyscraper = InstanceActor(name);
         skyscraper->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_001.glb");
-        //skyscraper->GetTransform()->SetScaleFactor(scale);
+        skyscraper->GetTransform()->SetScaleFactor(scale);
     }
     //ÉrÉã
     for (int i = 0; i < 10; i++) 
@@ -56,8 +57,10 @@ void TestScene::Initialize()
         name += std::to_string(i);
         const auto& building = InstanceActor(name);
         //building->AddComponent<StaticMesh>("./Assets/Models/Stage/Building_001.glb");
-        building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_002.glb");
-        //building->GetTransform()->SetScaleFactor(scale);
+        //building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_002.glb");
+        building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_003.glb");
+        building->AddComponent<MeshCollider>("./Assets/Models/Stage/Skyscraper_003_Collision.fbx");
+        building->GetTransform()->SetScaleFactor(scale);
     }
     //ñÿ
     //for (int i = 0; i < 30; i++) 

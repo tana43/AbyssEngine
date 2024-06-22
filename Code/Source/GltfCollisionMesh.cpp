@@ -2,15 +2,107 @@
 
 #include <stack>
 #include <functional>
+#include <fbxsdk.h>
 
 #include "GeometricSubstance.h"
 
 using namespace DirectX;
 using namespace AbyssEngine;
 
+inline XMFLOAT4X4 ToXMFLOAT4X4(const FbxAMatrix& fbxamatrix)
+{
+	XMFLOAT4X4 xmfloat4x4;
+	for (int row = 0; row < 4; row++)
+	{
+		for (int column = 0; column < 4; column++)
+		{
+			xmfloat4x4.m[row][column] = static_cast<float>(fbxamatrix[row][column]);
+		}
+	}
+	return xmfloat4x4;
+}
+
 GltfCollisionMesh::GltfCollisionMesh(ID3D11Device* device, const std::string& fileName, bool triangulate)
 {
-	//	Gltfì«Ç›çûÇ›
+	//	Fbxì«Ç›çûÇ›
+	if (fileName.find(".fbx") != std::string::npos)
+	{
+		FbxManager* fbxManager = FbxManager::Create();
+		FbxScene* fbxScene = FbxScene::Create(fbxManager, "");
+		FbxImporter* fbxImporter = FbxImporter::Create(fbxManager, "");
+		bool importStatus = false;
+		importStatus = fbxImporter->Initialize(fileName.c_str());
+		assert(importStatus && "Failed to call FbxImporter::Initialize");
+		importStatus = fbxImporter->Import(fbxScene);
+		assert(importStatus && "Failed to call FbxImporter::Import");
+
+		FbxGeometryConverter fbxConverter(fbxManager);
+		if (triangulate)
+		{
+			fbxConverter.Triangulate(fbxScene, true/*replace*/, false/*legacy*/);
+			fbxConverter.RemoveBadPolygonsFromMeshes(fbxScene);
+		}
+
+		std::function<void(FbxNode*)> traverse = [&](FbxNode* fbxNode) 
+		{
+			if (fbxNode->GetNodeAttribute() && fbxNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::EType::eMesh)
+			{
+				decltype(meshes_)::reference mesh = meshes_.emplace_back();
+				mesh.name_ = fbxNode->GetName();
+
+				DirectX::XMMATRIX globalTransform = XMLoadFloat4x4(&ToXMFLOAT4X4(fbxNode->EvaluateGlobalTransform()));
+
+				FbxMesh* fbxMesh = fbxNode->GetMesh();
+				const int materialCount = fbxMesh->GetNode()->GetMaterialCount();
+				mesh.subsets.resize(materialCount > 0 ? materialCount : 1);
+				for (int materialIndex = 0; materialIndex < materialCount; ++materialIndex)
+				{
+					const FbxSurfaceMaterial* fbxMaterial = fbxMesh->GetNode()->GetMaterial(materialIndex);
+					mesh.subsets.at(materialIndex).materialName_ = fbxMaterial->GetName();
+				}
+
+				const FbxVector4* controlPoints = fbxMesh->GetControlPoints();
+				const int polygon_count = fbxMesh->GetPolygonCount();
+				for (int polygonIndex = 0; polygonIndex < polygon_count; ++polygonIndex)
+				{
+					const int materialIndex = materialCount > 0 ? fbxMesh->GetElementMaterial()->GetIndexArray().GetAt(polygonIndex) : 0;
+					decltype(mesh.subsets)::reference subset = mesh.subsets.at(materialIndex);
+
+					for (int positionInPolygon = 0; positionInPolygon < 3; ++positionInPolygon)
+					{
+						DirectX::XMFLOAT3 position;
+						const int polygon_vertex = fbxMesh->GetPolygonVertex(polygonIndex, positionInPolygon);
+						position.x = static_cast<float>(controlPoints[polygon_vertex][0]);
+						position.y = static_cast<float>(controlPoints[polygon_vertex][1]);
+						position.z = static_cast<float>(controlPoints[polygon_vertex][2]);
+						XMStoreFloat3(&position, XMVector3TransformCoord(XMLoadFloat3(&position), globalTransform));
+						subset.positions_.emplace_back(position);
+					}
+
+				}
+				for (decltype(mesh.subsets)::const_reference subset : mesh.subsets)
+				{
+					for (decltype(subset.positions_)::const_reference position : subset.positions_)
+					{
+						mesh.boundingBox_[0].x = std::min<float>(mesh.boundingBox_[0].x, position.x);
+						mesh.boundingBox_[0].y = std::min<float>(mesh.boundingBox_[0].y, position.y);
+						mesh.boundingBox_[0].z = std::min<float>(mesh.boundingBox_[0].z, position.z);
+						mesh.boundingBox_[1].x = std::max<float>(mesh.boundingBox_[1].x, position.x);
+						mesh.boundingBox_[1].y = std::max<float>(mesh.boundingBox_[1].y, position.y);
+						mesh.boundingBox_[1].z = std::max<float>(mesh.boundingBox_[1].z, position.z);
+					}
+				}
+			}
+			for (int childIndex = 0; childIndex < fbxNode->GetChildCount(); ++childIndex)
+			{
+				traverse(fbxNode->GetChild(childIndex));
+			}
+		};
+		traverse(fbxScene->GetRootNode());
+
+		fbxManager->Destroy();
+	}
+	else	//	Gltfì«Ç›çûÇ›
 	{
 		tinygltf::TinyGLTF tinyGltf;
 		tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
@@ -66,7 +158,7 @@ GltfCollisionMesh::GltfCollisionMesh(ID3D11Device* device, const std::string& fi
 					decltype(mesh.subsets)::reference subset = mesh.subsets.emplace_back();
 					subset.materialName_ = gltfMaterial.name;
 
-					const tinygltf::Accessor&	indexAccessor = gltfModel.accessors.at(gltfPrimitive.indices);
+					const tinygltf::Accessor& indexAccessor = gltfModel.accessors.at(gltfPrimitive.indices);
 					const tinygltf::BufferView& indexBufferView = gltfModel.bufferViews.at(indexAccessor.bufferView);
 					assert(indexAccessor.type == TINYGLTF_TYPE_SCALAR);
 					assert(indexAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT);
@@ -85,15 +177,15 @@ GltfCollisionMesh::GltfCollisionMesh(ID3D11Device* device, const std::string& fi
 					}
 				}
 			}
-			for (decltype(gltfNode.children)::value_type childIndex : gltfNode.children)
+			for (const int childIndex : gltfNode.children)
 			{
 				parentGlobalTransforms.push(globalTransform);
 				traverse(childIndex);
 				parentGlobalTransforms.pop();
 			}
 		};
-		decltype(gltfModel.scenes)::const_reference gltfScene = gltfModel.scenes.at(0);
-		for (decltype(gltfScene.nodes)::value_type rootNode : gltfScene.nodes)
+		const auto& gltfScene = gltfModel.scenes.at(0);
+		for (auto& rootNode : gltfScene.nodes)
 		{
 			parentGlobalTransforms.push({ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 			traverse(rootNode);
@@ -102,11 +194,11 @@ GltfCollisionMesh::GltfCollisionMesh(ID3D11Device* device, const std::string& fi
 	}
 
 	//	Rebuild bounding box
-	for (decltype(meshes_)::reference mesh : meshes_)
+	for (auto& mesh : meshes_)
 	{
-		for (decltype(mesh.subsets)::reference subset : mesh.subsets)
+		for (auto& subset : mesh.subsets)
 		{
-			for (decltype(subset.positions_)::reference position : subset.positions_)
+			for (auto& position : subset.positions_)
 			{
 				mesh.boundingBox_[0].x = std::min<float>(mesh.boundingBox_[0].x, position.x);
 				mesh.boundingBox_[0].y = std::min<float>(mesh.boundingBox_[0].y, position.y);

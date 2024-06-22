@@ -69,7 +69,13 @@ void SceneManager::DrawImGui()
         ImGui::EndMenu();
     }
 
-    if (activeScene_)activeScene_->DrawImGui();
+    if (activeScene_) activeScene_->DrawImGui();
+
+}
+
+void SceneManager::DrawDebug()
+{
+    if (activeScene_) activeScene_->DrawDebug();
 }
 
 void SceneManager::DrawWorldOutLinerImGui()

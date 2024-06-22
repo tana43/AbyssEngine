@@ -93,6 +93,8 @@ void Engine::GetHandle(UINT msg, WPARAM wParam, LPARAM lParam)
 void Engine::DrawDebug()
 {
 #if _DEBUG
+    sceneManager_->DrawDebug();
+
     if (ImGui::BeginMainMenuBar())
     {
         //•`‰æŠÖŒW‚Ì’l‚ª‘ÎÛ

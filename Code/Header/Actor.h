@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Transform.h"
 #include "Renderer.h"
+#include "Collider.h"
 
 #include <nlohmann/json.hpp>
 
@@ -41,6 +42,7 @@ namespace AbyssEngine
         void Initialize();  //初期化
         void Release();     //後始末
         void DrawImGui();
+        void DrawDebug();
 
     private:
         std::shared_ptr<Transform> transform_;                  //アタッチされているTransform
@@ -80,7 +82,14 @@ namespace AbyssEngine
         //パスの登録は必要か
         if (path)
         {
-            std::dynamic_pointer_cast<Renderer>(buff)->SetFilePath(path);
+            //コライダーもしくはレンダラーを継承したコンポーネントか
+            const auto& p = std::dynamic_pointer_cast<Renderer>(buff);
+            if (p)p->SetFilePath(path);
+            else
+            {
+                const auto& c = std::dynamic_pointer_cast<Collider>(buff);
+                c->SetFilePath(path);
+            }
         }
 
         //複数アタッチできるか確認
