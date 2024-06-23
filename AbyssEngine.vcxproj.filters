@@ -448,7 +448,7 @@
     <ClCompile Include="Code\Source\MeshCollider.cpp" />
     <ClCompile Include="Code\Source\Collider.cpp" />
     <ClCompile Include="Code\Source\TestScene.cpp">
-      <Filter>Code\Source</Filter>
+      <Filter>Code\Source\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

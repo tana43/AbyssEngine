@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include <DirectXMath.h>
 #include <string>
 
 namespace AbyssEngine
@@ -18,7 +19,11 @@ namespace AbyssEngine
         [[nodiscard]] bool GetEnabled() const { return enabled_; }
 
     public:
-
+        struct Triangle
+        {
+            DirectX::XMFLOAT3	positions[3];
+            DirectX::XMFLOAT3	normal;
+        };
 
     protected:
         bool enabled_ = true;//”»’èˆ—‚·‚é‚©

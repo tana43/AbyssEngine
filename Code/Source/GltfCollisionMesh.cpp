@@ -271,8 +271,8 @@ bool GltfCollisionMesh::Raycast(_In_ DirectX::XMFLOAT3 rayPosition, _In_ DirectX
 		//	三角形の法線を計算する
 		for (decltype(mesh.subsets)::const_reference subset : mesh.subsets)
 		{
-			const DirectX::XMFLOAT3* positions = subset.positions_.data();
-			const size_t triangleCount = subset.positions_.size() / 3;
+			const DirectX::XMFLOAT3* positions = initVertexPositions_.data();
+			const size_t triangleCount = initVertexPositions_.size() / 3;
 			for (size_t triangleIndex = 0; triangleIndex < triangleCount; triangleIndex++)
 			{
 				const DirectX::XMVECTOR A = XMLoadFloat3(&positions[triangleIndex * 3 + 0]);
@@ -354,5 +354,3 @@ void GltfCollisionMesh::Transform(const DirectX::XMFLOAT4X4& worldTransform)
 		}
 	}
 }
-
-

@@ -20,5 +20,8 @@ private:
 
     //配置するモデルを登録しておくためのベクター変数
     std::vector<std::shared_ptr<AbyssEngine::MeshCollider>> meshColliders_;
+
+    //各モデルの三角形をまとめて管理
+    std::vector <AbyssEngine:: Collider::Triangle > triangles_;
 };
 

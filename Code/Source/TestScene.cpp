@@ -47,8 +47,9 @@ void TestScene::Initialize()
         std::string name = "Skyscraper_";
         name += std::to_string(i);
         const auto& skyscraper = InstanceActor(name);
-        skyscraper->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_001.glb");
         skyscraper->GetTransform()->SetScaleFactor(scale);
+        skyscraper->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_001.glb");
+        skyscraper->AddComponent<MeshCollider>("./Assets/Models/Stage/Skyscraper_001_Collision.glb");
     }
     //ƒrƒ‹
     for (int i = 0; i < 10; i++) 

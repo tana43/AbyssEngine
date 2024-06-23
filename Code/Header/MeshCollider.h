@@ -24,12 +24,7 @@ namespace AbyssEngine
 
     public:
         
-        struct Triangle
-        {
-            DirectX::XMFLOAT3	positions[3];
-            DirectX::XMFLOAT3	normal;
-        };
-        std::vector<Triangle>	triangles;
+        std::vector<Collider::Triangle>	triangles;
         
 
     private:

@@ -24,17 +24,15 @@ void Stage::AddStageModel(const std::string& actorName, const std::string& model
 
 void Stage::RegisterTriangles()
 {
-    /*for (const auto& model : meshColliders_)
-    {
-        for (const auto& mesh : model->meshes_)
-        {
-            for (const auto& subset : mesh.subsets)
-            {
-                for (size_t i = 0; i < subset.positions_.size(); i++)
-                {
+    //ˆê“x“o˜^‚³‚ê‚½ŽOŠpŒ`‚ðƒNƒŠƒA
+    triangles_.clear();
 
-                }
-            }
+    //Ä“o˜^
+    for (const auto& model : meshColliders_)
+    {
+        for (const auto& tri : model->triangles)
+        {
+            triangles_.emplace_back(tri);
         }
-    }*/
+    }
 }
