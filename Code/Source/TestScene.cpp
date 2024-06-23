@@ -58,9 +58,9 @@ void TestScene::Initialize()
         const auto& building = InstanceActor(name);
         //building->AddComponent<StaticMesh>("./Assets/Models/Stage/Building_001.glb");
         //building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_002.glb");
-        building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_003.glb");
-        building->AddComponent<MeshCollider>("./Assets/Models/Stage/Skyscraper_003_Collision.fbx");
         building->GetTransform()->SetScaleFactor(scale);
+        building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_003.glb");
+        building->AddComponent<MeshCollider>("./Assets/Models/Stage/Skyscraper_003_Collision.glb");
     }
     //木
     //for (int i = 0; i < 30; i++) 
@@ -71,7 +71,6 @@ void TestScene::Initialize()
     //    tree->AddComponent<StaticMesh>("./Assets/Models/Stage/Tree_001.glb");
     //    //tree->GetTransform()->SetScaleFactor(scale);
     //}
-    //
 
     //アスファルト
     for (int i = 0; i < 9; i++) 

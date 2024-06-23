@@ -26,7 +26,11 @@ namespace AbyssEngine
 				{ -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX }
 			};
 		};
-		std::vector<Mesh> meshes_;  
+		std::vector<Mesh> meshes_;
+
+	private:
+		std::vector<DirectX::XMFLOAT3> initVertexPositions_;//äeí∏ì_ÇÃèâä˙à íu
+
 
 	public:
 		GltfCollisionMesh (ID3D11Device* device, const std::string& fileName, bool triangulate = false);

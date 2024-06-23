@@ -25,6 +25,8 @@ void MeshCollider::Initialize(const std::shared_ptr<Actor>& actor)
         Engine::assetManager_->cacheCollisionMesh_[filePath_] = model_;
     }
 
+    model_->Transform(transform_->CalcWorldMatrix());
+
     for (auto& mesh : model_->meshes_)
     {
         for (auto& subset : mesh.subsets)
