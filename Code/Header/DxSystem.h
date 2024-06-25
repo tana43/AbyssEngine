@@ -104,6 +104,7 @@ namespace AbyssEngine
 
 		// DirectX11の初期化後、メモリリーク検出のために次の関数を呼び出す
 		static void ReportLiveObjectsWrapper();
+
 	};
 
 	

@@ -69,7 +69,12 @@ void SceneManager::DrawImGui()
         ImGui::EndMenu();
     }
 
-    if (activeScene_) activeScene_->DrawImGui();
+    if (activeScene_)
+    {
+        activeScene_->ImGuiSaveAllActors();
+        activeScene_->DrawImGui();
+    }
+
 
 }
 

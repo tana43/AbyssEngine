@@ -14,6 +14,8 @@
 #include "DebugRenderer.h"
 #include "LineRenderer.h"
 
+#include "StageManager.h"
+
 #include "../External/imgui/ImGuiCtrl.h"
 
 using namespace AbyssEngine;
@@ -58,11 +60,13 @@ void Engine::Update()
     ////ImGui更新
     IMGUI_CTRL_CLEAR_FRAME();
 
+
     DXSystem::Clear();
 
     inputManager_->Update();
 
     sceneManager_->Update();
+
 
     characterManager_->Update();
 
@@ -73,6 +77,11 @@ void Engine::Update()
     IMGUI_CTRL_DISPLAY();
 
     DXSystem::Flip();
+
+#if _DEBUG
+    MouseDragUnrelenting();
+#endif // _DEBUG
+
 }
 
 void Engine::GetHandle(UINT msg, WPARAM wParam, LPARAM lParam)
@@ -123,6 +132,49 @@ void Engine::DrawDebug()
         ImGui::EndMainMenuBar();
     }
 #endif // _DEBUG
+}
+
+void Engine::MouseDragUnrelenting()
+{
+    if (Mouse::GetButtonState().leftButton)
+    {
+        const Vector2 curPos = Vector2(Mouse::GetPosX(), Mouse::GetPosY());
+
+        Vector2 result;
+        const Vector2 screen = {
+            static_cast<float>(DXSystem::GetScreenWidth()),
+            static_cast<float>(DXSystem::GetScreenHeight())
+        };
+
+        //カーソルが画面端に近いか
+        if (curPos.x <= 1)
+        {
+            result = { screen.x - 2,curPos.y };
+        }
+        else if(curPos.x >= screen.x - 1)
+        {
+            result = { 2,curPos.y };
+        }
+        else if (curPos.y <= 1)
+        {
+            result = { curPos.x, screen.y - 2 };
+        }
+        else if(curPos.y >= screen.y - 1)
+        {
+            result = { curPos.x, 2 };
+        }
+        else
+        {
+            return;
+        }
+
+        //変更後の座標をクライアント座標からスクリーン座標に変換
+        POINT p = { result.x,result.y };
+        ClientToScreen(DXSystem::hwnd_, &p);
+        ImGui::TeleportMousePos(ImVec2(p.x, p.y));
+        //SetCursorPos(p.x, p.y);
+    }
+
 }
 
 float Time::deltaTime_;

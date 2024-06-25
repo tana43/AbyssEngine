@@ -123,10 +123,11 @@ void Scene::Reset()
 
 void Scene::Finalize()
 {
-    for (const auto& a : actorList_)
+    /*for (const auto& a : actorList_)
     {
         a->Release();
-    }
+    }*/
+    Reset();
 
     Engine::characterManager_->Clear();
 }
@@ -142,6 +143,17 @@ void Scene::DrawDebug()
 void Scene::DrawImGui()
 {
 
+}
+
+void Scene::ImGuiSaveAllActors()
+{
+    if (ImGui::ButtonDoubleChecking("Save All Actors",imguiFrag_))
+    {
+        for (const auto& a : actorList_)
+        {
+            a->transform_->SaveToJson();
+        }
+    }
 }
 
 void Scene::DrawWorldOutLinerImGui()

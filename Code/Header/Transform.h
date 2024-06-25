@@ -68,6 +68,9 @@ namespace AbyssEngine
 
         bool DrawImGui()override;
 
+        //現在の位置、回転、スケールをJsonファイルに保存
+        void SaveToJson();
+
     private:
         Vector3 position_ = { 0,0,0 };
         Quaternion rotation_ = { 0,0,0,1 };

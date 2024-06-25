@@ -15,6 +15,9 @@ void Stage::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPosition, Vector3& hitNormal)
 {
+	//レイの長さが０のときは処理しない
+	if (Vector3(start - end).LengthSquared() == 0)return false;
+	
 	bool hit = false;
 	
 	DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(end, start);
@@ -81,15 +84,25 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 	return hit;
 }
 
-void Stage::AddStageModel(const std::string& actorName, const std::string& modelPath)
+std::shared_ptr<AbyssEngine::Actor> Stage::AddStageModel(const std::string& actorName,std::string modelPath)
 {
+	//アクターを生成
     const auto& a = Engine::sceneManager_->GetActiveScene().InstanceActor(actorName);
+
+	//モデル読み込み
     a->AddComponent<StaticMesh>(modelPath.c_str());
-    std::string collisionModelPath = modelPath + "_Collision";
-    const auto& mesh = a->AddComponent<MeshCollider>(collisionModelPath.c_str());
+
+	//判定用モデル読み込み
+	int ext = modelPath.find_last_of(".");//拡張子の始めが何文字目かを取得
+    modelPath.insert(ext, "_Collision");
+    const auto& mesh = a->AddComponent<MeshCollider>(modelPath.c_str());
+
+	//ステージと親子付け
     a->SetParent(actor_);
 
     meshColliders_.emplace_back(mesh);
+
+	return a;
 }
 
 void Stage::RegisterTriangles()

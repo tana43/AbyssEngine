@@ -30,6 +30,7 @@
     <ClInclude Include="Code\Header\Character.h" />
     <ClInclude Include="Code\Header\CharacterManager.h" />
     <ClInclude Include="Code\Header\Collider.h" />
+    <ClInclude Include="Code\Header\CollisionManager.h" />
     <ClInclude Include="Code\Header\MeshCollider.h" />
     <ClInclude Include="Code\Header\GltfCollisionMesh.h" />
     <ClInclude Include="Code\Header\Component.h" />
@@ -82,6 +83,7 @@
     <ClInclude Include="Scripts\Header\SceneGame.h" />
     <ClInclude Include="Scripts\Header\SceneTitle.h" />
     <ClInclude Include="Scripts\Header\Stage.h" />
+    <ClInclude Include="Scripts\Header\StageManager.h" />
     <ClInclude Include="Scripts\Header\Vitesse.h" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +97,7 @@
     <ClCompile Include="Code\Source\Character.cpp" />
     <ClCompile Include="Code\Source\CharacterManager.cpp" />
     <ClCompile Include="Code\Source\Collider.cpp" />
+    <ClCompile Include="Code\Source\CollisionManager.cpp" />
     <ClCompile Include="Code\Source\MeshCollider.cpp" />
     <ClCompile Include="Code\Source\GltfCollisionMesh.cpp" />
     <ClCompile Include="Code\Source\Component.cpp" />
@@ -145,6 +148,7 @@
     <ClCompile Include="Scripts\Source\SceneGame.cpp" />
     <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
     <ClCompile Include="Scripts\Source\Stage.cpp" />
+    <ClCompile Include="Scripts\Source\StageManager.cpp" />
     <ClCompile Include="Scripts\Source\Vitesse.cpp" />
   </ItemGroup>
   <ItemGroup>

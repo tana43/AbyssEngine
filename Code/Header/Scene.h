@@ -29,10 +29,15 @@ namespace AbyssEngine
 
         virtual void DrawDebug(); //デバッグ表示
         virtual void DrawImGui(); //ImGuiデバッグ表示
+        void ImGuiSaveAllActors();//すべてのアクターのトランスフォーム情報を保存
+
 
         std::vector<std::shared_ptr<Actor>> actorList_; //シーン内の全アクター
 
         friend class SceneManager;
+
+    private:
+        bool imguiFrag_ = false;
     };
 
 }

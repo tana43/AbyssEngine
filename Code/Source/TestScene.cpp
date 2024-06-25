@@ -7,11 +7,15 @@
 #include "DebugRenderer.h"
 #include "Vitesse.h"
 #include "MeshCollider.h"
+#include "Stage.h"
+#include "StageManager.h"
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
 
 using namespace AbyssEngine;
+
+std::shared_ptr<Stage> stageCom;
 
 void TestScene::Initialize()
 {
@@ -39,7 +43,7 @@ void TestScene::Initialize()
     //    "./Assets/Models/Stage/Skyscraper_001.glb"
     //);
 
-
+#if 0
     const float scale = 0.2f;
     //高層ビル
     for (int i = 0; i < 10; i++)
@@ -82,6 +86,48 @@ void TestScene::Initialize()
         asphalt->AddComponent<StaticMesh>("./Assets/Models/Stage/Asphalt.glb");
         //asphalt->GetTransform()->SetScaleFactor(30.0f);
     }
+#else
+    const auto& stageActor = InstanceActor("Test_Stage");
+    //const auto& stageCom = stageActor->AddComponent<Stage>();
+    stageCom = stageActor->AddComponent<Stage>();
+    StageManager::Instance().AddStage(stageActor);
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::string name = "Skyscraper_001_";
+        name += std::to_string(i);
+        stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_001.glb");
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        std::string name = "Skyscraper_002_";
+        name += std::to_string(i);
+        stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_002.glb");
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        std::string name = "Office_001_";
+        name += std::to_string(i);
+        stageCom->AddStageModel(name, "./Assets/Models/Stage/Office_001.glb");
+    }
+    int gridSize = 12;
+    for (int x = 0; x < gridSize; x++)
+    {
+        for (int z = 0; z < gridSize; z++)
+        {
+            float scale = 30.0f;
+            float oneGrid = scale * 2;
+
+            std::string name = "Asphalt_";
+            name += std::to_string(x * gridSize + z);
+            const auto& asp = stageCom->AddStageModel(name, "./Assets/Models/Stage/Asphalt.glb");
+            asp->GetTransform()->SetLocalScaleFactor(scale);
+            asp->GetTransform()->SetLocalPositionX((-(gridSize / 2) * oneGrid) + x * oneGrid);
+            asp->GetTransform()->SetLocalPositionZ((-(gridSize / 2) * oneGrid) + z * oneGrid);
+        }
+    }
+    stageCom->RegisterTriangles();
+#endif // 0
     
 
 #if 1//ヴィテスモデル仮生成
@@ -102,6 +148,9 @@ void TestScene::Initialize()
 
 void TestScene::Update()
 {
+    Vector3 hit;
+    Vector3 hitn;
+    stageCom->RayCast(Vector3(0, 10, 0), Vector3(0, -10, 0), hit, hitn);
 }
 
 void TestScene::DrawImGui()

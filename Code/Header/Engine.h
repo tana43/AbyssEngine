@@ -32,6 +32,8 @@ namespace AbyssEngine
     private:
         static void DrawDebug();
 
+        //ドラッグしている時はマウスカーソルが画面端に到達すると反対側へ飛ばされる処理
+        static void MouseDragUnrelenting();
     };
 
     class Time
@@ -40,5 +42,6 @@ namespace AbyssEngine
         static float deltaTime_;
         static float timeScale_;
     };
+
 }
 

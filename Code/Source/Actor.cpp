@@ -63,13 +63,18 @@ void Actor::DrawImGui()
 		for (const auto& a : children_)
 		{
 			const auto& actor = a.lock();
-			if (ImGui::TreeNode(actor->name_.c_str()))
+			if (ImGui::BeginMenu(actor->name_.c_str()))
 			{
+				static ImVec2 wSize = { 400.0f,1080.0f };
+				ImGui::SetNextWindowPos(ImVec2(1920.0f - wSize.x * 2 - 20.0f, 24.0f), ImGuiCond_::ImGuiCond_Once);
+				ImGui::SetNextWindowSize(wSize, ImGuiCond_FirstUseEver);
+				ImGui::Begin(actor->name_.c_str());
+				actor->DrawImGui();
 				//ImGui::DockSpace(myDockspace, wSize);
 				//ImGui::SetNextWindowDockID(myDockspace, ImGuiCond_Once);
-				actor->DrawImGui();
+				ImGui::End();
 
-				ImGui::TreePop();
+				ImGui::EndMenu();
 			}
 		}
 	}

@@ -41,7 +41,8 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     camera_ = c->AddComponent<Camera>();
     //c->SetParent(actor_);
     camera_->fov_ = DirectX::XMConvertToRadians(80.0f);
-    camera_->targetOffset_ = Vector3(0.8f, 1.4f, 0);
+    camera_->targetOffset_ = Vector3(0.4f, 0.6f, 0);
+    camera_->armLength_ = 0.4f;
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
 }
@@ -108,12 +109,7 @@ void Player::MoveUpdate()
         }
     }
 
-    //À•WXV
-    {
-        auto pos = transform_->GetPosition();
-        pos = pos + velocity_ * Time::deltaTime_;
-        transform_->SetPosition(pos);
-    }
+    Character::UpdateMove();
 
     //‰ñ“]
     TurnY(velocity_);

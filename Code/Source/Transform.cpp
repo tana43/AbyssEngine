@@ -64,7 +64,7 @@ Matrix Transform::CalcWorldMatrix()
     {
         const Matrix localMatrix = CalcLocalMatrix();
         const auto scale = scale_ * scaleFactor_;
-        worldMatrix_ = localMatrix * parent->GetTransform()->GetWorldMatrix();
+        worldMatrix_ = localMatrix * parent->GetTransform()->CalcWorldMatrix();
         worldMatrix_.Decompose(scale_, rotation_, position_);
         
         R = Matrix::CreateFromQuaternion(rotation_);
@@ -116,29 +116,31 @@ bool Transform::DrawImGui()
 
     if (ImGui::TreeNode("Transform"))
     {
-        ImGui::DragFloat3("Position", &position_.x, 0.1f, -FLT_MAX, FLT_MAX);
-        ImGui::DragFloat3("Scale", &scale_.x, 0.01f, -FLT_MAX, FLT_MAX);
-        ImGui::DragFloat3("Rotation", &rotation_.x, 0.5f, -FLT_MAX, FLT_MAX);
-        ImGui::DragFloat("ScaleFactor", &scaleFactor_, 0.01f, 0.01f, 100.0f);
-
-        //セーブ
-        if (ImGui::ButtonDoubleChecking("Save",doubleCheckFlag_))
+        //親がいないならぐワールド座標等を表示
+        if (!actor_->GetParent().lock())
         {
-            //ファイルの読み込み
-            nlohmann::json mJson = actor_->ReadingJsonFile();
+            ImGui::DragFloat3("Position", &position_.x, 0.1f, -FLT_MAX, FLT_MAX);
+            ImGui::DragFloat3("Scale", &scale_.x, 0.01f, -FLT_MAX, FLT_MAX);
+            ImGui::DragFloat3("Rotation", &rotation_.x, 0.5f, -FLT_MAX, FLT_MAX);
+            ImGui::DragFloat("ScaleFactor", &scaleFactor_, 0.01f, 0.01f, 100.0f);
 
-            auto& data = mJson["Transform"];
-            data["Position"] = { position_.x,position_.y,position_.z };
-            data["Rotation"] = { rotation_.x,rotation_.y,rotation_.z };
-            data["Scale"] = { scale_.x,scale_.y,scale_.z };
-            data["ScaleFactor"] = scaleFactor_;
+            //セーブ
+            //if (ImGui::ButtonDoubleChecking("Save",doubleCheckFlag_))
+            //{
+            //    //ファイルの読み込み
+            //    nlohmann::json mJson = actor_->ReadingJsonFile();
 
-            //ファイルに内容を書き込む
-            actor_->WritingJsonFile(mJson);
+            //    auto& data = mJson["Transform"];
+            //    data["Position"] = { position_.x,position_.y,position_.z };
+            //    data["Rotation"] = { rotation_.x,rotation_.y,rotation_.z };
+            //    data["Scale"] = { scale_.x,scale_.y,scale_.z };
+            //    data["ScaleFactor"] = scaleFactor_;
+
+            //    //ファイルに内容を書き込む
+            //    actor_->WritingJsonFile(mJson);
+            //}
         }
-
-        //親がいるならローカル座標も表示
-        if (actor_->GetParent().lock())
+        else //親がいないならローカルを表示
         {
             ImGui::Text("-----Local------");
             ImGui::DragFloat3("LPosition", &localPosition_.x, 0.1f, -FLT_MAX, FLT_MAX);
@@ -147,20 +149,26 @@ bool Transform::DrawImGui()
             ImGui::DragFloat("LScaleFactor", &localScaleFactor_, 0.01f, 0.01f, 100.0f);
 
             //セーブ
-            if (ImGui::ButtonDoubleChecking("Local Save", doubleCheckFlag_))
-            {
-                //ファイルの読み込み
-                nlohmann::json mJson = actor_->ReadingJsonFile();
+            //if (ImGui::ButtonDoubleChecking("Local Save", doubleCheckFlag_))
+            //{
+            //    //ファイルの読み込み
+            //    nlohmann::json mJson = actor_->ReadingJsonFile();
 
-                auto& data = mJson["Transform"];
-                data["L_Position"] = { localPosition_.x,localPosition_.y,localPosition_.z };
-                data["L_Rotation"] = { localRotation_.x,localRotation_.y,localRotation_.z };
-                data["L_Scale"] = { localScale_.x,localScale_.y,localScale_.z };
-                data["L_ScaleFactor"] = localScaleFactor_;
+            //    auto& data = mJson["Transform"];
+            //    data["L_Position"] = { localPosition_.x,localPosition_.y,localPosition_.z };
+            //    data["L_Rotation"] = { localRotation_.x,localRotation_.y,localRotation_.z };
+            //    data["L_Scale"] = { localScale_.x,localScale_.y,localScale_.z };
+            //    data["L_ScaleFactor"] = localScaleFactor_;
 
-                //ファイルに内容を書き込む
-                actor_->WritingJsonFile(mJson);
-            }
+            //    //ファイルに内容を書き込む
+            //    actor_->WritingJsonFile(mJson);
+            //}
+        }
+
+        //Jsonへ保存
+        if (ImGui::ButtonDoubleChecking("Save", doubleCheckFlag_))
+        {
+            SaveToJson();
         }
 
         ImGui::TreePop();
@@ -168,4 +176,24 @@ bool Transform::DrawImGui()
 
     return false;
 #endif // _DEBUG
+}
+
+void AbyssEngine::Transform::SaveToJson()
+{
+    //ファイルの読み込み
+    nlohmann::json mJson = actor_->ReadingJsonFile();
+
+    auto& data = mJson["Transform"];
+    data["Position"] = { position_.x,position_.y,position_.z };
+    data["Rotation"] = { rotation_.x,rotation_.y,rotation_.z };
+    data["Scale"] = { scale_.x,scale_.y,scale_.z };
+    data["ScaleFactor"] = scaleFactor_;
+
+    data["L_Position"] = { localPosition_.x,localPosition_.y,localPosition_.z };
+    data["L_Rotation"] = { localRotation_.x,localRotation_.y,localRotation_.z };
+    data["L_Scale"] = { localScale_.x,localScale_.y,localScale_.z };
+    data["L_ScaleFactor"] = localScaleFactor_;
+
+    //ファイルに内容を書き込む
+    actor_->WritingJsonFile(mJson);
 }

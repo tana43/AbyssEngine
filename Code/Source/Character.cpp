@@ -1,6 +1,8 @@
 #include "CharacterManager.h"
 #include "Engine.h"
 #include "Actor.h"
+#include "StageManager.h"
+
 #include <algorithm>
 
 #include "imgui/imgui.h"
@@ -115,12 +117,77 @@ void Character::UpdateVelocity()
 
 void Character::UpdateMove()
 {
-    //座標更新
+    //動くことがない時は処理しない
+    if (velocity_.LengthSquared() * Time::deltaTime_ < 0.01f)return;
+    
+    //速度から何の判定もしなかったときの移動後の座標を取得
+    const Vector3 pos = transform_->GetPosition(); 
+    const Vector3 moveVector = velocity_ * Time::deltaTime_;
+    Vector3 moved = pos + moveVector;//移動後の座標
+
+    Vector3 hit;//光線がヒットしたところの座標
+    Vector3 hitNormal;//光線がヒットした面の法線
+
+    //レイの開始地点引き上げ
+    static constexpr float correctionY = 1.0f;//補正値
+    Vector3 start = pos;
+    start.y += correctionY;
+    Vector3 end = moved;
+    end.y += correctionY;
+
+
+    //地形判定
+    const auto& stage = StageManager::Instance().GetActiveStage();
+    if(stage->RayCast(start,end,hit,hitNormal))
     {
-        auto pos = transform_->GetPosition();
-        pos = pos + velocity_ * Time::deltaTime_;
-        transform_->SetPosition(pos);
+#if 0
+        //仮で動かないようにしてみる
+        hit.y -= correctionY;
+        hit = hit + hitNormal * 0.1f;
+        moved = hit;
+#else
+
+        //スタートからレイが当たった位置までのベクトル
+        Vector3 endToHit = hit - end;
+
+        //内積を使い壁ずりベクトルを算出
+        Vector3 projection = hitNormal * (hitNormal.Dot(endToHit));
+
+        //壁ずり移動のために必要な数値を用意
+        Vector3 startWall = hit + hitNormal * 0.01f;//壁にべったりつきすぎないようにしている
+        Vector3 endWall = end + projection + hitNormal * 0.01f;
+
+        //壁ずり移動
+        if (stage->RayCast(startWall, endWall, hit, hitNormal))
+        {
+            //再度当たった場合は壁ずりはしない
+            hit.y -= correctionY;
+            moved = hit;
+        }
+        else
+        {
+            //当たらなかった
+            endWall.y -= correctionY;
+            moved = endWall;
+        }
+
+        //移動距離に応じて速度を強制的に変更
+        {
+            float moveDistance = Vector3(moved - pos).Length() / Time::deltaTime_;
+            velocity_.Normalize();
+            velocity_ = velocity_ * moveDistance;
+        }
     }
+    else
+    {
+        //当たらなかった
+    }
+#endif // 0
+      
+    
+
+    //座標更新
+    transform_->SetPosition(moved);
 
     //回転
     TurnY(velocity_);

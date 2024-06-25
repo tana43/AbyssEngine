@@ -267,8 +267,18 @@
     <ClInclude Include="Code\Header\GltfCollisionMesh.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\MeshCollider.h" />
-    <ClInclude Include="Code\Header\Collider.h" />
+    <ClInclude Include="Scripts\Header\StageManager.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\MeshCollider.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Collider.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\CollisionManager.h">
+      <Filter>Code\Header\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -312,9 +322,6 @@
     </ClCompile>
     <ClCompile Include="Code\Source\SystemFunction.cpp">
       <Filter>Code\Source\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Source\Actor.cpp">
-      <Filter>Code\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\Renderer.cpp">
       <Filter>Code\Source\Component</Filter>
@@ -397,9 +404,6 @@
     <ClCompile Include="Scripts\Source\Player.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Character.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\CharacterManager.cpp">
       <Filter>Code\Source\Manager</Filter>
     </ClCompile>
@@ -445,10 +449,26 @@
     <ClCompile Include="Code\Source\GltfCollisionMesh.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\MeshCollider.cpp" />
-    <ClCompile Include="Code\Source\Collider.cpp" />
     <ClCompile Include="Code\Source\TestScene.cpp">
       <Filter>Code\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\MeshCollider.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Collider.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Character.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Actor.cpp">
+      <Filter>Code\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\CollisionManager.cpp">
+      <Filter>Code\Source\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\StageManager.cpp">
+      <Filter>Script\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
