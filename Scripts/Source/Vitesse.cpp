@@ -136,14 +136,14 @@ void Vitesse::Move()
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
         if (crossY < 0)dot = DirectX::XM_PI - dot;
         result = { cosf(dot),sinf(dot) };
-        result = result * (velocity_.Length() / Max_Speed);
+        result = result * (velocity_.Length() / Max_Horizontal_Speed);
         
         runMoveAnimation_->SetBlendWeight(result);
     }
 #else
     runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
 #endif // 1
-    flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
+    flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Horizontal_Speed) * 2);
 
     CameraRollUpdate();
 }
@@ -155,11 +155,11 @@ void Vitesse::UpdateInputMove()
     //飛行中はY軸にも動くようにする
     if (flyingMode_)
     {
-        moveVec_ = camera_->ConvertTo3DVectorFromCamera(Input::GetMoveVector());
+        moveVec_ = camera_->ConvertTo3DVectorFromCamera(Input::GameSupport::GetMoveVector());
     }
     else
     {
-        moveVec_ = camera_->ConvertTo2DVectorFromCamera(Input::GetMoveVector());
+        moveVec_ = camera_->ConvertTo2DVectorFromCamera(Input::GameSupport::GetMoveVector());
     }
 
 
@@ -168,7 +168,7 @@ void Vitesse::UpdateInputMove()
 void Vitesse::CameraRollUpdate()
 {
     //入力値取得
-    Vector2 input = Input::GetCameraRollVector();
+    Vector2 input = Input::GameSupport::GetCameraRollVector();
 
     auto r = camera_->GetTransform()->GetRotation();
     const float rollSpeed = cameraRollSpeed_ * Time::deltaTime_;

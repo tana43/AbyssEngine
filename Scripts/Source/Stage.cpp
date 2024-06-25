@@ -43,7 +43,7 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 			}
 		}
 	}
-	// TODO②：空間分割したデータを使い、レイキャストを拘束に処理する
+	//空間分割したデータを使い、レイキャストを拘束に処理する
 	else
 	{
 		//各空間とレイとの判定

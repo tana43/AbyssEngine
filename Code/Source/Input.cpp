@@ -42,7 +42,7 @@ GamePad& Input::GetGamePad()
     return Engine::inputManager_->gamePad_;
 }
 
-const Vector2 Input::GetMoveVector()
+const Vector2 Input::GameSupport::GetMoveVector()
 {
     //キーボード、コントローラー両方に対応
     Vector2 input;
@@ -64,7 +64,7 @@ const Vector2 Input::GetMoveVector()
     return input;
 }
 
-const bool Input::GetDashButton()
+const bool Input::GameSupport::GetDashButton()
 {
     bool input = false;
     auto& i = Engine::inputManager_;
@@ -77,7 +77,7 @@ const bool Input::GetDashButton()
     return input;
 }
 
-const Vector2 Input::GetCameraRollVector()
+const Vector2 Input::GameSupport::GetCameraRollVector()
 {
     //キーボード、コントローラー両方に対応
     Vector2 input;
@@ -97,4 +97,16 @@ const Vector2 Input::GetCameraRollVector()
     }
 
     return input;
+}
+
+const bool Input::GameSupport::GetJumpButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::Space) ||
+        i->gamePad_.GetButtonDown() & GamePad::BTN_A)
+    {
+        return true;
+    }
+
+    return false;
 }

@@ -35,6 +35,8 @@ private:
     const float Run_Max_Speed = 5.0f;
 
     float cameraRollSpeed_ = 90.0f;
+
+    float jumpPower_ = 10.0f;
 };
 
 

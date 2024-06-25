@@ -5,7 +5,7 @@ using namespace AbyssEngine;
 
 HumanoidWeapon::HumanoidWeapon()
 {
-    Max_Speed = 40.0f;
+    Max_Horizontal_Speed = 40.0f;
     deceleration_ = 1.5f;
 }
 
@@ -55,10 +55,10 @@ void HumanoidWeapon::UpdateVelocity()
         velocity_ = velocity_ + moveVec_ * (acceleration_ * propulsion_ * Time::deltaTime_);
 
         //ë¨ìxêßå¿
-        if (velocity_.Length() > Max_Speed)
+        if (velocity_.Length() > Max_Horizontal_Speed)
         {
             velocity_.Normalize();
-            velocity_ = velocity_ * Max_Speed;
+            velocity_ = velocity_ * Max_Horizontal_Speed;
         }
     }
     else//å∏ë¨èàóù

@@ -309,7 +309,7 @@ void Camera::CameraLagUpdate()
     const auto& vec = target - cameraPos;
 
     //移動ベクトル計算
-    const auto& moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_) * 100.0f/*単純に値が小さすぎるから増やしてるだけ*/;
+    const auto& moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_)/* * 100.0f単純に値が小さすぎるから増やしてるだけ*/;
     cameraPos = cameraPos + moveVec * Time::deltaTime_;
 
     transform_->SetPosition(cameraPos);

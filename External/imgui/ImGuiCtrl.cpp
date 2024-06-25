@@ -114,6 +114,7 @@ namespace ImGuiCtrl
 
 		//ƒtƒHƒ“ƒgÝ’è
 		ImGuiIO& io = ImGui::GetIO();
+		
 		//io.Fonts->AddFontFromFileTTF("./imgui/Fonts/Ruda-Bold.ttf", 12);
 		//io.Fonts->AddFontFromFileTTF("./imgui/Fonts/Ruda-Bold.ttf", 10);
 		io.Fonts->AddFontFromFileTTF("./External/imgui/Fonts/Ruda-Bold.ttf", 14);

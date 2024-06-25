@@ -19,6 +19,8 @@ namespace AbyssEngine
         //複数アタッチ不可
         bool CanMultiple()override { return false; }
 
+        void Jump(const float& jumpPower);
+
     public:
         const bool& GetIsActive() const { return isActive_; }
         void SetIsActive(const bool& active) { isActive_ = active; }
@@ -31,19 +33,27 @@ namespace AbyssEngine
         virtual  void Move();//移動処理
 
         virtual void UpdateVelocity();//速力更新
-        virtual void UpdateMove();//移動処理による位置更新
+        virtual void UpdateMove();
+        virtual void UpdateHorizontalMove();//地面に対して水平方向の移動処理による位置更新
+        virtual void UpdateVerticalMove();//地面に対して垂直方向の移動処理による位置更新
+
+        virtual void Landing();//着地
     public:
-        constexpr static float Gravity = 1.0f;
+        constexpr static float Gravity = -9.8f;
 
     protected:
+        float weight_ = 1.0f;//重さ（重力の計算に使う）
+
         bool isActive_ = true;
+        bool onGround_ = true;
 
         Vector3 moveVec_;//移動方向
         Vector3 velocity_;//速度
         float acceleration_ = 1.0f;//加速力
         float deceleration_ = 5.0f;//減速力
 
-        float Max_Speed = 20.0f;//最大速度
+        float Max_Horizontal_Speed = 20.0f;//水平方向に対する最大速度
+        float Max_Vertical_Speed = 20.0f;//縦方向に対する最大速度
 
         float baseRotSpeed_ = 300.0f;//回転速度
         float Max_Rot_Speed = 800.0f;//最大回転速度

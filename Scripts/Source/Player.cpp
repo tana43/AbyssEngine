@@ -43,6 +43,7 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     camera_->fov_ = DirectX::XMConvertToRadians(80.0f);
     camera_->targetOffset_ = Vector3(0.4f, 0.6f, 0);
     camera_->armLength_ = 0.4f;
+    camera_->cameraLagSpeed_ = 0.05f;
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
 }
@@ -65,6 +66,8 @@ bool Player::DrawImGui()
 
         ImGui::DragFloat("Base Acceleration", &baseAcceleration_, 0.1f, 0.0f, 100.0f);
 
+        ImGui::DragFloat("Jump Power", &jumpPower_, 0.02f, 0.01f, 100.0f);
+
         ImGui::TreePop();
     }
 
@@ -74,7 +77,7 @@ bool Player::DrawImGui()
 void Player::MoveUpdate()
 {
     //入力されたベクトルから移動ベクトル取得
-    auto inputVec = Input::GetMoveVector();
+    auto inputVec = Input::GameSupport::GetMoveVector();
 
     //入力値がある場合は加速
     if (inputVec.LengthSquared() > 0.01f)
@@ -89,35 +92,32 @@ void Player::MoveUpdate()
 
             velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
 
-            //速度制限
-            if (velocity_.Length() > Max_Speed)
-            {
-                velocity_.Normalize();
-                velocity_ =  velocity_ * Max_Speed;
-            }
         }
     }
     else
     {
-        //入力値がほぼない場合は減速処理
-        velocity_ = velocity_ - (velocity_ * (deceleration_ * Time::deltaTime_));
-
-        //速度が０に近いときは完全に０にする
-        if (velocity_.LengthSquared() > 0.01f)
-        {
-            velocity_ = {};
-        }
+        moveVec_ = {};
     }
 
+    Character::UpdateVelocity();
+
+    //地形判定も含めた移動処理
     Character::UpdateMove();
 
     //回転
-    TurnY(velocity_);
+    //TurnY(velocity_);
+
+    //ジャンプ
+    if (Input::GameSupport::GetJumpButton())
+    {
+        Jump(jumpPower_);
+    }
 
     //走っているか
-    Max_Speed = Input::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
+    Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
 
-    moveAnimation_->SetBlendWeight(velocity_.Length() / Run_Max_Speed);
+    const Vector2 veloXZ = { velocity_.x,velocity_.z };
+    moveAnimation_->SetBlendWeight(veloXZ.Length() / Run_Max_Speed);
 
     moveVec_ = {};
 }
@@ -125,7 +125,7 @@ void Player::MoveUpdate()
 void Player::CameraRollUpdate()
 {
     //入力値取得
-    Vector2 input = Input::GetCameraRollVector();
+    Vector2 input = Input::GameSupport::GetCameraRollVector();
 
     auto r = camera_->GetTransform()->GetRotation();
     const float rollSpeed = cameraRollSpeed_ * Time::deltaTime_;

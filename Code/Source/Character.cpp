@@ -22,9 +22,9 @@ bool Character::DrawImGui()
     ImGui::DragFloat3("Velocity", &velocity_.x);
 
     float speed = velocity_.Length();
-    ImGui::SliderFloat("Speed",&speed,0.0f,Max_Speed);
+    ImGui::SliderFloat("Speed",&speed,0.0f,Max_Horizontal_Speed);
 
-    ImGui::DragFloat("Max Speed", &Max_Speed,0.1f,0.1f);
+    ImGui::DragFloat("Max Speed", &Max_Horizontal_Speed,0.1f,0.1f);
 
     ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 10.0f);
     ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 10.0f);
@@ -34,6 +34,16 @@ bool Character::DrawImGui()
     ImGui::SliderFloat("Min Rot Speed", &Min_Rot_Speed,0.0f,1000.0f);
 
     return true;
+}
+
+void Character::Jump(const float& jumpPower)
+{
+    //現在空中にいる場合はジャンプしない
+    if (!onGround_)return;
+
+    velocity_.y += jumpPower;
+
+    onGround_ = false;
 }
 
 void Character::TurnY(Vector3 dir, bool smooth)
@@ -82,35 +92,62 @@ void Character::TurnY(Vector3 dir, bool smooth)
 
 void Character::Move()
 {
-    UpdateVelocity();
     UpdateMove(); 
 }
 
 void Character::UpdateVelocity()
 {
     //速力更新
+
+    //水平方向
     {
         if (moveVec_.LengthSquared() > 0.01f)
         {
             velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
 
             //速度制限
-            if (velocity_.Length() > Max_Speed)
+            Vector2 velocityXZ = { velocity_.x,velocity_.z };
+            if (velocityXZ.Length() > Max_Horizontal_Speed)
             {
-                velocity_.Normalize();
-                velocity_ = velocity_ * Max_Speed;
+                velocityXZ.Normalize();
+                velocityXZ = velocityXZ * Max_Horizontal_Speed;
+
+                velocity_.x = velocityXZ.x;
+                velocity_.z = velocityXZ.y;
             }
         }
         else//減速処理
         {
             //入力値がほぼない場合は減速処理
-            velocity_ = velocity_ - (velocity_ * (deceleration_ * Time::deltaTime_));
+            Vector3 velocityXZ = velocity_ - (velocity_ * (deceleration_ * Time::deltaTime_));
+            velocityXZ.y = 0;
 
-            //速度が０に近いときは完全に０にする
-            if (velocity_.LengthSquared() > 0.01f)
+            Vector3 veloNormal;
+            Vector3 veloXZNormal;
+            velocity_.Normalize(veloNormal);
+            velocityXZ.Normalize(veloXZNormal);
+
+            //反対方向のベクトルになってしまうか速度が遅すぎるなら、速度を完全に０にする
+            if (veloNormal.Dot(veloXZNormal) < 0 || velocityXZ.LengthSquared() < 0.01f)
             {
-                velocity_ = {};
+                velocity_ = { 0,velocity_.y,0 };
             }
+            else
+            {
+                velocity_ = { velocityXZ.x,velocity_.y,velocityXZ.y };
+            }
+        }
+    }
+
+    //縦方向の速力更新
+    {
+        //重力による速力更新
+        velocity_.y += Gravity * weight_ * Time::deltaTime_;
+
+        //速度制限
+        if (fabsf(velocity_.y) > Max_Vertical_Speed)
+        {
+            velocity_.y = velocity_.y > 0 ? Max_Vertical_Speed : -Max_Vertical_Speed;
         }
     }
 }
@@ -120,9 +157,26 @@ void Character::UpdateMove()
     //動くことがない時は処理しない
     if (velocity_.LengthSquared() * Time::deltaTime_ < 0.01f)return;
     
+    UpdateHorizontalMove();
+    UpdateVerticalMove();
+
+    //回転
+    TurnY(Vector3(velocity_.x,0,velocity_.z));
+}
+
+void Character::UpdateHorizontalMove()
+{
+    if (velocity_.x * velocity_.x + velocity_.z * velocity_.z == 0)return;
+
     //速度から何の判定もしなかったときの移動後の座標を取得
-    const Vector3 pos = transform_->GetPosition(); 
-    const Vector3 moveVector = velocity_ * Time::deltaTime_;
+    const Vector3 pos = transform_->GetPosition();
+    const Vector3 moveVector =
+    {
+        velocity_.x * Time::deltaTime_,
+        0,
+        velocity_.z * Time::deltaTime_
+    };
+
     Vector3 moved = pos + moveVector;//移動後の座標
 
     Vector3 hit;//光線がヒットしたところの座標
@@ -138,15 +192,8 @@ void Character::UpdateMove()
 
     //地形判定
     const auto& stage = StageManager::Instance().GetActiveStage();
-    if(stage->RayCast(start,end,hit,hitNormal))
+    if (stage->RayCast(start, end, hit, hitNormal))
     {
-#if 0
-        //仮で動かないようにしてみる
-        hit.y -= correctionY;
-        hit = hit + hitNormal * 0.1f;
-        moved = hit;
-#else
-
         //スタートからレイが当たった位置までのベクトル
         Vector3 endToHit = hit - end;
 
@@ -182,13 +229,44 @@ void Character::UpdateMove()
     {
         //当たらなかった
     }
-#endif // 0
-      
-    
 
     //座標更新
-    transform_->SetPosition(moved);
+    transform_->SetPositionX(moved.x);
+    transform_->SetPositionZ(moved.z);
+}
 
-    //回転
-    TurnY(velocity_);
+void Character::UpdateVerticalMove()
+{
+    //速度から何の判定もしなかったときの移動後の座標を取得
+    const Vector3 pos = transform_->GetPosition();
+    const float moveY = velocity_.y * Time::deltaTime_;
+
+    //移動後の座標
+    Vector3 moved = {pos.x,pos.y + moveY,pos.z};
+
+    Vector3 hit;//光線がヒットしたところの座標
+    Vector3 hitNormal;//光線がヒットした面の法線
+
+    //レイの開始地点引き上げ
+    static constexpr float correctionY = 1.0f;//補正値
+    Vector3 start = pos;
+    start.y += correctionY;
+    Vector3 end = moved;
+
+    //垂直方向に地形判定
+    const auto& stage = StageManager::Instance().GetActiveStage();
+    if (stage->RayCast(start,end,hit,hitNormal))
+    {
+        //着地した
+        Landing();
+        moved.y = hit.y;
+    }
+
+    transform_->SetPosition(moved);
+}
+
+void Character::Landing()
+{
+    velocity_.y = 0.0f;
+    onGround_ = true;
 }
