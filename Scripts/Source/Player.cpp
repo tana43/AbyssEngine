@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "SceneManager.h"
 #include "SkeletalMesh.h"
+#include "StaticMesh.h"
 #include "Camera.h"
 #include "Actor.h"
 #include "Input.h"
@@ -34,6 +35,12 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     moveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));
+
+    //武器を装備させる
+    weaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Soldier/Soldier_Gun.glb");
+    model_->SocketAttach(weaponModel_, "middle_metacarpal_l");
+    weaponModel_->GetSocketData().location_ = { 3.35f,-4.75f,6.3f };
+    weaponModel_->GetSocketData().rotation_ = { 2.15f,168.7f,-99.25f };
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -99,7 +106,7 @@ void Player::MoveUpdate()
         moveVec_ = {};
     }
 
-    Character::UpdateVelocity();
+    //Character::UpdateVelocity();
 
     //地形判定も含めた移動処理
     Character::UpdateMove();

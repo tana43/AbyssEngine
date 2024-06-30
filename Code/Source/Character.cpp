@@ -154,6 +154,8 @@ void Character::UpdateVelocity()
 
 void Character::UpdateMove()
 {
+    UpdateVelocity();
+
     //“®‚­‚±‚Æ‚ª‚È‚¢‚Íˆ—‚µ‚È‚¢
     if (velocity_.LengthSquared() * Time::deltaTime_ < 0.01f)return;
     

@@ -92,24 +92,24 @@ void TestScene::Initialize()
     stageCom = stageActor->AddComponent<Stage>();
     StageManager::Instance().AddStage(stageActor);
 
-    for (int i = 0; i < 10; i++)
-    {
-        std::string name = "Skyscraper_001_";
-        name += std::to_string(i);
-        stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_001.glb");
-    }
-    for (int i = 0; i < 10; i++)
-    {
-        std::string name = "Skyscraper_002_";
-        name += std::to_string(i);
-        stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_002.glb");
-    }
-    for (int i = 0; i < 10; i++)
-    {
-        std::string name = "Office_001_";
-        name += std::to_string(i);
-        stageCom->AddStageModel(name, "./Assets/Models/Stage/Office_001.glb");
-    }
+    //for (int i = 0; i < 10; i++)
+    //{
+    //    std::string name = "Skyscraper_001_";
+    //    name += std::to_string(i);
+    //    stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_001.glb");
+    //}
+    //for (int i = 0; i < 10; i++)
+    //{
+    //    std::string name = "Skyscraper_002_";
+    //    name += std::to_string(i);
+    //    stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_002.glb");
+    //}
+    //for (int i = 0; i < 10; i++)
+    //{
+    //    std::string name = "Office_001_";
+    //    name += std::to_string(i);
+    //    stageCom->AddStageModel(name, "./Assets/Models/Stage/Office_001.glb");
+    //}
     int gridSize = 12;
     for (int x = 0; x < gridSize; x++)
     {

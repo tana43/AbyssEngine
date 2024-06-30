@@ -1,12 +1,13 @@
 #pragma once
 #include "Renderer.h"
-#include "Animation.h"
+#include "Animator.h"
 #include "GltfSkeletalMesh.h"
 
 namespace AbyssEngine
 {
     class Actor;
     class Animator;
+    class StaticMesh;
 
     class SkeletalMesh : public Renderer
     {
@@ -35,6 +36,9 @@ namespace AbyssEngine
         GltfSkeletalMesh* GetModel() { return model_.get(); }
 
         std::shared_ptr<Animator>& GetAnimator() { return animator_; }
+
+        //ソケットにアタッチする　武器などを持たせることが出来る
+        void SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, const char* socketName);
 
     private:
         void SetActive(const bool value)override;

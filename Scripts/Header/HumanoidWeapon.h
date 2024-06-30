@@ -12,7 +12,6 @@ public:
     void Update()override;
 protected:
     virtual void Move()override;
-    void UpdateVelocity();
 
     virtual void UpdateInputMove() {}
 

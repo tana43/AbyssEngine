@@ -6,6 +6,7 @@
 #include "RenderManager.h"
 #include "AssetManager.h"
 #include "Animator.h"
+#include "StaticMesh.h"
 
 #include "imgui/imgui.h"
 
@@ -116,6 +117,42 @@ bool SkeletalMesh::DrawImGui()
 void SkeletalMesh::PlayAnimation(int animIndex,bool loop)
 {
 	
+}
+
+void SkeletalMesh::SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, const char* socketName)
+{
+	auto& socketData = attachModel->GetSocketData();
+
+	attachModel->isAttached_ = true;
+	socketData.attachedSocketName_ = socketName;
+	socketData.attachedMesh_ = static_pointer_cast<SkeletalMesh>(shared_from_this());
+
+	//Matrix attachWorld;
+	//const auto& animNodes = animator_->GetAnimatedNodes();
+	//std::vector<GeometricSubstance::Node>::const_iterator node = std::find(animNodes.begin(), animNodes.end(), socketName);
+	//if (node != animNodes.end())
+	//{
+	//	const float to_radian = 0.01745f;
+	//	const float to_metric = 0.01f;
+
+	//	using namespace DirectX;
+	//	XMFLOAT3 socketLocation;
+	//	XMFLOAT3 socketRotation;
+	//	XMFLOAT3 socketScale;
+
+	//	XMMATRIX boneTransform = DirectX::XMLoadFloat4x4(&node->globalTransform_);
+	//	XMMATRIX socketTransform =
+	//		XMMatrixScaling(socketScale.x, socketScale.y, socketScale.z)
+	//		* XMMatrixRotationX(-socketRotation.x * to_radian)
+	//		* XMMatrixRotationY(-socketRotation.y * to_radian)
+	//		* XMMatrixRotationZ(socketRotation.z * to_radian)
+	//		* XMMatrixTranslation(socketLocation.x * to_metric, socketLocation.y * to_metric, socketLocation.z * to_metric);
+	//	XMMATRIX dxUe5 = XMMatrixSet(-1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Y-Up Z-Forward(DX) -> LHS Z-Up Y-Forward(UE5) 
+	//	XMMATRIX ue5Gltf = XMMatrixSet(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Z-Up Y-Forward(UE5) -> RHS Y-Up Z-Forward(glTF) 
+	//	XMStoreFloat4x4(&attachWorld, dxUe5 * socketTransform * ue5Gltf * boneTransform * XMLoadFloat4x4(&transform_->GetWorldMatrix()));
+
+	//	attachModel->GetTransform()->Set
+	//}
 }
 
 void SkeletalMesh::SetActive(const bool value)

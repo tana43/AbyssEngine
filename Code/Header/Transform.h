@@ -16,7 +16,7 @@ namespace AbyssEngine
         Matrix CalcWorldMatrix();//ワールド行列更新
         Matrix CalcLocalMatrix();//ローカル行列更新
 
-        [[nodiscard]] const Matrix GetWorldMatrix() const { return worldMatrix_; }
+        [[nodiscard]] const Matrix& GetWorldMatrix() const { return worldMatrix_; }
 
         //getter setter
         [[nodiscard]] const Vector3& GetPosition() const { return position_; };
