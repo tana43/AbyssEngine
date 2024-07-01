@@ -10,6 +10,7 @@ public:
     ~HumanoidWeapon() = default;
 
     void Update()override;
+    bool DrawImGui()override;
 protected:
     virtual void Move()override;
 

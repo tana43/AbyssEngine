@@ -48,10 +48,11 @@ void Character::Jump(const float& jumpPower)
 
 void Character::TurnY(Vector3 dir, bool smooth)
 {
-    if (dir.LengthSquared() == 0)return;
+    Vector2 d = { dir.x,dir.z };
+
+    if (d.LengthSquared() == 0)return;
 
     //XZ²‚Ì‚İ‚ÌƒxƒNƒgƒ‹³‹K‰»
-    Vector2 d = { dir.x,dir.z };
     d.Normalize();
     dir = { d.x,0,d.y };
     auto forward = transform_->GetForward();
@@ -157,7 +158,7 @@ void Character::UpdateMove()
     UpdateVelocity();
 
     //“®‚­‚±‚Æ‚ª‚È‚¢‚Íˆ—‚µ‚È‚¢
-    if (velocity_.LengthSquared() * Time::deltaTime_ < 0.01f)return;
+    //if (velocity_.LengthSquared() * Time::deltaTime_ < 0.01f)return;
     
     UpdateHorizontalMove();
     UpdateVerticalMove();
