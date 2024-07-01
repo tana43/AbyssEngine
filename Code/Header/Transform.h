@@ -40,20 +40,20 @@ namespace AbyssEngine
         void SetScaleFactor(const float& scale_) { scaleFactor_ = scale_; }
 
         //getter setter
-        [[nodiscard]] const Vector3& GetLocalPosition() const { return localPosition_; };
+        [[nodiscard]] const Vector3& GetLocalPosition() const { return localPosition_; }
         void SetLocalPosition(const Vector3& position_) { localPosition_ = position_; }
         void SetLocalPositionX(const float& x) { localPosition_.x = x; }
         void SetLocalPositionY(const float& y) { localPosition_.y = y; }
         void SetLocalPositionZ(const float& z) { localPosition_.z = z; }
 
-        [[nodiscard]] const Vector4& GetLocalRotation() const { return localRotation_; };
+        [[nodiscard]] const Vector4& GetLocalRotation() const { return localRotation_; }
         void SetLocalRotation(const Vector4& rotation) { localRotation_ = rotation; }
         void SetLocalRotationX(const float& x) { localRotation_.x = x; }
         void SetLocalRotationY(const float& y) { localRotation_.y = y; }
         void SetLocalRotationZ(const float& z) { localRotation_.z = z; }
 
         [[nodiscard]] const Vector3& GetLocalScale() const { return localScale_; };
-        [[nodiscard]] const float& GetLocalScaleFactor() const { return localScaleFactor_; };
+        [[nodiscard]] const float& GetLocalScaleFactor() const { return localScaleFactor_; }
         void SetLocalScale(const Vector3& scale) { localScale_ = scale; }
         void SetLocalScaleX(const float& x) { localScale_.x = x; }
         void SetLocalScaleY(const float& y) { localScale_.y = y; }

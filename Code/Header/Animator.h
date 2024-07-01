@@ -49,7 +49,10 @@ namespace AbyssEngine
         size_t animationClip_ = 0;//再生中のアニメーション要素番号
         //bool animationLoop_ = true;//ループ
 
-        std::vector<GeometricSubstance::Node> animatedNodes_;
+        std::vector<GeometricSubstance::Node> animatedNodes_;//現在のアニメーション
+        std::vector<GeometricSubstance::Node> nextAnimatedNodes_;//遷移先のアニメーション
+
+        bool transitioningBlendAnim_;//アニメーションの遷移のブレンド
     };
 
 }

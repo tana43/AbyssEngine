@@ -62,7 +62,11 @@ void Animator::AnimatorUpdate()
 	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 
 	//model->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
-	animations_[animationClip_]->UpdateAnimation(model,timeStamp_);
+	if ()
+	{
+
+	}animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model, timeStamp_);
+
 }
 
 void Animator::PlayAnimation(const size_t& animIndex)

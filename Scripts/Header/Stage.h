@@ -18,7 +18,7 @@ public:
         DirectX::BoundingBox	boundingBox;
         std::vector<int>		triangleIndices;
     };
-    std::vector<Area>		areas;
+    std::vector<Area> areas;
 
     bool RayCast(
         const AbyssEngine::Vector3& start,

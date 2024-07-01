@@ -285,7 +285,9 @@
     <ClInclude Include="Code\Header\StateMachine.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\VitesseState.h" />
+    <ClInclude Include="Scripts\Header\VitesseState.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -477,7 +479,9 @@
     <ClCompile Include="Scripts\Source\StageManager.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\VitesseState.cpp" />
+    <ClCompile Include="Scripts\Source\VitesseState.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

@@ -12,13 +12,15 @@ using namespace AbyssEngine;
 Animation::Animation(SkeletalMesh* model, const std::string& name_, const int& index, bool loop) :
     name_(name_),animIndex_(index),loopFlag_(loop)
 {
-    animatedNodes_ = &model->GetAnimator()->GetAnimatedNodes();
+    animatedNodes_ = model->GetAnimator()->GetAnimatedNodes();
 }
 
-void Animation::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
+std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
     timeStamp += (animSpeed_ - 1.0f) * Time::deltaTime_;
-    model->Animate(animIndex_, timeStamp, *(animatedNodes_), loopFlag_);
+    model->Animate(animIndex_, timeStamp, animatedNodes_, loopFlag_);
+
+    return animatedNodes_;
 }
 
 void Animation::DrawImGui(Animator* animator)
@@ -41,7 +43,7 @@ void Animation::DrawImGui(Animator* animator)
 AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name_, const int& index0, const int& index1)
     : Animation(model, name_, index0, true) 
 {
-    blendAnimNodes_[0] = blendAnimNodes_[1] = *animatedNodes_;
+    blendAnimNodes_[0] = blendAnimNodes_[1] = animatedNodes_;
     blendAnimDatas_.emplace_back(BlendAnimData(index0, 0.0f));
     blendAnimDatas_.emplace_back(BlendAnimData(index1, 1.0f));
 }
@@ -54,7 +56,7 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animDat
 }
 
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
-void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
+std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
     //ブレンドの速度制限
     const float blendMaxSpeed = 2.0f * Time::deltaTime_;
@@ -95,9 +97,11 @@ void AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
     //モーションブレンド
     model->Animate(blendAnims[0].index_, timeStamp, blendAnimNodes_[0]);
     model->Animate(blendAnims[1].index_, timeStamp, blendAnimNodes_[1]);
-    model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight, *animatedNodes_);
+    model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight, animatedNodes_);
 
     lastBlendWeight_ = nextBlendWeight;
+
+    return animatedNodes_;
 }
 
 void AnimBlendSpace1D::AddBlendAnimation(const int& index, const float& weight)
@@ -131,12 +135,12 @@ AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name_
 
     for(auto& animNode : blendAnimNodes_)
     {
-        animNode = *animatedNodes_;
+        animNode = animatedNodes_;
     }
-    secondBlendAnimNodes_ = *animatedNodes_;
+    secondBlendAnimNodes_ = animatedNodes_;
 }
 
-void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
+std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
 {
     //ブレンドの速度制限
     const float blendMaxSpeed = 5.0f * Time::deltaTime_;
@@ -240,14 +244,14 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
         model->Animate(
             blendAnimDatas_[static_cast<int>(State::Idle)].index_,
             timeStamp,
-            *animatedNodes_);
+            animatedNodes_);
         break;
 
     case BlendSituation::Once:
         //BlendSpace1Dと同じモーションブレンド
         model->Animate(blendAnimDatas_[static_cast<int>(State::Idle)].index_,timeStamp, blendAnimNodes_[0]);
         model->Animate(animDatas[0].index_, timeStamp, blendAnimNodes_[1]);
-        model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], weightLength, *animatedNodes_);
+        model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], weightLength, animatedNodes_);
         break;
 
     case BlendSituation::Twice:
@@ -266,10 +270,11 @@ void AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp
         model->Animate(animDatas[1].index_, timeStamp, blendAnimNodes_[1]);
         model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], firstWeight, secondBlendAnimNodes_);
         model->Animate(blendAnimDatas_[static_cast<int>(State::Idle)].index_, timeStamp, blendAnimNodes_[0]);
-        model->BlendAnimations(blendAnimNodes_[0], secondBlendAnimNodes_, weightLength, *animatedNodes_);
+        model->BlendAnimations(blendAnimNodes_[0], secondBlendAnimNodes_, weightLength, animatedNodes_);
         break;
     }
 
+    return animatedNodes_;
 
     //没
 #if 0
