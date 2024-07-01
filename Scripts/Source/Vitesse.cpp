@@ -106,6 +106,12 @@ void Vitesse::Move()
 {
     HumanoidWeapon::Move();
 
+    //上昇
+    if (Input::GameSupport::GetClimdButton())
+    {
+        Climb(climbSpeed_ * Time::deltaTime_);
+    }
+
 
 #if 1
     //ブレンドアニメーションのWeight更新

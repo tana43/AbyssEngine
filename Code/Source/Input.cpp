@@ -110,3 +110,15 @@ const bool Input::GameSupport::GetJumpButton()
 
     return false;
 }
+
+const bool Input::GameSupport::GetClimdButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyState().Space ||
+        i->gamePad_.GetButton() & GamePad::BTN_A)
+    {
+        return true;
+    }
+
+    return false;
+}

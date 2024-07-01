@@ -174,7 +174,7 @@ GltfCollisionMesh::GltfCollisionMesh(ID3D11Device* device, const std::string& fi
 						DirectX::XMFLOAT3 position = positions[index];
 						DirectX::XMStoreFloat3(&position, XMVector3TransformCoord(XMLoadFloat3(&position), DirectX::XMLoadFloat4x4(&globalTransform)));
 						subset.positions_.emplace_back(position);
-						initVertexPositions_.emplace_back(position);
+						subset.initVertexPositions_.emplace_back(position);
 					}
 				}
 			}
@@ -271,8 +271,8 @@ bool GltfCollisionMesh::Raycast(_In_ DirectX::XMFLOAT3 rayPosition, _In_ DirectX
 		//	三角形の法線を計算する
 		for (decltype(mesh.subsets)::const_reference subset : mesh.subsets)
 		{
-			const DirectX::XMFLOAT3* positions = initVertexPositions_.data();
-			const size_t triangleCount = initVertexPositions_.size() / 3;
+			const DirectX::XMFLOAT3* positions = subset.initVertexPositions_.data();
+			const size_t triangleCount = subset.initVertexPositions_.size() / 3;
 			for (size_t triangleIndex = 0; triangleIndex < triangleCount; triangleIndex++)
 			{
 				const DirectX::XMVECTOR A = XMLoadFloat3(&positions[triangleIndex * 3 + 0]);
@@ -349,7 +349,7 @@ void GltfCollisionMesh::Transform(const DirectX::XMFLOAT4X4& worldTransform)
 		{
 			for (int i = 0;i < subset.positions_.size();i++)
 			{
-				DirectX::XMStoreFloat3(&subset.positions_[i], XMVector3TransformCoord(XMLoadFloat3(&initVertexPositions_[i]), DirectX::XMLoadFloat4x4(&worldTransform)));
+				DirectX::XMStoreFloat3(&subset.positions_[i], XMVector3TransformCoord(XMLoadFloat3(&subset.initVertexPositions_[i]), DirectX::XMLoadFloat4x4(&worldTransform)));
 			}
 		}
 	}

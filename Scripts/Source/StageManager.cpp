@@ -2,9 +2,9 @@
 #include "Stage.h"
 #include "Actor.h"
 
-void StageManager::SetStage(const std::string& name)
+void StageManager::SetStage(const std::string& name_)
 {
-    activeStage_ = stageMap_[name];
+    activeStage_ = stageMap_[name_];
 }
 
 void StageManager::AddStage(const std::shared_ptr<AbyssEngine::Actor>& stageActor)

@@ -63,6 +63,8 @@
     <ClInclude Include="Code\Header\SkeletalMesh.h" />
     <ClInclude Include="Code\Header\Skybox.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
+    <ClInclude Include="Code\Header\State.h" />
+    <ClInclude Include="Code\Header\StateMachine.h" />
     <ClInclude Include="Code\Header\StaticMesh.h" />
     <ClInclude Include="Code\Header\StaticMeshBatching.h" />
     <ClInclude Include="Code\Header\SystemFunction.h" />
@@ -85,6 +87,7 @@
     <ClInclude Include="Scripts\Header\Stage.h" />
     <ClInclude Include="Scripts\Header\StageManager.h" />
     <ClInclude Include="Scripts\Header\Vitesse.h" />
+    <ClInclude Include="Scripts\Header\VitesseState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Actor.cpp" />
@@ -150,6 +153,7 @@
     <ClCompile Include="Scripts\Source\Stage.cpp" />
     <ClCompile Include="Scripts\Source\StageManager.cpp" />
     <ClCompile Include="Scripts\Source\Vitesse.cpp" />
+    <ClCompile Include="Scripts\Source\VitesseState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\CsmOpaqueGS.hlsl">

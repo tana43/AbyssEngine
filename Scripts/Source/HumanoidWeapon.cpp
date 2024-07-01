@@ -29,6 +29,8 @@ bool HumanoidWeapon::DrawImGui()
     ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 100.0f);
     ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 100.0f);
 
+    ImGui::SliderFloat("Climb", &climbSpeed_, 0.0f, 200.0f);
+
     ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
     ImGui::SliderFloat("Max Rot Speed", &Max_Rot_Speed, 0.0f, 1000.0f);
     ImGui::SliderFloat("Min Rot Speed", &Min_Rot_Speed, 0.0f, 1000.0f);
@@ -39,6 +41,11 @@ bool HumanoidWeapon::DrawImGui()
 void HumanoidWeapon::Move()
 {
     Character::Move();
+}
+
+void HumanoidWeapon::Climb(float amount)
+{
+    velocity_.y += amount;
 }
 
 

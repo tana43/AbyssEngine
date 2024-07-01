@@ -44,15 +44,15 @@ void SceneManager::Update()
     }
 }
 
-void SceneManager::AddScene(Scene* scene, string name)
+void SceneManager::AddScene(Scene* scene, string name_)
 {
-    sceneMap_[name].reset(scene);
-    scene->name_ = name;
+    sceneMap_[name_].reset(scene);
+    scene->name_ = name_;
 }
 
-void SceneManager::SetNextScene(std::string name)
+void SceneManager::SetNextScene(std::string name_)
 {
-    nextSceneName_ = name;
+    nextSceneName_ = name_;
 }
 
 void SceneManager::DrawImGui()

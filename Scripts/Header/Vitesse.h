@@ -2,6 +2,7 @@
 #include "HumanoidWeapon.h"
 #include "Camera.h"
 #include "SkeletalMesh.h"
+#include "StateMachine.h"
 
 class Vitesse : public HumanoidWeapon 
 {
@@ -45,6 +46,10 @@ private:
 #endif // 0
     AbyssEngine::AnimBlendSpace1D* flyMoveAnimation_;//‹ó’†ˆÚ“®
 
+    std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
+
     float cameraRollSpeed_ = 90.0f;
+    
+
 };
 

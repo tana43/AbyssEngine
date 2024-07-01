@@ -18,6 +18,7 @@ namespace AbyssEngine
 			{
 				std::string materialName_;
 				std::vector<DirectX::XMFLOAT3> positions_;
+				std::vector<DirectX::XMFLOAT3> initVertexPositions_;//各頂点の初期位置
 			};
 			std::vector<Subset> subsets;
 			DirectX::XMFLOAT3 boundingBox_[2]
@@ -29,7 +30,7 @@ namespace AbyssEngine
 		std::vector<Mesh> meshes_;
 
 	private:
-		std::vector<DirectX::XMFLOAT3> initVertexPositions_;//各頂点の初期位置
+		
 
 
 	public:

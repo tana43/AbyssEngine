@@ -13,7 +13,7 @@ namespace AbyssEngine
     class Animation
     {
     public:
-        Animation(SkeletalMesh* model,const std::string& name,const int& index,bool loop = true);
+        Animation(SkeletalMesh* model,const std::string& name_,const int& index,bool loop = true);
         ~Animation() {}
 
         //アニメーションの更新
@@ -38,7 +38,7 @@ namespace AbyssEngine
     class AnimBlendSpace1D final : public Animation
     {
     public:
-        AnimBlendSpace1D(SkeletalMesh* model, const std::string& name, const int& index0, const int& index1);
+        AnimBlendSpace1D(SkeletalMesh* model, const std::string& name_, const int& index0, const int& index1);
         AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animData);
         ~AnimBlendSpace1D() {}
 
@@ -98,7 +98,7 @@ namespace AbyssEngine
             Twice,//２回必要、移動と移動のブレンドをしたあと、さらに待機ともブレンドする
         };
 
-        AnimBlendSpace2D(SkeletalMesh* model, const std::string& name, const int& index, Vector2 weight = Vector2(0.0f,0.0f));
+        AnimBlendSpace2D(SkeletalMesh* model, const std::string& name_, const int& index, Vector2 weight = Vector2(0.0f,0.0f));
         ~AnimBlendSpace2D() {}
 
         //アニメーションの更新

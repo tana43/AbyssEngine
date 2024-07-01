@@ -9,8 +9,8 @@
 
 using namespace AbyssEngine;
 
-Animation::Animation(SkeletalMesh* model, const std::string& name, const int& index, bool loop) :
-    name_(name),animIndex_(index),loopFlag_(loop)
+Animation::Animation(SkeletalMesh* model, const std::string& name_, const int& index, bool loop) :
+    name_(name_),animIndex_(index),loopFlag_(loop)
 {
     animatedNodes_ = &model->GetAnimator()->GetAnimatedNodes();
 }
@@ -38,8 +38,8 @@ void Animation::DrawImGui(Animator* animator)
     }
 }
 
-AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name, const int& index0, const int& index1)
-    : Animation(model, name, index0, true) 
+AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name_, const int& index0, const int& index1)
+    : Animation(model, name_, index0, true) 
 {
     blendAnimNodes_[0] = blendAnimNodes_[1] = *animatedNodes_;
     blendAnimDatas_.emplace_back(BlendAnimData(index0, 0.0f));
@@ -123,8 +123,8 @@ void AnimBlendSpace1D::DrawImGui(Animator* animator)
     }
 }
 
-AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name, const int& index,Vector2 weight)
-    : Animation(model,name,index)
+AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name_, const int& index,Vector2 weight)
+    : Animation(model,name_,index)
 {
     //à¯êîÇ©ÇÁìnÇ≥ÇÍÇÈèâä˙ÉÇÅ[ÉVÉáÉìÇÃÇ›ìoò^
     blendAnimDatas_.emplace_back(BlendAnimData(index,weight));

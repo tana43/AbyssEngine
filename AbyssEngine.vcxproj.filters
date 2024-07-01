@@ -279,6 +279,13 @@
     <ClInclude Include="Code\Header\CollisionManager.h">
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\State.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\StateMachine.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\VitesseState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -470,6 +477,7 @@
     <ClCompile Include="Scripts\Source\StageManager.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\VitesseState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

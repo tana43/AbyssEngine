@@ -28,7 +28,7 @@ public:
     std::shared_ptr<Stage> GetActiveStage() { return activeStage_; }
 
     //ステージを変更する
-    void SetStage(const std::string& name);
+    void SetStage(const std::string& name_);
 
     //ステージを追加する
     void AddStage(const std::shared_ptr<AbyssEngine::Actor>& stageActor);

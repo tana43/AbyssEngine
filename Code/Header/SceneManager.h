@@ -23,10 +23,10 @@ namespace AbyssEngine
         void Update(); //更新
 
         //シーンの追加
-        void AddScene(Scene* scene,std::string name);
+        void AddScene(Scene* scene,std::string name_);
 
         //シーンの変更
-        void SetNextScene(std::string name);
+        void SetNextScene(std::string name_);
 
         void DrawImGui();//シーンのImGUi表示
         void DrawDebug();//シーンのデバッグ表示

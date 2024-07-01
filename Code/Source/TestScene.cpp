@@ -94,21 +94,21 @@ void TestScene::Initialize()
 
     for (int i = 0; i < 10; i++)
     {
-        std::string name = "Skyscraper_001_";
-        name += std::to_string(i);
-        stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_001.glb");
+        std::string name_ = "Skyscraper_001_";
+        name_ += std::to_string(i);
+        stageCom->AddStageModel(name_, "./Assets/Models/Stage/Skyscraper_001.glb");
     }
     for (int i = 0; i < 10; i++)
     {
-        std::string name = "Skyscraper_002_";
-        name += std::to_string(i);
-        stageCom->AddStageModel(name, "./Assets/Models/Stage/Skyscraper_002.glb");
+        std::string name_ = "Skyscraper_002_";
+        name_ += std::to_string(i);
+        stageCom->AddStageModel(name_, "./Assets/Models/Stage/Skyscraper_002.glb");
     }
     for (int i = 0; i < 10; i++)
     {
-        std::string name = "Office_001_";
-        name += std::to_string(i);
-        stageCom->AddStageModel(name, "./Assets/Models/Stage/Office_001.glb");
+        std::string name_ = "Office_001_";
+        name_ += std::to_string(i);
+        stageCom->AddStageModel(name_, "./Assets/Models/Stage/Office_001.glb");
     }
     int gridSize = 12;
     for (int x = 0; x < gridSize; x++)
@@ -118,12 +118,13 @@ void TestScene::Initialize()
             float scale = 30.0f;
             float oneGrid = scale * 2;
 
-            std::string name = "Asphalt_";
-            name += std::to_string(x * gridSize + z);
-            const auto& asp = stageCom->AddStageModel(name, "./Assets/Models/Stage/Asphalt.glb");
+            std::string name_ = "Asphalt_";
+            name_ += std::to_string(x * gridSize + z);
+            const auto& asp = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Asphalt.glb");
             asp->GetTransform()->SetLocalScaleFactor(scale);
             asp->GetTransform()->SetLocalPositionX((-(gridSize / 2) * oneGrid) + x * oneGrid);
             asp->GetTransform()->SetLocalPositionZ((-(gridSize / 2) * oneGrid) + z * oneGrid);
+            asp->GetComponent<MeshCollider>()->Transform();
         }
     }
     stageCom->RegisterTriangles();
