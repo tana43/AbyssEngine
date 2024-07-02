@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "State.h"
+#include "imgui/imgui.h"
 
 template <class T>
 class StateMachine

@@ -15,10 +15,15 @@ Animation::Animation(SkeletalMesh* model, const std::string& name_, const int& i
     animatedNodes_ = model->GetAnimator()->GetAnimatedNodes();
 }
 
-std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
+void Animation::Initialize()
 {
-    timeStamp += (animSpeed_ - 1.0f) * Time::deltaTime_;
-    model->Animate(animIndex_, timeStamp, animatedNodes_, loopFlag_);
+    timeStamp_ = 0.0f;
+}
+
+std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model)
+{
+    timeStamp_ += (animSpeed_ - 1.0f) * Time::deltaTime_;
+    model->Animate(animIndex_, timeStamp_, animatedNodes_, loopFlag_);
 
     return animatedNodes_;
 }
@@ -56,7 +61,7 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animDat
 }
 
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
-std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
+std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model)
 {
     //ブレンドの速度制限
     const float blendMaxSpeed = 2.0f * Time::deltaTime_;
@@ -95,8 +100,8 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkel
                                         ,0.0f,1.0f);
 
     //モーションブレンド
-    model->Animate(blendAnims[0].index_, timeStamp, blendAnimNodes_[0]);
-    model->Animate(blendAnims[1].index_, timeStamp, blendAnimNodes_[1]);
+    model->Animate(blendAnims[0].index_, timeStamp_, blendAnimNodes_[0]);
+    model->Animate(blendAnims[1].index_, timeStamp_, blendAnimNodes_[1]);
     model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], blendWeight, animatedNodes_);
 
     lastBlendWeight_ = nextBlendWeight;
@@ -140,7 +145,7 @@ AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name_
     secondBlendAnimNodes_ = animatedNodes_;
 }
 
-std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)
+std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model)
 {
     //ブレンドの速度制限
     const float blendMaxSpeed = 5.0f * Time::deltaTime_;
@@ -243,14 +248,14 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
         //何もしなくていいので待機モーションを再生
         model->Animate(
             blendAnimDatas_[static_cast<int>(State::Idle)].index_,
-            timeStamp,
+            timeStamp_,
             animatedNodes_);
         break;
 
     case BlendSituation::Once:
         //BlendSpace1Dと同じモーションブレンド
-        model->Animate(blendAnimDatas_[static_cast<int>(State::Idle)].index_,timeStamp, blendAnimNodes_[0]);
-        model->Animate(animDatas[0].index_, timeStamp, blendAnimNodes_[1]);
+        model->Animate(blendAnimDatas_[static_cast<int>(State::Idle)].index_,timeStamp_, blendAnimNodes_[0]);
+        model->Animate(animDatas[0].index_, timeStamp_, blendAnimNodes_[1]);
         model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], weightLength, animatedNodes_);
         break;
 
@@ -266,10 +271,10 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
         };
         float firstWeight = _weightLength[0] / (_weightLength[0] + _weightLength[1]);
 
-        model->Animate(animDatas[0].index_, timeStamp, blendAnimNodes_[0]);
-        model->Animate(animDatas[1].index_, timeStamp, blendAnimNodes_[1]);
+        model->Animate(animDatas[0].index_, timeStamp_, blendAnimNodes_[0]);
+        model->Animate(animDatas[1].index_, timeStamp_, blendAnimNodes_[1]);
         model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], firstWeight, secondBlendAnimNodes_);
-        model->Animate(blendAnimDatas_[static_cast<int>(State::Idle)].index_, timeStamp, blendAnimNodes_[0]);
+        model->Animate(blendAnimDatas_[static_cast<int>(State::Idle)].index_, timeStamp_, blendAnimNodes_[0]);
         model->BlendAnimations(blendAnimNodes_[0], secondBlendAnimNodes_, weightLength, animatedNodes_);
         break;
     }
@@ -298,7 +303,7 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
         if (nextBlendWeight.x != animData.weight_.x)continue;
         if (nextBlendWeight.y != animData.weight_.y)continue;
 
-        model->Animate(animData.index_, timeStamp, *animatedNodes_);
+        model->Animate(animData.index_, timeStamp_, *animatedNodes_);
 
         return;
     }
@@ -384,7 +389,7 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
     {
         if (animData[i]) 
         {
-            model->Animate(animData[i]->index_, timeStamp, blendAnimNodes_[i]);
+            model->Animate(animData[i]->index_, timeStamp_, blendAnimNodes_[i]);
         }
     }
 

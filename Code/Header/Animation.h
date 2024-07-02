@@ -17,7 +17,8 @@ namespace AbyssEngine
         ~Animation() {}
 
         //アニメーションの更新
-        virtual std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model,float& timeStamp);
+        virtual void Initialize();
+        virtual std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model);
         virtual void DrawImGui(Animator* animator);
 
     public:
@@ -27,6 +28,7 @@ namespace AbyssEngine
 
         bool loopFlag_;
         float animSpeed_ = 1.0f;//各アニメーションごとの再生速度
+        float timeStamp_ = 0.0f;
 
         //モデルの持つノードへアクセスするためのポインタ
         std::vector<GeometricSubstance::Node> animatedNodes_;
@@ -43,7 +45,7 @@ namespace AbyssEngine
         ~AnimBlendSpace1D() {}
 
         //アニメーションの更新
-        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)override;
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model)override;
         void DrawImGui(Animator* animator)override;
 
         //ブレンドするアニメーションの数を増やす
@@ -102,7 +104,7 @@ namespace AbyssEngine
         ~AnimBlendSpace2D() {}
 
         //アニメーションの更新
-        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, float& timeStamp)override;
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model)override;
         void DrawImGui(Animator* animator)override;
 
         /// <summary>

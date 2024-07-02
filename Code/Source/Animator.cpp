@@ -42,7 +42,10 @@ bool Animator::DrawImGui()
 void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMesh)
 {
 	skeletalMesh_ = skeletalMesh;
-	animatedNodes_ = skeletalMesh->GetModel()->nodes_;
+
+	//ノードを設定
+	animatedNodes_  = nextAnimatedNodes_ = skeletalMesh->GetModel()->nodes_;
+	
 
 	//初期モーションをアニメーターに追加
 	//かならず０番目のモーションは待機と仮定
@@ -62,35 +65,67 @@ void Animator::AnimatorUpdate()
 	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 
 	//model->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
-	if ()
+	
+	//現在モーションの遷移ブレンド中か
+	if (isTransitioningBlendAnim_)
 	{
+		//モーションの遷移中
+		transitionTimer_ -= Time::deltaTime_;
+		if (transitionTimer_ < 0)
+		{
+			isTransitioningBlendAnim_ = false;
+			transitionTimer_ = 0;
+		}
 
-	}animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model, timeStamp_);
+
+	}
+	else
+	{
+		//通常の更新
+		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model, timeStamp_);
+	}
 
 }
 
-void Animator::PlayAnimation(const size_t& animIndex)
+void Animator::PlayAnimation(const size_t& animIndex, float transTime)
 {
 	_ASSERT_EXPR(animIndex < animations_.size(), u8"指定のアニメーションが見つかりません");
 
-	timeStamp_ = 0.0f;
-
-	animationClip_ = animIndex;
+	PlayAnimationCommon(animIndex,transTime);
 }
 
-void Animator::PlayAnimation(const std::string& animName)
+void Animator::PlayAnimation(const std::string& animName, float transTime)
 {
-	for (int index = 0; index < animations_.size(); index++)
+	for (size_t index = 0; index < animations_.size(); index++)
 	{
 		if (animations_[index]->name_ == animName)
 		{
-			timeStamp_ = 0.0f;
-			animationClip_ = index;
+			PlayAnimationCommon(index,transTime);
 			return;
 		}
 	}
 	
 	_ASSERT_EXPR(false, u8"指定のアニメーションが見つかりません");
+}
+
+void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime)
+{
+	if (transTime > 0)
+	{
+		timeStamp_ = 0.0f;
+		nextAnimationClip_ = animIndex;
+		isTransitioningBlendAnim_ = true;
+		transitionTimeRequired_ = transTime;
+		transitionTimer_ = transTime;
+	}
+	else
+	{
+		timeStamp_ = 0.0f;
+		animationClip_ = animIndex;
+		isTransitioningBlendAnim_ = false;
+		transitionTimeRequired_ = 0;
+		transitionTimer_ = 0;
+	}
 }
 
 //void Animator::ReloadAnimation()
