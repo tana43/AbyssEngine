@@ -11,9 +11,9 @@ public:
     StateMachine() {};
     ~StateMachine();
 
-    void Update(float elapsedTime); // 更新処理
+    void Update(); // 更新処理
 
-    void DrawDebug();               // ImGui用
+    void DrawImGui();               // ImGui用
 
     void SetState(int newState);        // ステートセット
     void ChangeState(int newState);     // ステート変更
@@ -40,13 +40,13 @@ inline StateMachine<T>::~StateMachine()
 }
 
 template<class T>
-inline void StateMachine<T>::Update(float elapsedTime)
+inline void StateMachine<T>::Update()
 {
-    currentState_->Update(elapsedTime);
+    currentState_->Update();
 }
 
 template<class T>
-inline void StateMachine<T>::DrawDebug()
+inline void StateMachine<T>::DrawImGui()
 {
     static int state = 0;
     if (ImGui::TreeNode("stateMachine"))

@@ -8,7 +8,7 @@ public:
     virtual ~State() {}
 
     virtual void Initialize() = 0;
-    virtual void Update(const float& elapsedTime) = 0;
+    virtual void Update() = 0;
     virtual void Finalize() = 0;
 
 public:// 取得・設定
@@ -19,10 +19,9 @@ public:// 取得・設定
     float GetTimer()const { return timer_; }
     void SubtractTime(float time) { timer_ -= time; }
 
-private:
-    float timer_ = 0;    // タイマー
 
 protected:
     T* owner_;
     const char* name_;
+    float timer_ = 0;    // タイマー
 };

@@ -7,6 +7,7 @@
 namespace AbyssEngine
 {
     class SkeletalMesh;
+    class Animator;
     class AnimBlendSpace1D;
 
     class Character : public AbyssEngine::Component
@@ -25,12 +26,20 @@ namespace AbyssEngine
         const bool& GetIsActive() const { return isActive_; }
         void SetIsActive(const bool& active) { isActive_ = active; }
 
+        const std::shared_ptr<SkeletalMesh>& GetModel() { return model_; }
+        const std::shared_ptr<Animator>& GetAnimator();
+
+        const Vector3& GetVelocity() { return velocity_; }
+        void SetVelocity(const Vector3& velo) { velocity_ = velo; }
+        void SetVelocityX(const float& x) { velocity_.x = x; }
+        void SetVelocityY(const float& y) { velocity_.y = y; }
+        void SetVelocityZ(const float& z) { velocity_.z = z; }
 
     protected:
         //指定方向に回転
         void TurnY(Vector3 dir,bool smooth = true/*なめらかに回転するか*/);
 
-        virtual  void Move();//移動処理
+        virtual void Move();//移動処理
 
         virtual void UpdateVelocity();//速力更新
         virtual void UpdateMove();
@@ -58,6 +67,9 @@ namespace AbyssEngine
         float baseRotSpeed_ = 300.0f;//回転速度
         float Max_Rot_Speed = 800.0f;//最大回転速度
         float Min_Rot_Speed = 300.0f;//最低回転速度
+
+        float airborneCoefficient_ = 0.3f;//空中にいる際に地上よりも移動の自由を効かなくするための値
+        float airResistance_ = 0.2f;//空気抵抗
 
         std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 

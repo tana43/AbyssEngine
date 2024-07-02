@@ -8,7 +8,7 @@ HumanoidWeapon::HumanoidWeapon()
 {
     Max_Horizontal_Speed = 40.0f;
     acceleration_ = 30.0f;
-    deceleration_ = 10.0f;
+    deceleration_ = 60.0f;
 }
 
 void HumanoidWeapon::Update()

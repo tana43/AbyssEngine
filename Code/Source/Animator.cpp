@@ -71,20 +71,28 @@ void Animator::AnimatorUpdate()
 	{
 		//モーションの遷移中
 		transitionTimer_ -= Time::deltaTime_;
-		if (transitionTimer_ < 0)
+		if (transitionTimer_ < 0)transitionTimer_ = 0;
+
+		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model);
+		nextAnimatedNodes_ = animations_[nextAnimationClip_]->UpdateAnimation(model);
+
+		float weight = transitionTimer_ / transitionTimeRequired_;
+		model->BlendAnimations(nextAnimatedNodes_, animatedNodes_, weight, animatedNodes_);
+
+		//遷移が完了していないか
+		if (weight <= 0)
 		{
+			//完了処理
 			isTransitioningBlendAnim_ = false;
-			transitionTimer_ = 0;
+			animationClip_ = nextAnimationClip_;
+
 		}
-
-
 	}
 	else
 	{
 		//通常の更新
-		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model, timeStamp_);
+		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model);
 	}
-
 }
 
 void Animator::PlayAnimation(const size_t& animIndex, float transTime)
@@ -110,6 +118,9 @@ void Animator::PlayAnimation(const std::string& animName, float transTime)
 
 void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime)
 {
+	//変更後が今と同じアニメーションなら処理しない
+	if (animationClip_ == animIndex)return;
+
 	if (transTime > 0)
 	{
 		timeStamp_ = 0.0f;
@@ -126,6 +137,8 @@ void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime)
 		transitionTimeRequired_ = 0;
 		transitionTimer_ = 0;
 	}
+
+	animations_[animIndex]->Initialize();
 }
 
 //void Animator::ReloadAnimation()

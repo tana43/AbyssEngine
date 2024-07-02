@@ -288,6 +288,9 @@
     <ClInclude Include="Scripts\Header\VitesseState.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\Easing.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">

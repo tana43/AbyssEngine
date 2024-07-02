@@ -21,13 +21,12 @@ namespace AbyssEngine
         void AnimatorUpdate();
 
         //アニメーション再生　モーションの遷移時間を指定
-        void PlayAnimation(const size_t& animIndex,float transTime = 0.3f);//要素数から検索
-        void PlayAnimation(const std::string& animName,float transTime = 0.3f);//名前から検索
+        void PlayAnimation(const size_t& animIndex,float transTime = 0.1f);//要素数から検索
+        void PlayAnimation(const std::string& animName,float transTime = 0.1f);//名前から検索
     private:
         void PlayAnimationCommon(const size_t& animIndex,float transTime);
 
     public:
-
         //アニメーションデータの再読み込み
         //void ReloadAnimation();
 
@@ -57,9 +56,9 @@ namespace AbyssEngine
         std::vector<GeometricSubstance::Node> animatedNodes_;//現在のアニメーション
         std::vector<GeometricSubstance::Node> nextAnimatedNodes_;//遷移先のアニメーション
 
-        bool isTransitioningBlendAnim_;//アニメーションの遷移のブレンド中か？
-        float transitionTimer_;//アニメーション遷移タイマー
-        float transitionTimeRequired_;//アニメーションの遷移に掛かる時間
+        bool isTransitioningBlendAnim_ = false;//アニメーションの遷移のブレンド中か？
+        float transitionTimer_ = 0;//アニメーション遷移タイマー
+        float transitionTimeRequired_ = 0;//アニメーションの遷移に掛かる時間
     };
 
 }

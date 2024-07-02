@@ -31,6 +31,7 @@
     <ClInclude Include="Code\Header\CharacterManager.h" />
     <ClInclude Include="Code\Header\Collider.h" />
     <ClInclude Include="Code\Header\CollisionManager.h" />
+    <ClInclude Include="Code\Header\Easing.h" />
     <ClInclude Include="Code\Header\MeshCollider.h" />
     <ClInclude Include="Code\Header\GltfCollisionMesh.h" />
     <ClInclude Include="Code\Header\Component.h" />

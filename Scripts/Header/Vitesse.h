@@ -11,10 +11,21 @@ public:
     ~Vitesse() = default;
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
-    //void Update()override;
+    void Update()override;
     void Move()override;
+    bool DrawImGui()override;
 
 public:
+    //行動ステート
+    enum class ActionState
+    {
+        GMove,
+        FMove,
+        TakeOff,
+        Landing,
+    };
+
+    //アニメーション
     enum class AnimState
     {
         Stand,
@@ -32,6 +43,10 @@ public:
         Fly_Move,
     };
 
+public:
+    const std::unique_ptr<StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
+
+
 private:
     void UpdateInputMove()override;
     void CameraRollUpdate();
@@ -44,7 +59,7 @@ private:
 #else
     AbyssEngine::AnimBlendSpace1D* runMoveAnimation_;//走り移動
 #endif // 0
-    AbyssEngine::AnimBlendSpace1D* flyMoveAnimation_;//空中移動
+    AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//空中移動
 
     std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
 

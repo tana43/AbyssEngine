@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "Engine.h"
 #include "Input.h"
+#include "VitesseState.h"
 
 using namespace AbyssEngine;
 
@@ -44,42 +45,21 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         });
 
     //地上移動
-#if 1
     AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimState::Stand),Vector2(0,0));
-#if 0
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(0, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(90, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(180, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(-90, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Stand), Vector2(-180, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_F), Vector2(0, 0.8f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_F), Vector2(0, 1.0f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_R), Vector2(90, 0.8f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_R), Vector2(90, 1.0f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_L), Vector2(-90, 0.8f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_L), Vector2(-90, 1.0f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(180, 0.8f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(180, 1.0f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(-180, 0.8f));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(-180, 1.0f));
-#else //仮で斜め移動
     //前、右、左、後の順に追加
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_F), Vector2(0, 1));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_R), Vector2(1, 0));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_L), Vector2(-1, 0));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(0, -1));
-#endif // 0
     runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
-#else
-    AnimBlendSpace1D rMoveAnim = AnimBlendSpace1D(model_.get(), "RunMove",
-        static_cast<int>(AnimState::Stand), static_cast<int>(AnimState::Run_F));
-    runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
-#endif // 0
 
     //空中移動
-    AnimBlendSpace1D fmoveAnim = AnimBlendSpace1D(model_.get(), "FlyMove",
-        static_cast<int>(AnimState::Fly_Idle), static_cast<int>(AnimState::Fly_F));
-    flyMoveAnimation_ = model_->GetAnimator()->AppendAnimation(fmoveAnim);
+    AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimState::Stand), Vector2(0, 0));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
+    flyMoveAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Run_Move));
 
@@ -100,6 +80,21 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //カメラ設定
     camera_->armLength_ = 18.0f;
     camera_->targetOffset_ = { 12.2f,14.5f,0 };
+
+    //ステートマシン設定
+    stateMachine_ = std::make_unique<StateMachine<State<Vitesse>>>();
+    stateMachine_->RegisterState(new VitesseState::GMoveState(this));
+    stateMachine_->RegisterState(new VitesseState::FMoveState(this));
+    stateMachine_->RegisterState(new VitesseState::TakeOffState(this));
+    stateMachine_->RegisterState(new VitesseState::LandingState(this));
+    stateMachine_->SetState(static_cast<int>(ActionState::GMove));
+}
+
+void Vitesse::Update()
+{
+    HumanoidWeapon::Update();
+
+    stateMachine_->Update();
 }
 
 void Vitesse::Move()
@@ -113,9 +108,10 @@ void Vitesse::Move()
     }
 
 
-#if 1
+//#if 1
     //ブレンドアニメーションのWeight更新
-    if (fabsf(velocity_.LengthSquared()) < 0.01f)
+    Vector3 velocityXZ = {velocity_.x,0,velocity_.z};
+    if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
     {
         runMoveAnimation_->SetBlendWeight(Vector2(0,0));
     }
@@ -125,7 +121,7 @@ void Vitesse::Move()
         const auto& forward = transform_->GetForward();
         const auto& right = transform_->GetRight();
         Vector3 moveDirection;
-        velocity_.Normalize(moveDirection);
+        velocityXZ.Normalize(moveDirection);
 
         Vector2 result;
 
@@ -142,16 +138,26 @@ void Vitesse::Move()
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
         if (crossY < 0)dot = DirectX::XM_PI - dot;
         result = { cosf(dot),sinf(dot) };
-        result = result * (velocity_.Length() / Max_Horizontal_Speed);
+        result = result * (velocityXZ.Length() / Max_Horizontal_Speed);
         
         runMoveAnimation_->SetBlendWeight(result);
+        flyMoveAnimation_->SetBlendWeight(result);
     }
-#else
-    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
-#endif // 1
-    flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Horizontal_Speed) * 2);
+//#else
+//    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
+//#endif // 1
+//    flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Horizontal_Speed) * 2);
 
     CameraRollUpdate();
+}
+
+bool Vitesse::DrawImGui()
+{
+    HumanoidWeapon::DrawImGui();
+
+    stateMachine_->DrawImGui();
+
+    return true;
 }
 
 void Vitesse::UpdateInputMove()
@@ -167,8 +173,6 @@ void Vitesse::UpdateInputMove()
     {
         moveVec_ = camera_->ConvertTo2DVectorFromCamera(Input::GameSupport::GetMoveVector());
     }
-
-
 }
 
 void Vitesse::CameraRollUpdate()

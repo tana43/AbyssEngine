@@ -22,7 +22,7 @@ void Animation::Initialize()
 
 std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model)
 {
-    timeStamp_ += (animSpeed_ - 1.0f) * Time::deltaTime_;
+    UpdateTime();
     model->Animate(animIndex_, timeStamp_, animatedNodes_, loopFlag_);
 
     return animatedNodes_;
@@ -45,6 +45,11 @@ void Animation::DrawImGui(Animator* animator)
     }
 }
 
+void Animation::UpdateTime()
+{
+    timeStamp_ += animSpeed_ * Time::deltaTime_;
+}
+
 AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name_, const int& index0, const int& index1)
     : Animation(model, name_, index0, true) 
 {
@@ -63,6 +68,8 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animDat
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
 std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model)
 {
+    UpdateTime();
+
     //ブレンドの速度制限
     const float blendMaxSpeed = 2.0f * Time::deltaTime_;
     const float blendSpeed = std::clamp(blendWeight_ - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
@@ -147,6 +154,8 @@ AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name_
 
 std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model)
 {
+    UpdateTime();
+
     //ブレンドの速度制限
     const float blendMaxSpeed = 5.0f * Time::deltaTime_;
     const Vector2 blendSpeed = {

@@ -25,6 +25,7 @@ namespace AbyssEngine
         std::string name_;
         int animIndex_;//モデル本体が持っているこのモーションの要素数
     protected: 
+        void UpdateTime();
 
         bool loopFlag_;
         float animSpeed_ = 1.0f;//各アニメーションごとの再生速度

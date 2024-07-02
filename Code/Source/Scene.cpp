@@ -88,12 +88,10 @@ void Scene::Initialize()
 {
     for (const auto& a : actorList_)
     {
-        //TODO : Œã‚Åe‚ðŽ‚½‚È‚¢‚à‚Ì‚¾‚¯ŽÀs‚·‚é
-        /*if (a->transform_->GetParent().expired()) 
+        if (a->GetParent().expired()) 
         {
             a->Initialize();
-        }*/
-        a->Initialize();
+        }
     }
 }
 

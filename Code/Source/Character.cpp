@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "Actor.h"
 #include "StageManager.h"
+#include "SkeletalMesh.h"
 
 #include <algorithm>
 
@@ -44,6 +45,11 @@ void Character::Jump(const float& jumpPower)
     velocity_.y += jumpPower;
 
     onGround_ = false;
+}
+
+const std::shared_ptr<Animator>& Character::GetAnimator()
+{
+    return model_->GetAnimator();
 }
 
 void Character::TurnY(Vector3 dir, bool smooth)
@@ -104,7 +110,15 @@ void Character::UpdateVelocity()
     {
         if (moveVec_.LengthSquared() > 0.01f)
         {
-            velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
+            if (onGround_)
+            {
+                velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
+            }
+            else
+            {
+                //空中にいるときは制御しづらくする
+                velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_) * airborneCoefficient_;
+            }
 
             //速度制限
             Vector2 velocityXZ = { velocity_.x,velocity_.z };
@@ -120,22 +134,32 @@ void Character::UpdateVelocity()
         else//減速処理
         {
             //入力値がほぼない場合は減速処理
-            Vector3 velocityXZ = velocity_ - (velocity_ * (deceleration_ * Time::deltaTime_));
+            Vector3 velocityXZ = {velocity_.x,0,velocity_.z};
+            Vector3 veloXZNormal;
+            velocityXZ.Normalize(veloXZNormal);
+
+            if (onGround_)
+            {
+                velocityXZ = velocity_ - (veloXZNormal * (deceleration_ * Time::deltaTime_));
+            }
+            else
+            {
+                velocityXZ = velocity_ - (veloXZNormal * (airResistance_ * Time::deltaTime_));
+            }
             velocityXZ.y = 0;
 
             Vector3 veloNormal;
-            Vector3 veloXZNormal;
             velocity_.Normalize(veloNormal);
             velocityXZ.Normalize(veloXZNormal);
 
             //反対方向のベクトルになってしまうか速度が遅すぎるなら、速度を完全に０にする
-            if (veloNormal.Dot(veloXZNormal) < 0 || velocityXZ.LengthSquared() < 0.01f)
+            if (veloNormal.Dot(veloXZNormal) < 0 || velocityXZ.LengthSquared() < 0.1f)
             {
                 velocity_ = { 0,velocity_.y,0 };
             }
             else
             {
-                velocity_ = { velocityXZ.x,velocity_.y,velocityXZ.y };
+                velocity_ = { velocityXZ.x,velocity_.y,velocityXZ.z };
             }
         }
     }
