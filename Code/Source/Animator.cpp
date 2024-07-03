@@ -85,7 +85,7 @@ void Animator::AnimatorUpdate()
 			//äÆóπèàóù
 			isTransitioningBlendAnim_ = false;
 			animationClip_ = nextAnimationClip_;
-
+			nextAnimationClip_ = -1;
 		}
 	}
 	else
@@ -133,6 +133,7 @@ void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime)
 	{
 		timeStamp_ = 0.0f;
 		animationClip_ = animIndex;
+		nextAnimationClip_ = -1;
 		isTransitioningBlendAnim_ = false;
 		transitionTimeRequired_ = 0;
 		transitionTimer_ = 0;

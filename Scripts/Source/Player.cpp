@@ -121,7 +121,10 @@ void Player::MoveUpdate()
     }
 
     //‘–‚Á‚Ä‚¢‚é‚©
-    Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
+    if (onGround_)
+    {
+        Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
+    }
 
     const Vector2 veloXZ = { velocity_.x,velocity_.z };
     moveAnimation_->SetBlendWeight(veloXZ.Length() / Run_Max_Speed);

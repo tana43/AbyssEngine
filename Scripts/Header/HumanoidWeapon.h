@@ -10,14 +10,23 @@ public:
     ~HumanoidWeapon() = default;
 
     void Update()override;
+
+    //速力処理
+    void UpdateVelocity()override;
+
     bool DrawImGui()override;
+
+    virtual void ToFlightMode();//フライトモードへ移行
+    virtual void ToLandMode();//陸上モードへ移行
+
 protected:
     virtual void Move()override;
     virtual void Climb(float amount);//上昇
 
+
     virtual void UpdateInputMove() {}
 
-    bool flyingMode_ = false;//飛行モードか
+    bool flightMode_ = false;//飛行モードか
     float inputAscent_ = 0.0f; //上昇入力値
 
     float fallSpeed_;//落下速度(速度制限が別で用意されている)

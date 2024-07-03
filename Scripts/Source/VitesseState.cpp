@@ -64,6 +64,9 @@ void VitesseState::TakeOffState::Initialize()
     startPosition_ = owner_->GetTransform()->GetPosition().y;
     timer_ = 0;
 
+    //フライトモードへ移行
+    owner_->ToFlightMode();
+
     //慣性は消しておく
     owner_->SetVelocityY(0.0f);
 
@@ -73,6 +76,14 @@ void VitesseState::TakeOffState::Initialize()
 
 void VitesseState::TakeOffState::Update()
 {
+    //アニメーションが遷移しきっており、ある程度の時間が経過しているなら空中移動モーションへ
+    if (owner_->GetAnimator()->GetNextAnimClip() != static_cast<int>(Vitesse::AnimState::Fly_Move)
+        && owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimState::Fly_Up)
+        && timer_ > requidTime_ / 4.0f)
+    {
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move),requidTime_ / 4.0f);
+    }
+
     //イージングを使ってY座標を上に動かす
     float positionY = Easing::OutCubic(timer_, requidTime_, goalAltitude_,startPosition_);
 

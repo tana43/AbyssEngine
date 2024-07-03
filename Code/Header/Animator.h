@@ -40,6 +40,11 @@ namespace AbyssEngine
         void SetAnimatedNodes(const std::vector<GeometricSubstance::Node>& nodes) { animatedNodes_ = nodes; }
 
         void SetSkeletalMesh(const std::shared_ptr<SkeletalMesh>& mesh) { skeletalMesh_ = mesh; }
+
+        //現在のアニメーションを取得
+        const int& GetCurrentAnimClip() const { return animationClip_; }
+        //次のアニメーションを取得
+        const int& GetNextAnimClip() const { return nextAnimationClip_; }
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;
@@ -50,7 +55,7 @@ namespace AbyssEngine
         float animationSpeed_ = 1.0f;//アニメーション再生速度
 
         size_t animationClip_ = 0;//再生中のアニメーション番号
-        size_t nextAnimationClip_ = 0;//次に再生アニメーション番号
+        size_t nextAnimationClip_ = -1;//次に再生アニメーション番号
         //bool animationLoop_ = true;//ループ
 
         std::vector<GeometricSubstance::Node> animatedNodes_;//現在のアニメーション

@@ -2,6 +2,8 @@
 #include "Engine.h"
 #include "imgui/imgui.h"
 
+#include <algorithm>
+
 using namespace AbyssEngine;
 
 HumanoidWeapon::HumanoidWeapon()
@@ -17,23 +19,66 @@ void HumanoidWeapon::Update()
     Move();
 }
 
+void HumanoidWeapon::UpdateVelocity()
+{
+    //通常の速力処理に加えて、飛行モード時の速力処理を追加する
+    //重力を無視し、カメラの向いている方向へ動くようにする
+
+    if (flightMode_)
+    {
+        //水平方向
+        {
+            if (moveVec_.LengthSquared() > 0.01f)
+            {
+                //空中にいるときは制御しづらくする
+                velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_) * airborneCoefficient_;
+
+                //速度制限
+                Vector2 velocityXZ = { velocity_.x,velocity_.z };
+                if (velocityXZ.Length() > Max_Horizontal_Speed)
+                {
+                    velocityXZ.Normalize();
+                    velocityXZ = velocityXZ * Max_Horizontal_Speed;
+
+                    velocity_.x = velocityXZ.x;
+                    velocity_.z = velocityXZ.y;
+                }
+                //縦方向にも速度制限
+                velocity_.y = std::clamp(velocity_.y, -Max_Vertical_Speed, Max_Vertical_Speed);
+            }
+            else//減速処理
+            {
+                //入力値がほぼない場合は減速処理
+                Vector3 veloNormal;
+                velocity_.Normalize(veloNormal);
+
+                Vector3 deceVelocity = velocity_ - (veloNormal * (deceleration_ * Time::deltaTime_));
+                Vector3 deceVeloNormal;
+                deceVelocity.Normalize(deceVeloNormal);
+
+                //反対方向のベクトルになってしまうか速度が遅すぎるなら、速度を完全に０にする
+                if (veloNormal.Dot(deceVeloNormal) < 0 || deceVelocity.LengthSquared() < 0.1f)
+                {
+                    velocity_ = {};
+                }
+                else
+                {
+                    velocity_ = deceVelocity;
+                }
+            }
+        }
+    }
+    else
+    {
+        Character::UpdateVelocity();
+    }
+}
+
 bool HumanoidWeapon::DrawImGui()
 {
-    ImGui::DragFloat3("Velocity", &velocity_.x);
-
-    float speed = velocity_.Length();
-    ImGui::SliderFloat("Speed", &speed, 0.0f, Max_Horizontal_Speed);
-
-    ImGui::DragFloat("Max Speed", &Max_Horizontal_Speed, 0.1f, 0.1f);
-
-    ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 100.0f);
-    ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 100.0f);
+    Character::DrawImGui();
 
     ImGui::SliderFloat("Climb", &climbSpeed_, 0.0f, 200.0f);
-
-    ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
-    ImGui::SliderFloat("Max Rot Speed", &Max_Rot_Speed, 0.0f, 1000.0f);
-    ImGui::SliderFloat("Min Rot Speed", &Min_Rot_Speed, 0.0f, 1000.0f);
 
     return true;
 }
@@ -45,7 +90,19 @@ void HumanoidWeapon::Move()
 
 void HumanoidWeapon::Climb(float amount)
 {
+    _ASSERT_EXPR(flightMode_, "現在飛行モードではありません");
+    if (!flightMode_)return;
     velocity_.y += amount;
+}
+
+void HumanoidWeapon::ToFlightMode()
+{
+    flightMode_ = true;
+}
+
+void HumanoidWeapon::ToLandMode()
+{
+    flightMode_ = false;
 }
 
 

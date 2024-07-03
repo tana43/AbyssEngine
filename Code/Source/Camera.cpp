@@ -61,10 +61,12 @@ void Camera::Update()
         / static_cast<float>(DXSystem::GetScreenHeight()); //画面比率
     projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
 
+
     //ビュー行列作成
     if (viewTarget_)
     {
-        focus_ = transform_->GetPosition() + socketOffset_;
+        const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
+        focus_ = transform_->GetPosition() + socketOffset_ + offset;
         eye_ = focus_ - transform_->GetForward() * armLength_;
     }
     else
@@ -80,27 +82,6 @@ void Camera::Update()
     viewMatrix_ = XMMatrixLookAtLH(eye_, focus_, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 
-    //初回時のみフラスタム生成
-//    if (frustum_.Far == 0)//Farが０のときは生成されていないとみなす
-//    {
-//        DirectX::BoundingFrustum::CreateFromMatrix(frustum_, projectionMatrix_);
-//    }
-//
-//    //フラスタム更新
-//    frustum_.Transform(frustum_, worldMatrix);
-//
-//    //デバッグ表示
-//#if _DEBUG
-//    Vector3 corners[8];
-//    frustum_.GetCorners(corners);
-//
-//    auto& lineRenderer = Engine::renderManager_->lineRenderer_;
-//    for (int i = 0; i < 8; i++)
-//    {
-//        lineRenderer->AddVertex(corners[i], Vector4(1, 1, 1, 1));
-//    }
-//#endif // _DEBUG
-
 }
 
 Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)
@@ -108,7 +89,7 @@ Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)
     Vector3 result;
 
     const auto& forward = transform_->GetForward();
-    const auto& right = transform_->GetForward();
+    const auto& right = transform_->GetRight();
 
     result.x = forward.x * v.y + right.x * v.x;
     result.y = forward.y * v.y + right.y * v.x;
@@ -301,15 +282,16 @@ void Camera::CameraLagUpdate()
 
     auto cameraPos = transform_->GetPosition();
 
-    //回転を考慮したオフセット位置を計算
-    const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
-    const auto& target = viewTarget_->GetPosition() + offset;
+    //const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
+    //const auto& target = viewTarget_->GetPosition() + offset;
+    //回転は後から計算するので無視する
+    const auto& target = viewTarget_->GetPosition();
 
     //カメラからビューターゲットへのベクトル
     const auto& vec = target - cameraPos;
 
     //移動ベクトル計算
-    Vector3 moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_);
+    Vector3 moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_) * Time::deltaTime_ * 100.0f;// * 100.0f単純に値が小さすぎるから増やしてるだけ
     if (moveVec.LengthSquared() > vec.LengthSquared())
     {
         /*Vector3 vecNormal;
@@ -320,7 +302,7 @@ void Camera::CameraLagUpdate()
     }
     else
     {
-        cameraPos = cameraPos + moveVec * Time::deltaTime_ * 100.0f;// * 100.0f単純に値が小さすぎるから増やしてるだけ
+        cameraPos = cameraPos + moveVec;
     }
 
     transform_->SetPosition(cameraPos);

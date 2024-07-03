@@ -25,7 +25,8 @@ bool Character::DrawImGui()
     float speed = velocity_.Length();
     ImGui::SliderFloat("Speed",&speed,0.0f,Max_Horizontal_Speed);
 
-    ImGui::DragFloat("Max Speed", &Max_Horizontal_Speed,0.1f,0.1f);
+    ImGui::DragFloat("Max Horizontal Speed", &Max_Horizontal_Speed,0.1f,0.1f);
+    ImGui::DragFloat("Max Vertical Speed", &Max_Vertical_Speed,0.1f,0.1f);
 
     ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 10.0f);
     ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 10.0f);

@@ -54,7 +54,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
 
     //ãÛíÜà⁄ìÆ
-    AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimState::Stand), Vector2(0, 0));
+    AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
@@ -92,9 +92,10 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 void Vitesse::Update()
 {
+    stateMachine_->Update();
+
     HumanoidWeapon::Update();
 
-    stateMachine_->Update();
 }
 
 void Vitesse::Move()
@@ -102,7 +103,7 @@ void Vitesse::Move()
     HumanoidWeapon::Move();
 
     //è„è∏
-    if (Input::GameSupport::GetClimdButton())
+    if (flightMode_ && Input::GameSupport::GetClimdButton())
     {
         Climb(climbSpeed_ * Time::deltaTime_);
     }
@@ -114,6 +115,7 @@ void Vitesse::Move()
     if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
     {
         runMoveAnimation_->SetBlendWeight(Vector2(0,0));
+        flyMoveAnimation_->SetBlendWeight(Vector2(0,0));
     }
     else
     {
@@ -165,7 +167,7 @@ void Vitesse::UpdateInputMove()
     if (!camera_->isMainCamera_)return;
 
     //îÚçsíÜÇÕYé≤Ç…Ç‡ìÆÇ≠ÇÊÇ§Ç…Ç∑ÇÈ
-    if (flyingMode_)
+    if (flightMode_)
     {
         moveVec_ = camera_->ConvertTo3DVectorFromCamera(Input::GameSupport::GetMoveVector());
     }
