@@ -155,6 +155,27 @@ void SkeletalMesh::SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, 
 	//}
 }
 
+Matrix& AbyssEngine::SkeletalMesh::FindSocket(const char* socketName)
+{
+	const auto& animNodes = GetAnimator()->GetAnimatedNodes();
+	std::vector<GeometricSubstance::Node>::const_iterator node;
+	for (auto it = animNodes.begin(); it != animNodes.end(); it++)
+	{
+		if (it->name_ == socketName)
+		{
+			node = it;
+			break;
+		}
+	}
+	if (node != animNodes.end())
+	{
+		Matrix boneTransform = DirectX::XMLoadFloat4x4(&node->globalTransform_);
+		return boneTransform;
+	}
+
+	_ASSERT_EXPR(false, L"同じ名前のソケットが見つかりませんでした");
+}
+
 void SkeletalMesh::SetActive(const bool value)
 {
 	if (value)

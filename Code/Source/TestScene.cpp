@@ -9,6 +9,8 @@
 #include "MeshCollider.h"
 #include "Stage.h"
 #include "StageManager.h"
+#include "Engine.h"
+#include "RenderManager.h"
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
@@ -144,7 +146,7 @@ void TestScene::Initialize()
     const auto& fighterJet = InstanceActor("F-14A");
     fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
 
-    swordEfe_ = std::make_unique<Effect>("./Assets/Effects/MoonLightSword.efk");
+    swordEfe_ = std::make_unique<Effect>("./Assets/Effects/Thruster_01.efk");
 }
 
 void TestScene::Update()
@@ -159,12 +161,13 @@ void TestScene::DrawImGui()
     static Vector3 pos = {};
     static float scale = 1.0f;
 
+    Engine::renderManager_->debugRenderer_->DrawSphere(pos, 0.1f, Vector4(0, 1, 0, 1));
     if(ImGui::Button("Play Effect"))
     {
         swordEfe_->Play(pos, scale);
     }
 
-    ImGui::DragFloat3("Effect Position", &pos.x);
+    ImGui::DragFloat3("Effect Position", &pos.x,0.1f);
     ImGui::DragFloat("Effect Scale", &scale,0.1f,0.01f);
 
 }

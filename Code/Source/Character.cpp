@@ -68,7 +68,7 @@ void Character::TurnY(Vector3 dir, bool smooth)
 
     //内積値から最終的に向きたい角度を計算する
     float dot = forward.Dot(dir);
-    if (dot > 0.99f)return;
+    if (dot > 0.999f)return;
     float rotAmount = acosf(dot);
 
     float rotSpeed = 0;
