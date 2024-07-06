@@ -42,8 +42,11 @@ bool ThrusterEffect::DrawImGui()
         const auto& m = EffectManager::Instance().GetEffekseerManager();
         auto pos = m->GetLocation(effekseerHandle_);
 
-        ImGui::DragFloat3("position", &pos.X);
+        ImGui::DragFloat3("Offset Potation", &offsetPos_.x,0.05f);
+        ImGui::DragFloat3("Offset Rotation", &offsetRot_.x);
+        ImGui::DragFloat3("Scale", &scale_.x,0.01f);
 
+        ImGui::DragFloat3("World Position", &pos.X);
         ImGui::TreePop();
     }
 
@@ -53,25 +56,49 @@ bool ThrusterEffect::DrawImGui()
 void ThrusterEffect::AttachSocket(std::string name)
 {
     //ソケットのボーン行列を登録する
-     socketGlobalTransform_ = &attachModel_->FindSocket(name.c_str());
+     socketMatrix_ = attachModel_->FindSocket(name.c_str());
+     socketName_ = name;
 }
 
 void ThrusterEffect::UpdateTransform()
 {
     const auto& manager = EffectManager::Instance().GetEffekseerManager();
+    if (!manager->Exists(effekseerHandle_))return;
+
+    socketMatrix_ = attachModel_->FindSocket(socketName_.c_str());
+    //Matrix socketMatrix = DirectX::XMLoadFloat4x4(socketGlobalTransform_);
+
+    //ソケット行列から各成分を抽出
+    Vector3 pos;
+    Quaternion rot;
+    Vector3 scale;
+    socketMatrix_.Decompose(scale,rot,pos);
 
     //行列更新 オフセットの回転値も考慮
-    auto q = Quaternion::Euler(rotation_);
-    Matrix socketMatrix = DirectX::XMLoadFloat4x4(socketGlobalTransform_);
-    const auto& sm = socketMatrix.Transform(*socketGlobalTransform_, q);
-    Effekseer::Matrix43 mat = {
+    auto q = Quaternion::Euler(offsetRot_);
+    /*const Matrix S = Matrix::CreateScale(scale_);
+    const Matrix R = Matrix::CreateFromQuaternion(rot);
+    const Matrix T = Matrix::CreateTranslation(pos + offsetPos_);*/
+    const Matrix S = Matrix::CreateScale(scale_);
+    const Matrix OR = Matrix::CreateFromQuaternion(q);
+    const Matrix OT = Matrix::CreateTranslation(offsetPos_);
+    const Matrix OM = S * OR * OT;
+    //socketMatrix_ = S * R * T;
+
+    //ワールド行列算出
+    Matrix dxUe5 = DirectX::XMMatrixSet(-1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Y-Up Z-Forward(DX) -> LHS Z-Up Y-Forward(UE5) 
+    //Matrix sm = dxUe5 * (S * R * T) * transform_->GetWorldMatrix();
+    Matrix sm = dxUe5 * socketMatrix_ * OM * transform_->GetWorldMatrix();
+    //sm = sm.Transform(*socketGlobalTransform_, q) * transform_->GetWorldMatrix();
+
+    Effekseer::Matrix43 em = {
         sm._11,sm._12,sm._13,
         sm._21,sm._22,sm._23,
         sm._31,sm._22,sm._33,
         sm._41,sm._42,sm._43
     };
     //manager->SetMatrix(effekseerHandle_, mat);
-    manager->SetBaseMatrix(effekseerHandle_, mat);
+    manager->SetMatrix(effekseerHandle_, em);
 }
 
 void ThrusterEffect::UpdateInjection()
@@ -126,10 +153,11 @@ void ThrusterEffect::Fire()
         //出力を０に
         power_ = 0.0f;
 
-        //エフェクト再生
+        //エフェクト再生する前に前回のエフェクトを停止させておく
+        const auto& m = EffectManager::Instance().GetEffekseerManager();
+        m->StopEffect(effekseerHandle_);
         effekseerHandle_ = effectEmitter_->Play();
 
-        const auto& m = EffectManager::Instance().GetEffekseerManager();
         UpdateTransform();
     }
 }

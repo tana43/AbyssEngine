@@ -155,7 +155,7 @@ void SkeletalMesh::SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, 
 	//}
 }
 
-DirectX::XMFLOAT4X4& AbyssEngine::SkeletalMesh::FindSocket(const char* socketName)
+const Matrix& AbyssEngine::SkeletalMesh::FindSocket(const char* socketName)
 {
 	auto& animNodes = GetAnimator()->GetAnimatedNodes();
 	std::vector<GeometricSubstance::Node>::iterator node;
@@ -169,7 +169,13 @@ DirectX::XMFLOAT4X4& AbyssEngine::SkeletalMesh::FindSocket(const char* socketNam
 	}
 	if (node != animNodes.end())
 	{
-		return node->globalTransform_;
+		using namespace DirectX;
+		Matrix dxUe5 = XMMatrixSet(-1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Y-Up Z-Forward(DX) -> LHS Z-Up Y-Forward(UE5) 
+		Matrix ue5Gltf = XMMatrixSet(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Z-Up Y-Forward(UE5) -> RHS Y-Up Z-Forward(glTF) 
+		Matrix boneTransform = XMLoadFloat4x4(&node->globalTransform_);
+
+		//return dxUe5 * ue5Gltf * boneTransform;
+		return boneTransform;
 	}
 
 	_ASSERT_EXPR(false, L"同じ名前のソケットが見つかりませんでした");

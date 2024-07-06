@@ -162,6 +162,7 @@ void TestScene::DrawImGui()
 {
     static Vector3 pos = {};
     static float scale = 1.0f;
+    static Vector3 rot = {};
 
     Engine::renderManager_->debugRenderer_->DrawSphere(pos, 0.1f, Vector4(0, 1, 0, 1));
     if(ImGui::Button("Play Effect"))
@@ -170,10 +171,25 @@ void TestScene::DrawImGui()
     }
 
     const auto& m = EffectManager::Instance().GetEffekseerManager();
-    m->SetLocation(effectHandle, pos.x,pos.y,pos.z);
-    m->SetScale(effectHandle, scale,scale,scale);
+    //m->SetLocation(effectHandle, pos.x,pos.y,pos.z);
+    //m->SetScale(effectHandle, scale,scale,scale);
+
+    auto q = Quaternion::Euler(rot);
+
+    const Matrix S = Matrix::CreateScale(scale);
+    const Matrix R = Matrix::CreateFromQuaternion(q);
+    const Matrix T = Matrix::CreateTranslation(pos);
+    Matrix W = S * R * T;
+    Effekseer::Matrix43 em = {
+        W._11,W._12,W._13,
+        W._21,W._22,W._23,
+        W._31,W._32,W._33,
+        W._41,W._42,W._43
+    };
+    m->SetMatrix(effectHandle,em);
 
     ImGui::DragFloat3("Effect Position", &pos.x,0.1f);
+    ImGui::DragFloat3("Effect Rotation", &rot.x,0.01f);
     ImGui::DragFloat("Effect Scale", &scale,0.1f,0.01f);
 
 }

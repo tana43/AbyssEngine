@@ -36,7 +36,8 @@ public:
     void AttachSocket(std::string name);
 
     //オフセット回転値を設定
-    void SetRotation(const AbyssEngine::Vector3& rotation) { rotation_ = rotation; }
+    void SetOffsetPosition(const AbyssEngine::Vector3& position) { offsetPos_ = position; }
+    void SetOffsetRotation(const AbyssEngine::Vector3& rotation) { offsetRot_ = rotation; }
     void SetScale(const AbyssEngine::Vector3& scale) { scale_ = scale; }
     void SetScale(const float& scale) { scale_ = { scale,scale,scale }; }
 
@@ -60,11 +61,12 @@ private:
 
     std::shared_ptr<AbyssEngine::SkeletalMesh> attachModel_;
     std::string socketName_;
-    DirectX::XMFLOAT4X4* socketGlobalTransform_;
+    AbyssEngine::Matrix socketMatrix_;
 
     //オフセット値
-    AbyssEngine::Vector3 rotation_;
-    AbyssEngine::Vector3 scale_;
+    AbyssEngine::Vector3 offsetPos_;
+    AbyssEngine::Vector3 offsetRot_;
+    AbyssEngine::Vector3 scale_ = {1.0f,1.0f,1.0f};
 
     //現在の噴射行程
     Sequence sequence_ = Sequence::Standby;
