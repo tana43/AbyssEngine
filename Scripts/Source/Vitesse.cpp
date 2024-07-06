@@ -94,6 +94,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //エフェクト追加
     thruster_ = actor_->AddComponent<ThrusterEffect>();
     thruster_->AttachSocket("rig_robo_J_backpack_end_R");
+    thruster_->SetOffsetPosition(Vector3(-0.4f,-0.1f,0.0f));
+    thruster_->SetOffsetRotation(Vector3(0.0f,0.0f,100.0f));
+    thruster_->SetOffsetScale(0.3f);
 }
 
 void Vitesse::Update()
@@ -101,9 +104,6 @@ void Vitesse::Update()
     stateMachine_->Update();
 
     HumanoidWeapon::Update();
-
-    thruster_->UpdateInjection();
-    thruster_->UpdateTransform();
 }
 
 void Vitesse::Move()
@@ -159,6 +159,10 @@ void Vitesse::Move()
 //    flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Horizontal_Speed) * 2);
 
     CameraRollUpdate();
+
+    transform_->CalcWorldMatrix();
+    thruster_->UpdateInjection();
+    thruster_->UpdateTransform();
 }
 
 bool Vitesse::DrawImGui()

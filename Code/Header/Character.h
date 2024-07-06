@@ -15,6 +15,8 @@ namespace AbyssEngine
     public:
         virtual void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
         virtual void Update() {}
+        //virtual void DelayedUpdate() {}//描画時の行列更新などが終わってから
+
         bool DrawImGui()override;
 
         //複数アタッチ不可

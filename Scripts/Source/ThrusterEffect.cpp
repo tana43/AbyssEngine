@@ -79,7 +79,7 @@ void ThrusterEffect::UpdateTransform()
     /*const Matrix S = Matrix::CreateScale(scale_);
     const Matrix R = Matrix::CreateFromQuaternion(rot);
     const Matrix T = Matrix::CreateTranslation(pos + offsetPos_);*/
-    const Matrix S = Matrix::CreateScale(scale_);
+    const Matrix S = Matrix::CreateScale(scale_ * power_);
     const Matrix OR = Matrix::CreateFromQuaternion(q);
     const Matrix OT = Matrix::CreateTranslation(offsetPos_);
     const Matrix OM = S * OR * OT;
@@ -88,7 +88,7 @@ void ThrusterEffect::UpdateTransform()
     //ワールド行列算出
     Matrix dxUe5 = DirectX::XMMatrixSet(-1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Y-Up Z-Forward(DX) -> LHS Z-Up Y-Forward(UE5) 
     //Matrix sm = dxUe5 * (S * R * T) * transform_->GetWorldMatrix();
-    Matrix sm = dxUe5 * socketMatrix_ * OM * transform_->GetWorldMatrix();
+    Matrix sm = OM * dxUe5 * socketMatrix_ * transform_->GetWorldMatrix();
     //sm = sm.Transform(*socketGlobalTransform_, q) * transform_->GetWorldMatrix();
 
     Effekseer::Matrix43 em = {
@@ -113,6 +113,8 @@ void ThrusterEffect::UpdateInjection()
 
         if (power_ >= 1)
         {
+            power_ = 1.0f;
+
             //噴射状態へ移行
             sequence_ = Sequence::Burning;
         }

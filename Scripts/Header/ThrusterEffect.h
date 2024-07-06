@@ -38,8 +38,8 @@ public:
     //オフセット回転値を設定
     void SetOffsetPosition(const AbyssEngine::Vector3& position) { offsetPos_ = position; }
     void SetOffsetRotation(const AbyssEngine::Vector3& rotation) { offsetRot_ = rotation; }
-    void SetScale(const AbyssEngine::Vector3& scale) { scale_ = scale; }
-    void SetScale(const float& scale) { scale_ = { scale,scale,scale }; }
+    void SetOffsetScale(const AbyssEngine::Vector3& scale) { scale_ = scale; }
+    void SetOffsetScale(const float& scale) { scale_ = { scale,scale,scale }; }
 
     void UpdateTransform();
 

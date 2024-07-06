@@ -12,6 +12,16 @@ void CharacterManager::Update()
 	}
 }
 
+//void CharacterManager::DelayedUpdate()
+//{
+//	for (const auto& c : characterList_)
+//	{
+//		if (!c->GetIsActive())continue;
+//
+//		c->DelayedUpdate();
+//	}
+//}
+
 void CharacterManager::AddCharacter(const std::shared_ptr<Character>& chara)
 {
 	characterList_.emplace_back(chara);

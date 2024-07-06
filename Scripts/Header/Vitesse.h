@@ -65,6 +65,7 @@ private:
 
     std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
 
+    //std::shared_ptr<ThrusterEffect> thruster_[24];
     std::shared_ptr<ThrusterEffect> thruster_;
 
     float cameraRollSpeed_ = 90.0f;
