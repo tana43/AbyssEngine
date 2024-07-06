@@ -40,7 +40,7 @@ namespace AbyssEngine
         //ソケットにアタッチする　武器などを持たせることが出来る
         void SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, const char* socketName);
 
-        Matrix& FindSocket(const char* socketName);
+        DirectX::XMFLOAT4X4& FindSocket(const char* socketName);
 
     private:
         void SetActive(const bool value)override;

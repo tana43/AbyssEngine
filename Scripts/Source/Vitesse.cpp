@@ -6,6 +6,8 @@
 #include "Input.h"
 #include "VitesseState.h"
 
+#include "ThrusterEffect.h"
+
 using namespace AbyssEngine;
 
 Vitesse::Vitesse() : HumanoidWeapon()
@@ -88,6 +90,10 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::TakeOffState(this));
     stateMachine_->RegisterState(new VitesseState::LandingState(this));
     stateMachine_->SetState(static_cast<int>(ActionState::GMove));
+
+    //エフェクト追加
+    thruster_ = actor_->AddComponent<ThrusterEffect>();
+    thruster_->AttachSocket("rig_robo_J_backpack_end_R");
 }
 
 void Vitesse::Update()
@@ -96,6 +102,8 @@ void Vitesse::Update()
 
     HumanoidWeapon::Update();
 
+    thruster_->UpdateInjection();
+    thruster_->UpdateTransform();
 }
 
 void Vitesse::Move()
@@ -121,7 +129,7 @@ void Vitesse::Move()
     {
         //前方向と進行方向の差のベクトルを算出
         const auto& forward = transform_->GetForward();
-        const auto& right = transform_->GetRight();
+        //const auto& right = transform_->GetRight();
         Vector3 moveDirection;
         velocityXZ.Normalize(moveDirection);
 
@@ -133,13 +141,13 @@ void Vitesse::Move()
         //result = result * (velocity_.Length() / Max_Speed);
 
         //内積による計算
-        float dot = forward.Dot(moveDirection);
+        float dot = acosf(forward.Dot(moveDirection));
         float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
 
         //左右判定
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
-        if (crossY < 0)dot = DirectX::XM_PI - dot;
-        result = { cosf(dot),sinf(dot) };
+        if (crossY < 0)dot = DirectX::XM_2PI - dot;
+        result = { sinf(dot),cosf(dot) };
         result = result * (velocityXZ.Length() / Max_Horizontal_Speed);
         
         runMoveAnimation_->SetBlendWeight(result);

@@ -11,6 +11,7 @@
 #include "StageManager.h"
 #include "Engine.h"
 #include "RenderManager.h"
+#include "EffectManager.h"
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
@@ -18,6 +19,7 @@
 using namespace AbyssEngine;
 
 std::shared_ptr<Stage> stageCom;
+Effekseer::Handle effectHandle = -1;
 
 void TestScene::Initialize()
 {
@@ -164,8 +166,12 @@ void TestScene::DrawImGui()
     Engine::renderManager_->debugRenderer_->DrawSphere(pos, 0.1f, Vector4(0, 1, 0, 1));
     if(ImGui::Button("Play Effect"))
     {
-        swordEfe_->Play(pos, scale);
+        effectHandle = swordEfe_->Play(pos, scale);
     }
+
+    const auto& m = EffectManager::Instance().GetEffekseerManager();
+    m->SetLocation(effectHandle, pos.x,pos.y,pos.z);
+    m->SetScale(effectHandle, scale,scale,scale);
 
     ImGui::DragFloat3("Effect Position", &pos.x,0.1f);
     ImGui::DragFloat("Effect Scale", &scale,0.1f,0.01f);

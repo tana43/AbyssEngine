@@ -10,7 +10,7 @@ public:
     ~Effect() {}
 
     //çƒê∂
-    Effekseer::Handle Play(const DirectX::XMFLOAT3& position, float scale = 1.0f);
+    Effekseer::Handle Play(DirectX::XMFLOAT3 position = {0,0,0}, float scale = 1.0f);
 
     //í‚é~
     void Stop(Effekseer::Handle handle);

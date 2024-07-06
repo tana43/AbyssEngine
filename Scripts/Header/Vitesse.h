@@ -4,6 +4,8 @@
 #include "SkeletalMesh.h"
 #include "StateMachine.h"
 
+class ThrusterEffect;
+
 class Vitesse : public HumanoidWeapon 
 {
 public:
@@ -62,6 +64,8 @@ private:
     AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//‹ó’†ˆÚ“®
 
     std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
+
+    std::shared_ptr<ThrusterEffect> thruster_;
 
     float cameraRollSpeed_ = 90.0f;
     

@@ -26,7 +26,7 @@ Effect::Effect(const char* filename)
 }
 
 //çƒê∂
-Effekseer::Handle Effect::Play(const DirectX::XMFLOAT3& position, float scale)
+Effekseer::Handle Effect::Play(DirectX::XMFLOAT3 position, float scale)
 {
     Effekseer::ManagerRef effekseerManager = EffectManager::Instance().GetEffekseerManager();
 

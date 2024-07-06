@@ -4,6 +4,8 @@
 #include "SkeletalMesh.h"
 #include "Engine.h"
 
+#include "imgui/imgui.h"
+
 using namespace AbyssEngine;
 
 std::unique_ptr<Effect> ThrusterEffect::effectEmitter_;
@@ -20,7 +22,32 @@ void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor
 {
     actor_ = actor;
     transform_ = actor->GetTransform();
-    attachModel_ = GetComponent<SkeletalMesh>();
+    attachModel_ = actor->GetComponent<SkeletalMesh>();
+}
+
+bool ThrusterEffect::DrawImGui()
+{
+    if (ImGui::TreeNode("ThrusterEffect"))
+    {
+        if (ImGui::Button("Fire"))
+        {
+            Fire();
+        }
+
+        if (ImGui::Button("Stop"))
+        {
+            Stop();
+        }
+
+        const auto& m = EffectManager::Instance().GetEffekseerManager();
+        auto pos = m->GetLocation(effekseerHandle_);
+
+        ImGui::DragFloat3("position", &pos.X);
+
+        ImGui::TreePop();
+    }
+
+    return false;
 }
 
 void ThrusterEffect::AttachSocket(std::string name)
@@ -35,7 +62,16 @@ void ThrusterEffect::UpdateTransform()
 
     //行列更新 オフセットの回転値も考慮
     auto q = Quaternion::Euler(rotation_);
-    socketGlobalTransform_->Transform(*socketGlobalTransform_,q);
+    Matrix socketMatrix = DirectX::XMLoadFloat4x4(socketGlobalTransform_);
+    const auto& sm = socketMatrix.Transform(*socketGlobalTransform_, q);
+    Effekseer::Matrix43 mat = {
+        sm._11,sm._12,sm._13,
+        sm._21,sm._22,sm._23,
+        sm._31,sm._22,sm._33,
+        sm._41,sm._42,sm._43
+    };
+    //manager->SetMatrix(effekseerHandle_, mat);
+    manager->SetBaseMatrix(effekseerHandle_, mat);
 }
 
 void ThrusterEffect::UpdateInjection()
@@ -45,6 +81,7 @@ void ThrusterEffect::UpdateInjection()
     case ThrusterEffect::Sequence::Standby://スタンバイ
         break;
     case ThrusterEffect::Sequence::Ignition://点火
+
         power_ += ignitionSpeed_ * Time::deltaTime_;
 
         if (power_ >= 1)
@@ -60,6 +97,19 @@ void ThrusterEffect::UpdateInjection()
 
         break;
     case ThrusterEffect::Sequence::Extinguishing://鎮火
+
+        power_ -= ExtSpeed_ * Time::deltaTime_;
+
+        if (power_ <= 0.0f)
+        {
+            //エフェクトを停止
+            effectEmitter_->Stop(effekseerHandle_);
+
+            //待機状態へ遷移
+            power_ = 0.0f;
+            sequence_ = Sequence::Standby;
+        }
+
         break;
     default:
         break;
@@ -75,6 +125,12 @@ void ThrusterEffect::Fire()
 
         //出力を０に
         power_ = 0.0f;
+
+        //エフェクト再生
+        effekseerHandle_ = effectEmitter_->Play();
+
+        const auto& m = EffectManager::Instance().GetEffekseerManager();
+        UpdateTransform();
     }
 }
 

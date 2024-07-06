@@ -8,7 +8,7 @@ namespace AbyssEngine
     class SkeletalMesh;
 }
 
-class ThrusterEffect : AbyssEngine::Component
+class ThrusterEffect : public AbyssEngine::Component
 {
 private:
     //噴射行程
@@ -25,6 +25,12 @@ public:
     ~ThrusterEffect() {}
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
+
+    bool CanMultiple()override { return true; }
+
+    bool DrawImGui()override;
+
+public:
 
     //ソケットにアタッチする
     void AttachSocket(std::string name);
@@ -54,7 +60,7 @@ private:
 
     std::shared_ptr<AbyssEngine::SkeletalMesh> attachModel_;
     std::string socketName_;
-    AbyssEngine::Matrix* socketGlobalTransform_;
+    DirectX::XMFLOAT4X4* socketGlobalTransform_;
 
     //オフセット値
     AbyssEngine::Vector3 rotation_;
