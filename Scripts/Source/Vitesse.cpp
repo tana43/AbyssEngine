@@ -92,11 +92,22 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->SetState(static_cast<int>(ActionState::GMove));
 
     //エフェクト追加
-    thruster_ = actor_->AddComponent<ThrusterEffect>();
+    const int unitSize = static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units);
+    const auto& units = VitesseConstants::Thrusters;
+    for (int i = 0; i < unitSize; ++i)
+    {
+        thrusters_[i] = actor_->AddComponent<ThrusterEffect>();
+        thrusters_[i]->AttachSocket(units[i].socketName_);
+        thrusters_[i]->SetOffsetPosition(units[i].offsetPos_);
+        thrusters_[i]->SetOffsetRotation(units[i].offsetRot_);
+        thrusters_[i]->SetOffsetScale(units[i].offsetScale_);
+    }
+
+    /*thruster_ = actor_->AddComponent<ThrusterEffect>();
     thruster_->AttachSocket("rig_robo_J_backpack_end_R");
     thruster_->SetOffsetPosition(Vector3(-0.4f,-0.1f,0.0f));
     thruster_->SetOffsetRotation(Vector3(0.0f,0.0f,100.0f));
-    thruster_->SetOffsetScale(0.3f);
+    thruster_->SetOffsetScale(0.3f);*/
 }
 
 void Vitesse::Update()
@@ -161,8 +172,15 @@ void Vitesse::Move()
     CameraRollUpdate();
 
     transform_->CalcWorldMatrix();
-    thruster_->UpdateInjection();
-    thruster_->UpdateTransform();
+
+    //エフェクト更新
+    for (const auto& t : thrusters_)
+    {
+        t->UpdateInjection();
+        t->UpdateTransform();
+    }
+    /*thruster_->UpdateInjection();
+    thruster_->UpdateTransform();*/
 }
 
 bool Vitesse::DrawImGui()

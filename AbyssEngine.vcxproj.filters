@@ -292,6 +292,9 @@
       <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\ThrusterEffect.h" />
+    <ClInclude Include="Scripts\Header\VitesseConstants.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -487,6 +490,9 @@
       <Filter>Script\Source</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\ThrusterEffect.cpp" />
+    <ClCompile Include="Scripts\Source\VitesseConstants.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

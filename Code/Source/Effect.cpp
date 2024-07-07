@@ -4,6 +4,8 @@
 #include "Engine.h"
 #include "RenderManager.h"
 
+using namespace AbyssEngine;
+
 Effect::Effect(const char* filename)
 {
     //エフェクト読み込みをする前にロックする

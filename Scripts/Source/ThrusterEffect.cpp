@@ -4,30 +4,45 @@
 #include "SkeletalMesh.h"
 #include "Engine.h"
 
+#include "AssetManager.h"
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 
-std::unique_ptr<Effect> ThrusterEffect::effectEmitter_;
+int ThrusterEffect::instanceCount_ = 0;
 
 ThrusterEffect::ThrusterEffect()
 {
-    if (effectEmitter_.get() == nullptr)
-    {
-        effectEmitter_ = std::make_unique<Effect>("./Assets/Effects/Thruster_01.efk");
-    }
+    name_ += std::to_string(instanceCount_);
+    instanceCount_++;
 }
 
 void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
+    //初期化
     actor_ = actor;
     transform_ = actor->GetTransform();
     attachModel_ = actor->GetComponent<SkeletalMesh>();
+
+    //エフェクト読み込み
+    const std::string path = "./Assets/Effects/Thruster_01.efk";
+    const auto it = Engine::assetManager_->cacheEffect_.find(path.c_str());
+    if (it != Engine::assetManager_->cacheEffect_.end())
+    {
+        effectEmitter_ = it->second;
+    }
+    else
+    {
+        //一度も読み込まれていないエフェクトなら新たに読み込み、アセットマネージャーに登録
+        effectEmitter_ = std::make_shared<Effect>(path.c_str());
+        Engine::assetManager_->cacheEffect_[path.c_str()] = effectEmitter_;
+    }
 }
 
 bool ThrusterEffect::DrawImGui()
 {
-    if (ImGui::TreeNode("ThrusterEffect"))
+    if (ImGui::TreeNode(name_.c_str()))
     {
         if (ImGui::Button("Fire"))
         {
@@ -53,7 +68,7 @@ bool ThrusterEffect::DrawImGui()
     return false;
 }
 
-void ThrusterEffect::AttachSocket(std::string name)
+void ThrusterEffect::AttachSocket(const std::string& name)
 {
     //ソケットのボーン行列を登録する
      socketMatrix_ = attachModel_->FindSocket(name.c_str());
@@ -75,12 +90,17 @@ void ThrusterEffect::UpdateTransform()
     socketMatrix_.Decompose(scale,rot,pos);
 
     //行列更新 オフセットの回転値も考慮
-    auto q = Quaternion::Euler(offsetRot_);
+    //auto q = Quaternion::Euler(offsetRot_);
     /*const Matrix S = Matrix::CreateScale(scale_);
     const Matrix R = Matrix::CreateFromQuaternion(rot);
     const Matrix T = Matrix::CreateTranslation(pos + offsetPos_);*/
     const Matrix S = Matrix::CreateScale(scale_ * power_);
-    const Matrix OR = Matrix::CreateFromQuaternion(q);
+    //const Matrix OR = Matrix::CreateFromQuaternion(q);
+    const Vector3 r = { 
+        DirectX::XMConvertToRadians(offsetRot_.x),
+        DirectX::XMConvertToRadians(offsetRot_.y),
+        DirectX::XMConvertToRadians(offsetRot_.z) };
+    const Matrix OR = Matrix::CreateFromYawPitchRoll(r.y,r.x,r.z);
     const Matrix OT = Matrix::CreateTranslation(offsetPos_);
     const Matrix OM = S * OR * OT;
     //socketMatrix_ = S * R * T;

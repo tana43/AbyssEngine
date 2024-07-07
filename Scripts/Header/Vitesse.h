@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "SkeletalMesh.h"
 #include "StateMachine.h"
+#include "VitesseConstants.h"
 
 class ThrusterEffect;
 
@@ -65,8 +66,9 @@ private:
 
     std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
 
-    //std::shared_ptr<ThrusterEffect> thruster_[24];
-    std::shared_ptr<ThrusterEffect> thruster_;
+    //必要な基数分のスラスター
+    std::shared_ptr<ThrusterEffect> thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units)];
+    //std::shared_ptr<ThrusterEffect> thruster_;
 
     float cameraRollSpeed_ = 90.0f;
     

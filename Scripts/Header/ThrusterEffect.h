@@ -21,6 +21,7 @@ private:
     };
 
 public:
+    static int instanceCount_;
     ThrusterEffect();
     ~ThrusterEffect() {}
 
@@ -33,7 +34,7 @@ public:
 public:
 
     //ソケットにアタッチする
-    void AttachSocket(std::string name);
+    void AttachSocket(const std::string& name);
 
     //オフセット回転値を設定
     void SetOffsetPosition(const AbyssEngine::Vector3& position) { offsetPos_ = position; }
@@ -57,7 +58,7 @@ private:
     Effekseer::Handle effekseerHandle_;
 
     //エフェクト生成をするための変数　読み込んだエフェクトの情報を格納している
-    static std::unique_ptr<Effect> effectEmitter_;
+     std::shared_ptr<AbyssEngine::Effect> effectEmitter_;
 
     std::shared_ptr<AbyssEngine::SkeletalMesh> attachModel_;
     std::string socketName_;
@@ -70,6 +71,8 @@ private:
 
     //現在の噴射行程
     Sequence sequence_ = Sequence::Standby;
+
+    std::string name_ = "ThrusterEffect_";
 
 public:
     //出力(1~0の範囲、スラスター噴射の強弱)
