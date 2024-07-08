@@ -9,9 +9,9 @@ public:
 	{
 		std::string socketName_;
 
-		AbyssEngine::Vector3 offsetPos_;
-		AbyssEngine::Vector3 offsetRot_;
-		AbyssEngine::Vector3 offsetScale_;
+		//AbyssEngine::Vector3 offsetPos_;
+		//AbyssEngine::Vector3 offsetRot_;
+		//AbyssEngine::Vector3 offsetScale_;
 
 		//スラスター各部位
 		enum class Location
@@ -38,11 +38,11 @@ public:
 			Knee_L_L,//左膝、左側
 
 			Shoulder_R_1,//右肩1番一番上のバーニアから時計回りに1,2,3番
-			Shoulder_R_2,//右肩2番一番上のバーニアから時計回りに1,2,3番
-			Shoulder_R_3,//右肩3番一番上のバーニアから時計回りに1,2,3番
+			//Shoulder_R_2,//右肩2番一番上のバーニアから時計回りに1,2,3番
+			//Shoulder_R_3,//右肩3番一番上のバーニアから時計回りに1,2,3番
 			Shoulder_L_1,//左肩1番一番上のバーニアから時計回りに1,2,3番
-			Shoulder_L_2,//左肩2番一番上のバーニアから時計回りに1,2,3番
-			Shoulder_L_3,//左肩3番一番上のバーニアから時計回りに1,2,3番
+			//Shoulder_L_2,//左肩2番一番上のバーニアから時計回りに1,2,3番
+			//Shoulder_L_3,//左肩3番一番上のバーニアから時計回りに1,2,3番
 
 			Chest_R,//胸部右側
 			Chest_L,//胸部左側

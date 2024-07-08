@@ -98,9 +98,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     {
         thrusters_[i] = actor_->AddComponent<ThrusterEffect>();
         thrusters_[i]->AttachSocket(units[i].socketName_);
-        thrusters_[i]->SetOffsetPosition(units[i].offsetPos_);
+        /*thrusters_[i]->SetOffsetPosition(units[i].offsetPos_);
         thrusters_[i]->SetOffsetRotation(units[i].offsetRot_);
-        thrusters_[i]->SetOffsetScale(units[i].offsetScale_);
+        thrusters_[i]->SetOffsetScale(units[i].offsetScale_);*/
     }
 
     /*thruster_ = actor_->AddComponent<ThrusterEffect>();
@@ -173,14 +173,8 @@ void Vitesse::Move()
 
     transform_->CalcWorldMatrix();
 
-    //エフェクト更新
-    for (const auto& t : thrusters_)
-    {
-        t->UpdateInjection();
-        t->UpdateTransform();
-    }
-    /*thruster_->UpdateInjection();
-    thruster_->UpdateTransform();*/
+    
+    ThrusterUpdate();
 }
 
 bool Vitesse::DrawImGui()
@@ -217,4 +211,14 @@ void Vitesse::CameraRollUpdate()
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);
+}
+
+void Vitesse::ThrusterUpdate()
+{
+    //エフェクト更新
+    for (const auto& t : thrusters_)
+    {
+        t->UpdateInjection();
+        t->UpdateTransform();
+    }
 }

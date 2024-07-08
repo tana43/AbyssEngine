@@ -38,10 +38,37 @@ void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor
         effectEmitter_ = std::make_shared<Effect>(path.c_str());
         Engine::assetManager_->cacheEffect_[path.c_str()] = effectEmitter_;
     }
+
+    //Jsonファイル読み込み、書き出し
+    {
+        //ファイルの読み込み
+        nlohmann::json mJson = actor_->ReadingJsonFile();
+        if (mJson.find(name_.c_str()) != mJson.end())
+        {
+            //読み込んだデータをそれぞれの変数に代入する
+            auto& data = mJson[name_.c_str()];
+            offsetPos_ = { data["OffsetPosition"][0],data["OffsetPosition"][1],data["OffsetPosition"][2] };
+            offsetRot_ = { data["OffsetRotation"][0], data["OffsetRotation"][1], data["OffsetRotation"][2] };
+            scale_ = { data["Scale"][0], data["Scale"][1], data["Scale"][2] };
+        }
+        else
+        {
+            //データが見つからなかったので作成
+            mJson[name_.c_str()] = {
+                {"OffsetPosition",{0.0f,0.0f,0.0f}},
+                {"OffsetRotation",{0.0f,0.0f,0.0f}},
+                {"Scale",{1.0f,1.0f,1.0f}},
+            };
+
+            //ファイルに内容を書き込む
+            actor_->WritingJsonFile(mJson);
+        }
+    }
 }
 
 bool ThrusterEffect::DrawImGui()
 {
+    ImGui::SetNextItemOpen(false, ImGuiCond_::ImGuiCond_FirstUseEver);
     if (ImGui::TreeNode(name_.c_str()))
     {
         if (ImGui::Button("Fire"))
@@ -54,14 +81,45 @@ bool ThrusterEffect::DrawImGui()
             Stop();
         }
 
-        const auto& m = EffectManager::Instance().GetEffekseerManager();
-        auto pos = m->GetLocation(effekseerHandle_);
+        ImGui::SliderFloat("Power", &power_, 0.0f, 1.5f);
+        ImGui::SliderFloat("Normal Power", &normalPower_, 0.0f, 1.5f);
 
-        ImGui::DragFloat3("Offset Potation", &offsetPos_.x,0.05f);
+        ImGui::DragFloat3("Offset Potation", &offsetPos_.x,0.01f);
         ImGui::DragFloat3("Offset Rotation", &offsetRot_.x);
         ImGui::DragFloat3("Scale", &scale_.x,0.01f);
 
-        ImGui::DragFloat3("World Position", &pos.X);
+        //Jsonへ保存
+        if (ImGui::ButtonDoubleChecking("Save", doubleCheckFlag_))
+        {
+            SaveToJson();
+        }
+
+        if (ImGui::TreeNode("World Transform"))
+        {
+            const auto& m = EffectManager::Instance().GetEffekseerManager();
+            //auto pos = m->GetLocation(effekseerHandle_);
+            Effekseer::Matrix44 em;
+            auto m43 = m->GetMatrix(effekseerHandle_);
+            m43.ToMatrix44(em);
+            Matrix mat = {
+                em.Values[1][1],em.Values[1][2],em.Values[1][3],em.Values[1][4],
+                em.Values[2][1],em.Values[2][2],em.Values[2][3],em.Values[2][4],
+                em.Values[3][1],em.Values[3][2],em.Values[3][3],em.Values[3][4],
+                em.Values[4][1],em.Values[4][2],em.Values[4][3],em.Values[4][4]
+            };
+
+            Vector3 pos, sca;
+            Quaternion rot;
+            mat.Decompose(sca, rot, pos);
+            auto r = rot.To_Euler();
+            //auto sca = m->GetScale(effekseerHandle_);
+            ImGui::DragFloat3("World Position", &pos.x);
+            ImGui::DragFloat3("World Rotation", &r.x);
+            ImGui::DragFloat3("World Scale", &sca.x);
+
+            ImGui::TreePop();
+
+        }
         ImGui::TreePop();
     }
 
@@ -90,17 +148,18 @@ void ThrusterEffect::UpdateTransform()
     socketMatrix_.Decompose(scale,rot,pos);
 
     //行列更新 オフセットの回転値も考慮
-    //auto q = Quaternion::Euler(offsetRot_);
+    auto q = Quaternion::Euler(offsetRot_);
     /*const Matrix S = Matrix::CreateScale(scale_);
     const Matrix R = Matrix::CreateFromQuaternion(rot);
     const Matrix T = Matrix::CreateTranslation(pos + offsetPos_);*/
+    scale = scale_ * power_;
     const Matrix S = Matrix::CreateScale(scale_ * power_);
-    //const Matrix OR = Matrix::CreateFromQuaternion(q);
-    const Vector3 r = { 
+    const Matrix OR = Matrix::CreateFromQuaternion(q);
+   /* const Vector3 r = { 
         DirectX::XMConvertToRadians(offsetRot_.x),
         DirectX::XMConvertToRadians(offsetRot_.y),
         DirectX::XMConvertToRadians(offsetRot_.z) };
-    const Matrix OR = Matrix::CreateFromYawPitchRoll(r.y,r.x,r.z);
+    const Matrix OR = Matrix::CreateFromYawPitchRoll(r.y,r.x,r.z);*/
     const Matrix OT = Matrix::CreateTranslation(offsetPos_);
     const Matrix OM = S * OR * OT;
     //socketMatrix_ = S * R * T;
@@ -114,11 +173,13 @@ void ThrusterEffect::UpdateTransform()
     Effekseer::Matrix43 em = {
         sm._11,sm._12,sm._13,
         sm._21,sm._22,sm._23,
-        sm._31,sm._22,sm._33,
+        sm._31,sm._32,sm._33,
         sm._41,sm._42,sm._43
     };
     //manager->SetMatrix(effekseerHandle_, mat);
     manager->SetMatrix(effekseerHandle_, em);
+
+    //manager->SetScale(effekseerHandle_,scale.x, scale.y, scale.z);
 }
 
 void ThrusterEffect::UpdateInjection()
@@ -143,6 +204,8 @@ void ThrusterEffect::UpdateInjection()
     case ThrusterEffect::Sequence::Burning://噴射中
         //Stop関数が呼ばれるまで再生し続ける
 
+        //float ctrl = 
+        power_ += power_ > normalPower_ ? 
 
         break;
     case ThrusterEffect::Sequence::Extinguishing://鎮火
@@ -194,4 +257,18 @@ void ThrusterEffect::Stop()
         //出力を最大に
         power_ = 1.0f;
     }
+}
+
+void ThrusterEffect::SaveToJson()
+{
+    //ファイルの読み込み
+    nlohmann::json mJson = actor_->ReadingJsonFile();
+
+    auto& data = mJson[name_.c_str()];
+    data["OffsetPosition"] = { offsetPos_.x,offsetPos_.y,offsetPos_.z };
+    data["OffsetRotation"] = { offsetRot_.x,offsetRot_.y,offsetRot_.z };
+    data["Scale"] = { scale_.x,scale_.y,scale_.z };
+    
+    //ファイルに内容を書き込む
+    actor_->WritingJsonFile(mJson);
 }

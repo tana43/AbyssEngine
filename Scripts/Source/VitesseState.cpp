@@ -31,6 +31,8 @@ void VitesseState::FMoveState::Initialize()
 {
     //アニメーション設定
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
+
+    //空中移動
 }
 
 void VitesseState::FMoveState::Update()
@@ -40,6 +42,12 @@ void VitesseState::FMoveState::Update()
 
 void VitesseState::FMoveState::Finalize()
 {
+}
+
+void VitesseState::FMoveState::ThrusterUpdate()
+{
+    //速度に合わせてスラスターを制御する
+    
 }
 
 void VitesseState::LandingState::Initialize()

@@ -54,6 +54,10 @@ public:
     void Stop();
 
 private:
+    void SaveToJson();
+    bool doubleCheckFlag_ = false;
+
+private:
     //再生しているエフェクトを管理している変数
     Effekseer::Handle effekseerHandle_;
 
@@ -80,6 +84,9 @@ public:
 
     //スラスター点火速度
     float ignitionSpeed_ = 5.0f;
+
+    //通常噴射中における出力
+    float normalPower_ = 0.3f;
 
     //スラスター鎮火速度
     float ExtSpeed_ = 5.0f;

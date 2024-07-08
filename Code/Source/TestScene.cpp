@@ -188,7 +188,7 @@ void TestScene::DrawImGui()
     };
     m->SetMatrix(effectHandle,em);
 
-    ImGui::DragFloat3("Effect Position", &pos.x,0.1f);
+    ImGui::DragFloat3("Effect Position", &pos.x,0.01f);
     ImGui::DragFloat3("Effect Rotation", &rot.x,0.01f);
     ImGui::DragFloat("Effect Scale", &scale,0.1f,0.01f);
 

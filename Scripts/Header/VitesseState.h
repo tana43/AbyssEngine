@@ -32,7 +32,7 @@ namespace VitesseState
         void Finalize() override;
 
     private:
-
+        void ThrusterUpdate();
     };
 
     //Game:Vitesse 離陸ステート

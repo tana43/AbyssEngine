@@ -54,6 +54,9 @@ private:
     void UpdateInputMove()override;
     void CameraRollUpdate();
 
+    //スラスター更新処理
+    void ThrusterUpdate();
+
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
 
