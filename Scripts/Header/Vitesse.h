@@ -18,6 +18,11 @@ public:
     void Move()override;
     bool DrawImGui()override;
 
+    //速度によって影響されるスラスター
+    void ThrusterInfluenceVelocity();
+    //スラスターをすべて停止
+    void ThrusterAllStop();
+
 public:
     //行動ステート
     enum class ActionState
@@ -75,6 +80,7 @@ private:
 
     float cameraRollSpeed_ = 90.0f;
     
-
+    //今向いている方向と速度が働いている方向差分
+    AbyssEngine::Vector3 moveDirection_ = { 0,0,0 };
 };
 

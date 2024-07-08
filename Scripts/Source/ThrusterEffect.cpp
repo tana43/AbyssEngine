@@ -139,7 +139,6 @@ void ThrusterEffect::UpdateTransform()
     if (!manager->Exists(effekseerHandle_))return;
 
     socketMatrix_ = attachModel_->FindSocket(socketName_.c_str());
-    //Matrix socketMatrix = DirectX::XMLoadFloat4x4(socketGlobalTransform_);
 
     //ソケット行列から各成分を抽出
     Vector3 pos;
@@ -149,17 +148,10 @@ void ThrusterEffect::UpdateTransform()
 
     //行列更新 オフセットの回転値も考慮
     auto q = Quaternion::Euler(offsetRot_);
-    /*const Matrix S = Matrix::CreateScale(scale_);
-    const Matrix R = Matrix::CreateFromQuaternion(rot);
-    const Matrix T = Matrix::CreateTranslation(pos + offsetPos_);*/
+
     scale = scale_ * power_;
     const Matrix S = Matrix::CreateScale(scale_ * power_);
     const Matrix OR = Matrix::CreateFromQuaternion(q);
-   /* const Vector3 r = { 
-        DirectX::XMConvertToRadians(offsetRot_.x),
-        DirectX::XMConvertToRadians(offsetRot_.y),
-        DirectX::XMConvertToRadians(offsetRot_.z) };
-    const Matrix OR = Matrix::CreateFromYawPitchRoll(r.y,r.x,r.z);*/
     const Matrix OT = Matrix::CreateTranslation(offsetPos_);
     const Matrix OM = S * OR * OT;
     //socketMatrix_ = S * R * T;
@@ -178,8 +170,6 @@ void ThrusterEffect::UpdateTransform()
     };
     //manager->SetMatrix(effekseerHandle_, mat);
     manager->SetMatrix(effekseerHandle_, em);
-
-    //manager->SetScale(effekseerHandle_,scale.x, scale.y, scale.z);
 }
 
 void ThrusterEffect::UpdateInjection()
@@ -192,9 +182,9 @@ void ThrusterEffect::UpdateInjection()
 
         power_ += ignitionSpeed_ * Time::deltaTime_;
 
-        if (power_ >= 1)
+        if (power_ >= 1.5f)
         {
-            power_ = 1.0f;
+            power_ = 1.5f;
 
             //噴射状態へ移行
             sequence_ = Sequence::Burning;
@@ -202,15 +192,18 @@ void ThrusterEffect::UpdateInjection()
 
         break;
     case ThrusterEffect::Sequence::Burning://噴射中
+    {
         //Stop関数が呼ばれるまで再生し続ける
 
-        //float ctrl = 
-        power_ += power_ > normalPower_ ? 
+        //噴射出力を制御
+        const float ctrlPower = 5.0f * Time::deltaTime_;
+        power_ += power_ > normalPower_ ? -ctrlPower : ctrlPower;
 
         break;
+    }
     case ThrusterEffect::Sequence::Extinguishing://鎮火
 
-        power_ -= ExtSpeed_ * Time::deltaTime_;
+        power_ -= extSpeed_ * Time::deltaTime_;
 
         if (power_ <= 0.0f)
         {
@@ -223,13 +216,29 @@ void ThrusterEffect::UpdateInjection()
         }
 
         break;
+
+    case ThrusterEffect::Sequence::Boost:
+
+        //0.1秒で元の出力に戻す
+        power_ -= 10.0f * boostPower_ *  Time::deltaTime_;
+
+        //出力が普通の状態に戻ったら噴射状態へ遷移
+        if (power_ < normalPower_)
+        {
+            sequence_ = Sequence::Burning;
+        }
+
+        break;
+
     default:
         break;
     }
 }
 
-void ThrusterEffect::Fire()
+void ThrusterEffect::Fire(const float normalPower)
 {
+    normalPower_ = normalPower;
+
     //噴射されていなければ点火する
     if (sequence_ == Sequence::Standby || sequence_ == Sequence::Extinguishing)
     {
@@ -237,6 +246,7 @@ void ThrusterEffect::Fire()
 
         //出力を０に
         power_ = 0.0f;
+
 
         //エフェクト再生する前に前回のエフェクトを停止させておく
         const auto& m = EffectManager::Instance().GetEffekseerManager();
@@ -271,4 +281,18 @@ void ThrusterEffect::SaveToJson()
     
     //ファイルに内容を書き込む
     actor_->WritingJsonFile(mJson);
+}
+
+void ThrusterEffect::Boost(const float power)
+{
+    //エフェクトが再生されていなければ再生する
+    const auto& m = EffectManager::Instance().GetEffekseerManager();
+    m->Exists(effekseerHandle_);
+
+    //出力設定
+    power_ = power;
+    boostPower_ = power;
+
+    //シーケンスをブーストに
+    sequence_ = Sequence::Boost;
 }

@@ -18,6 +18,8 @@ private:
         Ignition,       //点火
         Burning,        //噴射中
         Extinguishing,  //鎮火
+
+        Boost,//ブーストダッシュ
     };
 
 public:
@@ -48,10 +50,13 @@ public:
     void UpdateInjection();
 
     //エフェクト再生開始
-    void Fire();
+    void Fire(const float normalPower = 0.6f);
 
     //エフェクト停止
     void Stop();
+
+    //ブーストダッシュ開始　開始時の出力を指定
+    void Boost(const float power = 1.5f);
 
 private:
     void SaveToJson();
@@ -83,12 +88,15 @@ public:
     float power_ = 0.0f;
 
     //スラスター点火速度
-    float ignitionSpeed_ = 5.0f;
+    float ignitionSpeed_ = 15.0f;
 
     //通常噴射中における出力
     float normalPower_ = 0.3f;
 
     //スラスター鎮火速度
-    float ExtSpeed_ = 5.0f;
+    float extSpeed_ = 20.0f;
+
+    //ブーストダッシュ時の出力
+    float boostPower_;
 };
 

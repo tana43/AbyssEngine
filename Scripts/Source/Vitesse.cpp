@@ -163,6 +163,9 @@ void Vitesse::Move()
         
         runMoveAnimation_->SetBlendWeight(result);
         flyMoveAnimation_->SetBlendWeight(result);
+
+        //ˆÚ“®•ûŒü‚É‘ã“ü
+        moveDirection = { result.x,0,result.y };
     }
 //#else
 //    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
@@ -184,6 +187,112 @@ bool Vitesse::DrawImGui()
     stateMachine_->DrawImGui();
 
     return true;
+}
+
+void Vitesse::ThrusterInfluenceVelocity()
+{
+    Vector3 vNormal;
+    velocity_.Normalize(vNormal);
+
+    float speed = velocity_.x * velocity_.x + velocity_.z * velocity_.z;
+    if (flightMode_)
+    {
+        if (speed)
+        {
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Fire();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_D)]->Fire();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_U)]->Fire();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_D)]->Fire();
+        }
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire();
+    }
+
+    if (velocity_.y > 0)
+    {
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire(1.0f);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire(1.0f);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire(1.0f);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire(1.0f);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire(1.0f);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire(1.0f);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire(1.0f);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire(1.0f);
+    }
+
+    if (speed > 0.01f)
+    {
+        if (moveDirection_.z > 0)
+        {
+            float power = 0.6f + moveDirection_.z * 0.4f;
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_D)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_U)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_D)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_R_R)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_R_L)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_L_R)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_L_L)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_R)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_L)]->Stop();
+        }
+        else if(moveDirection_.z < 0)
+        {
+            float power = 0.6f + fabsf(moveDirection_.z) * 0.4f;
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_D)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_U)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_D)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_R_R)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_R_L)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_L_R)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_L_L)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_R)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_L)]->Fire(power);
+        }
+
+        if (moveDirection_.x > 0)
+        {
+            float power = 0.6f + moveDirection_.z * 0.4f;
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Stop();
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Fire(power);
+        }
+        else if (moveDirection_.x < 0)
+        {
+            float power = 0.6f + fabsf(moveDirection_.z) * 0.4f;
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Stop();
+        }
+    }
+    else
+    {
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_D)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_U)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_D)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_R_R)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_R_L)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_L_R)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Knee_L_L)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_R)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_L)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Stop();
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Stop();
+    }
+}
+
+void Vitesse::ThrusterAllStop()
+{
+    for (const auto& t : thrusters_)
+    {
+        t->Stop();
+    }
 }
 
 void Vitesse::UpdateInputMove()

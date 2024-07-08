@@ -37,17 +37,12 @@ void VitesseState::FMoveState::Initialize()
 
 void VitesseState::FMoveState::Update()
 {
-
+    owner_->ThrusterInfluenceVelocity();
 }
 
 void VitesseState::FMoveState::Finalize()
 {
-}
-
-void VitesseState::FMoveState::ThrusterUpdate()
-{
-    //速度に合わせてスラスターを制御する
-    
+    owner_->ThrusterAllStop();
 }
 
 void VitesseState::LandingState::Initialize()
