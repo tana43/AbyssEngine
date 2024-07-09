@@ -38,13 +38,15 @@ namespace AbyssEngine
 
         void Render()override;
         void RenderShadow()override;
-        bool FrustumCulling(const DirectX::BoundingFrustum& frustum);
+        bool FrustumCulling(const DirectX::BoundingFrustum& frustum)override;
+        bool ShadowCulling(const DirectX::BoundingBox& box)override;
     private:
         //ワールド行列
         Matrix world_;
 
         std::shared_ptr<GltfStaticMesh> model_;
 
+        //バウンディングボックス
         Vector3 minValue_;
         Vector3 maxValue_;
         DirectX::BoundingBox boundingBox_;//AABB

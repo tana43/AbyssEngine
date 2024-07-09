@@ -56,6 +56,9 @@ namespace AbyssEngine
 
         //使用中のカメラを変更
         static void ChangeMainCamera(Camera* camera);
+
+        //シャドウカリング用のバウンディングボックス範囲設定
+        void SetShadowCullingArea(const Vector3& max,const Vector3& min);
     
     public:
         //ミューテックス取得
@@ -147,6 +150,11 @@ namespace AbyssEngine
 
         //フラスタムカリング
         bool enableFrustumCulling_ = true;
+        //シャドウカリング
+        bool enableShadowCulling_ = true;
+
+        //シャドウカリング用のバウンディングボックス
+        DirectX::BoundingBox shadowCullingArea_;
 
         //G-Buffer
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView> gBufferRenderTargetView_[GB_Max];
@@ -184,7 +192,13 @@ namespace AbyssEngine
         //デバッグ限定でラスタライザーステートを数字キーで変更できる
         void DebugRSStateSelect();
 
-        void FrustumCulling(const std::shared_ptr<Camera>& camera);
+        //フラスタムカリング
+        //void FrustumCulling(const std::shared_ptr<Camera>& camera);
+
+        //影描画
+        void ShadowRender();
+
+        
     };
 
 }

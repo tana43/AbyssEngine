@@ -47,6 +47,8 @@ namespace AbyssEngine
 
         void Render()override;
         void RenderShadow()override;
+        bool FrustumCulling(const DirectX::BoundingFrustum& frustum)override;
+        bool ShadowCulling(const DirectX::BoundingBox& box)override;
 
     private:
 
@@ -67,6 +69,11 @@ namespace AbyssEngine
         bool animationLoop_ = true;
 
         float blendWeight_ = 0.0f;//仮のモーションブレンドの重み
+
+        //バウンディングボックス(フラスタムカリング用)
+        Vector3 minValue_;
+        Vector3 maxValue_;
+        DirectX::BoundingBox boundingBox_;//AABB
     };
 }
 

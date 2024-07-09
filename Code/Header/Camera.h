@@ -74,6 +74,7 @@ namespace AbyssEngine
 
         //ƒtƒ‰ƒXƒ^ƒ€‚Ì‰Šúó‘Ô
         DirectX::BoundingFrustum initialFrustum_;
+        DirectX::BoundingFrustum shadowInitialFrustum_;
     };
 }
 

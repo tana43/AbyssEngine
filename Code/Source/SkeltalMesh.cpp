@@ -70,23 +70,39 @@ void SkeletalMesh::RecalculateFrame()
 
 	transform_->CalcWorldMatrix();//行列更新
 
-//	timeStamp_ += Time::deltaTime_ * animationSpeed_;
-//
-//#if 0
-//	model_->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
-//
-//#else
-//	//BlendAnimation
-//	std::vector<GeometricSubstance::Node> animatedNodes[2];
-//	animatedNodes[0] = animatedNodes[1] = model_->nodes_;
-//	model_->Animate(animationClip_, timeStamp_, animatedNodes[0]);
-//	model_->Animate(animationClip_ + 1, timeStamp_, animatedNodes[1]);
-//
-//	model_->BlendAnimations(animatedNodes[0], animatedNodes[1], blendWeight_, animatedNodes_);
-//
-//
-//#endif // 0
+	//バウンディングボックス更新
+	{
+		DirectX::XMVECTOR MinValue, MaxValue;
+		MinValue = DirectX::XMLoadFloat3(&model_->minValue_);
+		MaxValue = DirectX::XMLoadFloat3(&model_->maxValue_);
+		ComputeTransformedBounds(MinValue, MaxValue, transform_->GetWorldMatrix());
+		DirectX::XMStoreFloat3(&minValue_, MinValue);
+		DirectX::XMStoreFloat3(&maxValue_, MaxValue);
 
+		boundingBox_ = ConvertToDXBoundingBox(minValue_, maxValue_);
+	}
+
+}
+
+
+bool SkeletalMesh::FrustumCulling(const DirectX::BoundingFrustum& frustum)
+{
+	DirectX::ContainmentType ret = boundingBox_.Contains(frustum);
+	if (ret >= DirectX::INTERSECTS)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool SkeletalMesh::ShadowCulling(const DirectX::BoundingBox& box)
+{
+	DirectX::ContainmentType ret = boundingBox_.Contains(box);
+	if (ret >= DirectX::INTERSECTS)
+	{
+		return true;
+	}
+	return false;
 }
 
 bool SkeletalMesh::DrawImGui()
@@ -95,18 +111,6 @@ bool SkeletalMesh::DrawImGui()
 	if (ImGui::TreeNode("Skeletal Mesh"))
 	{
 		ImGui::Checkbox("Enabled",&enabled_);
-
-		/*static int animClip = animationClip_;
-		ImGui::SliderInt("Anim Clip", &animClip, 0, model_->animations_.size() - 1);
-		animationClip_ = animClip;
-
-		std::string t0 = "Current Anim :";
-		std::string t1 = t0 + model_->animations_.at(animationClip_).name_;
-		ImGui::Text(t1.c_str());
-
-		ImGui::InputFloat("Time Stamp" ,&timeStamp_);
-
-		ImGui::SliderFloat("Blend Weight", &blendWeight_, 0.0f, 1.0f);*/
 
 		ImGui::TreePop();
 	}
@@ -126,33 +130,6 @@ void SkeletalMesh::SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, 
 	attachModel->isAttached_ = true;
 	socketData.attachedSocketName_ = socketName;
 	socketData.attachedMesh_ = static_pointer_cast<SkeletalMesh>(shared_from_this());
-
-	//Matrix attachWorld;
-	//const auto& animNodes = animator_->GetAnimatedNodes();
-	//std::vector<GeometricSubstance::Node>::const_iterator node = std::find(animNodes.begin(), animNodes.end(), socketName);
-	//if (node != animNodes.end())
-	//{
-	//	const float to_radian = 0.01745f;
-	//	const float to_metric = 0.01f;
-
-	//	using namespace DirectX;
-	//	XMFLOAT3 socketLocation;
-	//	XMFLOAT3 socketRotation;
-	//	XMFLOAT3 socketScale;
-
-	//	XMMATRIX boneTransform = DirectX::XMLoadFloat4x4(&node->globalTransform_);
-	//	XMMATRIX socketTransform =
-	//		XMMatrixScaling(socketScale.x, socketScale.y, socketScale.z)
-	//		* XMMatrixRotationX(-socketRotation.x * to_radian)
-	//		* XMMatrixRotationY(-socketRotation.y * to_radian)
-	//		* XMMatrixRotationZ(socketRotation.z * to_radian)
-	//		* XMMatrixTranslation(socketLocation.x * to_metric, socketLocation.y * to_metric, socketLocation.z * to_metric);
-	//	XMMATRIX dxUe5 = XMMatrixSet(-1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Y-Up Z-Forward(DX) -> LHS Z-Up Y-Forward(UE5) 
-	//	XMMATRIX ue5Gltf = XMMatrixSet(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1); // LHS Z-Up Y-Forward(UE5) -> RHS Y-Up Z-Forward(glTF) 
-	//	XMStoreFloat4x4(&attachWorld, dxUe5 * socketTransform * ue5Gltf * boneTransform * XMLoadFloat4x4(&transform_->GetWorldMatrix()));
-
-	//	attachModel->GetTransform()->Set
-	//}
 }
 
 const Matrix& AbyssEngine::SkeletalMesh::FindSocket(const char* socketName)

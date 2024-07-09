@@ -325,38 +325,10 @@ void RenderManager::Render()
 #endif // 0
 
 				//フラスタムカリングを済ませておく
-				FrustumCulling(camera);
+				//FrustumCulling(camera);
 
-				//シャドウマップ作成
-				cascadedShadowMap_->Clear();
-				if (enableShadow_)
-				{
-					DXSystem::SetDepthStencilState(DS_State::LEqual,0);
-					DXSystem::SetRasterizerState(RS_State::Cull_None);
-					DXSystem::SetBlendState(BS_State::Off);
-					cascadedShadowMap_->Make(
-						bufferScene_->data_.view_,
-						bufferScene_->data_.projection_,
-						bufferScene_->data_.lightDirection_,
-						criticalDepthValue_,
-						[&]() {
-							for (auto& r : renderer3DList_)
-							{
-								const auto& pRend = r.lock();
-								if (pRend->actor_->GetActiveInHierarchy())
-								{
-									if (pRend)
-									{
-										if (pRend->GetEnabled())
-										{
-											pRend->RenderShadow();
-										}
-									}
-								}
-							}
-						}
-					);
-				}
+				//影を描画
+				ShadowRender();
 
 				//仮のライト
 				//bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
@@ -552,6 +524,16 @@ void RenderManager::ChangeMainCamera(Camera* camera)
 	camera->SetIsMainCamera(true);
 }
 
+void RenderManager::SetShadowCullingArea(const Vector3& max, const Vector3& min)
+{
+	//中心を設定
+	const Vector3 MinToMax = max - min;
+	shadowCullingArea_.Center = min + (MinToMax * 0.5f);
+
+	//範囲を設定
+	shadowCullingArea_.Extents = MinToMax * 0.5f;
+}
+
 void RenderManager::Render2D() const
 {
 	if (!renderer2DList_.empty())
@@ -618,7 +600,18 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 		{
 			if (pRend->GetEnabled())
 			{
-				pRend->Render();
+				if (enableFrustumCulling_)
+				{
+					if (pRend->FrustumCulling(camera_->frustum_))
+					{
+						pRend->Render();
+					}
+				}
+				else
+				{
+					pRend->Render();
+				}
+				
 			}
 		}
 	}
@@ -750,29 +743,73 @@ void RenderManager::DebugRSStateSelect()
 	}
 }
 
-void RenderManager::FrustumCulling(const std::shared_ptr<Camera>& camera)
-{
-	//フラスタムカリング
-	if (!enableFrustumCulling_)return;
+//void RenderManager::FrustumCulling(const std::shared_ptr<Camera>& camera)
+//{
+//	//フラスタムカリング
+//	if (!enableFrustumCulling_)return;
+//
+//	for (auto& r : renderer3DList_)
+//	{
+//		const auto& pRend = r.lock();
+//		if (pRend->actor_->GetActiveInHierarchy())
+//		{
+//			if (pRend)
+//			{
+//				if (pRend->FrustumCulling(camera->frustum_))
+//				{
+//					pRend->SetEnable(true);
+//				}
+//				else
+//				{
+//					pRend->SetEnable(false);
+//				}
+//			}
+//		}
+//	}
+//}
 
-	for (auto& r : renderer3DList_)
+void AbyssEngine::RenderManager::ShadowRender()
+{
+	//シャドウマップ作成
+	cascadedShadowMap_->Clear();
+	if (enableShadow_)
 	{
-		const auto& pRend = r.lock();
-		if (pRend->actor_->GetActiveInHierarchy())
-		{
-			if (pRend)
-			{
-				if (pRend->FrustumCulling(camera->frustum_))
+		DXSystem::SetDepthStencilState(DS_State::LEqual, 0);
+		DXSystem::SetRasterizerState(RS_State::Cull_None);
+		DXSystem::SetBlendState(BS_State::Off);
+		cascadedShadowMap_->Make(
+			bufferScene_->data_.view_,
+			bufferScene_->data_.projection_,
+			bufferScene_->data_.lightDirection_,
+			criticalDepthValue_,
+			[&]() {
+				for (auto& r : renderer3DList_)
 				{
-					pRend->SetEnable(true);
-				}
-				else
-				{
-					pRend->SetEnable(false);
+					const auto& pRend = r.lock();
+					if (pRend->actor_->GetActiveInHierarchy())
+					{
+						if (pRend)
+						{
+							if (pRend->GetEnabled())
+							{
+								//カリング
+								if (enableShadowCulling_)
+								{
+									if (pRend->ShadowCulling(shadowCullingArea_))
+									{
+										pRend->RenderShadow();
+									}
+								}
+								else
+								{
+									pRend->RenderShadow();
+								}
+							}
+						}
+					}
 				}
 			}
-		}
+		);
 	}
-	
 }
 

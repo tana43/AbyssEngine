@@ -101,21 +101,23 @@ void StaticMesh::RecalculateFrame()
     }
 
     //バウンディングボックス更新
-    DirectX::XMVECTOR MinValue, MaxValue;
-    MinValue = DirectX::XMLoadFloat3(&model_->minValue_);
-    MaxValue = DirectX::XMLoadFloat3(&model_->maxValue_);
-    ComputeTransformedBounds(MinValue,MaxValue, world_ /** coordinateSystemTransforms[0]*/);
-    DirectX::XMStoreFloat3(&minValue_, MinValue);
-    DirectX::XMStoreFloat3(&maxValue_, MaxValue);
+    {
+        DirectX::XMVECTOR MinValue, MaxValue;
+        MinValue = DirectX::XMLoadFloat3(&model_->minValue_);
+        MaxValue = DirectX::XMLoadFloat3(&model_->maxValue_);
+        ComputeTransformedBounds(MinValue, MaxValue, world_ /** coordinateSystemTransforms[0]*/);
+        DirectX::XMStoreFloat3(&minValue_, MinValue);
+        DirectX::XMStoreFloat3(&maxValue_, MaxValue);
 
-    boundingBox_ = ConvertToDXBoundingBox(minValue_,maxValue_);
+        boundingBox_ = ConvertToDXBoundingBox(minValue_, maxValue_);
+    }
 }
 
 void StaticMesh::Render()
 {
     //model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
     model_->Draw(DrawPass::Opaque,world_);
-    //model_->Draw(DrawPass::Transmission,transform_->GetWorldMatrix());
+    model_->Draw(DrawPass::Transmission,world_);
 
 #if _DEBUG
     //バウンディングボックス表示
@@ -137,6 +139,16 @@ void StaticMesh::RenderShadow()
 bool StaticMesh::FrustumCulling(const DirectX::BoundingFrustum& frustum)
 {
     DirectX::ContainmentType ret = boundingBox_.Contains(frustum);
+    if (ret >= DirectX::INTERSECTS)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool AbyssEngine::StaticMesh::ShadowCulling(const DirectX::BoundingBox& box)
+{
+    DirectX::ContainmentType ret = boundingBox_.Contains(box);
     if (ret >= DirectX::INTERSECTS)
     {
         return true;

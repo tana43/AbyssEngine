@@ -33,6 +33,7 @@ namespace AbyssEngine
         virtual void RenderShadow() {}    //シャドウマップ描画実行
         virtual void RecalculateFrame() {}                         //頂点データを再計算
         virtual bool FrustumCulling(const DirectX::BoundingFrustum& frustum) { return true; }//フラスタムカリング
+        virtual bool ShadowCulling(const DirectX::BoundingBox& box) { return true; }//シャドウカリング
 
         friend class RenderManager;
     };

@@ -49,7 +49,7 @@ StaticMeshBatching::StaticMeshBatching(const std::string& filename) : filename_(
 	FetchMaterials(gltfModel);
 	FetchTextures(gltfModel);
 
-	// TODO: This is a force-brute programming, may cause bugs.
+	// This is a force-brute programming, may cause bugs.
 	const std::map<std::string, BufferView>& vertexBufferViews = primitives_.at(0).vertexBufferViews_;
 	D3D11_INPUT_ELEMENT_DESC input_element_desc[]
 	{

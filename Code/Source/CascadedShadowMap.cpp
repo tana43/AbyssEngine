@@ -5,6 +5,9 @@
 #include "Misc.h"
 #include "DXSystem.h"
 
+#include "Engine.h"
+#include "RenderManager.h"
+
 using namespace DirectX;
 using namespace AbyssEngine;
 
@@ -197,6 +200,9 @@ void CascadedShadowMap::Make(
 
 		XMMATRIX P = XMMatrixOrthographicOffCenterLH(minX, maxX, minY, maxY, minZ, maxZ);
 		XMStoreFloat4x4(&viewProjection_.at(cascadeIndex), V * P);
+
+		//カリング用ボックスの設定
+		Engine::renderManager_->SetShadowCullingArea(Vector3(maxX,maxY,maxZ),Vector3(minX,minY,minZ));
 	}
 
 	constants_->data_.viewProjectionMatrices_[0] = viewProjection_.at(0);
