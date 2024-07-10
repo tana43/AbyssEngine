@@ -38,7 +38,7 @@ DXSystem::~DXSystem()
     //instance->deviceContext_->Flush();
 }
 
-bool DXSystem::Initialize(HWND hWnd, int width, int height_)
+bool DXSystem::Initialize(HWND hWnd)
 {
     hwnd_ = hWnd;
     CreateDevice();

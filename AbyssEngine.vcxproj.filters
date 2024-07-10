@@ -291,11 +291,15 @@
     <ClInclude Include="Code\Header\Easing.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\ThrusterEffect.h" />
     <ClInclude Include="Scripts\Header\VitesseConstants.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\VitesseAnimState.h" />
+    <ClInclude Include="Scripts\Header\VitesseAnimState.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\ThrusterEffect.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -490,11 +494,15 @@
     <ClCompile Include="Scripts\Source\VitesseState.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\ThrusterEffect.cpp" />
     <ClCompile Include="Scripts\Source\VitesseConstants.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\VitesseAnimState.cpp" />
+    <ClCompile Include="Scripts\Source\VitesseAnimState.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\ThrusterEffect.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

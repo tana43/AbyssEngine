@@ -136,6 +136,7 @@ void Engine::DrawDebug()
 
 void Engine::MouseDragUnrelenting()
 {
+#if _DEBUG
     if (Mouse::GetButtonState().leftButton)
     {
         const Vector2 curPos = Vector2(Mouse::GetPosX(), Mouse::GetPosY());
@@ -151,7 +152,7 @@ void Engine::MouseDragUnrelenting()
         {
             result = { screen.x - 2,curPos.y };
         }
-        else if(curPos.x >= screen.x - 1)
+        else if (curPos.x >= screen.x - 1)
         {
             result = { 2,curPos.y };
         }
@@ -159,7 +160,7 @@ void Engine::MouseDragUnrelenting()
         {
             result = { curPos.x, screen.y - 2 };
         }
-        else if(curPos.y >= screen.y - 1)
+        else if (curPos.y >= screen.y - 1)
         {
             result = { curPos.x, 2 };
         }
@@ -174,7 +175,7 @@ void Engine::MouseDragUnrelenting()
         ImGui::TeleportMousePos(ImVec2(p.x, p.y));
         //SetCursorPos(p.x, p.y);
     }
-
+#endif // _DEBUG
 }
 
 float Time::deltaTime_;

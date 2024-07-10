@@ -112,8 +112,6 @@ Vector3 Transform::GetEulerAngles() const
 bool Transform::DrawImGui()
 {
 #if _DEBUG
-
-
     if (ImGui::TreeNode("Transform"))
     {
         //親がいないならぐワールド座標等を表示
@@ -174,8 +172,8 @@ bool Transform::DrawImGui()
         ImGui::TreePop();
     }
 
-    return false;
 #endif // _DEBUG
+    return true;
 }
 
 void AbyssEngine::Transform::SaveToJson()

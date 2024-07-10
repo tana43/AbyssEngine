@@ -7,6 +7,7 @@
 #include "AssetManager.h"
 #include "Animator.h"
 #include "StaticMesh.h"
+#include "ShapeRenderer.h"
 
 #include "imgui/imgui.h"
 
@@ -44,6 +45,17 @@ void SkeletalMesh::Render()
 {
 	model_->Draw(DrawPass::Opaque, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
 	model_->Draw(DrawPass::Transmission, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
+
+
+#if _DEBUG
+	//バウンディングボックス表示
+	Engine::renderManager_->shapeRenderer_->DrawBox(
+		boundingBox_.Center,
+		Vector3(0, 0, 0),
+		boundingBox_.Extents,
+		Vector4(0, 1, 1, 1)
+	);
+#endif // _DEBUG
 }
 
 void SkeletalMesh::RenderShadow()

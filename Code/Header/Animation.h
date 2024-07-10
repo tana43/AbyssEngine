@@ -14,6 +14,7 @@ namespace AbyssEngine
     {
     public:
         Animation(SkeletalMesh* model,const std::string& name_,const int& index,bool loop = true);
+        //Animation(SkeletalMesh* model,const std::string& name_,bool loop = true);
         ~Animation() {}
 
         //アニメーションの更新
@@ -139,6 +140,19 @@ namespace AbyssEngine
         std::vector<GeometricSubstance::Node> blendAnimNodes_[2];//ブレンドに使うノード
         std::vector<GeometricSubstance::Node> secondBlendAnimNodes_;//さらにブレンドするのに使うノード
     };
+
+    //class AnimBlendSpaceFlyMove final : public Animation
+    //{
+    //public:
+    //    AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D);
+    //    ~AnimBlendSpaceFlyMove() {}
+
+    //    AnimBlendSpace1D* GetBlendSpace1D() { return blendSpace1D_; }
+    //    AnimBlendSpace2D* GetBlendSpace2D() { return blendSpace2D_; }
+    //private:
+    //    AnimBlendSpace1D* blendSpace1D_;
+    //    AnimBlendSpace2D* blendSpace2D_;
+    //};
 }
 
 

@@ -92,3 +92,7 @@ void VitesseAnimState::AnimFlyMove::Update()
         moveDirection = { result.x,0,result.y };
     }
 }
+
+void VitesseAnimState::AnimFlyMove::Finalize()
+{
+}

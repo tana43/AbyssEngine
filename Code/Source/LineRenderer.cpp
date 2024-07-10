@@ -147,7 +147,9 @@ LineRenderer::LineRenderer(ID3D11Device* device, UINT vertexCount)
 
 LineRenderer& LineRenderer::Get()
 {
+#if _DEBUG
 	return *(Engine::renderManager_->lineRenderer_.get());
+#endif // _DEBUG
 }
 
 // •`‰æŠJn

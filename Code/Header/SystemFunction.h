@@ -6,8 +6,8 @@
 typedef float CONSTANT_FLOAT;
 typedef int CONSTANT_INT;
 #else
-typedef constexpr float CONSTANT_FLOAT;
-typedef constexpr int CONSTANT_INT;
+typedef const float CONSTANT_FLOAT;
+typedef const int CONSTANT_INT;
 #endif // DEBUG
 
 

@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Input.h"
 #include "VitesseState.h"
+#include "RenderManager.h"
 
 #include "ThrusterEffect.h"
 
@@ -112,6 +113,8 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     thruster_->SetOffsetPosition(Vector3(-0.4f,-0.1f,0.0f));
     thruster_->SetOffsetRotation(Vector3(0.0f,0.0f,100.0f));
     thruster_->SetOffsetScale(0.3f);*/
+
+    Engine::renderManager_->ChangeMainCamera(camera_.get());
 }
 
 void Vitesse::Update()

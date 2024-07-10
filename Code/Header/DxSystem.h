@@ -50,7 +50,7 @@ namespace AbyssEngine
 		//MSAA使用時のパラメータ
 		static DXGI_SAMPLE_DESC MSAA_; 
 
-		static bool Initialize(HWND hWnd, int width, int height_);//初期化
+		static bool Initialize(HWND hWnd);//初期化
 		static void Release();//後始末
 		static void Clear();//レンダーターゲットのクリア
 		static void GBufferClearAndSetTarget();//GBufferのクリアと出力先の変更

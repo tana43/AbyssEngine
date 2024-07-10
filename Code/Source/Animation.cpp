@@ -15,6 +15,12 @@ Animation::Animation(SkeletalMesh* model, const std::string& name_, const int& i
     animatedNodes_ = model->GetAnimator()->GetAnimatedNodes();
 }
 
+//Animation::Animation(SkeletalMesh* model, const std::string& name_, bool loop) : 
+//    name_(name_), loopFlag_(loop)
+//{
+//    animatedNodes_ = model->GetAnimator()->GetAnimatedNodes();
+//}
+
 void Animation::Initialize()
 {
     timeStamp_ = 0.0f;
@@ -482,3 +488,9 @@ void AnimBlendSpace2D::AddBlendAnimation(const int& index, const Vector2& weight
 {
     auto& a = blendAnimDatas_.emplace_back(BlendAnimData(index, weight));
 }
+
+//AbyssEngine::AnimBlendSpaceFlyMove::AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D)
+//    : Animation(model,name)
+//{
+//
+//}

@@ -121,7 +121,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 
 
 	//デバイス初期化
-	if (!AbyssEngine::DXSystem::Initialize(hwnd,AbyssEngine::DXSystem::GetScreenWidth(), AbyssEngine::DXSystem::GetScreenHeight()))
+	if (!AbyssEngine::DXSystem::Initialize(hwnd))
 	{
 		return 0;
 	}

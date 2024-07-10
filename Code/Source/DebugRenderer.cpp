@@ -136,7 +136,9 @@ DebugRenderer::DebugRenderer(ID3D11Device* device)
 
 DebugRenderer& DebugRenderer::Get()
 {
+#if _DEBUG
 	return *(Engine::renderManager_->debugRenderer_.get());
+#endif
 }
 
 // •`‰æŠJn

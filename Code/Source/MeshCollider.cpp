@@ -74,6 +74,7 @@ bool MeshCollider::DrawImGui()
 
 void MeshCollider::DrawDebug()
 {
+#if _DEBUG
     //デバッグ表示
     const auto& priRenderer = Engine::renderManager_->primitiveRenderer_;
     for (const auto& triangle : triangles)
@@ -82,4 +83,5 @@ void MeshCollider::DrawDebug()
         priRenderer->AddVertex(triangle.positions[1], DirectX::XMFLOAT4(1, 1, 1, 1));
         priRenderer->AddVertex(triangle.positions[2], DirectX::XMFLOAT4(1, 1, 1, 1));
     }
+#endif // _DEBUG
 }

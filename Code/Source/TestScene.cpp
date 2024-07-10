@@ -160,6 +160,7 @@ void TestScene::Update()
 
 void TestScene::DrawImGui()
 {
+#if _DEBUG
     static Vector3 pos = {};
     static float scale = 1.0f;
     static Vector3 rot = {};
@@ -191,7 +192,7 @@ void TestScene::DrawImGui()
     ImGui::DragFloat3("Effect Position", &pos.x,0.01f);
     ImGui::DragFloat3("Effect Rotation", &rot.x,0.01f);
     ImGui::DragFloat("Effect Scale", &scale,0.1f,0.01f);
-
+#endif
 }
 
 void TestScene::Finalize()
