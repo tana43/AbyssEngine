@@ -8,11 +8,11 @@ namespace VitesseState
 {
     //Game:Vitesse 移動ステート
     //地上における移動ステート（待機も含まれている）
-    class GMoveState : public State<Vitesse>
+    class GroundMove : public State<Vitesse>
     {
     public:
-        GMoveState(Vitesse* vitesse) : State(vitesse, "GMove") {}
-        ~GMoveState() {}
+        GroundMove(Vitesse* vitesse) : State(vitesse, "GroundMove") {}
+        ~GroundMove() {}
 
         void Initialize() override;
         void Update() override;
@@ -21,11 +21,11 @@ namespace VitesseState
 
     //Game:Vitesse 空中移動ステート
     //空中における空中移動ステート（待機も含まれている）
-    class FMoveState : public State<Vitesse>
+    class FlyMove : public State<Vitesse>
     {
     public:
-        FMoveState(Vitesse* vitesse) : State(vitesse, "FMove") {}
-        ~FMoveState() {}
+        FlyMove(Vitesse* vitesse) : State(vitesse, "FlyMove") {}
+        ~FlyMove() {}
 
         void Initialize() override;
         void Update() override;
@@ -34,11 +34,11 @@ namespace VitesseState
 
     //Game:Vitesse 離陸ステート
     //離陸ステート
-    class TakeOffState : public State<Vitesse>
+    class TakeOff : public State<Vitesse>
     {
     public:
-        TakeOffState(Vitesse* vitesse) : State(vitesse, "TakeOff") {}
-        ~TakeOffState() {}
+        TakeOff(Vitesse* vitesse) : State(vitesse, "TakeOff") {}
+        ~TakeOff() {}
 
         void Initialize() override;
         void Update() override;
@@ -53,11 +53,11 @@ namespace VitesseState
 
     //Game:Vitesse 着陸ステート
     //着陸ステート
-    class LandingState : public State<Vitesse>
+    class Landing : public State<Vitesse>
     {
     public:
-        LandingState(Vitesse* vitesse) : State(vitesse, "Landing") {}
-        ~LandingState() {}
+        Landing(Vitesse* vitesse) : State(vitesse, "Landing") {}
+        ~Landing() {}
 
         void Initialize() override;
         void Update() override;

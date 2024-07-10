@@ -47,13 +47,18 @@ public:
         Fly_L,
         Fly_B,
         Fly_Up,
+        Fly_Down,
+        Landing,
         Run_Move,
         Fly_Move,
     };
 
 public:
     const std::unique_ptr<StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
-
+    AbyssEngine::AnimBlendSpace2D* GetGroundMoveAnimation() { return groundMoveAnimation_; }
+    AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
+    
+    
 
 private:
     void UpdateInputMove()override;
@@ -66,13 +71,14 @@ private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
 
 #if 1
-    AbyssEngine::AnimBlendSpace2D* runMoveAnimation_;//走り移動
+    AbyssEngine::AnimBlendSpace2D* groundMoveAnimation_;//走り移動
 #else
     AbyssEngine::AnimBlendSpace1D* runMoveAnimation_;//走り移動
 #endif // 0
     AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//空中移動
 
     std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
+    std::unique_ptr<StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;
 
     //必要な基数分のスラスター
     std::shared_ptr<ThrusterEffect> thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units)];

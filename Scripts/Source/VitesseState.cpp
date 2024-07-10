@@ -8,13 +8,13 @@
 
 using namespace AbyssEngine;
 
-void VitesseState::GMoveState::Initialize()
+void VitesseState::GroundMove::Initialize()
 {
     //アニメーション設定
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Run_Move));
 }
 
-void VitesseState::GMoveState::Update()
+void VitesseState::GroundMove::Update()
 {
     //ジャンプボタンが押された際に離陸ステートへ
     if (Input::GameSupport::GetJumpButton())
@@ -23,11 +23,11 @@ void VitesseState::GMoveState::Update()
     }
 }
 
-void VitesseState::GMoveState::Finalize()
+void VitesseState::GroundMove::Finalize()
 {
 }
 
-void VitesseState::FMoveState::Initialize()
+void VitesseState::FlyMove::Initialize()
 {
     //アニメーション設定
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
@@ -35,32 +35,32 @@ void VitesseState::FMoveState::Initialize()
     //空中移動
 }
 
-void VitesseState::FMoveState::Update()
+void VitesseState::FlyMove::Update()
 {
     owner_->ThrusterInfluenceVelocity();
 }
 
-void VitesseState::FMoveState::Finalize()
+void VitesseState::FlyMove::Finalize()
 {
     owner_->ThrusterAllStop();
 }
 
-void VitesseState::LandingState::Initialize()
+void VitesseState::Landing::Initialize()
 {
     //アニメーション設定
     //owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::));
 }
 
-void VitesseState::LandingState::Update()
+void VitesseState::Landing::Update()
 {
 }
 
-void VitesseState::LandingState::Finalize()
+void VitesseState::Landing::Finalize()
 {
 }
 
 
-void VitesseState::TakeOffState::Initialize()
+void VitesseState::TakeOff::Initialize()
 {
     //アニメーション設定
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Up));
@@ -77,7 +77,7 @@ void VitesseState::TakeOffState::Initialize()
     goalAltitude_ = startPosition_ + altitude_;
 }
 
-void VitesseState::TakeOffState::Update()
+void VitesseState::TakeOff::Update()
 {
     //アニメーションが遷移しきっており、ある程度の時間が経過しているなら空中移動モーションへ
     if (owner_->GetAnimator()->GetNextAnimClip() != static_cast<int>(Vitesse::AnimState::Fly_Move)
@@ -102,6 +102,6 @@ void VitesseState::TakeOffState::Update()
     }
 }
 
-void VitesseState::TakeOffState::Finalize()
+void VitesseState::TakeOff::Finalize()
 {
 }

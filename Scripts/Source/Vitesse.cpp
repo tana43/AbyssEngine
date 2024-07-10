@@ -31,7 +31,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_R.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_L.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_B.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Up.glb"
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Up.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Down.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Landing.glb"
         },
         {
             "Run_F",
@@ -43,7 +45,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
             "Fly_R",
             "Fly_L",
             "Fly_B",
-            "Fly_Up"
+            "Fly_Up",
+            "Fly_Down",
+            "Fly_Landing"
         });
 
     //地上移動
@@ -53,7 +57,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_R), Vector2(1, 0));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_L), Vector2(-1, 0));
     rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(0, -1));
-    runMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
+    groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
 
     //空中移動
     AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
@@ -85,10 +89,10 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //ステートマシン設定
     stateMachine_ = std::make_unique<StateMachine<State<Vitesse>>>();
-    stateMachine_->RegisterState(new VitesseState::GMoveState(this));
-    stateMachine_->RegisterState(new VitesseState::FMoveState(this));
-    stateMachine_->RegisterState(new VitesseState::TakeOffState(this));
-    stateMachine_->RegisterState(new VitesseState::LandingState(this));
+    stateMachine_->RegisterState(new VitesseState::GroundMove(this));
+    stateMachine_->RegisterState(new VitesseState::FlyMove(this));
+    stateMachine_->RegisterState(new VitesseState::TakeOff(this));
+    stateMachine_->RegisterState(new VitesseState::Landing(this));
     stateMachine_->SetState(static_cast<int>(ActionState::GMove));
 
     //エフェクト追加
@@ -133,7 +137,7 @@ void Vitesse::Move()
     Vector3 velocityXZ = {velocity_.x,0,velocity_.z};
     if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
     {
-        runMoveAnimation_->SetBlendWeight(Vector2(0,0));
+        groundMoveAnimation_->SetBlendWeight(Vector2(0,0));
         flyMoveAnimation_->SetBlendWeight(Vector2(0,0));
     }
     else
@@ -161,7 +165,7 @@ void Vitesse::Move()
         result = { sinf(dot),cosf(dot) };
         result = result * (velocityXZ.Length() / Max_Horizontal_Speed);
         
-        runMoveAnimation_->SetBlendWeight(result);
+        groundMoveAnimation_->SetBlendWeight(result);
         flyMoveAnimation_->SetBlendWeight(result);
 
         //移動方向に代入

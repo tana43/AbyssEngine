@@ -295,6 +295,7 @@
     <ClInclude Include="Scripts\Header\VitesseConstants.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\VitesseAnimState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -493,6 +494,7 @@
     <ClCompile Include="Scripts\Source\VitesseConstants.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\VitesseAnimState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
