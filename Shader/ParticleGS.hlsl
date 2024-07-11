@@ -1,7 +1,7 @@
 #include "Particle.hlsli"
 #include "Constants.hlsli"
 
-StructuredBuffer<particle> particleBuffer : register(t9);
+StructuredBuffer<Particle> particleBuffer : register(t9);
 
 Texture2D colorTemperChart : register(t0);
 Texture3D<float> noise3d : register(t1);
@@ -25,7 +25,7 @@ void main(point VS_OUT input[1], inout TriangleStream<GS_OUT> output)
 		float2(1.0, 0.0),
     };
 	
-    particle p = particleBuffer[input[0].vertexId];
+    Particle p = particleBuffer[input[0].vertexId];
 	
 #if 1
     if (p.age <= 0.0 || p.age >= p.lifespan)
@@ -33,8 +33,9 @@ void main(point VS_OUT input[1], inout TriangleStream<GS_OUT> output)
         return;
     }
 #endif
+
 	
-    const float aspectRatio = 1280.0 / 720.0;
+    const float aspectRatio = 1920.0 / 1080.0;
 
     float ageGaradient = saturate(p.age / p.lifespan);
 #if 1

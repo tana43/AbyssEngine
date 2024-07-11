@@ -61,7 +61,7 @@ void SpriteRenderer::Initialize(const shared_ptr<Actor>& actor)
     }
 
 	//初期値は元画像のサイズを設定しておく
-	size_ = Vector2(texture_->GetWidth(), texture_->GetHeight());
+	size_ = Vector2(static_cast<float>(texture_->GetWidth()), static_cast<float>(texture_->GetHeight()));
 	uvSize_ = size_;
 
 	canRender_ = true;

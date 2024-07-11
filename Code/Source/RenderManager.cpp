@@ -300,12 +300,6 @@ void RenderManager::Render()
 
 	CheckRenderer();
 
-	if (Keyboard::GetKeyDown(DirectX::Keyboard::Z))
-	{
-		particles_->Initialize();
-	}
-	particles_->Integrate();
-
 	//エフェクト更新処理
 	EffectManager::Instance().Update(Time::deltaTime_);
 
@@ -341,7 +335,7 @@ void RenderManager::Render()
 				DXSystem::GetDeviceContext()->VSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
 				DXSystem::GetDeviceContext()->PSSetConstantBuffers(0, 1, constantBufferScene_.GetAddressOf());
 #else
-				bufferScene_->Activate(10, CBufferUsage::vp);
+				bufferScene_->Activate(10, CBufferUsage::vgp);
 #endif // 0
 
 				//フラスタムカリングを済ませておく
@@ -383,11 +377,15 @@ void RenderManager::Render()
 				//3Dオブジェクト描画
 				Render3D(camera);
 
-				//3Dエフェクト描画
-				EffectManager::Instance().Render(camera->viewMatrix_, camera->projectionMatrix_);
-
+				if (Keyboard::GetKeyDown(DirectX::Keyboard::Z))
+				{
+					particles_->Initialize();
+				}
+				DXSystem::GetDeviceContext()->CSSetShaderResources(0, 1, colorTemperChart_.GetAddressOf());
+				DXSystem::GetDeviceContext()->CSSetShaderResources(1, 1, noise3d_.GetAddressOf());
+				particles_->Integrate();
 #if 1
-				DXSystem::SetDepthStencilState(DS_State::Always_No_Write, 0);
+				DXSystem::SetDepthStencilState(DS_State::LEqual_No_Write, 0);
 				DXSystem::SetRasterizerState(RS_State::Cull_None);
 				DXSystem::SetBlendState(BS_State::Add);
 				auto* dc = DXSystem::GetDeviceContext();
@@ -397,6 +395,9 @@ void RenderManager::Render()
 				dc->GSSetShaderResources(1, 1, noise3d_.GetAddressOf());
 				particles_->Render();
 #endif
+
+				//3Dエフェクト描画
+				EffectManager::Instance().Render(camera->viewMatrix_, camera->projectionMatrix_);
 
 #if _DEBUG
 				//デバッグレンダラー

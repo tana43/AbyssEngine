@@ -26,6 +26,7 @@ ParticleSystem::ParticleSystem(int particleCount) : Max_Particle_Count(particleC
     shaderResourceViewDesc.Buffer.ElementOffset = 0;
     shaderResourceViewDesc.Buffer.NumElements = static_cast<UINT>(particleCount);
     hr = DXSystem::GetDevice()->CreateShaderResourceView(particleBuffer_.Get(), &shaderResourceViewDesc, particleBufferSrv_.GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     D3D11_UNORDERED_ACCESS_VIEW_DESC unorderedAccessViewDesc;
     unorderedAccessViewDesc.Format = DXGI_FORMAT_UNKNOWN;
@@ -34,6 +35,7 @@ ParticleSystem::ParticleSystem(int particleCount) : Max_Particle_Count(particleC
     unorderedAccessViewDesc.Buffer.NumElements = static_cast<UINT>(particleCount);
     unorderedAccessViewDesc.Buffer.Flags = 0;
     hr = DXSystem::GetDevice()->CreateUnorderedAccessView(particleBuffer_.Get(), &unorderedAccessViewDesc, particleBufferUav_.GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 
     bufferDesc.ByteWidth = sizeof(ParticleSystemConstants);
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;

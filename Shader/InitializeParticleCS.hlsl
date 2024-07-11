@@ -1,13 +1,13 @@
 #include "Particle.hlsli"
 
-RWStructuredBuffer<particle> particleBuffer : register(u0);
+RWStructuredBuffer<Particle> particleBuffer : register(u0);
 
 [numthreads(NUMTHREADS_X, 1, 1)]
 void main(uint3 dtid : SV_DISPATCHTHREADID)
 {
     uint id = dtid.x;
 
-    particle p = particleBuffer[id];
+    Particle p = particleBuffer[id];
 	
     Spawn(id, p);
 	
