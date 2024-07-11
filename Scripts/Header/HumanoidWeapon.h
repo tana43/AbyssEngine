@@ -34,5 +34,8 @@ protected:
 
     float propulsion_ = 20.0f;//„i—Í(’Êí20’ö“x)
     float climbSpeed_ = 50.0f;//ã¸‘¬“x
+
+    //Œ¸‘¬‚µ‚½‚©
+    bool slowDown_ = false;
 };
 

@@ -172,7 +172,7 @@ void Vitesse::Move()
         flyMoveAnimation_->SetBlendWeight(result);
 
         //ˆÚ“®•ûŒü‚É‘ã“ü
-        moveDirection = { result.x,0,result.y };
+        moveDirection_ = { result.x,0,result.y };
     }
 //#else
 //    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
@@ -191,6 +191,28 @@ bool Vitesse::DrawImGui()
 {
     HumanoidWeapon::DrawImGui();
 
+    if (ImGui::TreeNode("Thruster Manager"))
+    {
+        ImGui::Checkbox("Active Thruster", &activeThruster_);
+
+        if (ImGui::Button("All Fire"))
+        {
+            for (const auto& t : thrusters_)
+            {
+                t->Fire();
+            }
+        }
+
+        if (ImGui::Button("All Stop"))
+        {
+            for (const auto& t : thrusters_)
+            {
+                t->Stop();
+            }
+        }
+        ImGui::TreePop();
+    }
+
     stateMachine_->DrawImGui();
 
     return true;
@@ -198,44 +220,48 @@ bool Vitesse::DrawImGui()
 
 void Vitesse::ThrusterInfluenceVelocity()
 {
+    if (!activeThruster_)return;
+    
     Vector3 vNormal;
     velocity_.Normalize(vNormal);
 
     float speed = velocity_.x * velocity_.x + velocity_.z * velocity_.z;
     if (flightMode_)
     {
-        if (speed)
+        /*if (speed)
         {
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Fire();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_D)]->Fire();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_U)]->Fire();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_D)]->Fire();
-        }
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire();
+        }*/
+        const float power = 0.4f;
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire(power);
     }
 
     if (velocity_.y > 0)
     {
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire(1.0f);
+        const float power = 1.0f;
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire(power);
     }
 
     if (speed > 0.01f)
     {
-        if (moveDirection_.z > 0)
+        if (!slowDown_)
         {
             float power = 0.6f + moveDirection_.z * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Fire(power);
@@ -249,7 +275,7 @@ void Vitesse::ThrusterInfluenceVelocity()
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_R)]->Stop();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_L)]->Stop();
         }
-        else if(moveDirection_.z < 0)
+        else
         {
             float power = 0.6f + fabsf(moveDirection_.z) * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Stop();
@@ -264,16 +290,21 @@ void Vitesse::ThrusterInfluenceVelocity()
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_L)]->Fire(power);
         }
 
-        if (moveDirection_.x > 0)
+        if (moveDirection_.x > 0.05f)
         {
             float power = 0.6f + moveDirection_.z * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Stop();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Fire(power);
         }
-        else if (moveDirection_.x < 0)
+        else if (moveDirection_.x < -0.05f)
         {
             float power = 0.6f + fabsf(moveDirection_.z) * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Stop();
+        }
+        else
+        {
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Stop();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Stop();
         }
     }
@@ -310,6 +341,7 @@ void Vitesse::UpdateInputMove()
     if (flightMode_)
     {
         moveVec_ = camera_->ConvertTo3DVectorFromCamera(Input::GameSupport::GetMoveVector());
+        moveVec_.y += Input::GameSupport::GetClimdButton() ? 1.0f : 0.0f;
     }
     else
     {

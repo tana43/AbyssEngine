@@ -170,6 +170,8 @@ void ThrusterEffect::UpdateTransform()
     };
     //manager->SetMatrix(effekseerHandle_, mat);
     manager->SetMatrix(effekseerHandle_, em);
+
+    manager->SetAllColor(effekseerHandle_, Effekseer::Color(1000, 1000, 1000, 1000));
 }
 
 void ThrusterEffect::UpdateInjection()

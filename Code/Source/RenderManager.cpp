@@ -15,8 +15,11 @@
 #include "CascadedShadowMap.h"
 
 #include "Keyboard.h"
+#include "Particles.h"
+#include "Texture.h"
 
 #include "EffectManager.h"
+
 
 #if _DEBUG
 #include "DebugRenderer.h"
@@ -216,6 +219,17 @@ RenderManager::RenderManager()
 	}
 
 #endif // ENABLE_DIFFERD_RENDERING
+
+	particles_ = std::make_unique<ParticleSystem>(1000);
+#if 1
+	Texture::LoadTextureFromFile("./Assets/AdobeStock_255896219.jpeg", particleTexture_.GetAddressOf(), NULL);
+	particles_->particleSystemData_.spriteSheetGrid_ = { 3, 2 };
+#else
+	load_texture_from_file(device.Get(), L"./uv_checker.png", particle_texture.GetAddressOf(), NULL);
+	particles->particle_system_data.sprite_sheet_grid = { 8, 8 };
+#endif
+	Texture::LoadTextureFromFile("./Assets/_noise_3d.dds", noise3d_.GetAddressOf(), NULL);
+	Texture::LoadTextureFromFile("./Assets/color temper chart.png", colorTemperChart_.GetAddressOf(), NULL);
 }
 
 RenderManager::~RenderManager()
@@ -285,6 +299,12 @@ void RenderManager::Render()
 	IBLSetResources();
 
 	CheckRenderer();
+
+	if (Keyboard::GetKeyDown(DirectX::Keyboard::Z))
+	{
+		particles_->Initialize();
+	}
+	particles_->Integrate();
 
 	//エフェクト更新処理
 	EffectManager::Instance().Update(Time::deltaTime_);
@@ -365,6 +385,18 @@ void RenderManager::Render()
 
 				//3Dエフェクト描画
 				EffectManager::Instance().Render(camera->viewMatrix_, camera->projectionMatrix_);
+
+#if 1
+				DXSystem::SetDepthStencilState(DS_State::Always_No_Write, 0);
+				DXSystem::SetRasterizerState(RS_State::Cull_None);
+				DXSystem::SetBlendState(BS_State::Add);
+				auto* dc = DXSystem::GetDeviceContext();
+
+				dc->PSSetShaderResources(0, 1, particleTexture_.GetAddressOf());
+				dc->GSSetShaderResources(0, 1, colorTemperChart_.GetAddressOf());
+				dc->GSSetShaderResources(1, 1, noise3d_.GetAddressOf());
+				particles_->Render();
+#endif
 
 #if _DEBUG
 				//デバッグレンダラー

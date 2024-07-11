@@ -489,8 +489,43 @@ void AnimBlendSpace2D::AddBlendAnimation(const int& index, const Vector2& weight
     auto& a = blendAnimDatas_.emplace_back(BlendAnimData(index, weight));
 }
 
-//AbyssEngine::AnimBlendSpaceFlyMove::AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D)
-//    : Animation(model,name)
-//{
-//
-//}
+AbyssEngine::AnimBlendSpaceFlyMove::AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D)
+    : Animation(model,name,0/*なんでもいい*/),
+    blendSpace1D_(blendSpace1D),
+    blendSpace2D_(blendSpace2D)
+{
+
+}
+
+std::vector<GeometricSubstance::Node> AbyssEngine::AnimBlendSpaceFlyMove::UpdateAnimation(GltfSkeletalMesh* model)
+{
+    //各モーションを計算
+    const auto& blendNode1D = blendSpace1D_->UpdateAnimation(model);
+    const auto& blendNode2D = blendSpace2D_->UpdateAnimation(model);
+
+    //ブレンドスペース１Dは上下移動、２Dは水平移動
+    //この関係から動いた方向を算出し、ブレンド率を求める
+    float weight;
+
+    //移動方向のベクトルが０付近ならブレンド率を０へ
+    if (moveVec_.LengthSquared() < 0.01f)
+    {
+        weight = 0.0f;
+    }
+    else
+    {
+        //Y軸を考慮しない移動方向ベクトルと、無加工の移動方向の内積値から
+        //ベクトルが上下方向に、どの程度向いているかを計算する
+        Vector3 f = { moveVec_.x,0,moveVec_.z };
+        f.Normalize();
+        moveVec_.Normalize();
+
+        const float dot = f.Dot(moveVec_);
+        weight = fabsf(dot);//ブレンド率
+    }
+
+    //モーションブレンド
+    model->BlendAnimations(blendNode2D, blendNode1D, weight, animatedNodes_);
+
+    return animatedNodes_;
+}

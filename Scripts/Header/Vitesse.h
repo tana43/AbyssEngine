@@ -88,5 +88,9 @@ private:
     
     //今向いている方向と速度が働いている方向差分
     AbyssEngine::Vector3 moveDirection_ = { 0,0,0 };
+
+    //スラスターを噴射させるか
+    bool activeThruster_ = true;
+
 };
 

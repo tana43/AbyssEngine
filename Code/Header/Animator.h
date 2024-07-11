@@ -42,9 +42,9 @@ namespace AbyssEngine
         void SetSkeletalMesh(const std::shared_ptr<SkeletalMesh>& mesh) { skeletalMesh_ = mesh; }
 
         //現在のアニメーションを取得
-        const int& GetCurrentAnimClip() const { return animationClip_; }
+        const int& GetCurrentAnimClip() const { return static_cast<int>(animationClip_); }
         //次のアニメーションを取得
-        const int& GetNextAnimClip() const { return nextAnimationClip_; }
+        const int& GetNextAnimClip() const { return static_cast<int>(nextAnimationClip_); }
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;

@@ -31,7 +31,7 @@ namespace AbyssEngine
 
     public:
         void SetViewTarget(Transform* t) { viewTarget_ = t; }
-        [[nodiscared]] Transform* GetViewTarget() { return viewTarget_; }
+        Transform* GetViewTarget() { return viewTarget_; }
 
     private:
         void DebugCameraController();

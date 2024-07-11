@@ -141,18 +141,28 @@ namespace AbyssEngine
         std::vector<GeometricSubstance::Node> secondBlendAnimNodes_;//さらにブレンドするのに使うノード
     };
 
-    //class AnimBlendSpaceFlyMove final : public Animation
-    //{
-    //public:
-    //    AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D);
-    //    ~AnimBlendSpaceFlyMove() {}
+    //空中移動に上下移動のモーションをブレンドさせるために作った特化クラス
+    //メンバ変数のブレンドスペースへの値の設定は別で処理をする必要がある
+    class AnimBlendSpaceFlyMove final : public Animation
+    {
+    public:
+        AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D);
+        ~AnimBlendSpaceFlyMove() {}
 
-    //    AnimBlendSpace1D* GetBlendSpace1D() { return blendSpace1D_; }
-    //    AnimBlendSpace2D* GetBlendSpace2D() { return blendSpace2D_; }
-    //private:
-    //    AnimBlendSpace1D* blendSpace1D_;
-    //    AnimBlendSpace2D* blendSpace2D_;
-    //};
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model)override;
+
+        void SetMoveVec(const AbyssEngine::Vector3& v) { moveVec_ = v; }
+        const AbyssEngine::Vector3& GetMoveVec() const {return moveVec_; }
+
+        AnimBlendSpace1D* GetBlendSpace1D() { return blendSpace1D_; }
+        AnimBlendSpace2D* GetBlendSpace2D() { return blendSpace2D_; }
+    private:
+        AnimBlendSpace1D* blendSpace1D_;
+        AnimBlendSpace2D* blendSpace2D_;
+
+        //動いている方向(ここからブレンド比率を計算)
+        AbyssEngine::Vector3 moveVec_;
+    };
 }
 
 

@@ -22,6 +22,8 @@ void HumanoidWeapon::Update()
 
 void HumanoidWeapon::UpdateVelocity()
 {
+    slowDown_ = false;
+
     //通常の速力処理に加えて、飛行モード時の速力処理を追加する
     //重力を無視し、カメラの向いている方向へ動くようにする
 
@@ -29,9 +31,10 @@ void HumanoidWeapon::UpdateVelocity()
     {
         //水平方向
         {
-            if (moveVec_.LengthSquared() > 0.01f)
+            Vector3 moveVecXZ = { moveVec_.x,0.0f,moveVec_.z };
+            if (moveVecXZ.LengthSquared() > 0.01f)
             {
-                velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
+                velocity_ = velocity_ + moveVecXZ * (acceleration_ * Time::deltaTime_);
 
                 //速度制限
                 Vector2 velocityXZ = { velocity_.x,velocity_.z };
@@ -43,27 +46,57 @@ void HumanoidWeapon::UpdateVelocity()
                     velocity_.x = velocityXZ.x;
                     velocity_.z = velocityXZ.y;
                 }
-                //縦方向にも速度制限
-                velocity_.y = std::clamp(velocity_.y, -Max_Vertical_Speed, Max_Vertical_Speed);
             }
-            else//減速処理
+            else//水平方向減速処理
             {
                 //入力値がほぼない場合は減速処理
-                Vector3 veloNormal;
-                velocity_.Normalize(veloNormal);
+                Vector3 veloXZNormal = {velocity_.x,0.0f,velocity_.z};
+                veloXZNormal.Normalize();
 
-                Vector3 deceVelocity = velocity_ - (veloNormal * (deceleration_ * Time::deltaTime_));
+                Vector3 deceVelocityXZ = velocity_ - (veloXZNormal * (deceleration_ * Time::deltaTime_));
+                deceVelocityXZ.y = 0;
                 Vector3 deceVeloNormal;
-                deceVelocity.Normalize(deceVeloNormal);
+                deceVelocityXZ.Normalize(deceVeloNormal);
 
                 //反対方向のベクトルになってしまうか速度が遅すぎるなら、速度を完全に０にする
-                if (veloNormal.Dot(deceVeloNormal) < 0 || deceVelocity.LengthSquared() < 0.1f)
+                if (veloXZNormal.Dot(deceVeloNormal) < 0 || deceVelocityXZ.LengthSquared() < 0.1f)
                 {
-                    velocity_ = {};
+                    velocity_.x = velocity_.z = {};
                 }
                 else
                 {
-                    velocity_ = deceVelocity;
+                    velocity_.x = deceVelocityXZ.x;
+                    velocity_.z = deceVelocityXZ.z;
+
+                    //減速したのでフラグを立てる
+                    slowDown_ = true;
+                }
+            }
+        }
+
+        //縦方向
+        {
+            if (fabsf(moveVec_.y) > 0.01f)
+            {
+                //加速
+                velocity_.y += moveVec_.y * (acceleration_ * Time::deltaTime_);
+
+                //速度制限
+                velocity_.y = std::clamp(velocity_.y, -Max_Vertical_Speed, Max_Vertical_Speed);
+            }
+            else
+            {
+                //入力値がほとんどないので減速処理
+                float direY = velocity_.y > 0.0f ? 1.0f : -1.0f;
+
+                //減速
+                velocity_.y -= (direY * deceleration_ * Time::deltaTime_);
+
+                //減速制限
+                 //反対方向のベクトルになってしまうか速度が遅すぎるなら、速度を完全に０にする
+                if (direY * velocity_.y < 0.0f || fabsf(velocity_.y) < 0.1f)
+                {
+                    velocity_.y = 0;
                 }
             }
         }
