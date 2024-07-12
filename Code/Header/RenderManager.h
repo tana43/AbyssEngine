@@ -52,6 +52,8 @@ namespace AbyssEngine
         void Render(); //描画実行
 
         void DrawImGui();
+        
+        void Beginning();//フレーム開始
 
         //bool renderGame_ = true; //ゲームビューを描画する
         //bool renderScene_ = true; //シーンビューを描画する
@@ -200,12 +202,12 @@ namespace AbyssEngine
         //影描画
         void ShadowRender();
 
-    private:
+    public:
         //試し
-        std::unique_ptr<ParticleSystem> particles_;
+        /*std::unique_ptr<ParticleSystem> particles_;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> particleTexture_;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise3d_;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> colorTemperChart_;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> colorTemperChart_;*/
     };
 
 }

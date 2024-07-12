@@ -64,7 +64,7 @@ void VitesseAnimState::AnimFlyMove::Update()
     Vector3 velocityXZ = { velo.x,0,velo.z };
     if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
     {
-        vi->GetFlyMoveAnimation()->SetBlendWeight(Vector2(0, 0));
+        vi->GetFlyMoveAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 0));
     }
     else
     {
@@ -86,7 +86,7 @@ void VitesseAnimState::AnimFlyMove::Update()
         result = { sinf(dot),cosf(dot) };
         result = result * (velocityXZ.Length() / vi->GetMaxHorizontalSpeed());
 
-        vi->GetFlyMoveAnimation()->SetBlendWeight(result);
+        vi->GetFlyMoveAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
 
         //ˆÚ“®•ûŒü‚É‘ã“ü
         moveDirection = { result.x,0,result.y };

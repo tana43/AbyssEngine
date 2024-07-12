@@ -61,12 +61,28 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
 
     //‹ó’†ˆÚ“®
+#if 0
     AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
+#else
+    AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimState::Fly_Idle), static_cast<int>(AnimState::Fly_Up));
+    fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimState::Fly_Idle), -1.0f);
+    auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
+
+    AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
+    auto* f2d = model_->GetAnimator()->AppendAnimation(fMoveAnim2D);
+
+    AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D",f2d,f1d);
     flyMoveAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
+    flyMoveAnimation_->GetBlendSpace1D()->SetMinWeight(-1.0f);
+#endif // 0
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Run_Move));
 
@@ -115,6 +131,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     thruster_->SetOffsetScale(0.3f);*/
 
     Engine::renderManager_->ChangeMainCamera(camera_.get());
+
 }
 
 void Vitesse::Update()
@@ -141,7 +158,7 @@ void Vitesse::Move()
     if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
     {
         groundMoveAnimation_->SetBlendWeight(Vector2(0,0));
-        flyMoveAnimation_->SetBlendWeight(Vector2(0,0));
+        flyMoveAnimation_->GetBlendSpace2D()->SetBlendWeight(Vector2(0,0));
     }
     else
     {
@@ -169,7 +186,11 @@ void Vitesse::Move()
         result = result * (velocityXZ.Length() / Max_Horizontal_Speed);
         
         groundMoveAnimation_->SetBlendWeight(result);
-        flyMoveAnimation_->SetBlendWeight(result);
+        flyMoveAnimation_->GetBlendSpace2D()->SetBlendWeight(result);
+
+        float result1D = velocity_.y / Max_Vertical_Speed;
+        result1D = std::clamp(result1D, -1.0f, 1.0f);
+        flyMoveAnimation_->GetBlendSpace1D()->SetBlendWeight(result1D);
 
         //ˆÚ“®•ûŒü‚É‘ã“ü
         moveDirection_ = { result.x,0,result.y };

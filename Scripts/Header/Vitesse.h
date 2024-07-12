@@ -56,7 +56,8 @@ public:
 public:
     const std::unique_ptr<StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
     AbyssEngine::AnimBlendSpace2D* GetGroundMoveAnimation() { return groundMoveAnimation_; }
-    AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
+    //AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
+    AbyssEngine::AnimBlendSpaceFlyMove* GetFlyMoveAnimation() { return flyMoveAnimation_; }
     
     
 
@@ -75,7 +76,8 @@ private:
 #else
     AbyssEngine::AnimBlendSpace1D* runMoveAnimation_;//‘–‚èˆÚ“®
 #endif // 0
-    AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//‹ó’†ˆÚ“®
+    //AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//‹ó’†ˆÚ“®
+    AbyssEngine::AnimBlendSpaceFlyMove* flyMoveAnimation_;//‹ó’†ˆÚ“®
 
     std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
     std::unique_ptr<StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;
