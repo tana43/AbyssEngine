@@ -75,6 +75,8 @@ namespace AbyssEngine
         //フラスタムの初期状態
         DirectX::BoundingFrustum initialFrustum_;
         DirectX::BoundingFrustum shadowInitialFrustum_;
+
+        Vector2 mouseSensitivity_ = { 2.768f ,2.768f };//カメラ感度
     };
 }
 

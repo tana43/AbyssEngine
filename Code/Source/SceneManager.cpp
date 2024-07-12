@@ -5,6 +5,7 @@
 #include "TestScene.h"
 #include "SceneGame.h"
 #include "SceneTitle.h"
+#include "FacilityScene.h"
 
 #include "RenderManager.h"
 
@@ -18,7 +19,9 @@ SceneManager::SceneManager()
     AddScene(new TestScene,"Test");
     AddScene(new SceneGame,"Game");
     AddScene(new SceneTitle,"Title");
+    AddScene(new FacilityScene,"Facility");
     SetNextScene("Test");
+    //SetNextScene("Facility");
 }
 
 SceneManager::~SceneManager()

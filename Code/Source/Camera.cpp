@@ -42,6 +42,9 @@ bool Camera::DrawImGui()
         ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.1f);
         ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.1f);
 
+        ImGui::SliderFloat("Mouse Sensitivity Side ",&mouseSensitivity_.y, 0.5f, 5.0f);
+        ImGui::SliderFloat("Mouse Sensitivity Vertical",&mouseSensitivity_.x, 0.5f, 5.0f);
+
         ImGui::TreePop();
     }
 
@@ -205,6 +208,8 @@ void Camera::DebugCameraController()
         auto rot = transform_->GetRotation();
         //É}ÉEÉXëÄçÏ
 
+        static POINT startMousePos = {};
+
         static bool inputStart = false;
         if (Mouse::GetButtonState().rightButton)
         {
@@ -215,19 +220,30 @@ void Camera::DebugCameraController()
                 auto mouseVec = Vector2(960.0f, 540.0f) - Vector2(static_cast<float>(pos.x), static_cast<float>(pos.y));
                 if (mouseVec.x != 0 || mouseVec.y != 0)
                 {
-                    rot.y -= mouseVec.x * Time::deltaTime_;
-                    rot.x -= mouseVec.y * Time::deltaTime_;
+                    rot.y -= mouseVec.x * Time::deltaTime_ * mouseSensitivity_.x;
+                    rot.x -= mouseVec.y * Time::deltaTime_ * mouseSensitivity_.y;
                 }
             }
             else
             {
+                POINT pos{};
+                GetCursorPos(&pos);
+                startMousePos = { pos.x,pos.y };
                 inputStart = true;
+                ShowCursor(false);
+
             }
             SetCursorPos(960, 540);
         }
         else
         {
             inputStart = false;
+        }
+
+        if (Mouse::GetButtonUp(Mouse::BTN_RIGHT))
+        {
+            SetCursorPos(startMousePos.x,startMousePos.y);
+            ShowCursor(true);
         }
         
 

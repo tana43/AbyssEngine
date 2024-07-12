@@ -300,6 +300,7 @@
     <ClInclude Include="Scripts\Header\ThrusterEffect.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\FacilityScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -503,6 +504,7 @@
     <ClCompile Include="Scripts\Source\ThrusterEffect.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
