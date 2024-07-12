@@ -61,12 +61,28 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
 
     //空中移動
+#if 0
     AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
+#else
+    AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimState::Fly_Idle), static_cast<int>(AnimState::Fly_Up));
+    fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimState::Fly_Idle), -1.0f);
+    auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
+
+    AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
+    auto* f2d = model_->GetAnimator()->AppendAnimation(fMoveAnim2D);
+
+    AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D",f2d,f1d);
     flyMoveAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
+    flyMoveAnimation_->GetBlendSpace1D()->SetMinWeight(-1.0f);
+#endif // 0
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Run_Move));
 
@@ -115,6 +131,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     thruster_->SetOffsetScale(0.3f);*/
 
     Engine::renderManager_->ChangeMainCamera(camera_.get());
+
 }
 
 void Vitesse::Update()
@@ -138,10 +155,10 @@ void Vitesse::Move()
 //#if 1
     //ブレンドアニメーションのWeight更新
     Vector3 velocityXZ = {velocity_.x,0,velocity_.z};
-    if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
+    if (velocityXZ.LengthSquared() < 0.01f)
     {
         groundMoveAnimation_->SetBlendWeight(Vector2(0,0));
-        flyMoveAnimation_->SetBlendWeight(Vector2(0,0));
+        flyMoveAnimation_->GetBlendSpace2D()->SetBlendWeight(Vector2(0,0));
     }
     else
     {
@@ -169,10 +186,26 @@ void Vitesse::Move()
         result = result * (velocityXZ.Length() / Max_Horizontal_Speed);
         
         groundMoveAnimation_->SetBlendWeight(result);
-        flyMoveAnimation_->SetBlendWeight(result);
+        flyMoveAnimation_->GetBlendSpace2D()->SetBlendWeight(result);
+
+        float result1D = velocity_.y / Max_Vertical_Speed;
+        result1D = std::clamp(result1D, -1.0f, 1.0f);
+        flyMoveAnimation_->GetBlendSpace1D()->SetBlendWeight(result1D);
 
         //移動方向に代入
-        moveDirection = { result.x,0,result.y };
+        moveDirection_ = { result.x,0,result.y };
+
+        int zero = 3;
+        float i = 1.5f;
+
+        //無理やりint型に変更
+        i = zero / i;
+
+        if (zero == 0)
+        {
+            //０です
+        }       //1byte = 8bit
+        //int型　00000000000000000000000000001010
     }
 //#else
 //    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
@@ -191,6 +224,28 @@ bool Vitesse::DrawImGui()
 {
     HumanoidWeapon::DrawImGui();
 
+    if (ImGui::TreeNode("Thruster Manager"))
+    {
+        ImGui::Checkbox("Active Thruster", &activeThruster_);
+
+        if (ImGui::Button("All Fire"))
+        {
+            for (const auto& t : thrusters_)
+            {
+                t->Fire();
+            }
+        }
+
+        if (ImGui::Button("All Stop"))
+        {
+            for (const auto& t : thrusters_)
+            {
+                t->Stop();
+            }
+        }
+        ImGui::TreePop();
+    }
+
     stateMachine_->DrawImGui();
 
     return true;
@@ -198,44 +253,48 @@ bool Vitesse::DrawImGui()
 
 void Vitesse::ThrusterInfluenceVelocity()
 {
+    if (!activeThruster_)return;
+    
     Vector3 vNormal;
     velocity_.Normalize(vNormal);
 
     float speed = velocity_.x * velocity_.x + velocity_.z * velocity_.z;
     if (flightMode_)
     {
-        if (speed)
+        /*if (speed)
         {
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Fire();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_D)]->Fire();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_U)]->Fire();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_L_D)]->Fire();
-        }
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire();
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire();
+        }*/
+        const float power = 0.4f;
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire(power);
     }
 
     if (velocity_.y > 0)
     {
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire(1.0f);
-        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire(1.0f);
+        const float power = 1.0f;
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_R_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_U)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_M)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackLeg_L_D)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_R)]->Fire(power);
+        thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Waist_L)]->Fire(power);
     }
 
     if (speed > 0.01f)
     {
-        if (moveDirection_.z > 0)
+        if (!slowDown_)
         {
             float power = 0.6f + moveDirection_.z * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Fire(power);
@@ -249,7 +308,7 @@ void Vitesse::ThrusterInfluenceVelocity()
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_R)]->Stop();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_L)]->Stop();
         }
-        else if(moveDirection_.z < 0)
+        else
         {
             float power = 0.6f + fabsf(moveDirection_.z) * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Stop();
@@ -264,16 +323,21 @@ void Vitesse::ThrusterInfluenceVelocity()
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Chest_L)]->Fire(power);
         }
 
-        if (moveDirection_.x > 0)
+        if (moveDirection_.x > 0.05f)
         {
             float power = 0.6f + moveDirection_.z * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Stop();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Fire(power);
         }
-        else if (moveDirection_.x < 0)
+        else if (moveDirection_.x < -0.05f)
         {
             float power = 0.6f + fabsf(moveDirection_.z) * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Fire(power);
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Stop();
+        }
+        else
+        {
+            thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_R_1)]->Stop();
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Shoulder_L_1)]->Stop();
         }
     }
@@ -310,6 +374,7 @@ void Vitesse::UpdateInputMove()
     if (flightMode_)
     {
         moveVec_ = camera_->ConvertTo3DVectorFromCamera(Input::GameSupport::GetMoveVector());
+        moveVec_.y += Input::GameSupport::GetClimdButton() ? 1.0f : 0.0f;
     }
     else
     {

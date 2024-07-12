@@ -79,6 +79,9 @@
     <Filter Include="Shader\PostEffect">
       <UniqueIdentifier>{2b0072f5-045e-4d4d-b36f-fcb14e23b8b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Particle">
+      <UniqueIdentifier>{e599c1e0-7e58-4eb7-afb0-dc547eed1a48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -301,6 +304,9 @@
       <Filter>Script\Header</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
+    <ClInclude Include="Code\Header\Particles.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -505,6 +511,9 @@
       <Filter>Script\Source</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
+    <ClCompile Include="Code\Source\Particles.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -603,6 +612,21 @@
     <FxCompile Include="Shader\ShapeRendererVS.hlsl">
       <Filter>Shader\Debug</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\ParticleGS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ParticlePS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ParticleVS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\InitializeParticleCS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\IntegrateParticleCS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
@@ -654,5 +678,8 @@
       <Filter>Shader\Debug</Filter>
     </None>
     <None Include="cpp.hint" />
+    <None Include="Shader\Particle.hlsli">
+      <Filter>Shader\Particle</Filter>
+    </None>
   </ItemGroup>
 </Project>

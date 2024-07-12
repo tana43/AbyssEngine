@@ -28,8 +28,8 @@ bool Character::DrawImGui()
     ImGui::DragFloat("Max Horizontal Speed", &Max_Horizontal_Speed,0.1f,0.1f);
     ImGui::DragFloat("Max Vertical Speed", &Max_Vertical_Speed,0.1f,0.1f);
 
-    ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 10.0f);
-    ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 10.0f);
+    ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 100.0f);
+    ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 100.0f);
 
     ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
     ImGui::SliderFloat("Max Rot Speed", &Max_Rot_Speed,0.0f,1000.0f);

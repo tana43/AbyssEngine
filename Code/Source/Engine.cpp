@@ -60,6 +60,7 @@ void Engine::Update()
     ////ImGuiXV
     IMGUI_CTRL_CLEAR_FRAME();
 
+    renderManager_->Beginning();
 
     DXSystem::Clear();
 

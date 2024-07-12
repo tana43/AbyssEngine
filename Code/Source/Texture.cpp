@@ -67,10 +67,13 @@ HRESULT Texture::LoadTextureFromFile(const std::string& texturePath, ID3D11Shade
         }
     }
 
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2d;
-    hr = resource.Get()->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
-    texture2d->GetDesc(texture2dDesc);
+    if (texture2dDesc)
+    {
+        Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2d;
+        hr = resource.Get()->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+        texture2d->GetDesc(texture2dDesc);
+    }
 
     return hr;
 }

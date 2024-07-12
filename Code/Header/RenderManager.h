@@ -26,6 +26,8 @@ namespace AbyssEngine
     class PrimitiveRenderer;
     class ShapeRenderer;
 
+    class ParticleSystem;
+
     class RenderManager
     {
     private:
@@ -50,6 +52,8 @@ namespace AbyssEngine
         void Render(); //描画実行
 
         void DrawImGui();
+        
+        void Beginning();//フレーム開始
 
         //bool renderGame_ = true; //ゲームビューを描画する
         //bool renderScene_ = true; //シーンビューを描画する
@@ -89,7 +93,7 @@ namespace AbyssEngine
             Matrix viewProjectionMatrix_;
             Matrix inverseProjection_;
             Matrix inverseViewProjection_;
-            Vector4 lightDirection_ = {-0.5f,-5.0f,-0.5f,0};
+            Vector4 lightDirection_ = {-0.5f,-0.5f,-0.5f,0};
             Vector4 lightColor_ = {1,1,1,1};
             Vector4 eyePosition_;
             Vector4 focusPosition_;
@@ -198,7 +202,12 @@ namespace AbyssEngine
         //影描画
         void ShadowRender();
 
-        
+    public:
+        //試し
+        /*std::unique_ptr<ParticleSystem> particles_;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> particleTexture_;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise3d_;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> colorTemperChart_;*/
     };
 
 }

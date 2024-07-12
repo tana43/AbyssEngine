@@ -196,3 +196,13 @@ AnimBlendSpace2D* Animator::AppendAnimation(AnimBlendSpace2D anim)
 	animations_.emplace_back(p);
 	return p;
 }
+
+AnimBlendSpaceFlyMove* AbyssEngine::Animator::AppendAnimation(AnimBlendSpaceFlyMove anim)
+{
+	const auto& model = skeletalMesh_.lock();
+	if (!model)return nullptr;
+
+	auto* p = new AnimBlendSpaceFlyMove(model.get(), anim.name_,anim.GetBlendSpace2D(),anim.GetBlendSpace1D());
+	animations_.emplace_back(p);
+	return p;
+}

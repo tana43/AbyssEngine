@@ -50,13 +50,16 @@ public:
         Fly_Down,
         Landing,
         Run_Move,
+        Fly_Move1D,
+        Fly_Move2D,
         Fly_Move,
     };
 
 public:
     const std::unique_ptr<StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
     AbyssEngine::AnimBlendSpace2D* GetGroundMoveAnimation() { return groundMoveAnimation_; }
-    AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
+    //AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
+    AbyssEngine::AnimBlendSpaceFlyMove* GetFlyMoveAnimation() { return flyMoveAnimation_; }
     
     
 
@@ -75,7 +78,8 @@ private:
 #else
     AbyssEngine::AnimBlendSpace1D* runMoveAnimation_;//走り移動
 #endif // 0
-    AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//空中移動
+    //AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//空中移動
+    AbyssEngine::AnimBlendSpaceFlyMove* flyMoveAnimation_;//空中移動
 
     std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
     std::unique_ptr<StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;
@@ -88,5 +92,9 @@ private:
     
     //今向いている方向と速度が働いている方向差分
     AbyssEngine::Vector3 moveDirection_ = { 0,0,0 };
+
+    //スラスターを噴射させるか
+    bool activeThruster_ = true;
+
 };
 
