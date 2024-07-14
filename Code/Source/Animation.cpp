@@ -83,11 +83,37 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkel
     //実際のブレンド値の計算
     const float nextBlendWeight = std::clamp(lastBlendWeight_ + blendSpeed, minWeight_, maxWeight_);
 
+    //ブレンド率が同じアニメーションがあるか
+    for (auto& anim : blendAnimDatas_)
+    {
+        if (anim.weight_ == nextBlendWeight)
+        {
+            model->Animate(anim.index_, timeStamp_, animatedNodes_);
+            lastBlendWeight_ = nextBlendWeight;
+            return animatedNodes_;
+        }
+    }
+
+    //blendAnims[1]の方が[0]よりもweight値が大きい
+    BlendAnimData blendAnims[2] = {blendAnimDatas_[0],blendAnimDatas_[0]};
+    for (auto& animData : blendAnimDatas_)
+    {
+        //最もweight値が小さいデータを代入
+        if (blendAnims[0].weight_ >= animData.weight_)
+        {
+            blendAnims[0] = animData;
+        }
+        //最もweight値が大きいデータを代入
+        else if (blendAnims[1].weight_ < animData.weight_)
+        {
+            blendAnims[1] = animData;
+        }
+    }
+
     //ブレンドする２つのモーションを取る blendWeightが[0]と[1]のweight値に収まる範囲のアニメーションを探す
-    BlendAnimData blendAnims[2] = {blendAnimDatas_[0],blendAnimDatas_[1]};
     if (blendAnimDatas_.size() >= 2)
     {
-        for (int i = 2; i < blendAnimDatas_.size(); i++)
+        for (int i = 0; i < blendAnimDatas_.size(); i++)
         {
             if (blendAnimDatas_[i].weight_ < nextBlendWeight)
             {
@@ -109,8 +135,7 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkel
     //二つのモーションデータから実際に補完率に使われる値を計算
     //急なブレンドの重さの変化を防ぐように前回の値から変動する値に上限を設ける
     const float maxBlendWeight = blendAnims[1].weight_ - blendAnims[0].weight_;
-    const float blendWeight = std::clamp((nextBlendWeight - blendAnims[0].weight_) / maxBlendWeight
-                                        ,0.0f,1.0f);
+    const float blendWeight = std::clamp((nextBlendWeight - blendAnims[0].weight_) / maxBlendWeight,0.0f,1.0f);
 
     //モーションブレンド
     model->Animate(blendAnims[0].index_, timeStamp_, blendAnimNodes_[0]);
@@ -514,9 +539,8 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimBlendSpaceFlyMove::Update
     }
     else
     {
-        //Y軸を考慮しない移動方向ベクトルと、無加工の移動方向の内積値から
-        //ベクトルが上下方向に、どの程度向いているかを計算する
         Vector3 f = { moveVec_.x,0,moveVec_.z };
+
         f.Normalize();
         moveVec_.Normalize();
 
@@ -524,8 +548,14 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimBlendSpaceFlyMove::Update
         weight = fabsf(dot);//ブレンド率
     }
 
+    //なめらかにブレンドするために補完
+    const float blendMaxSpeed = 2.0f * Time::deltaTime_;
+    const float blendSpeed = std::clamp(weight - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
+    const float nextBlendWeight = std::clamp(lastBlendWeight_ + blendSpeed, 0.0f, 1.0f);
+    lastBlendWeight_ = nextBlendWeight;
+
     //モーションブレンド
-    model->BlendAnimations(blendNode2D, blendNode1D, weight, animatedNodes_);
+    model->BlendAnimations(blendNode1D, blendNode2D, nextBlendWeight, animatedNodes_);
 
     return animatedNodes_;
 }

@@ -14,7 +14,8 @@ void FacilityScene::Initialize()
     //ステージ
     const auto& floor_01 = InstanceActor("Floor_01");
     //floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Demonstration_Floor_01.glb");
-    floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Demonstration.glb");
+    //floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Demonstration.glb");
+    floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Map_BigStarStation_F1.glb");
 
     const auto& player = InstanceActor("Player_Facility_01");
     player->AddComponent<Player>();

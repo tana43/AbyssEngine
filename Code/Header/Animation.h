@@ -63,6 +63,8 @@ namespace AbyssEngine
         const float& GetMinWeight() const { return minWeight_; }
         const float& GetBlendWeight() const { return blendWeight_; }
 
+        const float& GetLastBlendWeight() const { return lastBlendWeight_; }
+
     private:
         float blendWeight_ = 0.0f;//ブレンドの重さ
         float maxWeight_ = 1.0f;//ブレンドの最大値
@@ -75,6 +77,12 @@ namespace AbyssEngine
         {
             int index_;
             float weight_;//個々のモーションが持っているブレンドの重さ
+
+            void operator=(const BlendAnimData& data)
+            {
+                index_ = data.index_;
+                weight_ = data.weight_;
+            }
         };
         std::vector<BlendAnimData> blendAnimDatas_;
 
@@ -162,8 +170,7 @@ namespace AbyssEngine
 
         //動いている方向(ここからブレンド比率を計算)
         AbyssEngine::Vector3 moveVec_;
+
+        float lastBlendWeight_ = 0.0f;
     };
 }
-
-
-

@@ -69,8 +69,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
 #else
     AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimState::Fly_Idle), static_cast<int>(AnimState::Fly_Up));
-    fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimState::Fly_Idle), -1.0f);
+    fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimState::Fly_Down), -1.0f);
     auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
+    f1d->SetMinWeight(-1.0f);
 
     AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
     fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
@@ -81,7 +82,6 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D",f2d,f1d);
     flyMoveAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
-    flyMoveAnimation_->GetBlendSpace1D()->SetMinWeight(-1.0f);
 #endif // 0
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Run_Move));
@@ -154,6 +154,7 @@ void Vitesse::Move()
 
 //#if 1
     //ブレンドアニメーションのWeight更新
+    flyMoveAnimation_->SetMoveVec(moveVec_);
     Vector3 velocityXZ = {velocity_.x,0,velocity_.z};
     if (velocityXZ.LengthSquared() < 0.01f)
     {
@@ -188,24 +189,19 @@ void Vitesse::Move()
         groundMoveAnimation_->SetBlendWeight(result);
         flyMoveAnimation_->GetBlendSpace2D()->SetBlendWeight(result);
 
+        //移動方向に代入
+        moveDirection_ = { result.x,0,result.y };
+    }
+
+    if (fabsf(velocity_.y) > 0.1f)
+    {
         float result1D = velocity_.y / Max_Vertical_Speed;
         result1D = std::clamp(result1D, -1.0f, 1.0f);
         flyMoveAnimation_->GetBlendSpace1D()->SetBlendWeight(result1D);
-
-        //移動方向に代入
-        moveDirection_ = { result.x,0,result.y };
-
-        int zero = 3;
-        float i = 1.5f;
-
-        //無理やりint型に変更
-        i = zero / i;
-
-        if (zero == 0)
-        {
-            //０です
-        }       //1byte = 8bit
-        //int型　00000000000000000000000000001010
+    }
+    else
+    {
+        flyMoveAnimation_->GetBlendSpace1D()->SetBlendWeight(0.0f);
     }
 //#else
 //    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
