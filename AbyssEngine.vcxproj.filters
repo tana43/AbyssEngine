@@ -82,6 +82,9 @@
     <Filter Include="Shader\Particle">
       <UniqueIdentifier>{e599c1e0-7e58-4eb7-afb0-dc547eed1a48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script\Source\VItesse">
+      <UniqueIdentifier>{7e2f51a4-e462-48df-aa29-68eda2f78ef4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Actor.h">
@@ -222,7 +225,7 @@
     <ClInclude Include="Code\Header\Animation.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\Player.h">
+    <ClInclude Include="Scripts\Header\PlayerSoldier.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Character.h">
@@ -303,9 +306,14 @@
     <ClInclude Include="Scripts\Header\ThrusterEffect.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\FacilityScene.h" />
     <ClInclude Include="Code\Header\Particles.h">
       <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\PlayerSoldierState.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\FacilityScene.h">
+      <Filter>Script\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -429,7 +437,7 @@
     <ClCompile Include="Code\Source\Animation.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\Player.cpp">
+    <ClCompile Include="Scripts\Source\PlayerSoldier.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\CharacterManager.cpp">
@@ -454,9 +462,6 @@
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Source\Vitesse.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\ShapeRenderer.cpp">
@@ -498,21 +503,29 @@
     <ClCompile Include="Scripts\Source\StageManager.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\VitesseState.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Source\VitesseConstants.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Source\VitesseAnimState.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Scripts\Source\ThrusterEffect.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
     <ClCompile Include="Code\Source\Particles.cpp">
       <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\Vitesse.cpp">
+      <Filter>Script\Source\VItesse</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\VitesseAnimState.cpp">
+      <Filter>Script\Source\VItesse</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\VitesseConstants.cpp">
+      <Filter>Script\Source\VItesse</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\VitesseState.cpp">
+      <Filter>Script\Source\VItesse</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\FacilityScene.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp">
+      <Filter>Script\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

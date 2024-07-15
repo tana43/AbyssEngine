@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "PlayerSoldier.h"
 #include "Engine.h"
 #include "Scene.h"
 #include "SceneManager.h"
@@ -16,7 +16,7 @@
 
 using namespace AbyssEngine;
 
-void Player::Initialize(const std::shared_ptr<Actor>& actor)
+void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //アクターとトランスフォームの登録
     Character::Initialize(actor);
@@ -55,7 +55,7 @@ void Player::Initialize(const std::shared_ptr<Actor>& actor)
     camera_->SetEnableDebugController(false);
 }
 
-void Player::Update()
+void Soldier::Update()
 {
     //プレイヤーカメラがメインになっていなければ更新しない
     if (!camera_->GetIsMainCamera())return;
@@ -65,7 +65,7 @@ void Player::Update()
     CameraRollUpdate();
 }
 
-bool Player::DrawImGui()
+bool Soldier::DrawImGui()
 {
     if (ImGui::TreeNode("Player"))
     {
@@ -81,7 +81,7 @@ bool Player::DrawImGui()
     return false;
 }
 
-void Player::MoveUpdate()
+void Soldier::MoveUpdate()
 {
     //入力されたベクトルから移動ベクトル取得
     auto inputVec = Input::GameSupport::GetMoveVector();
@@ -132,7 +132,7 @@ void Player::MoveUpdate()
     moveVec_ = {};
 }
 
-void Player::CameraRollUpdate()
+void Soldier::CameraRollUpdate()
 {
     //入力値取得
     Vector2 input = Input::GameSupport::GetCameraRollVector();
@@ -142,4 +142,9 @@ void Player::CameraRollUpdate()
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);
+}
+
+void Soldier::BoardingTheVitesse()
+{
+
 }

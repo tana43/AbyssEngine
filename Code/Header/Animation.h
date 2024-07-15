@@ -23,12 +23,14 @@ namespace AbyssEngine
         virtual void DrawImGui(Animator* animator);
 
     public:
+        void SetLoopFlag(const bool& flag) { loopFlag_ = flag; }
+
         std::string name_;
         int animIndex_;//モデル本体が持っているこのモーションの要素数
     protected: 
         void UpdateTime();
 
-        bool loopFlag_;
+        bool loopFlag_ = true;
         float animSpeed_ = 1.0f;//各アニメーションごとの再生速度
         float timeStamp_ = 0.0f;
 

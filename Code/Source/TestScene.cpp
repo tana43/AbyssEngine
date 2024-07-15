@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "SkeletalMesh.h"
 #include "StaticMesh.h"
-#include "Player.h"
+#include "PlayerSoldier.h"
 #include "DebugRenderer.h"
 #include "Vitesse.h"
 #include "MeshCollider.h"
@@ -142,7 +142,7 @@ void TestScene::Initialize()
 
     //Player
     const auto& player = InstanceActor("Player");
-    player->AddComponent<Player>();
+    player->AddComponent<Soldier>();
 
     //F-14
     const auto& fighterJet = InstanceActor("F-14A");

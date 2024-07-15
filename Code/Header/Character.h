@@ -38,7 +38,7 @@ namespace AbyssEngine
         void SetVelocityZ(const float& z) { velocity_.z = z; }
 
         const float GetMaxHorizontalSpeed() const { return Max_Horizontal_Speed; }
-        const float GetMaxVericalSpeed()const { return Max_Vertical_Speed; }
+        const float GetMaxVerticalSpeed()const { return Max_Vertical_Speed; }
 
     protected:
         //Žw’è•ûŒü‚É‰ñ“]

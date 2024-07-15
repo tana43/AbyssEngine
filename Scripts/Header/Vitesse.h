@@ -6,6 +6,7 @@
 #include "VitesseConstants.h"
 
 class ThrusterEffect;
+class Soldier;
 
 class Vitesse : public HumanoidWeapon 
 {
@@ -54,6 +55,12 @@ public:
         Fly_Move2D,
         Fly_Move,
     };
+    //アニメーションステートマシーンEnum
+    enum class AnimStateMachineIndex
+    {
+        Ground_Move,
+        Fly_Move,
+    };
 
 public:
     const std::unique_ptr<StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
@@ -61,7 +68,16 @@ public:
     //AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
     AbyssEngine::AnimBlendSpaceFlyMove* GetFlyMoveAnimation() { return flyMoveAnimation_; }
     
-    
+    const std::weak_ptr<Soldier>& GetPilot() { return pilot_; }
+    void SetPilot(const std::shared_ptr<Soldier>& p) { pilot_ = p; }
+
+    const AbyssEngine::Vector3& GetMoveVec() const { return moveVec_; }
+    void SetMoveVec(const AbyssEngine::Vector3& vec) { moveVec_ = vec; }
+
+    const AbyssEngine::Vector3& GetMoveDirection() const { return moveDirection_; }
+    void SetMoveDirection(const AbyssEngine::Vector3& vec) { moveDirection_ = vec; }
+
+    void ChangeAnimationState(const AnimStateMachineIndex& index);
 
 private:
     void UpdateInputMove()override;
@@ -95,6 +111,11 @@ private:
 
     //スラスターを噴射させるか
     bool activeThruster_ = true;
+
+    //パイロット(プレイヤー)
+    std::weak_ptr<Soldier> pilot_;
+
+    
 
 };
 

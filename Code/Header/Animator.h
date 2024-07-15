@@ -46,6 +46,17 @@ namespace AbyssEngine
         const int& GetCurrentAnimClip() const { return static_cast<int>(animationClip_); }
         //次のアニメーションを取得
         const int& GetNextAnimClip() const { return static_cast<int>(nextAnimationClip_); }
+
+        const std::vector<Animation*>& GetAnimations() 
+        {
+            std::vector<Animation*> anims;
+            for (const auto& a : animations_)
+            {
+                anims.emplace_back(a.get());
+            }
+            return anims;
+        };
+
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;

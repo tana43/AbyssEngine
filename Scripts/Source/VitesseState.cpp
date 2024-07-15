@@ -11,7 +11,7 @@ using namespace AbyssEngine;
 void VitesseState::GroundMove::Initialize()
 {
     //アニメーション設定
-    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Run_Move));
+    owner_->ChangeAnimationState(Vitesse::AnimStateMachineIndex::Ground_Move);
 }
 
 void VitesseState::GroundMove::Update()
@@ -30,7 +30,8 @@ void VitesseState::GroundMove::Finalize()
 void VitesseState::FlyMove::Initialize()
 {
     //アニメーション設定
-    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
+    //owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
+    owner_->ChangeAnimationState(Vitesse::AnimStateMachineIndex::Fly_Move);
 
     //空中移動
 }
@@ -48,11 +49,13 @@ void VitesseState::FlyMove::Finalize()
 void VitesseState::Landing::Initialize()
 {
     //アニメーション設定
-    //owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::));
+    //owner_->ChangeAnimationState(Vitesse::AnimStateMachineIndex::Fly_Move);
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Landing));
 }
 
 void VitesseState::Landing::Update()
 {
+    owner_->GetAnimator()->
 }
 
 void VitesseState::Landing::Finalize()

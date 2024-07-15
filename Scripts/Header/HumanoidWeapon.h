@@ -19,6 +19,9 @@ public:
     virtual void ToFlightMode();//フライトモードへ移行
     virtual void ToLandMode();//陸上モードへ移行
 
+private:
+
+
 protected:
     virtual void Move()override;
     virtual void Climb(float amount);//上昇

@@ -23,7 +23,6 @@ void VitesseAnimState::AnimGroundMove::Update()
     {
         //前方向と進行方向の差のベクトルを算出
         const auto& forward = owner_->GetTransform()->GetForward();
-        //const auto& right = transform_->GetRight();
         Vector3 moveDirection;
         velocityXZ.Normalize(moveDirection);
 
@@ -54,15 +53,18 @@ void VitesseAnimState::AnimGroundMove::Finalize()
 void VitesseAnimState::AnimFlyMove::Initialize()
 {
     //アニメーション設定
-    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimState::Run_Move));
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
 }
 
 void VitesseAnimState::AnimFlyMove::Update()
 {
     const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
-    const auto velo = vi->GetVelocity();
+    const auto& velo = vi->GetVelocity();
+
+    //ブレンドアニメーションのWeight更新
+    vi->GetFlyMoveAnimation()->SetMoveVec(vi->GetMoveVec());
     Vector3 velocityXZ = { velo.x,0,velo.z };
-    if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
+    if (velocityXZ.LengthSquared() < 0.01f)
     {
         vi->GetFlyMoveAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 0));
     }
@@ -70,7 +72,6 @@ void VitesseAnimState::AnimFlyMove::Update()
     {
         //前方向と進行方向の差のベクトルを算出
         const auto& forward = owner_->GetTransform()->GetForward();
-        //const auto& right = transform_->GetRight();
         Vector3 moveDirection;
         velocityXZ.Normalize(moveDirection);
 
@@ -89,7 +90,18 @@ void VitesseAnimState::AnimFlyMove::Update()
         vi->GetFlyMoveAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
 
         //移動方向に代入
-        moveDirection = { result.x,0,result.y };
+        vi->SetMoveDirection(Vector3(result.x,0,result.y));
+    }
+
+    if (fabsf(velo.y) > 0.1f)
+    {
+        float result1D = velo.y / vi->GetMaxVerticalSpeed();
+        result1D = std::clamp(result1D, -1.0f, 1.0f);
+        vi->GetFlyMoveAnimation()->GetBlendSpace1D()->SetBlendWeight(result1D);
+    }
+    else
+    {
+        vi->GetFlyMoveAnimation()->GetBlendSpace1D()->SetBlendWeight(0.0f);
     }
 }
 

@@ -18,7 +18,7 @@ HWND				DXSystem::hwnd_;
 DXGI_SAMPLE_DESC	DXSystem::MSAA_;
 
 
-#if 1 //4K
+#if 0 //4K
 int DXSystem::screenWidth_  = 3840;
 int DXSystem::screenHeight_ = 2160;
 #else //HD

@@ -1,7 +1,7 @@
 #include "FacilityScene.h"
 #include "StaticMesh.h"
 #include "Camera.h"
-#include "Player.h"
+#include "PlayerSoldier.h"
 
 using namespace AbyssEngine;
 
@@ -18,7 +18,7 @@ void FacilityScene::Initialize()
     floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Map_BigStarStation_F1.glb");
 
     const auto& player = InstanceActor("Player_Facility_01");
-    player->AddComponent<Player>();
+    player->AddComponent<Soldier>();
 }
 
 void FacilityScene::Update()

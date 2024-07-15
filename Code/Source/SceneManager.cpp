@@ -20,8 +20,8 @@ SceneManager::SceneManager()
     AddScene(new SceneGame,"Game");
     AddScene(new SceneTitle,"Title");
     AddScene(new FacilityScene,"Facility");
-    //SetNextScene("Test");
-    SetNextScene("Facility");
+    SetNextScene("Test");
+    //SetNextScene("Facility");
 }
 
 SceneManager::~SceneManager()

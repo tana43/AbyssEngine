@@ -1,13 +1,15 @@
 #pragma once
 #include "Character.h"
 
+class Vitesse;
+
 namespace AbyssEngine
 {
     class Camera;
     class StaticMesh;
 }
 
-class Player final : public AbyssEngine::Character
+class Soldier final : public AbyssEngine::Character
 {
 public:
 
@@ -22,6 +24,14 @@ public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
     void Update()override;
     bool DrawImGui()override;
+
+    //ヴィテスに搭乗する
+    void BoardingTheVitesse();
+
+public:
+    //ヴィテスに搭乗しているか
+    const bool& GetVitesseOnBoard() const { return vitesseOnBoard_; }
+    void SetVitesseOnBoard(const bool& flag) { vitesseOnBoard_ = flag; }
 
 private:
     void MoveUpdate();
@@ -40,6 +50,10 @@ private:
     float cameraRollSpeed_ = 90.0f;
 
     float jumpPower_ = 10.0f;
+
+    bool vitesseOnBoard_ = false;//ヴィテスに乗っているか
+
+    std::shared_ptr<Vitesse> vitesse_;
 };
 
 

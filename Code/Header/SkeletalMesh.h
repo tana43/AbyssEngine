@@ -35,7 +35,7 @@ namespace AbyssEngine
 
         GltfSkeletalMesh* GetModel() { return model_.get(); }
 
-        std::shared_ptr<Animator>& GetAnimator() { return animator_; }
+        const std::shared_ptr<Animator>& GetAnimator() { return animator_; }
 
         //ソケットにアタッチする　武器などを持たせることが出来る
         void SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, const char* socketName);

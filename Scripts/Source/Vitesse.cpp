@@ -6,6 +6,8 @@
 #include "Input.h"
 #include "VitesseState.h"
 #include "RenderManager.h"
+#include "PlayerSoldier.h"
+#include "VitesseAnimState.h"
 
 #include "ThrusterEffect.h"
 
@@ -50,6 +52,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
             "Fly_Down",
             "Fly_Landing"
         });
+
+    //ループ再生しないように
+    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimState::Landing))->SetLoopFlag(false);
 
     //地上移動
     AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimState::Stand),Vector2(0,0));
@@ -112,6 +117,12 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::Landing(this));
     stateMachine_->SetState(static_cast<int>(ActionState::GMove));
 
+    //アニメーションステートマシーン設定
+    animStateMachine_ = std::make_unique<StateMachine<State<Animator>>>();
+    animStateMachine_->RegisterState(new VitesseAnimState::AnimGroundMove(model_->GetAnimator().get()));
+    animStateMachine_->RegisterState(new VitesseAnimState::AnimFlyMove(model_->GetAnimator().get()));
+    animStateMachine_->SetState(static_cast<int>(AnimStateMachineIndex::Ground_Move));
+
     //エフェクト追加
     const int unitSize = static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units);
     const auto& units = VitesseConstants::Thrusters;
@@ -136,6 +147,11 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 void Vitesse::Update()
 {
+    //const auto& pilot = pilot_.lock();
+    //if (!pilot)return;//パイロットが見つからない
+
+    //if(!pilot->GetVitesseOnBoard())//ヴィテスに搭乗していない
+
     stateMachine_->Update();
 
     HumanoidWeapon::Update();
@@ -152,7 +168,7 @@ void Vitesse::Move()
     }
 
 
-//#if 1
+#if 0
     //ブレンドアニメーションのWeight更新
     flyMoveAnimation_->SetMoveVec(moveVec_);
     Vector3 velocityXZ = {velocity_.x,0,velocity_.z};
@@ -203,10 +219,9 @@ void Vitesse::Move()
     {
         flyMoveAnimation_->GetBlendSpace1D()->SetBlendWeight(0.0f);
     }
-//#else
-//    runMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Speed) * 2);
-//#endif // 1
-//    flyMoveAnimation_->SetBlendWeight((velocity_.Length() / Max_Horizontal_Speed) * 2);
+#else
+    animStateMachine_->Update();
+#endif // 1
 
     CameraRollUpdate();
 
@@ -360,6 +375,11 @@ void Vitesse::ThrusterAllStop()
     {
         t->Stop();
     }
+}
+
+void Vitesse::ChangeAnimationState(const AnimStateMachineIndex& index)
+{
+    animStateMachine_->ChangeState(static_cast<int>(index));
 }
 
 void Vitesse::UpdateInputMove()
