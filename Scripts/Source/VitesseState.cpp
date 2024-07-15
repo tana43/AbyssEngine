@@ -11,7 +11,7 @@ using namespace AbyssEngine;
 void VitesseState::GroundMove::Initialize()
 {
     //アニメーション設定
-    owner_->ChangeAnimationState(Vitesse::AnimStateMachineIndex::Ground_Move);
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Ground_Move);
 }
 
 void VitesseState::GroundMove::Update()
@@ -31,7 +31,7 @@ void VitesseState::FlyMove::Initialize()
 {
     //アニメーション設定
     //owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
-    owner_->ChangeAnimationState(Vitesse::AnimStateMachineIndex::Fly_Move);
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Fly_Move);
 
     //空中移動
 }
@@ -49,13 +49,18 @@ void VitesseState::FlyMove::Finalize()
 void VitesseState::Landing::Initialize()
 {
     //アニメーション設定
-    //owner_->ChangeAnimationState(Vitesse::AnimStateMachineIndex::Fly_Move);
-    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Landing));
+    //owner_->ChangeAnimationState(Vitesse::AnimationState::Fly_Move);
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Landing));
 }
 
 void VitesseState::Landing::Update()
 {
-    owner_->GetAnimator()->
+    //アニメーションが終了次第GroundMoveへ
+    if (owner_->GetAnimator()->GetAnimationFinished())
+    {
+        owner_->ChangeAnimationState(Vitesse::AnimationState::Ground_Move);
+        owner_->ChangeState(Vitesse::ActionState::GMove);
+    }
 }
 
 void VitesseState::Landing::Finalize()
@@ -66,7 +71,7 @@ void VitesseState::Landing::Finalize()
 void VitesseState::TakeOff::Initialize()
 {
     //アニメーション設定
-    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Up));
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Fly_Up));
     startPosition_ = owner_->GetTransform()->GetPosition().y;
     timer_ = 0;
 
@@ -83,11 +88,12 @@ void VitesseState::TakeOff::Initialize()
 void VitesseState::TakeOff::Update()
 {
     //アニメーションが遷移しきっており、ある程度の時間が経過しているなら空中移動モーションへ
-    if (owner_->GetAnimator()->GetNextAnimClip() != static_cast<int>(Vitesse::AnimState::Fly_Move)
-        && owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimState::Fly_Up)
+    if (owner_->GetAnimator()->GetNextAnimClip() != static_cast<int>(Vitesse::AnimationIndex::Fly_Move)
+        && owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Fly_Up)
         && timer_ > requidTime_ / 4.0f)
     {
-        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move),requidTime_ / 4.0f);
+        //owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Fly_Move),requidTime_ / 4.0f);
+        owner_->ChangeAnimationState(Vitesse::AnimationState::Fly_Move);
     }
 
     //イージングを使ってY座標を上に動かす

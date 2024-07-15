@@ -47,15 +47,9 @@ namespace AbyssEngine
         //次のアニメーションを取得
         const int& GetNextAnimClip() const { return static_cast<int>(nextAnimationClip_); }
 
-        const std::vector<Animation*>& GetAnimations() 
-        {
-            std::vector<Animation*> anims;
-            for (const auto& a : animations_)
-            {
-                anims.emplace_back(a.get());
-            }
-            return anims;
-        };
+        std::vector<Animation*> GetAnimations();
+
+        const bool& GetAnimationFinished() const { return isFinished_; }
 
     private:
         //すべてのアニメーション
@@ -76,6 +70,8 @@ namespace AbyssEngine
         bool isTransitioningBlendAnim_ = false;//アニメーションの遷移のブレンド中か？
         float transitionTimer_ = 0;//アニメーション遷移タイマー
         float transitionTimeRequired_ = 0;//アニメーションの遷移に掛かる時間
+
+        bool isFinished_;//アニメーションの再生が終わっているか
     };
 
 }

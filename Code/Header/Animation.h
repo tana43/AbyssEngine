@@ -19,7 +19,7 @@ namespace AbyssEngine
 
         //アニメーションの更新
         virtual void Initialize();
-        virtual std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model);
+        virtual std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr);
         virtual void DrawImGui(Animator* animator);
 
     public:
@@ -49,7 +49,7 @@ namespace AbyssEngine
         ~AnimBlendSpace1D() {}
 
         //アニメーションの更新
-        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model)override;
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr)override;
         void DrawImGui(Animator* animator)override;
 
         //ブレンドするアニメーションの数を増やす
@@ -116,7 +116,7 @@ namespace AbyssEngine
         ~AnimBlendSpace2D() {}
 
         //アニメーションの更新
-        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model)override;
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model ,bool* animationFinished = nullptr)override;
         void DrawImGui(Animator* animator)override;
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace AbyssEngine
         AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D);
         ~AnimBlendSpaceFlyMove() {}
 
-        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model)override;
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr)override;
 
         void SetMoveVec(const AbyssEngine::Vector3& v) { moveVec_ = v; }
         const AbyssEngine::Vector3& GetMoveVec() const {return moveVec_; }

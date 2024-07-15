@@ -35,7 +35,7 @@ public:
     };
 
     //アニメーション
-    enum class AnimState
+    enum class AnimationIndex
     {
         Stand,
         Run_F,
@@ -56,7 +56,7 @@ public:
         Fly_Move,
     };
     //アニメーションステートマシーンEnum
-    enum class AnimStateMachineIndex
+    enum class AnimationState
     {
         Ground_Move,
         Fly_Move,
@@ -77,7 +77,9 @@ public:
     const AbyssEngine::Vector3& GetMoveDirection() const { return moveDirection_; }
     void SetMoveDirection(const AbyssEngine::Vector3& vec) { moveDirection_ = vec; }
 
-    void ChangeAnimationState(const AnimStateMachineIndex& index);
+    void ChangeState(const ActionState state);
+    void ChangeAnimationState(const AnimationState& state);
+
 
 private:
     void UpdateInputMove()override;

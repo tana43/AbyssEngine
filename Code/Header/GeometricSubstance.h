@@ -481,7 +481,8 @@ namespace AbyssEngine
 		std::vector<Image> images_;
 		std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textureResourceViews_;
 
-		void Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes, bool loopback = true, size_t sceneIndex = 0);
+		//アニメーション関数　アニメーションが終わっているならTrueを返す
+		bool Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes, bool loopback = true, size_t sceneIndex = 0);
 		void AppendAnimation(const std::string& filename);
 		void AppendAnimations(const std::vector<std::string>& filenames);
 

@@ -61,6 +61,9 @@ void Animator::AnimatorUpdate()
 	}
 	const auto& model = skeletalMesh_.lock()->GetModel();
 
+	//再生終了フラグリセット
+	isFinished_ = false;
+
 	//時間更新
 	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 
@@ -90,8 +93,8 @@ void Animator::AnimatorUpdate()
 	}
 	else
 	{
-		//通常の更新
-		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model);
+		//通常の更新と再生終了フラグ更新
+		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model,&isFinished_);
 	}
 }
 
@@ -206,3 +209,13 @@ AnimBlendSpaceFlyMove* AbyssEngine::Animator::AppendAnimation(AnimBlendSpaceFlyM
 	animations_.emplace_back(p);
 	return p;
 }
+
+std::vector<Animation*> AbyssEngine::Animator::GetAnimations()
+{
+	std::vector<Animation*> anims;
+	for (const auto& a : animations_)
+	{
+		anims.emplace_back(a.get());
+	}
+	return anims;
+};

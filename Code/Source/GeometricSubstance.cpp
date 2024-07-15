@@ -658,17 +658,18 @@ void GeometricSubstance::ExtractAnimations(const tinygltf::Model& transmissionMo
 	}
 }
 
-void GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes, bool loopback, size_t sceneIndex)
+bool GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes, bool loopback, size_t sceneIndex)
 {
 	_ASSERT_EXPR(animatedNodes.size() > animationIndex, L"");
 	_ASSERT_EXPR(animatedNodes.size() == nodes_.size(), L"");
 
-	std::function<size_t(const std::vector<float>&, float, float&, bool)> indexof = [](const std::vector<float>& keyframeTimes, float time, float& interpolationFactor, bool loopback)->size_t {
+	std::function<size_t(const std::vector<float>&, float, float&, bool, bool&)> indexof = [](const std::vector<float>& keyframeTimes, float time, float& interpolationFactor, bool loopback,bool& animationFinished)->size_t {
 		size_t keyframeIndex = 0;
 		const size_t keyframeCount = keyframeTimes.size();
 
 		const float beginTime = keyframeTimes.at(0);
 		const float endTime = keyframeTimes.at(keyframeCount - 1);
+		animationFinished = false;
 
 		if (time > endTime)
 		{
@@ -678,6 +679,7 @@ void GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<
 			}
 			else
 			{
+				animationFinished = true;
 				interpolationFactor = 1.0f;
 				return keyframeCount - 2;
 			}
@@ -702,6 +704,7 @@ void GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<
 		return keyframeIndex;
 	};
 
+	bool animationFinished;
 	if (animations_.size() > 0)
 	{
 		const Animation& animation = animations_.at(animationIndex);
@@ -719,7 +722,7 @@ void GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<
 				continue;
 			}
 			float interpolation_factor = {};
-			size_t keyframe_index = indexof(keyframeTimes, time, interpolation_factor, loopback);
+			size_t keyframe_index = indexof(keyframeTimes, time, interpolation_factor, loopback, animationFinished);
 			if (channel.targetPath_ == "scale")
 			{
 				const std::vector<DirectX::XMFLOAT3>& keyframe_scales = animation.keyframeScales_.at(sampler.output_);
@@ -750,6 +753,8 @@ void GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<
 	{
 		animatedNodes = nodes_;
 	}
+
+	return animationFinished;
 }
 void GeometricSubstance::CumulateTransforms(std::vector<Node>& nodes_, size_t scene_index)
 {

@@ -26,10 +26,14 @@ void Animation::Initialize()
     timeStamp_ = 0.0f;
 }
 
-std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model)
+std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
 {
     UpdateTime();
-    model->Animate(animIndex_, timeStamp_, animatedNodes_, loopFlag_);
+    bool flag = model->Animate(animIndex_, timeStamp_, animatedNodes_, loopFlag_);
+    if (animationFinished)
+    {
+        *animationFinished = flag;
+    }
 
     return animatedNodes_;
 }
@@ -72,8 +76,14 @@ AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, AnimBlendSpace1D animDat
 }
 
 //現在のブレンドの重みから正に近いモーションと、負に近いモーションの二つを取得し、ブレンドする
-std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model)
+std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkeletalMesh* model,bool* animationFinished)
 {
+    //ブレンドスペースは必ずループ再生なのでアニメーションの再生は終わらない
+    if (animationFinished)
+    {
+        *animationFinished = false;
+    }
+
     UpdateTime();
 
     //ブレンドの速度制限
@@ -183,8 +193,14 @@ AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name_
     secondBlendAnimNodes_ = animatedNodes_;
 }
 
-std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model)
+std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
 {
+    //ブレンドスペースは必ずループ再生なのでアニメーションの再生は終わらない
+    if (animationFinished)
+    {
+        *animationFinished = false;
+    }
+    
     UpdateTime();
 
     //ブレンドの速度制限
@@ -522,8 +538,13 @@ AbyssEngine::AnimBlendSpaceFlyMove::AnimBlendSpaceFlyMove(SkeletalMesh* model, c
 
 }
 
-std::vector<GeometricSubstance::Node> AbyssEngine::AnimBlendSpaceFlyMove::UpdateAnimation(GltfSkeletalMesh* model)
+std::vector<GeometricSubstance::Node> AbyssEngine::AnimBlendSpaceFlyMove::UpdateAnimation(GltfSkeletalMesh* model,bool* animationFinished)
 {
+    if (animationFinished)
+    {
+        *animationFinished = false;
+    }
+
     //各モーションを計算
     const auto& blendNode1D = blendSpace1D_->UpdateAnimation(model);
     const auto& blendNode2D = blendSpace2D_->UpdateAnimation(model);

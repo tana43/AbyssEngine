@@ -54,42 +54,42 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         });
 
     //ループ再生しないように
-    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimState::Landing))->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Landing))->SetLoopFlag(false);
 
     //地上移動
-    AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimState::Stand),Vector2(0,0));
+    AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimationIndex::Stand),Vector2(0,0));
     //前、右、左、後の順に追加
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_F), Vector2(0, 1));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_R), Vector2(1, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_L), Vector2(-1, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Run_B), Vector2(0, -1));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_F), Vector2(0, 1));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_R), Vector2(1, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_L), Vector2(-1, 0));
+    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_B), Vector2(0, -1));
     groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
 
     //空中移動
 #if 0
-    AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
+    AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimationIndex::Fly_Idle), Vector2(0, 0));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_F), Vector2(0, 1));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_R), Vector2(1, 0));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_L), Vector2(-1, 0));
+    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_B), Vector2(0, -1));
 #else
-    AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimState::Fly_Idle), static_cast<int>(AnimState::Fly_Up));
-    fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimState::Fly_Down), -1.0f);
+    AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimationIndex::Fly_Idle), static_cast<int>(AnimationIndex::Fly_Up));
+    fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_Down), -1.0f);
     auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
     f1d->SetMinWeight(-1.0f);
 
-    AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimState::Fly_Idle), Vector2(0, 0));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_F), Vector2(0, 1));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_R), Vector2(1, 0));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_L), Vector2(-1, 0));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimState::Fly_B), Vector2(0, -1));
+    AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimationIndex::Fly_Idle), Vector2(0, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_F), Vector2(0, 1));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_R), Vector2(1, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_L), Vector2(-1, 0));
+    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_B), Vector2(0, -1));
     auto* f2d = model_->GetAnimator()->AppendAnimation(fMoveAnim2D);
 
     AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D",f2d,f1d);
     flyMoveAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
 #endif // 0
 
-    model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Run_Move));
+    model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimationIndex::Run_Move));
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -115,13 +115,15 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::FlyMove(this));
     stateMachine_->RegisterState(new VitesseState::TakeOff(this));
     stateMachine_->RegisterState(new VitesseState::Landing(this));
-    stateMachine_->SetState(static_cast<int>(ActionState::GMove));
 
     //アニメーションステートマシーン設定
     animStateMachine_ = std::make_unique<StateMachine<State<Animator>>>();
     animStateMachine_->RegisterState(new VitesseAnimState::AnimGroundMove(model_->GetAnimator().get()));
     animStateMachine_->RegisterState(new VitesseAnimState::AnimFlyMove(model_->GetAnimator().get()));
-    animStateMachine_->SetState(static_cast<int>(AnimStateMachineIndex::Ground_Move));
+
+    //初期ステート設定
+    animStateMachine_->SetState(static_cast<int>(AnimationState::Ground_Move));
+    stateMachine_->SetState(static_cast<int>(ActionState::GMove));
 
     //エフェクト追加
     const int unitSize = static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units);
@@ -377,9 +379,14 @@ void Vitesse::ThrusterAllStop()
     }
 }
 
-void Vitesse::ChangeAnimationState(const AnimStateMachineIndex& index)
+void Vitesse::ChangeState(const ActionState state)
 {
-    animStateMachine_->ChangeState(static_cast<int>(index));
+    stateMachine_->ChangeState(static_cast<int>(state));
+}
+
+void Vitesse::ChangeAnimationState(const AnimationState& state)
+{
+    animStateMachine_->ChangeState(static_cast<int>(state));
 }
 
 void Vitesse::UpdateInputMove()

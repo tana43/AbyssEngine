@@ -7,7 +7,7 @@ using namespace AbyssEngine;
 void VitesseAnimState::AnimGroundMove::Initialize()
 {
     //アニメーション設定
-    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimState::Run_Move));
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Run_Move));
 }
 
 void VitesseAnimState::AnimGroundMove::Update()
@@ -53,7 +53,7 @@ void VitesseAnimState::AnimGroundMove::Finalize()
 void VitesseAnimState::AnimFlyMove::Initialize()
 {
     //アニメーション設定
-    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Fly_Move));
 }
 
 void VitesseAnimState::AnimFlyMove::Update()
