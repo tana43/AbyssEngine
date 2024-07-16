@@ -28,10 +28,11 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb");
     model_->GetAnimator()->AppendAnimations({
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_WalkFwd.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_RunFwd.glb"
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_RunFwd.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle_ADS.glb"
                 },
         {
-            "Walk","Run"
+            "Walk","Run","Aim"
         });
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
     moveAnim.AddBlendAnimation(1, 0.6f);
