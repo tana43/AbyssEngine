@@ -25,7 +25,8 @@ void TestScene::Initialize()
 {
     //カメラ
     const auto& camera_ = InstanceActor("Debug_Camera");
-    camera_->AddComponent<Camera>();
+    const auto& cameraCom = camera_->AddComponent<Camera>();
+    Camera::ChangeMainCamera(cameraCom.get());
     //camera_->GetTransform()->SetPosition(Vector3(0, 3, -10));
 
     //テスト用のオブジェクト
@@ -137,12 +138,14 @@ void TestScene::Initialize()
 
 #if 1//ヴィテスモデル仮生成
     const auto& vitesse = InstanceActor("Vitesse");
-    vitesse->AddComponent<Vitesse>();
+    const auto& vc = vitesse->AddComponent<Vitesse>();
 #endif // 0//ヴィテスモデル仮生成
 
     //Player
     const auto& player = InstanceActor("Player");
-    player->AddComponent<Soldier>();
+    const auto& pv = player->AddComponent<Soldier>();
+    //プレイヤーにヴィテスを設定
+    pv->SetMyVitesse(vc);
 
     //F-14
     const auto& fighterJet = InstanceActor("F-14A");

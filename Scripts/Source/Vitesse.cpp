@@ -143,18 +143,20 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     thruster_->SetOffsetRotation(Vector3(0.0f,0.0f,100.0f));
     thruster_->SetOffsetScale(0.3f);*/
 
-    Engine::renderManager_->ChangeMainCamera(camera_.get());
+    //Engine::renderManager_->ChangeMainCamera(camera_.get());
 
 }
 
 void Vitesse::Update()
 {
-    //const auto& pilot = pilot_.lock();
-    //if (!pilot)return;//パイロットが見つからない
+    const auto& pilot = pilot_.lock();
+    
+    //パイロットが搭乗しているか
+    if (pilot && pilot->GetVitesseOnBoard())
+    {
+        stateMachine_->Update();
+    }
 
-    //if(!pilot->GetVitesseOnBoard())//ヴィテスに搭乗していない
-
-    stateMachine_->Update();
 
     HumanoidWeapon::Update();
 }
@@ -379,7 +381,7 @@ void Vitesse::ThrusterAllStop()
     }
 }
 
-void Vitesse::ChangeState(const ActionState state)
+void Vitesse::ChangeState(const ActionState& state)
 {
     stateMachine_->ChangeState(static_cast<int>(state));
 }
@@ -387,6 +389,15 @@ void Vitesse::ChangeState(const ActionState state)
 void Vitesse::ChangeAnimationState(const AnimationState& state)
 {
     animStateMachine_->ChangeState(static_cast<int>(state));
+}
+
+void Vitesse::GetOnBoardPilot(const std::shared_ptr<Soldier>& pilot)
+{
+    //カメラを変更
+    Camera::ChangeMainCamera(camera_.get());
+
+    //パイロット設定
+    pilot_ = pilot;
 }
 
 void Vitesse::UpdateInputMove()

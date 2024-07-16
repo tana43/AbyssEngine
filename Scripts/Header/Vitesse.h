@@ -77,9 +77,11 @@ public:
     const AbyssEngine::Vector3& GetMoveDirection() const { return moveDirection_; }
     void SetMoveDirection(const AbyssEngine::Vector3& vec) { moveDirection_ = vec; }
 
-    void ChangeState(const ActionState state);
+    void ChangeState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
 
+    //パイロット乗り込み
+    void GetOnBoardPilot(const std::shared_ptr<Soldier>& pilot);
 
 private:
     void UpdateInputMove()override;

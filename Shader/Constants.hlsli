@@ -14,8 +14,6 @@ struct SceneConstants
     float4 focusPosition;
     float exposure;
     float pureWhite;
-    float emissiveIntensity;
-    float imageBasedLightingIntensity;
     float skyboxRoughness;
     float time;
 };

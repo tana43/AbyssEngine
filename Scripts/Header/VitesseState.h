@@ -4,11 +4,14 @@
 
 class Vitesse;
 
+//継承元
+#define Inheritance  public State<Vitesse>
+
 namespace VitesseState
 {
     //Game:Vitesse 移動ステート
     //地上における移動ステート（待機も含まれている）
-    class GroundMove : public State<Vitesse>
+    class GroundMove : Inheritance
     {
     public:
         GroundMove(Vitesse* vitesse) : State(vitesse, "GroundMove") {}
@@ -21,7 +24,7 @@ namespace VitesseState
 
     //Game:Vitesse 空中移動ステート
     //空中における空中移動ステート（待機も含まれている）
-    class FlyMove : public State<Vitesse>
+    class FlyMove : Inheritance
     {
     public:
         FlyMove(Vitesse* vitesse) : State(vitesse, "FlyMove") {}
@@ -34,7 +37,7 @@ namespace VitesseState
 
     //Game:Vitesse 離陸ステート
     //離陸ステート
-    class TakeOff : public State<Vitesse>
+    class TakeOff : Inheritance
     {
     public:
         TakeOff(Vitesse* vitesse) : State(vitesse, "TakeOff") {}
@@ -53,7 +56,7 @@ namespace VitesseState
 
     //Game:Vitesse 着陸ステート
     //着陸ステート
-    class Landing : public State<Vitesse>
+    class Landing : Inheritance
     {
     public:
         Landing(Vitesse* vitesse) : State(vitesse, "Landing") {}

@@ -68,6 +68,8 @@ namespace AbyssEngine
         //ミューテックス取得
         std::mutex& GetMutex() { return mutex_; }
 
+        const std::vector<std::weak_ptr<Camera>>& GetCameraList() { return cameraList_; };
+
     private:
         struct Vertex
         {
@@ -99,8 +101,6 @@ namespace AbyssEngine
             Vector4 focusPosition_;
             float exposure_ = 1.0f;
             float pureWhite_ = 3.0f;
-            float emissiveIntensity_ = 15.0f;
-            float imageBasedLightingIntensity_ = 1.0f;
             float skyboxRoughness_ = 0.0f;
             float time_ = 0.0f;
         };

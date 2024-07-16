@@ -29,6 +29,8 @@ namespace AbyssEngine
 
         void UpdateFrustum();
 
+        static void ChangeMainCamera(Camera* c);
+
     public:
         void SetViewTarget(Transform* t) { viewTarget_ = t; }
         Transform* GetViewTarget() { return viewTarget_; }

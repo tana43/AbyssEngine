@@ -8,6 +8,9 @@
 #include "Actor.h"
 #include "Input.h"
 #include "MathHelper.h"
+#include "Vitesse.h"
+
+#include "PlayerSoldierState.h"
 
 #include "Animator.h"
 #include "Animation.h"
@@ -53,12 +56,25 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     camera_->cameraLagSpeed_ = 0.05f;
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
+
+
+    //ステートマシン設定
+    stateMachine_ = std::make_unique<StateMachine<State<Soldier>>>();
+    stateMachine_->RegisterState(new SoldierState::Move(this));
+    stateMachine_->SetState(static_cast<int>(ActionState::Move));
+
+    
 }
 
 void Soldier::Update()
 {
     //プレイヤーカメラがメインになっていなければ更新しない
     if (!camera_->GetIsMainCamera())return;
+
+    //搭乗中は更新処理をしない
+    if (vitesseOnBoard_)return;
+
+    stateMachine_->Update();
 
     MoveUpdate();
 
@@ -83,6 +99,35 @@ bool Soldier::DrawImGui()
 
 void Soldier::MoveUpdate()
 {
+   
+    //Character::UpdateVelocity();
+
+    //地形判定も含めた移動処理
+    Character::UpdateMove();
+
+    //回転
+    //TurnY(velocity_);
+
+    const Vector2 veloXZ = { velocity_.x,velocity_.z };
+    moveAnimation_->SetBlendWeight(veloXZ.Length() / Run_Max_Speed);
+
+    moveVec_ = {};
+}
+
+void Soldier::CameraRollUpdate()
+{
+    //入力値取得
+    Vector2 input = Input::GameSupport::GetCameraRollVector();
+
+    auto r = camera_->GetTransform()->GetRotation();
+    const float rollSpeed = cameraRollSpeed_ * Time::deltaTime_;
+    r.x = r.x + input.y * rollSpeed;
+    r.y = r.y + input.x * rollSpeed;
+    camera_->GetTransform()->SetRotation(r);
+}
+
+void Soldier::InputMove()
+{
     //入力されたベクトルから移動ベクトル取得
     auto inputVec = Input::GameSupport::GetMoveVector();
 
@@ -106,14 +151,6 @@ void Soldier::MoveUpdate()
         moveVec_ = {};
     }
 
-    //Character::UpdateVelocity();
-
-    //地形判定も含めた移動処理
-    Character::UpdateMove();
-
-    //回転
-    //TurnY(velocity_);
-
     //ジャンプ
     if (Input::GameSupport::GetJumpButton())
     {
@@ -125,26 +162,26 @@ void Soldier::MoveUpdate()
     {
         Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
     }
-
-    const Vector2 veloXZ = { velocity_.x,velocity_.z };
-    moveAnimation_->SetBlendWeight(veloXZ.Length() / Run_Max_Speed);
-
-    moveVec_ = {};
 }
 
-void Soldier::CameraRollUpdate()
+bool Soldier::BoardingTheVitesse(const float& range)
 {
-    //入力値取得
-    Vector2 input = Input::GameSupport::GetCameraRollVector();
+    //機体との距離から搭乗可能かどうかを判断
+    auto myPos = GetTransform()->GetPosition();
+    auto viPos = vitesse_->GetTransform()->GetPosition();
+    float dist = Vector3::Distance(myPos, viPos);
+    if (dist < range)
+    {
+        //搭乗
+        vitesse_->GetOnBoardPilot(std::static_pointer_cast<Soldier>(shared_from_this()));
 
-    auto r = camera_->GetTransform()->GetRotation();
-    const float rollSpeed = cameraRollSpeed_ * Time::deltaTime_;
-    r.x = r.x + input.y * rollSpeed;
-    r.y = r.y + input.x * rollSpeed;
-    camera_->GetTransform()->SetRotation(r);
-}
+        //プレイヤーモデルの描画を止める
+        model_->SetEnable(false);
 
-void Soldier::BoardingTheVitesse()
-{
+        vitesseOnBoard_ = true;
 
+        return true;
+    }
+
+    return false;
 }

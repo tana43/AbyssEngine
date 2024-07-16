@@ -493,6 +493,8 @@ namespace AbyssEngine
 			int material_ = -1;
 			int startInstanceLocation_ = 0; // Index of start of cascade plane
 			int skin_ = -1;
+			float emissiveIntensity_ = 15.0f;
+			float imageBasedLightingIntensity_ = 1.0f;
 		};
 		std::unique_ptr<ConstantBuffer<PrimitiveConstants>> primitiveConstants_;
 		const int Primitive_Slot = 0; // b0

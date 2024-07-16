@@ -44,6 +44,9 @@ bool StaticMesh::DrawImGui()
     {
         ImGui::Checkbox("Enabled", &enabled_);
 
+        ImGui::DragFloat("Emissive Intensity", &model_->primitiveConstants_->data_.emissiveIntensity_, 0.01f, 0.0f);
+        ImGui::DragFloat("Image Based Lighting Intensity", &model_->primitiveConstants_->data_.imageBasedLightingIntensity_, 0.01f, 0.0f);
+
         if (isAttached_)
         {
             ImGui::DragFloat3("SocketLocation", &socketData_.location_.x, 0.05f);

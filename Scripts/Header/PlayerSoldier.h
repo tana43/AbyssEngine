@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "StateMachine.h"
 
 class Vitesse;
 
@@ -21,21 +22,32 @@ public:
         Move,
     };
 
+    enum class ActionState
+    {
+        Move,
+    };
+
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
     void Update()override;
     bool DrawImGui()override;
 
     //ヴィテスに搭乗する
-    void BoardingTheVitesse();
+    bool BoardingTheVitesse(const float& range/*搭乗可能距離*/);
 
+    //移動操作
+    void InputMove();
 public:
     //ヴィテスに搭乗しているか
     const bool& GetVitesseOnBoard() const { return vitesseOnBoard_; }
     void SetVitesseOnBoard(const bool& flag) { vitesseOnBoard_ = flag; }
 
+    const std::shared_ptr<Vitesse>& GetMyVitesse() const { return vitesse_; }
+    void SetMyVitesse(const std::shared_ptr<Vitesse>& vitesse) { vitesse_ = vitesse; }
+
 private:
     void MoveUpdate();
     void CameraRollUpdate();
+
 
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
@@ -53,7 +65,11 @@ private:
 
     bool vitesseOnBoard_ = false;//ヴィテスに乗っているか
 
+    //ヴィテス
     std::shared_ptr<Vitesse> vitesse_;
+
+    //ステートマシン
+    std::unique_ptr<StateMachine<State<Soldier>>> stateMachine_;
 };
 
 

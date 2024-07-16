@@ -93,7 +93,6 @@ void SkeletalMesh::RecalculateFrame()
 
 		boundingBox_ = ConvertToDXBoundingBox(minValue_, maxValue_);
 	}
-
 }
 
 
@@ -123,6 +122,9 @@ bool SkeletalMesh::DrawImGui()
 	if (ImGui::TreeNode("Skeletal Mesh"))
 	{
 		ImGui::Checkbox("Enabled",&enabled_);
+
+		ImGui::DragFloat("Emissive Intensity", &model_->primitiveConstants_->data_.emissiveIntensity_, 0.01f, 0.0f);
+		ImGui::DragFloat("Image Based Lighting Intensity", &model_->primitiveConstants_->data_.imageBasedLightingIntensity_, 0.01f, 0.0f);
 
 		ImGui::TreePop();
 	}

@@ -184,6 +184,19 @@ void Camera::UpdateFrustum()
 #endif // _DEBUG
 }
 
+void AbyssEngine::Camera::ChangeMainCamera(Camera* camera)
+{
+    for (auto& c : Engine::renderManager_->GetCameraList())
+    {
+        if (const auto& camera = c.lock())
+        {
+            camera->SetIsMainCamera(false);
+        }
+    }
+
+    camera->SetIsMainCamera(true);
+}
+
 Vector3 Camera::ConvertTo2DVectorFromCamera(const Vector2& v)
 {
     Vector2 result;

@@ -315,6 +315,7 @@
     <ClInclude Include="Scripts\Header\FacilityScene.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\GameUIAdmin.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -527,6 +528,7 @@
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\GameUIAdmin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

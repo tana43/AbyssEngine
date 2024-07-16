@@ -18,6 +18,8 @@ struct PrimitiveConstants
     int material;
     int startInstanceLocation; // Index of start of cascade plane
     int skin;
+    float emissiveIntensity;//エミッシブ
+    float imageBasedLightingIntensity;//IBL
 };
 cbuffer primitiveConstants : register(b0)
 {

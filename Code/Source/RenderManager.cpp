@@ -491,8 +491,8 @@ void RenderManager::DrawImGui()
 
 		ImGui::DragFloat("Exposure", &buffer.exposure_,0.01f,0.0f);
 		ImGui::DragFloat("Pure White", &buffer.pureWhite_,0.01f,0.0f);
-		ImGui::DragFloat("Emissive Intensity", &buffer.emissiveIntensity_,0.01f,0.0f);
-		ImGui::DragFloat("Image Based Lighting Intensity", &buffer.imageBasedLightingIntensity_,0.01f,0.0f);
+		//ImGui::DragFloat("Emissive Intensity", &buffer.emissiveIntensity_,0.01f,0.0f);
+		//ImGui::DragFloat("Image Based Lighting Intensity", &buffer.imageBasedLightingIntensity_,0.01f,0.0f);
 		ImGui::DragFloat("Skybox Roughness", &buffer.skyboxRoughness_,0.01f,0.0f);
 		ImGui::DragFloat("Time", &buffer.time_);
 
