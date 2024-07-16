@@ -3,7 +3,7 @@
 #include "imgui/imgui.h"
 
 #include "Engine.h"
-#include "CharacterManager.h"
+#include "ScriptComponentManager.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -127,7 +127,7 @@ void Scene::Finalize()
     }*/
     Reset();
 
-    Engine::characterManager_->Clear();
+    Engine::scriptComManager_->Clear();
 }
 
 void Scene::DrawDebug()

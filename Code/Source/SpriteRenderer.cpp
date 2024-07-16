@@ -240,3 +240,31 @@ void SpriteRenderer::SetActive(const bool value)
 		}
 	}
 }
+
+bool SpriteRenderer::FadeIn(float alpha, float changeSpeed)
+{
+	changeSpeed *= Time::deltaTime_;
+
+	if (color_.w + changeSpeed >= alpha)
+	{
+		color_.w = alpha;
+		return true;
+	}
+
+	color_.w += changeSpeed;
+	return false;
+}
+
+bool SpriteRenderer::FadeOut(float alpha, float changeSpeed)
+{
+	changeSpeed *= Time::deltaTime_;
+
+	if (color_.w - changeSpeed <= alpha)
+	{
+		color_.w = alpha;
+		return true;
+	}
+
+	color_.w -= changeSpeed;
+	return false;
+}

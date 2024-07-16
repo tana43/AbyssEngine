@@ -15,6 +15,10 @@ namespace AbyssEngine
         SpriteRenderer() {}
         ~SpriteRenderer() {}
 
+        //引数alphaの値へフェードイン・アウトする フェード完了時にTrueを返す
+        bool FadeIn(float alpha, float changeSpeed);
+        bool FadeOut(float alpha, float changeSpeed);
+
     private:
         struct Vertex
         {
@@ -23,16 +27,19 @@ namespace AbyssEngine
             Vector4 color_;   //頂点色
         };
 
-    private:
-        //void Initialize(const std::shared_ptr<GameObject>& obj)override;
-
     public:
-        //仮実装
         void Initialize(const std::shared_ptr<Actor>& actor)override;
         void Render()override;      //描画実行
         void RecalculateFrame();//表示座標を計算する
 
         bool DrawImGui()override;
+
+    public:
+        void SetColor(const Vector4& color) { color_ = color; }
+        const Vector4& GetColor() const { return color_; }
+
+        void SetColorAlpha(const float alpha) { color_.w = alpha; }
+        const float& GetColorAlpha() const { return color_.w; }
 
     private:
         void SetActive(const bool value)override;//アクティブ状態を設定する

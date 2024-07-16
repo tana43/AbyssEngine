@@ -32,7 +32,9 @@ public:
     bool DrawImGui()override;
 
     //ヴィテスに搭乗する
-    bool BoardingTheVitesse(const float& range/*搭乗可能距離*/);
+    bool BoardingTheVitesse();
+    //ヴィテス搭乗可能距離かを判定
+    void BoardingDistanceJudge(const float& range/*搭乗可能距離*/);
 
     //移動操作
     void InputMove();
@@ -43,6 +45,8 @@ public:
 
     const std::shared_ptr<Vitesse>& GetMyVitesse() const { return vitesse_; }
     void SetMyVitesse(const std::shared_ptr<Vitesse>& vitesse) { vitesse_ = vitesse; }
+
+    const bool& GetCanBoarding() const { return canBoarding_; }
 
 private:
     void MoveUpdate();
@@ -64,12 +68,16 @@ private:
     float jumpPower_ = 10.0f;
 
     bool vitesseOnBoard_ = false;//ヴィテスに乗っているか
+    bool canBoarding_ = false;//搭乗可能か
 
     //ヴィテス
     std::shared_ptr<Vitesse> vitesse_;
 
     //ステートマシン
     std::unique_ptr<StateMachine<State<Soldier>>> stateMachine_;
+
+    //ヴィテス搭乗可能距離
+    float boardingDistance_ = 5.0f;
 };
 
 

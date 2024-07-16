@@ -69,16 +69,21 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
 void Soldier::Update()
 {
     //プレイヤーカメラがメインになっていなければ更新しない
-    if (!camera_->GetIsMainCamera())return;
-
-    //搭乗中は更新処理をしない
-    if (vitesseOnBoard_)return;
-
-    stateMachine_->Update();
+    if (camera_->GetIsMainCamera())
+    {
+        //搭乗中は更新処理をしない
+        if (!vitesseOnBoard_)
+        {
+            stateMachine_->Update();
+        }
+    }
 
     MoveUpdate();
 
     CameraRollUpdate();
+
+    //ヴィテス搭乗可能距離判定
+    BoardingDistanceJudge(boardingDistance_);
 }
 
 bool Soldier::DrawImGui()
@@ -126,6 +131,22 @@ void Soldier::CameraRollUpdate()
     camera_->GetTransform()->SetRotation(r);
 }
 
+void Soldier::BoardingDistanceJudge(const float& range)
+{
+    //機体との距離から搭乗可能かどうかを判断
+    auto myPos = GetTransform()->GetPosition();
+    auto viPos = vitesse_->GetTransform()->GetPosition();
+    float dist = Vector3::Distance(myPos, viPos);
+    if (dist < range)
+    {
+        canBoarding_ = true;
+    }
+    else
+    {
+        canBoarding_ = false;
+    }
+}
+
 void Soldier::InputMove()
 {
     //入力されたベクトルから移動ベクトル取得
@@ -164,24 +185,21 @@ void Soldier::InputMove()
     }
 }
 
-bool Soldier::BoardingTheVitesse(const float& range)
+bool Soldier::BoardingTheVitesse()
 {
-    //機体との距離から搭乗可能かどうかを判断
-    auto myPos = GetTransform()->GetPosition();
-    auto viPos = vitesse_->GetTransform()->GetPosition();
-    float dist = Vector3::Distance(myPos, viPos);
-    if (dist < range)
+    //搭乗可能な状態か
+    if (!canBoarding_)
     {
-        //搭乗
-        vitesse_->GetOnBoardPilot(std::static_pointer_cast<Soldier>(shared_from_this()));
-
-        //プレイヤーモデルの描画を止める
-        model_->SetEnable(false);
-
-        vitesseOnBoard_ = true;
-
-        return true;
+        return false;
     }
+   
+    //搭乗
+    vitesse_->GetOnBoardPilot(std::static_pointer_cast<Soldier>(shared_from_this()));
 
-    return false;
+    //プレイヤーモデルの描画を止める
+    model_->SetEnable(false);
+
+    vitesseOnBoard_ = true;
+
+    return true;
 }

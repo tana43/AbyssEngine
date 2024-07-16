@@ -83,8 +83,10 @@ public:
     //パイロット乗り込み
     void GetOnBoardPilot(const std::shared_ptr<Soldier>& pilot);
 
-private:
+    //移動入力の反映
     void UpdateInputMove()override;
+
+private:
     void CameraRollUpdate();
 
     //スラスター更新処理

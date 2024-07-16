@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "ScriptComponent.h"
 #include "MathHelper.h"
 
 //キャラクターの基底クラス
@@ -10,11 +10,11 @@ namespace AbyssEngine
     class Animator;
     class AnimBlendSpace1D;
 
-    class Character : public AbyssEngine::Component
+    class Character : public ScriptComponent
     {
     public:
         virtual void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
-        virtual void Update() {}
+        virtual void Update()override {}
         //virtual void DelayedUpdate() {}//描画時の行列更新などが終わってから
 
         bool DrawImGui()override;

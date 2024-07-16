@@ -2,7 +2,7 @@
 #include "AssetManager.h"
 #include "RenderManager.h"
 #include "SceneManager.h"
-#include "CharacterManager.h"
+#include "ScriptComponentManager.h"
 
 #include "Input.h"
 #include "Scene.h"
@@ -21,20 +21,20 @@
 using namespace AbyssEngine;
 using namespace std;
 
-unique_ptr<AssetManager>        Engine::assetManager_;
-unique_ptr<RenderManager>       Engine::renderManager_;
-unique_ptr<SceneManager>        Engine::sceneManager_;
-unique_ptr<CharacterManager>    Engine::characterManager_;
-unique_ptr<Input>               Engine::inputManager_;
+unique_ptr<AssetManager>            Engine::assetManager_;
+unique_ptr<RenderManager>           Engine::renderManager_;
+unique_ptr<SceneManager>            Engine::sceneManager_;
+unique_ptr<ScriptComponentManager>  Engine::scriptComManager_;
+unique_ptr<Input>                   Engine::inputManager_;
 
 Engine::Engine()
 {
     //各マネージャーの生成
-    sceneManager_ = make_unique<SceneManager>();
-    assetManager_ = make_unique<AssetManager>();
-    renderManager_ = make_unique<RenderManager>();
-    characterManager_ = make_unique<CharacterManager>();
-    inputManager_ = make_unique<Input>();
+    sceneManager_       = make_unique<SceneManager>();
+    assetManager_       = make_unique<AssetManager>();
+    renderManager_      = make_unique<RenderManager>();
+    scriptComManager_   = make_unique<ScriptComponentManager>();
+    inputManager_       = make_unique<Input>();
 
     //ImGui初期化
     IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::GetDevice(), DXSystem::GetDeviceContext());
@@ -47,7 +47,7 @@ Engine::~Engine()
     sceneManager_.reset();
     assetManager_->Exit();
     assetManager_.reset();
-    characterManager_.reset();
+    scriptComManager_.reset();
 
     //ImGui後処理
     IMGUI_CTRL_UNINITIALIZE();
@@ -69,7 +69,7 @@ void Engine::Update()
     sceneManager_->Update();
 
 
-    characterManager_->Update();
+    scriptComManager_->Update();
 
     renderManager_->Render();
 

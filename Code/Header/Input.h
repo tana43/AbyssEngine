@@ -37,6 +37,8 @@ namespace AbyssEngine
             static const Vector2 GetCameraRollVector();//カメラの回転操作
             static const bool GetJumpButton();///ジャンプボタン
             static const bool GetClimdButton();///上昇ボタン
+
+            static const bool GetBoardingButton();//ヴィテス搭乗ボタン-
         };
         
     private:

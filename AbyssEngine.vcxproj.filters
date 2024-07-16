@@ -228,10 +228,7 @@
     <ClInclude Include="Scripts\Header\PlayerSoldier.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Character.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\CharacterManager.h">
+    <ClInclude Include="Code\Header\ScriptComponentManager.h">
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\DebugRenderer.h">
@@ -316,6 +313,10 @@
       <Filter>Script\Header</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\GameUIAdmin.h" />
+    <ClInclude Include="Code\Header\ScriptComponent.h" />
+    <ClInclude Include="Code\Header\Character.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\MathHelper.cpp">
@@ -441,7 +442,7 @@
     <ClCompile Include="Scripts\Source\PlayerSoldier.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\CharacterManager.cpp">
+    <ClCompile Include="Code\Source\ScriptComponentManager.cpp">
       <Filter>Code\Source\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\DebugRenderer.cpp">
@@ -529,6 +530,7 @@
       <Filter>Script\Source</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\GameUIAdmin.cpp" />
+    <ClCompile Include="Code\Source\ScriptComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

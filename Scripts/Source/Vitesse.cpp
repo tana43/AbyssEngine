@@ -171,61 +171,7 @@ void Vitesse::Move()
         Climb(climbSpeed_ * Time::deltaTime_);
     }
 
-
-#if 0
-    //ブレンドアニメーションのWeight更新
-    flyMoveAnimation_->SetMoveVec(moveVec_);
-    Vector3 velocityXZ = {velocity_.x,0,velocity_.z};
-    if (velocityXZ.LengthSquared() < 0.01f)
-    {
-        groundMoveAnimation_->SetBlendWeight(Vector2(0,0));
-        flyMoveAnimation_->GetBlendSpace2D()->SetBlendWeight(Vector2(0,0));
-    }
-    else
-    {
-        //前方向と進行方向の差のベクトルを算出
-        const auto& forward = transform_->GetForward();
-        //const auto& right = transform_->GetRight();
-        Vector3 moveDirection;
-        velocityXZ.Normalize(moveDirection);
-
-        Vector2 result;
-
-        //result.x = (forward.x * moveDirection.z + right.x * moveDirection.x);
-        //result.y = forward.z * moveDirection.z + right.z * moveDirection.x;
-        //result.Normalize();
-        //result = result * (velocity_.Length() / Max_Speed);
-
-        //内積による計算
-        float dot = acosf(forward.Dot(moveDirection));
-        float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
-
-        //左右判定
-        //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
-        if (crossY < 0)dot = DirectX::XM_2PI - dot;
-        result = { sinf(dot),cosf(dot) };
-        result = result * (velocityXZ.Length() / Max_Horizontal_Speed);
-        
-        groundMoveAnimation_->SetBlendWeight(result);
-        flyMoveAnimation_->GetBlendSpace2D()->SetBlendWeight(result);
-
-        //移動方向に代入
-        moveDirection_ = { result.x,0,result.y };
-    }
-
-    if (fabsf(velocity_.y) > 0.1f)
-    {
-        float result1D = velocity_.y / Max_Vertical_Speed;
-        result1D = std::clamp(result1D, -1.0f, 1.0f);
-        flyMoveAnimation_->GetBlendSpace1D()->SetBlendWeight(result1D);
-    }
-    else
-    {
-        flyMoveAnimation_->GetBlendSpace1D()->SetBlendWeight(0.0f);
-    }
-#else
     animStateMachine_->Update();
-#endif // 1
 
     CameraRollUpdate();
 

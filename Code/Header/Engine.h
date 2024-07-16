@@ -8,7 +8,7 @@ namespace AbyssEngine
     class AssetManager;
     class RenderManager;
     class SceneManager;
-    class CharacterManager;
+    class ScriptComponentManager;
     class Input;
 
     class Engine
@@ -26,7 +26,7 @@ namespace AbyssEngine
         static std::unique_ptr<AssetManager> assetManager_;
         static std::unique_ptr<RenderManager> renderManager_;
         static std::unique_ptr<SceneManager> sceneManager_;
-        static std::unique_ptr<CharacterManager> characterManager_;
+        static std::unique_ptr<ScriptComponentManager> scriptComManager_;
         static std::unique_ptr<Input> inputManager_;
 
     private:

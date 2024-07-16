@@ -1,19 +1,41 @@
 #pragma once
-#include "Component.h"
+#include "ScriptComponent.h"
+
+#include <vector>
 
 namespace AbyssEngine
 {
     class Actor;
+    class SpriteRenderer;
 }
 
+class Soldier;
+
 //ゲームシーンに関係するUIを管理するコンポーネント
-class GameUIAdmin : public AbyssEngine::Component
+class GameUIAdmin : public AbyssEngine::ScriptComponent
 {
+public:
+    //使用用途で要素番号を管理するためのEnum
+    enum class Usefulness
+    {
+        Boarding,//搭乗
+    };
+
 public:
     GameUIAdmin() {}
     ~GameUIAdmin() {}
 
-    void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
-    void 
+    void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
+    
+    void UpdateAfter()override;
+
+    //プレイヤーを設定
+    void SetPlayer(const std::shared_ptr<Soldier>& p) { player_ = p; }
+
+private:
+    std::vector<std::shared_ptr<AbyssEngine::SpriteRenderer>> spriteList_;
+
+    //各種データを参照するためのプレイヤー
+    std::shared_ptr<Soldier> player_;
 };
 

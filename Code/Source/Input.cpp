@@ -122,3 +122,15 @@ const bool Input::GameSupport::GetClimdButton()
 
     return false;
 }
+
+const bool AbyssEngine::Input::GameSupport::GetBoardingButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::Space) ||
+        i->gamePad_.GetButtonDown() & GamePad::BTN_A)
+    {
+        return true;
+    }
+
+    return false;
+}

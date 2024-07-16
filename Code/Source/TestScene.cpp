@@ -12,6 +12,7 @@
 #include "Engine.h"
 #include "RenderManager.h"
 #include "EffectManager.h"
+#include "GameUIAdmin.h"
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
@@ -143,15 +144,22 @@ void TestScene::Initialize()
 
     //Player
     const auto& player = InstanceActor("Player");
-    const auto& pv = player->AddComponent<Soldier>();
+    const auto& pc = player->AddComponent<Soldier>();
     //プレイヤーにヴィテスを設定
-    pv->SetMyVitesse(vc);
+    pc->SetMyVitesse(vc);
 
     //F-14
     const auto& fighterJet = InstanceActor("F-14A");
     fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
 
     swordEfe_ = std::make_unique<Effect>("./Assets/Effects/Thruster_01.efk");
+
+
+    //UI設定
+    const auto& ui = InstanceActor("GameUI");
+    const auto& uiCom = ui->AddComponent<GameUIAdmin>();
+    uiCom->SetPlayer(pc);
+
 }
 
 void TestScene::Update()

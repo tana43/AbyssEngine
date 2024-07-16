@@ -16,7 +16,6 @@ HumanoidWeapon::HumanoidWeapon()
 
 void HumanoidWeapon::Update()
 {
-    UpdateInputMove();
     Move();
 }
 

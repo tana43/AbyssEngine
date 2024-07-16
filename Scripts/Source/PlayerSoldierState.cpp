@@ -2,6 +2,7 @@
 #include "PlayerSoldier.h"
 #include "Vitesse.h"
 #include "Transform.h"
+#include "Input.h"
 
 using namespace AbyssEngine;
 
@@ -14,7 +15,11 @@ void SoldierState::Move::Update()
 {
     owner_->InputMove();
 
-    owner_->BoardingTheVitesse(5.0f);
+    //ƒ”ƒBƒeƒX‚Ö“‹æ
+    if (Input::GameSupport::GetBoardingButton())
+    {
+        owner_->BoardingTheVitesse();
+    }
 }
 
 void SoldierState::Move::Finalize()

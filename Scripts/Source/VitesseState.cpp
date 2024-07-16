@@ -16,6 +16,8 @@ void VitesseState::GroundMove::Initialize()
 
 void VitesseState::GroundMove::Update()
 {
+    owner_->UpdateInputMove();
+
     //ジャンプボタンが押された際に離陸ステートへ
     if (Input::GameSupport::GetJumpButton())
     {
@@ -38,6 +40,7 @@ void VitesseState::FlyMove::Initialize()
 
 void VitesseState::FlyMove::Update()
 {
+    owner_->UpdateInputMove();
     owner_->ThrusterInfluenceVelocity();
 }
 

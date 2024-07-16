@@ -1,4 +1,4 @@
-#include "CharacterManager.h"
+#include "Character.h"
 #include "Engine.h"
 #include "Actor.h"
 #include "StageManager.h"
@@ -13,9 +13,7 @@ using namespace AbyssEngine;
 void Character::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
     //マネージャーの登録と初期化
-    Engine::characterManager_->AddCharacter(std::static_pointer_cast<Character>(shared_from_this()));
-    actor_ = actor;
-    transform_ = actor->GetTransform();
+    ScriptComponent::Initialize(actor);
 }
 
 bool Character::DrawImGui()
