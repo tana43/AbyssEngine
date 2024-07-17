@@ -13,12 +13,12 @@ namespace AbyssEngine
 class Soldier final : public AbyssEngine::Character
 {
 public:
-
     enum class AnimState
     {
         Idle,
         Walk,
         Run,
+        Boarding,
         Move,
     };
 
