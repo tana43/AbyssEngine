@@ -69,8 +69,8 @@ void Camera::Update()
     if (viewTarget_)
     {
         const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
-        focus_ = transform_->GetPosition() + socketOffset_ + offset;
-        eye_ = focus_ - transform_->GetForward() * armLength_;
+        eye_ = transform_->GetPosition() + socketOffset_ + offset;
+        focus_ = eye_ + (transform_->GetForward() * armLength_);
     }
     else
     {
@@ -84,7 +84,6 @@ void Camera::Update()
 
     viewMatrix_ = XMMatrixLookAtLH(eye_, focus_, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
-
 }
 
 Vector3 Camera::ConvertTo3DVectorFromCamera(const Vector2& v)
