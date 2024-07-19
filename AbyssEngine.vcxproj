@@ -84,8 +84,8 @@
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Scripts\Header\BaseEnemy.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
+    <ClInclude Include="Scripts\Header\Human.h" />
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldierState.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldier.h" />
@@ -160,8 +160,8 @@
     <ClCompile Include="External\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Scripts\Source\BaseEnemy.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
+    <ClCompile Include="Scripts\Source\Human.cpp" />
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldier.cpp" />

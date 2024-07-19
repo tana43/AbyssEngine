@@ -46,11 +46,6 @@ void Character::Jump(const float& jumpPower)
     onGround_ = false;
 }
 
-const std::shared_ptr<Animator>& Character::GetAnimator()
-{
-    return model_->GetAnimator();
-}
-
 void Character::TurnY(Vector3 dir, bool smooth)
 {
     Vector2 d = { dir.x,dir.z };

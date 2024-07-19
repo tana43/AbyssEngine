@@ -97,6 +97,9 @@
     <Filter Include="Script\Header\Enemy">
       <UniqueIdentifier>{6dad8799-4f1b-45b6-954a-bffba8866b09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script\Header\Vitesse">
+      <UniqueIdentifier>{de21e7a0-4682-4ed3-9447-ab12b95f31ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Camera.h">
@@ -255,9 +258,6 @@
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\Vitesse.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\ShapeRenderer.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
@@ -287,15 +287,6 @@
     </ClInclude>
     <ClInclude Include="Code\Header\CollisionManager.h">
       <Filter>Code\Header\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Header\VitesseState.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Header\VitesseConstants.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Header\VitesseAnimState.h">
-      <Filter>Script\Header</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\ThrusterEffect.h">
       <Filter>Script\Header</Filter>
@@ -337,7 +328,21 @@
       <Filter>Code\Header\Other</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Scripts\Header\BaseEnemy.h" />
+    <ClInclude Include="Scripts\Header\Vitesse.h">
+      <Filter>Script\Header\Vitesse</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\VitesseAnimState.h">
+      <Filter>Script\Header\Vitesse</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\VitesseConstants.h">
+      <Filter>Script\Header\Vitesse</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\VitesseState.h">
+      <Filter>Script\Header\Vitesse</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\Human.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -559,7 +564,9 @@
     <ClCompile Include="Code\Source\MathHelper.cpp">
       <Filter>Code\Source\Other</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\BaseEnemy.cpp" />
+    <ClCompile Include="Scripts\Source\Human.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

@@ -6,14 +6,26 @@
 //CharacterManagerからUpdate()を呼びだす
 namespace AbyssEngine
 {
-    class SkeletalMesh;
-    class Animator;
-    class AnimBlendSpace1D;
-
     class Character : public ScriptComponent
     {
     public:
-        virtual void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
+        using Tag = unsigned int;
+
+        //タグの設定
+        //敵味方の判別を行う
+        static constexpr Tag Tag_Default    = 0x01;
+        static constexpr Tag Tag_Player     = 0x01 << 1;
+        static constexpr Tag Tag_Enemy      = 0x01 << 2;
+
+        Tag GetTag() const { return tag_; }
+        void ReplaceTag(Tag t) { tag_ = t; }
+        void AddTag(Tag t)
+        {
+            tag_ |= t;
+        }
+
+    public:
+        virtual void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
         virtual void Update()override {}
         //virtual void DelayedUpdate() {}//描画時の行列更新などが終わってから
 
@@ -27,9 +39,6 @@ namespace AbyssEngine
     public:
         const bool& GetIsActive() const { return isActive_; }
         void SetIsActive(const bool& active) { isActive_ = active; }
-
-        const std::shared_ptr<SkeletalMesh>& GetModel() { return model_; }
-        const std::shared_ptr<Animator>& GetAnimator();
 
         const Vector3& GetVelocity() { return velocity_; }
         void SetVelocity(const Vector3& velo) { velocity_ = velo; }
@@ -56,6 +65,8 @@ namespace AbyssEngine
         constexpr static float Gravity = -9.8f;
 
     protected:
+        Tag tag_ = Tag_Default;
+
         float weight_ = 1.0f;//重さ（重力の計算に使う）
 
         bool isActive_ = true;
@@ -75,10 +86,6 @@ namespace AbyssEngine
 
         float airborneCoefficient_ = 0.3f;//空中にいる際に地上よりも移動の自由を効かなくするための値
         float airResistance_ = 0.2f;//空気抵抗
-
-        std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
-
-        AnimBlendSpace1D* moveAnimation_;//走り移動
     };
 }
 

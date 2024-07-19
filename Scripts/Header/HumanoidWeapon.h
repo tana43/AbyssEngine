@@ -1,9 +1,9 @@
 #pragma once
-#include "Character.h"
+#include "Human.h"
 #include "MathHelper.h"
 
 //ロボットの基底クラス
-class HumanoidWeapon : public AbyssEngine::Character
+class HumanoidWeapon : public Human
 {
 public:
     HumanoidWeapon();
