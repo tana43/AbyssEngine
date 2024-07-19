@@ -68,9 +68,13 @@ void Camera::Update()
     //ƒrƒ…[s—ñì¬
     if (viewTarget_)
     {
-        const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
-        eye_ = transform_->GetPosition() + socketOffset_ + offset;
-        focus_ = eye_ + (transform_->GetForward() * armLength_);
+        //const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
+        auto offset = transform_->GetRight() * targetOffset_.x + transform_->GetForward() * targetOffset_.z;
+        offset.y = targetOffset_.y;
+
+        focus_ = transform_->GetPosition() + socketOffset_ + offset;
+        //focus_.y = focus_.y + (transform_->GetForward() * armLength_).y;
+        eye_ = focus_ - (transform_->GetForward() * armLength_);
     }
     else
     {
