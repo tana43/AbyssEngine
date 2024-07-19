@@ -85,14 +85,20 @@
     <Filter Include="Script\Source\VItesse">
       <UniqueIdentifier>{7e2f51a4-e462-48df-aa29-68eda2f78ef4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Header\Other">
+      <UniqueIdentifier>{22fff4ed-3984-43c7-a52f-7f14a68b652c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Source\Other">
+      <UniqueIdentifier>{21e7033a-1da9-461a-aaf7-880a05c33902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Source\Enemy">
+      <UniqueIdentifier>{bb0eb269-00b2-46c5-846e-53dd2b5f38c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Header\Enemy">
+      <UniqueIdentifier>{6dad8799-4f1b-45b6-954a-bffba8866b09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Code\Header\Actor.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\MathHelper.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\Camera.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
@@ -282,17 +288,8 @@
     <ClInclude Include="Code\Header\CollisionManager.h">
       <Filter>Code\Header\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\State.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\StateMachine.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Scripts\Header\VitesseState.h">
       <Filter>Script\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\Header\Easing.h">
-      <Filter>Code\Header</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\VitesseConstants.h">
       <Filter>Script\Header</Filter>
@@ -312,16 +309,37 @@
     <ClInclude Include="Scripts\Header\FacilityScene.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\GameUIAdmin.h" />
-    <ClInclude Include="Code\Header\ScriptComponent.h" />
     <ClInclude Include="Code\Header\Character.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\Actor.h">
+      <Filter>Code\Header\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\GameUIAdmin.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ScriptComponent.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\Projectile.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Easing.h">
+      <Filter>Code\Header\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\MathHelper.h">
+      <Filter>Code\Header\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\State.h">
+      <Filter>Code\Header\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\StateMachine.h">
+      <Filter>Code\Header\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Scripts\Header\BaseEnemy.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Source\MathHelper.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\Engine.cpp">
       <Filter>Code\Source\Core</Filter>
     </ClCompile>
@@ -529,8 +547,19 @@
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\GameUIAdmin.cpp" />
-    <ClCompile Include="Code\Source\ScriptComponent.cpp" />
+    <ClCompile Include="Scripts\Source\Projectile.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\GameUIAdmin.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\ScriptComponent.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\MathHelper.cpp">
+      <Filter>Code\Source\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\BaseEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -698,5 +727,8 @@
     <None Include="Shader\Particle.hlsli">
       <Filter>Shader\Particle</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AbyssEngine.rc" />
   </ItemGroup>
 </Project>

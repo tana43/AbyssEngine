@@ -83,10 +83,13 @@
     <ClInclude Include="External\imgui\imstb_rectpack.h" />
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Scripts\Header\BaseEnemy.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldierState.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldier.h" />
+    <ClInclude Include="Scripts\Header\Projectile.h" />
     <ClInclude Include="Scripts\Header\SceneGame.h" />
     <ClInclude Include="Scripts\Header\SceneTitle.h" />
     <ClInclude Include="Scripts\Header\Stage.h" />
@@ -157,10 +160,12 @@
     <ClCompile Include="External\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Scripts\Source\BaseEnemy.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldier.cpp" />
+    <ClCompile Include="Scripts\Source\Projectile.cpp" />
     <ClCompile Include="Scripts\Source\SceneGame.cpp" />
     <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
     <ClCompile Include="Scripts\Source\Stage.cpp" />
@@ -430,6 +435,9 @@
     <None Include="Shader\PhysicallyBasedRendering.hlsli" />
     <None Include="Shader\PrimitiveRenderer.hlsli" />
     <None Include="Shader\ShapeRenderer.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AbyssEngine.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
