@@ -343,6 +343,7 @@
     <ClInclude Include="Scripts\Header\Human.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Helicopter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -567,6 +568,7 @@
     <ClCompile Include="Scripts\Source\Human.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Helicopter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

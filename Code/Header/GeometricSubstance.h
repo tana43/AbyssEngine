@@ -486,6 +486,8 @@ namespace AbyssEngine
 		void AppendAnimation(const std::string& filename);
 		void AppendAnimations(const std::vector<std::string>& filenames);
 
+		Node& GetNode(const std::string& boneName);
+
 		struct PrimitiveConstants
 		{
 			DirectX::XMFLOAT4X4 transform_ = {};

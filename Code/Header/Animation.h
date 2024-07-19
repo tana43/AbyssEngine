@@ -25,6 +25,8 @@ namespace AbyssEngine
     public:
         void SetLoopFlag(const bool& flag) { loopFlag_ = flag; }
 
+        void SetAnimSpeed(const float& spd) { animSpeed_ = spd; }
+
         std::string name_;
         int animIndex_;//モデル本体が持っているこのモーションの要素数
     protected: 

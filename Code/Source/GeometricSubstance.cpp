@@ -531,6 +531,18 @@ void GeometricSubstance::AppendAnimations(const std::vector<std::string>& filena
 		AppendAnimation(filename);
 	}
 }
+
+GeometricSubstance::Node& GeometricSubstance::GetNode(const std::string& boneName)
+{
+	for (auto& node : nodes_)
+	{
+		if (node.name_ == boneName)
+		{
+			return node;
+		}
+	}
+	_ASSERT_EXPR(FALSE, L"w’è‚Ìƒ{[ƒ“‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
+}
 void GeometricSubstance::AppendAnimation(const std::string& filename)
 {
 	tinygltf::TinyGLTF tinyGltf;

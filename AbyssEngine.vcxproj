@@ -83,6 +83,7 @@
     <ClInclude Include="External\imgui\imstb_rectpack.h" />
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
+    <ClInclude Include="Helicopter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
     <ClInclude Include="Scripts\Header\Human.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="External\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Helicopter.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
     <ClCompile Include="Scripts\Source\Human.cpp" />
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "Character.h"
+#include "Human.h"
 #include "StateMachine.h"
 
 class Vitesse;
@@ -10,7 +10,7 @@ namespace AbyssEngine
     class StaticMesh;
 }
 
-class Soldier final : public AbyssEngine::Character
+class Soldier final : public Human
 {
 public:
     enum class AnimState

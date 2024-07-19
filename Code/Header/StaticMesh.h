@@ -40,6 +40,7 @@ namespace AbyssEngine
         void RenderShadow()override;
         bool FrustumCulling(const DirectX::BoundingFrustum& frustum)override;
         bool ShadowCulling(const DirectX::BoundingBox& box)override;
+
     private:
         //ワールド行列
         Matrix world_;
@@ -53,8 +54,6 @@ namespace AbyssEngine
 
         //ソケットアタッチ
         Socket socketData_;
-
-        
     };
 }
 
