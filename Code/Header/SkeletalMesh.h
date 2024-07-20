@@ -33,14 +33,17 @@ namespace AbyssEngine
         //アニメーションの再生速度設定
         void SetAnimationSpeed(const float& speed) { animationSpeed_ = speed; }
 
-        GltfSkeletalMesh* GetModel() { return model_.get(); }
-
-        const std::shared_ptr<Animator>& GetAnimator() { return animator_; }
-
         //ソケットにアタッチする　武器などを持たせることが出来る
         void SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, const char* socketName);
 
         const Matrix& FindSocket(const char* socketName);
+
+    public:
+        GltfSkeletalMesh* GetModel() { return model_.get(); }
+
+        const std::shared_ptr<Animator>& GetAnimator() { return animator_; }
+
+        void SetOffsetRotation(const Vector3& rot) { offsetRot_ = rot; }
 
     private:
         void SetActive(const bool value)override;
@@ -51,6 +54,8 @@ namespace AbyssEngine
         bool ShadowCulling(const DirectX::BoundingBox& box)override;
 
     private:
+        //ワールド行列
+        Matrix worldMatrix_;
 
         //とりあえず描画させてみたいのでユニークポインタ
         //std::unique_ptr<FbxMeshData> model_;
@@ -74,6 +79,9 @@ namespace AbyssEngine
         Vector3 minValue_;
         Vector3 maxValue_;
         DirectX::BoundingBox boundingBox_;//AABB
+
+        //オフセット回転値
+        Vector3 offsetRot_ = {0,0,0};
     };
 }
 

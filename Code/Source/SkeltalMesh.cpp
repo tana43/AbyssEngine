@@ -43,8 +43,8 @@ void SkeletalMesh::Initialize(const std::shared_ptr<Actor>& actor)
 
 void SkeletalMesh::Render()
 {
-	model_->Draw(DrawPass::Opaque, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
-	model_->Draw(DrawPass::Transmission, transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
+	model_->Draw(DrawPass::Opaque, worldMatrix_, animator_->GetAnimatedNodes());
+	model_->Draw(DrawPass::Transmission, worldMatrix_, animator_->GetAnimatedNodes());
 
 
 #if _DEBUG
@@ -60,7 +60,7 @@ void SkeletalMesh::Render()
 
 void SkeletalMesh::RenderShadow()
 {
-	model_->CastShadow(transform_->GetWorldMatrix(), animator_->GetAnimatedNodes());
+	model_->CastShadow(worldMatrix_, animator_->GetAnimatedNodes());
 }
 
 //void SkeletalMesh::AppendAnimation(const std::string& filename)
@@ -80,14 +80,17 @@ void SkeletalMesh::RecalculateFrame()
 	//アニメーション更新
 	animator_->AnimatorUpdate();
 
-	transform_->CalcWorldMatrix();//行列更新
+	//オフセット値
+	const Quaternion q = Quaternion::Euler(offsetRot_);
+	const Matrix R = Matrix::CreateFromQuaternion(q);
+	worldMatrix_ = R * transform_->CalcWorldMatrix();//行列更新
 
 	//バウンディングボックス更新
 	{
 		DirectX::XMVECTOR MinValue, MaxValue;
 		MinValue = DirectX::XMLoadFloat3(&model_->minValue_);
 		MaxValue = DirectX::XMLoadFloat3(&model_->maxValue_);
-		ComputeTransformedBounds(MinValue, MaxValue, transform_->GetWorldMatrix());
+		ComputeTransformedBounds(MinValue, MaxValue, worldMatrix_);
 		DirectX::XMStoreFloat3(&minValue_, MinValue);
 		DirectX::XMStoreFloat3(&maxValue_, MaxValue);
 

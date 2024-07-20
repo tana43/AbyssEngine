@@ -16,6 +16,11 @@ void Character::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     ScriptComponent::Initialize(actor);
 }
 
+void AbyssEngine::Character::Update()
+{
+    UpdateMove();
+}
+
 bool Character::DrawImGui()
 {
     ImGui::DragFloat3("Velocity", &velocity_.x);
@@ -32,6 +37,8 @@ bool Character::DrawImGui()
     ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
     ImGui::SliderFloat("Max Rot Speed", &Max_Rot_Speed,0.0f,1000.0f);
     ImGui::SliderFloat("Min Rot Speed", &Min_Rot_Speed,0.0f,1000.0f);
+
+    ImGui::DragFloat3("Move Vec", &moveVec_.x, 0.05f, -1.0f, 1.0f);
 
     return true;
 }
@@ -160,8 +167,11 @@ void Character::UpdateVelocity()
 
     //縦方向の速力更新
     {
-        //重力による速力更新
-        velocity_.y += Gravity * weight_ * Time::deltaTime_;
+        if (enableGravity_)
+        {
+            //重力による速力更新
+            velocity_.y += Gravity * weight_ * Time::deltaTime_;
+        }
 
         //速度制限
         if (fabsf(velocity_.y) > Max_Vertical_Speed)
@@ -213,7 +223,7 @@ void Character::UpdateHorizontalMove()
 
     //地形判定
     const auto& stage = StageManager::Instance().GetActiveStage();
-    if (stage->RayCast(start, end, hit, hitNormal))
+    if (stage.get() && stage->RayCast(start, end, hit, hitNormal))
     {
         //スタートからレイが当たった位置までのベクトル
         Vector3 endToHit = hit - end;
@@ -276,7 +286,7 @@ void Character::UpdateVerticalMove()
 
     //垂直方向に地形判定
     const auto& stage = StageManager::Instance().GetActiveStage();
-    if (stage->RayCast(start,end,hit,hitNormal))
+    if (stage.get() && stage->RayCast(start,end,hit,hitNormal))
     {
         //着地した
         Landing();

@@ -28,6 +28,7 @@
     <ClInclude Include="Code\Header\Camera.h" />
     <ClInclude Include="Code\Header\CascadedShadowMap.h" />
     <ClInclude Include="Code\Header\Character.h" />
+    <ClInclude Include="Code\Header\Projectile.h" />
     <ClInclude Include="Code\Header\ScriptComponentManager.h" />
     <ClInclude Include="Code\Header\Collider.h" />
     <ClInclude Include="Code\Header\CollisionManager.h" />
@@ -84,13 +85,14 @@
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Scripts\Header\Bullet.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
+    <ClInclude Include="Scripts\Header\Gun.h" />
     <ClInclude Include="Scripts\Header\Helicopter.h" />
     <ClInclude Include="Scripts\Header\Human.h" />
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldierState.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldier.h" />
-    <ClInclude Include="Scripts\Header\Projectile.h" />
     <ClInclude Include="Scripts\Header\SceneGame.h" />
     <ClInclude Include="Scripts\Header\SceneTitle.h" />
     <ClInclude Include="Scripts\Header\Stage.h" />
@@ -112,6 +114,7 @@
     <ClCompile Include="Code\Source\Camera.cpp" />
     <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />
     <ClCompile Include="Code\Source\Character.cpp" />
+    <ClCompile Include="Code\Source\Projectile.cpp" />
     <ClCompile Include="Code\Source\ScriptComponentManager.cpp" />
     <ClCompile Include="Code\Source\Collider.cpp" />
     <ClCompile Include="Code\Source\CollisionManager.cpp" />
@@ -163,13 +166,14 @@
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Scripts\Header\TestSceneSecond.cpp" />
+    <ClCompile Include="Scripts\Source\Bullet.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
+    <ClCompile Include="Scripts\Source\Gun.cpp" />
     <ClCompile Include="Scripts\Source\Helicopter.cpp" />
     <ClCompile Include="Scripts\Source\Human.cpp" />
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldier.cpp" />
-    <ClCompile Include="Scripts\Source\Projectile.cpp" />
     <ClCompile Include="Scripts\Source\SceneGame.cpp" />
     <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
     <ClCompile Include="Scripts\Source\Stage.cpp" />

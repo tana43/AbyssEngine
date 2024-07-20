@@ -26,7 +26,7 @@ namespace AbyssEngine
 
     public:
         virtual void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
-        virtual void Update()override {}
+        virtual void Update()override;
         //virtual void DelayedUpdate() {}//描画時の行列更新などが終わってから
 
         bool DrawImGui()override;
@@ -71,6 +71,7 @@ namespace AbyssEngine
 
         bool isActive_ = true;
         bool onGround_ = true;
+        bool enableGravity_ = true;
 
         Vector3 moveVec_;//移動方向
         Vector3 velocity_;//速度
