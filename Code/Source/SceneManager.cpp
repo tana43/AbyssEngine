@@ -6,6 +6,7 @@
 #include "SceneGame.h"
 #include "SceneTitle.h"
 #include "FacilityScene.h"
+#include "TestSceneSecond.h"
 
 #include "RenderManager.h"
 
@@ -20,8 +21,10 @@ SceneManager::SceneManager()
     AddScene(new SceneGame,"Game");
     AddScene(new SceneTitle,"Title");
     AddScene(new FacilityScene,"Facility");
-    SetNextScene("Title");
-    //SetNextScene("Test");
+    AddScene(new TestSceneSecond,"TestSceneSecond");
+    //SetNextScene("TestSceneSecond");
+    //SetNextScene("Title");
+    SetNextScene("Test");
     //SetNextScene("Facility");
 }
 

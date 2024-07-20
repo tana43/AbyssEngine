@@ -25,4 +25,6 @@ bool Helicopter::DrawImGui()
     ImGui::SliderFloat("Motor Power", &motorPower_, 0.0f, 2.0f);
 
     Character::DrawImGui();
+
+    return true;
 }

@@ -83,9 +83,9 @@
     <ClInclude Include="External\imgui\imstb_rectpack.h" />
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
-    <ClInclude Include="Helicopter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
+    <ClInclude Include="Scripts\Header\Helicopter.h" />
     <ClInclude Include="Scripts\Header\Human.h" />
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldierState.h" />
@@ -95,6 +95,7 @@
     <ClInclude Include="Scripts\Header\SceneTitle.h" />
     <ClInclude Include="Scripts\Header\Stage.h" />
     <ClInclude Include="Scripts\Header\StageManager.h" />
+    <ClInclude Include="Scripts\Header\TestSceneSecond.h" />
     <ClInclude Include="Scripts\Header\ThrusterEffect.h" />
     <ClInclude Include="Scripts\Header\GameUIAdmin.h" />
     <ClInclude Include="Scripts\Header\Vitesse.h" />
@@ -161,8 +162,9 @@
     <ClCompile Include="External\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Helicopter.cpp" />
+    <ClCompile Include="Scripts\Header\TestSceneSecond.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
+    <ClCompile Include="Scripts\Source\Helicopter.cpp" />
     <ClCompile Include="Scripts\Source\Human.cpp" />
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp" />
