@@ -1,6 +1,7 @@
 #pragma once
 #include "Human.h"
 #include "StateMachine.h"
+#include "FadeSystem.h"
 
 class Vitesse;
 
@@ -13,18 +14,28 @@ namespace AbyssEngine
 class Soldier final : public Human
 {
 public:
+    //武器のオフセット回転と位置
+    struct SocketOffset
+    {
+        AbyssEngine::Vector3 pos;
+        AbyssEngine::Vector3 rot;
+    };
+    const SocketOffset Weapon_Offset_Move  = { { 3.35f,-4.75f,6.3f } ,{2.15f,168.7f,-99.25f} };
+    const SocketOffset Weapon_Offset_Aim   = { {-10.85f,3.15f,31.75f}, {-56.85f,206.4,-47.7f} };
+
     enum class AnimState
     {
         Idle,
         Walk,
         Run,
-        Boarding,
+        Aim,
         Move,
     };
 
     enum class ActionState
     {
         Move,
+        Aim,
     };
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
@@ -38,6 +49,12 @@ public:
 
     //移動操作
     void InputMove();
+
+    //ソケット位置の変更
+    void ChangeSocketTransformLinear(
+        const float& changeTime,
+        const AbyssEngine::Vector3& pos,
+        const AbyssEngine::Vector3& rot);
 public:
     //ヴィテスに搭乗しているか
     const bool& GetVitesseOnBoard() const { return vitesseOnBoard_; }
@@ -48,9 +65,15 @@ public:
 
     const bool& GetCanBoarding() const { return canBoarding_; }
 
+    std::unique_ptr<StateMachine<State<Soldier>>>& GetStateMachine() { return stateMachine_; }
+
+    const std::shared_ptr<AbyssEngine::Camera>& GetCamera() { return camera_; }
+
 private:
     void MoveUpdate();
     void CameraRollUpdate();
+
+    void SocketUpdate();
 
 
 private:
@@ -78,6 +101,9 @@ private:
 
     //ヴィテス搭乗可能距離
     float boardingDistance_ = 5.0f;
+
+    //ソケット位置を変更するための補完情報
+    std::unique_ptr<AbyssEngine::FadeSystem> socketFade_;
 };
 
 

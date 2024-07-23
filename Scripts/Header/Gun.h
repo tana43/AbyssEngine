@@ -7,12 +7,14 @@ namespace AbyssEngine
     class Projectile;
 }
 
-class GunComponent : public AbyssEngine::ScriptComponent
+class Gun : public AbyssEngine::ScriptComponent
 {
 public:
-    GunComponent() {}
-    ~GunComponent() = default;
+    Gun() {}
+    ~Gun() = default;
 
+
+    void Shot();
 private:
     AbyssEngine::Vector3 muzzle_;
 

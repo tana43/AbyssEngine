@@ -68,8 +68,11 @@ void Character::TurnY(Vector3 dir, bool smooth)
 
     //内積値から最終的に向きたい角度を計算する
     float dot = forward.Dot(dir);
-    if (dot > 0.999f)return;
     float rotAmount = acosf(dot);
+    if (dot > 0.999f)
+    {
+        return;
+    }
 
     float rotSpeed = 0;
 
@@ -93,8 +96,62 @@ void Character::TurnY(Vector3 dir, bool smooth)
     //外積のY軸のみ求め、回転方向を求める
     float crossY = forward.z * dir.x - forward.x * dir.z;
     if (crossY < 0) rotSpeed = -rotSpeed;
+
+    if (smooth)
+    {
+        rotY += rotSpeed * Time::deltaTime_;
+    }
+    else
+    {
+        rotY += rotSpeed;
+    }
+    transform_->SetRotationY(rotY);
+}
+
+void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
+{
+    Vector2 d = { dir.x,dir.z };
+
+    if (d.LengthSquared() == 0)return;
+
+    //XZ軸のみのベクトル正規化
+    d.Normalize();
+    dir = { d.x,0,d.y };
+    auto forward = transform_->GetForward();
+
+    float rotY = transform_->GetRotation().y;
+
+    //内積値から最終的に向きたい角度を計算する
+    float dot = forward.Dot(dir);
+    if (dot > 0.999f)return;
+    float rotAmount = DirectX::XMConvertToDegrees(acosf(dot));
+
+    float rotSpeed = 0;
+
+    //なめらかな振り向きか、即座に振り向くか
+    if (smooth)
+    {
+        //内積値を0~1の範囲に
+        dot = dot + 1.0f;
+
+        rotSpeed = speed * rotAmount * Time::deltaTime_;
+
+        if (rotSpeed > rotAmount)
+        {
+            rotSpeed = rotAmount;
+        }
+    }
+    else
+    {
+        rotSpeed = rotAmount;
+    }
+
+    //外積のY軸のみ求め、回転方向を求める
+    float crossY = forward.z * dir.x - forward.x * dir.z;
+    if (crossY < 0) rotSpeed = -rotSpeed;
     
-    rotY += rotSpeed * Time::deltaTime_;
+    rotY += rotSpeed;
+    
     transform_->SetRotationY(rotY);
 }
 
@@ -192,7 +249,10 @@ void Character::UpdateMove()
     UpdateVerticalMove();
 
     //回転
-    TurnY(Vector3(velocity_.x,0,velocity_.z));
+    if (enableAutoTurn_)
+    {
+        TurnY(Vector3(velocity_.x,0,velocity_.z));
+    }
 }
 
 void Character::UpdateHorizontalMove()

@@ -36,6 +36,11 @@ namespace AbyssEngine
 
         void Jump(const float& jumpPower);
 
+        //w’è•ûŒü‚É‰ñ“]
+        void TurnY(Vector3 dir,bool smooth = true/*‚È‚ß‚ç‚©‚É‰ñ“]‚·‚é‚©*/);
+        void TurnY(Vector3 dir, const float& speed, bool smooth = true/*‚È‚ß‚ç‚©‚É‰ñ“]‚·‚é‚©*/);
+
+
     public:
         const bool& GetIsActive() const { return isActive_; }
         void SetIsActive(const bool& active) { isActive_ = active; }
@@ -49,9 +54,10 @@ namespace AbyssEngine
         const float GetMaxHorizontalSpeed() const { return Max_Horizontal_Speed; }
         const float GetMaxVerticalSpeed()const { return Max_Vertical_Speed; }
 
+        void SetEnableAutoTurn(const bool& flag) { enableAutoTurn_ = flag; }
+
     protected:
-        //w’è•ûŒü‚É‰ñ“]
-        void TurnY(Vector3 dir,bool smooth = true/*‚È‚ß‚ç‚©‚É‰ñ“]‚·‚é‚©*/);
+        
 
         virtual void Move();//ˆÚ“®ˆ—
 
@@ -87,6 +93,8 @@ namespace AbyssEngine
 
         float airborneCoefficient_ = 0.3f;//‹ó’†‚É‚¢‚éÛ‚É’nã‚æ‚è‚àˆÚ“®‚Ì©—R‚ğŒø‚©‚È‚­‚·‚é‚½‚ß‚Ì’l
         float airResistance_ = 0.2f;//‹ó‹C’ïR
+
+        bool enableAutoTurn_ = true;//‘¬“x‚É‡‚í‚¹‚Ä©“®‚Å‰ñ“]‚³‚¹‚é‚©
     };
 }
 

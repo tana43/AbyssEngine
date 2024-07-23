@@ -19,6 +19,15 @@ namespace SoldierState
         void Finalize()override;
     };
 
-    
+    class Aim : Inheritance
+    {
+    public:
+        Aim(Soldier* soldier) : State(soldier, "Aim") {}
+        ~Aim() {}
+
+        void Initialize()override;
+        void Update()override;
+        void Finalize();
+    };
 };
 

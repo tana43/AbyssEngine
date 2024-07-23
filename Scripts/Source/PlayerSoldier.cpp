@@ -43,8 +43,8 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     //武器を装備させる
     weaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Soldier/Soldier_Gun.glb");
     model_->SocketAttach(weaponModel_, "middle_metacarpal_l");
-    weaponModel_->GetSocketData().location_ = { 3.35f,-4.75f,6.3f };
-    weaponModel_->GetSocketData().rotation_ = { 2.15f,168.7f,-99.25f };
+    weaponModel_->GetSocketData().location_ = Weapon_Offset_Move.pos;
+    weaponModel_->GetSocketData().rotation_ = Weapon_Offset_Move.rot;
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -62,9 +62,25 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     //ステートマシン設定
     stateMachine_ = std::make_unique<StateMachine<State<Soldier>>>();
     stateMachine_->RegisterState(new SoldierState::Move(this));
+    stateMachine_->RegisterState(new SoldierState::Aim(this));
     stateMachine_->SetState(static_cast<int>(ActionState::Move));
 
-    
+    //ソケット情報の設定
+    float* params[] =
+    {
+        &weaponModel_->GetSocketData().location_.x,
+        &weaponModel_->GetSocketData().location_.y,
+        &weaponModel_->GetSocketData().location_.z,
+        &weaponModel_->GetSocketData().rotation_.x,
+        &weaponModel_->GetSocketData().rotation_.y,
+        &weaponModel_->GetSocketData().rotation_.z,
+    };
+    socketFade_ = std::make_unique<FadeSystem>(params[0], static_cast<size_t>(sizeof(params) / sizeof(float*)));
+
+#if _DEBUG
+    camera_->SetEnableDebugController(true);
+#endif // _DEBUG
+
 }
 
 void Soldier::Update()
@@ -77,6 +93,7 @@ void Soldier::Update()
         {
             stateMachine_->Update();
         }
+
     }
 
     MoveUpdate();
@@ -85,6 +102,7 @@ void Soldier::Update()
 
     //ヴィテス搭乗可能距離判定
     BoardingDistanceJudge(boardingDistance_);
+    
 }
 
 bool Soldier::DrawImGui()
@@ -97,8 +115,12 @@ bool Soldier::DrawImGui()
 
         ImGui::DragFloat("Jump Power", &jumpPower_, 0.02f, 0.01f, 100.0f);
 
+        stateMachine_->DrawImGui();
+
         ImGui::TreePop();
+
     }
+
 
     return false;
 }
@@ -130,6 +152,11 @@ void Soldier::CameraRollUpdate()
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);
+}
+
+void Soldier::SocketUpdate()
+{
+    
 }
 
 void Soldier::BoardingDistanceJudge(const float& range)
@@ -184,6 +211,25 @@ void Soldier::InputMove()
     {
         Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
     }
+}
+
+void Soldier::ChangeSocketTransformLinear(const float& changeTime, const AbyssEngine::Vector3& pos, const AbyssEngine::Vector3& rot)
+{
+    float params[] =
+    {
+        pos.x,
+        pos.y,
+        pos.z,
+        rot.x,
+        rot.y,
+        rot.z,
+    };
+    std::vector<float> f;
+    for (size_t i = 0; i < 6; i++)
+    {
+        f.emplace_back(params[i]);
+    }
+    socketFade_->Fade(changeTime, f);
 }
 
 bool Soldier::BoardingTheVitesse()

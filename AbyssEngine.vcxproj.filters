@@ -340,15 +340,24 @@
     <ClInclude Include="Scripts\Header\Human.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\TestSceneSecond.h" />
     <ClInclude Include="Scripts\Header\Helicopter.h">
       <Filter>Script\Header\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\Gun.h" />
     <ClInclude Include="Code\Header\Projectile.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\Bullet.h" />
+    <ClInclude Include="Code\Header\FadeSystem.h">
+      <Filter>Code\Header\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\Gun.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\Bullet.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\TestSceneSecond.h">
+      <Filter>Code\Header\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -570,15 +579,24 @@
     <ClCompile Include="Scripts\Source\Human.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Header\TestSceneSecond.cpp" />
     <ClCompile Include="Scripts\Source\Helicopter.cpp">
       <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\Gun.cpp" />
     <ClCompile Include="Code\Source\Projectile.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\Bullet.cpp" />
+    <ClCompile Include="Code\Source\FadeSystem.cpp">
+      <Filter>Code\Source\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Header\TestSceneSecond.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\Gun.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\Bullet.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
