@@ -17,7 +17,7 @@ namespace AbyssEngine
 
         void Clear();
     private:
-        std::vector<std::shared_ptr<ScriptComponent>> scriptComList_;
+        std::vector<std::weak_ptr<ScriptComponent>> scriptComList_;
 
         friend class Engine;
     };

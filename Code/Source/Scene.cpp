@@ -21,21 +21,17 @@ weak_ptr<Actor> Scene::Find(const std::string& name_)
     return a;
 }
 
-shared_ptr<Actor> Scene::InstanceActor(const std::string& name_)
+shared_ptr<Actor> Scene::InstanceActor(const std::string& name)
 {
     //オブジェクトを生成して登録する
     auto actor = make_shared<Actor>();
 
     //名前被りが存在しないか
-    for (const auto& a  : actorList_)
-    {
-        _ASSERT_EXPR(a->name_ != actor->name_, L"同じ名前のアクターを生成しようとしています");
-    }
-    actor->name_ = name_;
-
+    actor->name_ = GenerateUniqueName(name);
+    
     //Jsonファイル初期設定
     actor->jsonFilename_ = "./Resources/Json/";
-    actor->jsonFilename_ += name_.c_str();
+    actor->jsonFilename_ += actor->name_.c_str();
     string Extension = ".json";
     actor->jsonFilename_ += Extension;
 
@@ -175,5 +171,16 @@ void Scene::DrawWorldOutLinerImGui()
 
             ImGui::EndMenu();
         }
+    }
+}
+
+std::string Scene::GenerateUniqueName(const std::string& baseName) {
+    if (nameCount_[baseName] == 0) {
+        nameCount_[baseName] = 1;
+        return baseName;
+    }
+    else {
+        int count = ++nameCount_[baseName];
+        return baseName + "(" + std::to_string(count) + ")";
     }
 }

@@ -11,8 +11,8 @@ namespace AbyssEngine
         Projectile() {}
         ~Projectile() {}
 
-        void Initialize(const std::shared_ptr<Actor> actor);
-        void Update();
+        void Initialize(const std::shared_ptr<Actor>& actor);
+        void Update()override;
 
         /// <summary>
         /// レイキャスト
@@ -26,15 +26,21 @@ namespace AbyssEngine
             float& distance,
             Vector3& hitPosition);
 
+    public:
+        void SetDirection(const Vector3& dir) { direction_ = dir; }
+
     private:
         //進行方向
         Vector3 direction_;
 
         //速度
-        float speed_;
+        float speed_ = 50.0f;
 
         //当たり判定用の半径
         float radius_ = 0.1f;
+
+        //寿命
+        float lifespan_ = 10.0f;
     };
 }
 

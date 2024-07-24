@@ -4,39 +4,51 @@ using namespace AbyssEngine;
 
 void ScriptComponentManager::Update()
 {
-	for (const auto& c : scriptComList_)
-	{
-		if (!c->GetIsActive())continue;
+	int originalSize = scriptComList_.size();
 
-		c->UpdateBegin();
+	for (int index = 0; index < originalSize; ++index)
+	{
+		if (const auto& c = scriptComList_[index].lock())
+		{
+			if (!c->GetIsActive())continue;
+			c->UpdateBegin();
+		}
 	}
 
-	for (const auto& c : scriptComList_)
+	for (int index = 0; index < originalSize; ++index)
 	{
-		if (!c->GetIsActive())continue;
-
-		c->UpdateBefore();
+		if (const auto& c = scriptComList_[index].lock())
+		{
+			if (!c->GetIsActive())continue;
+			c->UpdateBefore();
+		}
 	}
 
-	for (const auto& c : scriptComList_)
+	for (int index = 0; index < originalSize; ++index)
 	{
-		if (!c->GetIsActive())continue;
-
-		c->Update();
+		if (const auto& c = scriptComList_[index].lock())
+		{
+			if (!c->GetIsActive())continue;
+			c->Update();
+		}
 	}
 
-	for (const auto& c : scriptComList_)
+	for (int index = 0; index < originalSize; ++index)
 	{
-		if (!c->GetIsActive())continue;
-
-		c->UpdateAfter();
+		if (const auto& c = scriptComList_[index].lock())
+		{
+			if (!c->GetIsActive())continue;
+			c->UpdateAfter();
+		}
 	}
 
-	for (const auto& c : scriptComList_)
+	for (int index = 0; index < originalSize; ++index)
 	{
-		if (!c->GetIsActive())continue;
-
-		c->UpdateEnd();
+		if (const auto& c = scriptComList_[index].lock())
+		{
+			if (!c->GetIsActive())continue;
+			c->UpdateEnd();
+		}
 	}
 }
 

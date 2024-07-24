@@ -135,6 +135,18 @@ const bool AbyssEngine::Input::GameSupport::GetAimButton()
     return false;
 }
 
+const bool AbyssEngine::Input::GameSupport::GetShotButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->mouse_->GetButtonState().leftButton ||
+        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_THUMB)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 const bool AbyssEngine::Input::GameSupport::GetBoardingButton()
 {
     auto& i = Engine::inputManager_;

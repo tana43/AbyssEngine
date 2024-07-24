@@ -32,6 +32,8 @@ namespace AbyssEngine
         bool isAttached_ = false;
 
         [[nodiscard]]Socket& GetSocketData() { return socketData_; }
+        [[nodiscard]]const Matrix& GetWorldMatrix() { return world_; }
+        
 
     private:
         void SetActive(const bool value)override;

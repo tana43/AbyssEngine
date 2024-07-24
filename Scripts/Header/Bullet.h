@@ -1,7 +1,10 @@
 #pragma once
-#include "ScriptComponent.h"
+#include "Projectile.h"
 
-class Bullet : public AbyssEngine::ScriptComponent
+class Bullet : public AbyssEngine::Projectile
 {
+public:
+    void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
+    void Update()override;
 };
 

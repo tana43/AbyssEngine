@@ -9,8 +9,10 @@
 #include "Input.h"
 #include "MathHelper.h"
 #include "Vitesse.h"
-
+#include "Gun.h"
 #include "PlayerSoldierState.h"
+
+#include "StageManager.h"
 
 #include "Animator.h"
 #include "Animation.h"
@@ -45,6 +47,8 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     model_->SocketAttach(weaponModel_, "middle_metacarpal_l");
     weaponModel_->GetSocketData().location_ = Weapon_Offset_Move.pos;
     weaponModel_->GetSocketData().rotation_ = Weapon_Offset_Move.rot;
+
+    gunComponent_ = actor_->AddComponent<Gun>();
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -85,6 +89,8 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
 
 void Soldier::Update()
 {
+    MuzzlePosUpdate();
+
     //プレイヤーカメラがメインになっていなければ更新しない
     if (camera_->GetIsMainCamera())
     {
@@ -94,6 +100,11 @@ void Soldier::Update()
             stateMachine_->Update();
         }
 
+
+        if (Input::GameSupport::GetShotButton())
+        {
+            GunShot();
+        }
     }
 
     MoveUpdate();
@@ -157,6 +168,11 @@ void Soldier::CameraRollUpdate()
 void Soldier::SocketUpdate()
 {
     
+}
+
+void Soldier::MuzzlePosUpdate()
+{
+    gunComponent_->SetMuzzlePos(weaponModel_->GetWorldMatrix().Translation());
 }
 
 void Soldier::BoardingDistanceJudge(const float& range)
@@ -230,6 +246,37 @@ void Soldier::ChangeSocketTransformLinear(const float& changeTime, const AbyssEn
         f.emplace_back(params[i]);
     }
     socketFade_->Fade(changeTime, f);
+}
+
+void Soldier::GunShot()
+{
+    //射撃
+    //画面中央にレイを飛ばし、当たった場所に向かって弾が飛ぶようにする
+    Vector3 eyeToFocus = camera_->focus_ - camera_->eye_;
+    eyeToFocus.Normalize();
+    const float range = 1000.0f;
+
+    const Vector3 start = camera_->eye_;
+    const Vector3 end = start + eyeToFocus * range;
+    Vector3 hitPos,hitNormal,shootDirection;
+    if (StageManager::Instance().GetActiveStage()->RayCast(
+        start,end,hitPos,hitNormal
+    ))
+    {
+        //当たった位置に飛ばす
+        Vector3 toTarget = hitPos - gunComponent_->GetMuzzlePos();
+        toTarget.Normalize();
+        shootDirection = toTarget;
+    }
+    else
+    {
+        //当たらないなら、カメラの向きへ
+        Vector3 toTarget = end - gunComponent_->GetMuzzlePos();
+        toTarget.Normalize();
+        shootDirection = toTarget;
+    }
+
+    gunComponent_->Shot(shootDirection);
 }
 
 bool Soldier::BoardingTheVitesse()

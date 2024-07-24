@@ -11,6 +11,8 @@ namespace AbyssEngine
     class StaticMesh;
 }
 
+class Gun;
+
 class Soldier final : public Human
 {
 public:
@@ -55,6 +57,9 @@ public:
         const float& changeTime,
         const AbyssEngine::Vector3& pos,
         const AbyssEngine::Vector3& rot);
+
+    //射撃
+    void GunShot();
 public:
     //ヴィテスに搭乗しているか
     const bool& GetVitesseOnBoard() const { return vitesseOnBoard_; }
@@ -75,11 +80,13 @@ private:
 
     void SocketUpdate();
 
-
+    //銃口の位置更新
+    void MuzzlePosUpdate();
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
 
     std::shared_ptr<AbyssEngine::StaticMesh> weaponModel_;
+    std::shared_ptr<Gun> gunComponent_;
 
 private:
     float baseAcceleration_ = 2.0f;//基準となる加速度　これにコントローラーの入力値等が計算され実際の加速度が決まる

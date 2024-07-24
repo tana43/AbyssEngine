@@ -6,21 +6,26 @@
 
 using namespace AbyssEngine;
 
-void Projectile::Initialize(const std::shared_ptr<AbyssEngine::Actor> actor)
+void Projectile::Initialize(const std::shared_ptr<Actor>& actor)
 {
-    actor_ = actor;
-    transform_ = actor->GetTransform();
+    ScriptComponent::Initialize(actor);
 }
 
 void Projectile::Update()
 {
     //”ò‚Ñ“¹‹ï‚ÌËo‹——£
     const Vector3& pos = transform_->GetPosition();
-    direction_.Normalize();
     const Vector3& velo = direction_ * speed_ * Time::deltaTime_;
     transform_->SetPosition(pos + velo);
 
 #if _DEBUG
     Engine::renderManager_->debugRenderer_->DrawSphere(transform_->GetPosition(), radius_, Vector4(1, 0, 0, 1));
 #endif // _DEBUG
+
+    //õ–½ˆ—
+    lifespan_ -= Time::deltaTime_;
+    if (lifespan_ <= 0)
+    {
+        actor_->Destroy(actor_);
+    }
 }

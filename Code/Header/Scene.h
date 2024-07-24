@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <unordered_map>
 #include "Actor.h"
  
 namespace AbyssEngine
@@ -16,10 +17,12 @@ namespace AbyssEngine
 
         std::string name_;   //シーン名
 
-        std::shared_ptr<Actor> InstanceActor(const std::string& name_);      //シーン内にオブジェクト配置する
+        std::shared_ptr<Actor> InstanceActor(const std::string& name);      //シーン内にオブジェクト配置する
         void DestroyActor(const std::shared_ptr<Actor>& actor);             //アクターを削除する
         void DestroyComponent(const std::shared_ptr<Component>& component); //コンポーネントを削除する
         void DrawWorldOutLinerImGui(); //ImGuiデバッグ表示
+
+        std::string GenerateUniqueName(const std::string& baseName);
 
     protected:
         virtual void Initialize();  //初期化
@@ -32,7 +35,9 @@ namespace AbyssEngine
         void ImGuiSaveAllActors();//すべてのアクターのトランスフォーム情報を保存
 
 
-        std::vector<std::shared_ptr<Actor>> actorList_; //シーン内の全アクター
+        std::vector<std::shared_ptr<Actor>> actorList_;//シーン内の全アクター
+
+        std::unordered_map<std::string, int> nameCount_;
 
         friend class SceneManager;
 
