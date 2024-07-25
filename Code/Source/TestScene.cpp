@@ -160,6 +160,9 @@ void TestScene::Initialize()
     const auto& uiCom = ui->AddComponent<GameUIAdmin>();
     uiCom->SetPlayer(pc);
 
+    //const auto& staticPlayer = InstanceActor("Player_Static");
+    //staticPlayer->AddComponent<StaticMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb");
+
 }
 
 void TestScene::Update()

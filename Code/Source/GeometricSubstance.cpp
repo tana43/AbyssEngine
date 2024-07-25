@@ -660,7 +660,7 @@ void GeometricSubstance::ExtractAnimations(const tinygltf::Model& transmissionMo
 			}
 			else if (transmissionChannel.target_path == "weights")
 			{
-				//_ASSERT_EXPR(FALSE, L"");
+				_ASSERT_EXPR(FALSE, L"");
 			}
 			else
 			{

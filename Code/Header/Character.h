@@ -34,7 +34,7 @@ namespace AbyssEngine
         //複数アタッチ不可
         bool CanMultiple()override { return false; }
 
-        void Jump(const float& jumpPower);
+        bool Jump(const float& jumpPower);
 
         //指定方向に回転
         void TurnY(Vector3 dir,bool smooth = true/*なめらかに回転するか*/);
@@ -55,6 +55,8 @@ namespace AbyssEngine
         const float GetMaxVerticalSpeed()const { return Max_Vertical_Speed; }
 
         void SetEnableAutoTurn(const bool& flag) { enableAutoTurn_ = flag; }
+
+        const bool& GetOnGround() const { return onGround_; }
 
     protected:
         

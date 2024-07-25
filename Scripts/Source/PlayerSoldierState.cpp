@@ -4,6 +4,8 @@
 #include "Transform.h"
 #include "Input.h"
 
+#include "Engine.h"
+
 using namespace AbyssEngine;
 
 void SoldierState::Move::Initialize()
@@ -74,4 +76,49 @@ void SoldierState::Aim::Finalize()
 {
     //自動振り向きをオンに
     owner_->SetEnableAutoTurn(true);
+}
+
+void SoldierState::Jump::Initialize()
+{
+    //ジャンプアニメーション再生
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Jump));
+
+    landTimer_ = 0.0f;
+}
+
+void SoldierState::Jump::Update()
+{
+    //移動
+    owner_->InputMove();
+
+    //ジャンプモーション再生終了時にループモーションへ遷移
+    if (owner_->GetAnimator()->GetAnimationFinished())
+    {
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Fall_Loop));
+    }
+
+    //着地
+    if (owner_->GetOnGround())
+    {
+        if (landTimer_ == 0)
+        {
+            //着地後アニメーション再生
+            owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Land));
+        }
+
+        //タイマー更新
+        landTimer_ += Time::deltaTime_;
+    }
+
+    //着地して指定秒数経っているなら移動ステートに遷移
+    if (landTimer_ > 0.3f)
+    {
+        owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Move));
+    }
+}
+
+void SoldierState::Jump::Finalize()
+{
+    
+
 }

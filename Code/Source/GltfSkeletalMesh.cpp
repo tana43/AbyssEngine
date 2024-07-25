@@ -63,6 +63,8 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 4, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{ "JOINTS", 0, DXGI_FORMAT_R16G16B16A16_UINT, 5, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "WEIGHTS", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 6, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "JOINTS", 1, DXGI_FORMAT_R16G16B16A16_UINT, 7, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "WEIGHTS", 1,DXGI_FORMAT_R32G32B32A32_FLOAT, 8, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	skeletalMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/SkeletalMeshVS.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
 #if ENABLE_DIFFERD_RENDERING
@@ -384,6 +386,68 @@ void GltfSkeletalMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 						_ASSERT_EXPR(FALSE, L"This TINYGLTF_COMPONENT_TYPE of WEIGHTS_0 is not supported");
 					}
 				}
+				else if (transmissionAttribute.first == "JOINTS_1")
+				{
+					_ASSERT_EXPR(transmissionAccessor.type == TINYGLTF_TYPE_VEC4, L"'JOINTS_0' attribute must be of TINYGLTF_TYPE_VEC4.");
+					if (transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT || transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_SHORT)
+					{
+						transmissionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT;
+					}
+					else if (transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE || transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_BYTE)
+					{
+						// Convert to TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT
+						extraJoints.resize(transmissionAccessor.count * 4);
+						for (size_t i = 0; i < transmissionAccessor.count * 4; ++i)
+						{
+							extraJoints.at(i) = static_cast<unsigned short>(buffer[i]);
+						}
+						transmissionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT;
+						buffer = reinterpret_cast<unsigned char*>(extraJoints.data());
+					}
+					else
+					{
+						_ASSERT_EXPR(FALSE, L"This TINYGLTF_COMPONENT_TYPE of JOINTS_0 is not supported");
+					}
+				}
+				else if (transmissionAttribute.first == "WEIGHTS_1")
+				{
+					_ASSERT_EXPR(transmissionAccessor.type == TINYGLTF_TYPE_VEC4, L"'JOINTS_0' attribute must be of TINYGLTF_TYPE_VEC4.");
+					if (transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT)
+					{
+					}
+					else if (transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE)
+					{
+						// Convert to TINYGLTF_COMPONENT_TYPE_FLOAT
+						extraWeights.resize(transmissionAccessor.count * 4);
+						for (size_t accessor_index = 0; accessor_index < transmissionAccessor.count; ++accessor_index)
+						{
+							extraWeights.at(accessor_index * 4 + 0) = static_cast<float>(buffer[accessor_index * 4 + 0]) / 0xFF;
+							extraWeights.at(accessor_index * 4 + 1) = static_cast<float>(buffer[accessor_index * 4 + 1]) / 0xFF;
+							extraWeights.at(accessor_index * 4 + 2) = static_cast<float>(buffer[accessor_index * 4 + 2]) / 0xFF;
+							extraWeights.at(accessor_index * 4 + 3) = static_cast<float>(buffer[accessor_index * 4 + 3]) / 0xFF;
+						}
+						transmissionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+						buffer = reinterpret_cast<unsigned char*>(extraWeights.data());
+					}
+					else if (transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT)
+					{
+						// Convert to TINYGLTF_COMPONENT_TYPE_FLOAT
+						extraWeights.resize(transmissionAccessor.count * 4);
+						for (size_t accessor_index = 0; accessor_index < transmissionAccessor.count; ++accessor_index)
+						{
+							extraWeights.at(accessor_index * 4 + 0) = static_cast<float>(reinterpret_cast<const unsigned short*>(buffer)[accessor_index * 4 + 0]) / 0xFFFF;
+							extraWeights.at(accessor_index * 4 + 1) = static_cast<float>(reinterpret_cast<const unsigned short*>(buffer)[accessor_index * 4 + 1]) / 0xFFFF;
+							extraWeights.at(accessor_index * 4 + 2) = static_cast<float>(reinterpret_cast<const unsigned short*>(buffer)[accessor_index * 4 + 2]) / 0xFFFF;
+							extraWeights.at(accessor_index * 4 + 3) = static_cast<float>(reinterpret_cast<const unsigned short*>(buffer)[accessor_index * 4 + 3]) / 0xFFFF;
+						}
+						transmissionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+						buffer = reinterpret_cast<unsigned char*>(extraWeights.data());
+					}
+					else
+					{
+						_ASSERT_EXPR(FALSE, L"This TINYGLTF_COMPONENT_TYPE of WEIGHTS_0 is not supported");
+					}
+				}
 				else if (transmissionAttribute.first == "COLOR_0")
 				{
 					supportedAttribute = false;
@@ -570,6 +634,8 @@ void GltfSkeletalMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 				{ "TEXCOORD_1", { DXGI_FORMAT_R32G32_FLOAT } },
 				{ "JOINTS_0", { DXGI_FORMAT_R16G16B16A16_UINT } },
 				{ "WEIGHTS_0", { DXGI_FORMAT_R32G32B32A32_FLOAT } },
+				{ "JOINTS_1", { DXGI_FORMAT_R16G16B16A16_UINT } },
+				{ "WEIGHTS_1", { DXGI_FORMAT_R32G32B32A32_FLOAT } },
 			};
 			for (std::unordered_map<std::string, BufferView>::const_reference attribute : attributes)
 			{
@@ -677,6 +743,8 @@ int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, 
 					primitive.vertexBufferViews_.at("TEXCOORD_1").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("TEXCOORD_1").buffer_).Get() : NULL,
 					primitive.vertexBufferViews_.at("JOINTS_0").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("JOINTS_0").buffer_).Get() : NULL,
 					primitive.vertexBufferViews_.at("WEIGHTS_0").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("WEIGHTS_0").buffer_).Get() : NULL,
+					primitive.vertexBufferViews_.at("JOINTS_1").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("JOINTS_1").buffer_).Get() : NULL,
+					primitive.vertexBufferViews_.at("WEIGHTS_1").buffer_ > -1 ? buffers_.at(primitive.vertexBufferViews_.at("WEIGHTS_1").buffer_).Get() : NULL,
 				};
 				UINT strides[] =
 				{
@@ -687,6 +755,8 @@ int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, 
 					static_cast<UINT>(primitive.vertexBufferViews_.at("TEXCOORD_1").strideInBytes_),
 					static_cast<UINT>(primitive.vertexBufferViews_.at("JOINTS_0").strideInBytes_),
 					static_cast<UINT>(primitive.vertexBufferViews_.at("WEIGHTS_0").strideInBytes_),
+					static_cast<UINT>(primitive.vertexBufferViews_.at("JOINTS_1").strideInBytes_),
+					static_cast<UINT>(primitive.vertexBufferViews_.at("WEIGHTS_1").strideInBytes_),
 				};
 				UINT offsets[_countof(vertexBuffers)] = { 0 };
 				deviceContext->IASetVertexBuffers(0, _countof(vertexBuffers), vertexBuffers, strides, offsets);

@@ -14,8 +14,6 @@ public:
 
     bool DrawImGui();
 
-
-
 private:
     //プロペラは行列計算で回転させる
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;

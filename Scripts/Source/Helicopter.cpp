@@ -19,11 +19,11 @@ void Helicopter::Initialize(const std::shared_ptr<Actor>& actor)
 
 void Helicopter::Update()
 {
+
+
     Character::Update();
 
     model_->GetAnimator()->GetAnimations().at(0)->SetAnimSpeed(motorPower_);
-
-
 }
 
 

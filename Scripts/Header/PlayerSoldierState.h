@@ -27,7 +27,22 @@ namespace SoldierState
 
         void Initialize()override;
         void Update()override;
-        void Finalize();
+        void Finalize()override;
+    };
+
+    class Jump : Inheritance
+    {
+    public:
+        Jump(Soldier* soldier) : State(soldier, "Jump") {}
+        ~Jump() {}
+
+        void Initialize()override;
+        void Update()override;
+        void Finalize()override;
+
+    private:
+        //’…’n‚µ‚Ä‚©‚ç‚Ìd’¼ŠÔŒv‘ª
+        float landTimer_;
     };
 };
 

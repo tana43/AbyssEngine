@@ -43,14 +43,16 @@ bool Character::DrawImGui()
     return true;
 }
 
-void Character::Jump(const float& jumpPower)
+bool Character::Jump(const float& jumpPower)
 {
     //Œ»İ‹ó’†‚É‚¢‚éê‡‚ÍƒWƒƒƒ“ƒv‚µ‚È‚¢
-    if (!onGround_)return;
+    if (!onGround_)return false;
 
     velocity_.y += jumpPower;
 
     onGround_ = false;
+
+    return true;
 }
 
 void Character::TurnY(Vector3 dir, bool smooth)

@@ -31,6 +31,9 @@ public:
         Walk,
         Run,
         Aim,
+        Jump,
+        Fall_Loop,
+        Land,
         Move,
     };
 
@@ -38,6 +41,7 @@ public:
     {
         Move,
         Aim,
+        Jump,
     };
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
@@ -95,7 +99,7 @@ private:
 
     float cameraRollSpeed_ = 90.0f;
 
-    float jumpPower_ = 10.0f;
+    float jumpPower_ = 7.0f;
 
     bool vitesseOnBoard_ = false;//ヴィテスに乗っているか
     bool canBoarding_ = false;//搭乗可能か

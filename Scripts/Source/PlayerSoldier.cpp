@@ -31,14 +31,19 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     model_->GetAnimator()->AppendAnimations({
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_WalkFwd.glb",
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_RunFwd.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle_ADS.glb"
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle_ADS.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Jump.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Fall_Loop.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Land.glb"
                 },
         {
-            "Walk","Run","Aim"
+            "Walk","Run","Aim","Jump","Fall_Loop","Land"
         });
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
     moveAnim.AddBlendAnimation(1, 0.6f);
     moveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Jump)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Land)]->SetLoopFlag(false);
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));
 
@@ -67,6 +72,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     stateMachine_ = std::make_unique<StateMachine<State<Soldier>>>();
     stateMachine_->RegisterState(new SoldierState::Move(this));
     stateMachine_->RegisterState(new SoldierState::Aim(this));
+    stateMachine_->RegisterState(new SoldierState::Jump(this));
     stateMachine_->SetState(static_cast<int>(ActionState::Move));
 
     //ソケット情報の設定
@@ -213,7 +219,10 @@ void Soldier::InputMove()
     //ジャンプ
     if (Input::GameSupport::GetJumpButton())
     {
-        Jump(jumpPower_);
+        if (Jump(jumpPower_))
+        {
+            stateMachine_->ChangeState(static_cast<int>(ActionState::Jump));
+        }
     }
 
     //走っているか

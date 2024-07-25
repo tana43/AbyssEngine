@@ -113,6 +113,7 @@ void Scene::Reset()
     noParentList.clear();
 
     actorList_.clear();
+    nameCount_.clear();
 }
 
 void Scene::Finalize()
