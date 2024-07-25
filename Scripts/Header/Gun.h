@@ -23,17 +23,23 @@ public:
     /// 射撃
     /// </summary>
     /// <param name="hootingDirection">弾を打つ方向(正規化させること)</param>
-    void Shot(AbyssEngine::Vector3 shootingDirection);
+    bool Shot(AbyssEngine::Vector3 shootingDirection);
 
 public:
     const AbyssEngine::Vector3& GetMuzzlePos() const { return muzzlePos_; }
     void SetMuzzlePos(const AbyssEngine::Vector3& pos) { muzzlePos_ = pos; }
+
+    const bool& GetADS() const { return ADS_; }
+    void SetADS(const bool& flag) { ADS_ = flag; }
 private:
+    //ADS(スコープを覗いているか)
+    bool ADS_ = false;
+
     //銃口（弾の生成位置）
     AbyssEngine::Vector3 muzzlePos_;
 
     //発射感覚
-    float rateOfFire_ = 0.1f;
+    float rateOfFire_ = 0.05f;
     
     //発射間隔を計測するタイマー
     float rateTimer_;
@@ -43,6 +49,12 @@ private:
 
     //マガジン内の弾数
     int ammoInMag_ = magazineSize_ = 30;
+
+    //どれだけ真ん中に球を撃つかの精度
+    float precision_ = 0.03f;
+
+    //ADS時の精度
+    float adsPrecision = 0.01f;
 
 };
 

@@ -358,6 +358,9 @@
     <ClInclude Include="Scripts\Header\TestSceneSecond.h">
       <Filter>Code\Header\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\PerlinNoise.h">
+      <Filter>Code\Header\Other</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -596,6 +599,9 @@
     </ClCompile>
     <ClCompile Include="Scripts\Source\Bullet.cpp">
       <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\PerlinNoise.cpp">
+      <Filter>Code\Source\Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

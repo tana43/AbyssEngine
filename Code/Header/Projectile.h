@@ -29,7 +29,7 @@ namespace AbyssEngine
     public:
         void SetDirection(const Vector3& dir) { direction_ = dir; }
 
-    private:
+    protected:
         //is•ûŒü
         Vector3 direction_;
 

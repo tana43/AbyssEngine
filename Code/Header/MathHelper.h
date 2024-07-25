@@ -229,6 +229,8 @@ namespace AbyssEngine
 		static Vector3 TransformNormal(const Vector3& v, const Matrix& m);
 		static void TransformNormal(_In_reads_(Count) const Vector3* varray, size_t Count, const Matrix& m, _Out_writes_(Count) Vector3* resultArray);
 
+		static Vector3 Normalize(const Vector3& v);
+
 		// Constants
 		static const Vector3 Zero;
 		static const Vector3 One;
@@ -1742,6 +1744,16 @@ namespace AbyssEngine
 		using namespace DirectX;
 		XMMATRIX M = XMLoadFloat4x4(&m);
 		XMVector3TransformNormalStream(resultArray, sizeof(XMFLOAT3), varray, sizeof(XMFLOAT3), Count, M);
+	}
+
+	inline Vector3 Vector3::Normalize(const Vector3& v)
+	{
+		using namespace DirectX;
+		XMVECTOR V = XMLoadFloat3(&v);
+		XMVECTOR X = XMVector3Normalize(V);
+		Vector3 result;
+		XMStoreFloat3(&result, X);
+		return result;
 	}
 
 	/****************************************************************************

@@ -19,6 +19,7 @@ public:
     enum class Usefulness
     {
         Boarding,//“‹æ
+        Reticle,//ƒŒƒeƒBƒNƒ‹
     };
 
 public:

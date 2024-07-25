@@ -29,6 +29,7 @@
     <ClInclude Include="Code\Header\CascadedShadowMap.h" />
     <ClInclude Include="Code\Header\Character.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
+    <ClInclude Include="Code\Header\PerlinNoise.h" />
     <ClInclude Include="Code\Header\Projectile.h" />
     <ClInclude Include="Code\Header\ScriptComponentManager.h" />
     <ClInclude Include="Code\Header\Collider.h" />
@@ -116,6 +117,7 @@
     <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />
     <ClCompile Include="Code\Source\Character.cpp" />
     <ClCompile Include="Code\Source\FadeSystem.cpp" />
+    <ClCompile Include="Code\Source\PerlinNoise.cpp" />
     <ClCompile Include="Code\Source\Projectile.cpp" />
     <ClCompile Include="Code\Source\ScriptComponentManager.cpp" />
     <ClCompile Include="Code\Source\Collider.cpp" />

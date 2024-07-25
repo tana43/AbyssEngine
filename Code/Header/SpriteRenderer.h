@@ -41,6 +41,13 @@ namespace AbyssEngine
         void SetColorAlpha(const float alpha) { color_.w = alpha; }
         const float& GetColorAlpha() const { return color_.w; }
 
+        void SetSize(const Vector2& size) { size_ = size; }
+        const Vector2& GetSize() const { return size_; }
+
+        void SetOffsetPosition(const Vector2& pos) { offsetPos_ = pos; }
+        const Vector2& GetOffsetPosition() const { return offsetPos_; }
+
+
     private:
         void SetActive(const bool value)override;//アクティブ状態を設定する
     private:
@@ -48,6 +55,8 @@ namespace AbyssEngine
         Vector2 uvOrigin_ = { 0,0 };   //テクスチャのUV原点
         Vector2 uvSize_ = { 100,100 }; //テクスチャから切り出すサイズ（UV原点基準）
         Vector4 color_ = { 1,1,1,1 };  //テクスチャカラー
+        Vector2 pivot_ = { 0,0 };//中心点
+        Vector2 offsetPos_ = { 0,0 };//オフセット座標
         std::shared_ptr<Texture> texture_;       //描画するテクスチャ
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>        vertexBuffer_;

@@ -99,12 +99,6 @@ void Soldier::Update()
         {
             stateMachine_->Update();
         }
-
-
-        if (Input::GameSupport::GetShotButton())
-        {
-            GunShot();
-        }
     }
 
     MoveUpdate();
@@ -271,12 +265,23 @@ void Soldier::GunShot()
     else
     {
         //“–‚½‚ç‚È‚¢‚È‚çAƒJƒƒ‰‚ÌŒü‚«‚Ö
-        Vector3 toTarget = end - gunComponent_->GetMuzzlePos();
+        const Vector3 target = start + eyeToFocus * 50.0f;
+        Vector3 toTarget = target - gunComponent_->GetMuzzlePos();
         toTarget.Normalize();
         shootDirection = toTarget;
     }
 
-    gunComponent_->Shot(shootDirection);
+    if (gunComponent_->Shot(shootDirection))
+    {
+        //‰æ–ÊU“®
+        Camera::CameraShakeParameters param;
+        param.position_.amplitudeMultiplier_ = 0.05f;
+        param.position_.frequencyMultiplier_ = 10.0f;
+        param.rotation_.amplitudeMultiplier_ = 0.0f;
+        param.timing_.duration_ = 0.05f;
+        param.timing_.blendOutTime_ = 0.05f;
+        camera_->CameraShake(param);
+    }
 }
 
 bool Soldier::BoardingTheVitesse()

@@ -103,7 +103,7 @@ void SpriteRenderer::RecalculateFrame()
     //頂点データ設定
     Vertex data_[4];
 
-    const Vector3 transPos = actor_->GetTransform()->GetPosition();
+    const Vector3 transPos = actor_->GetTransform()->GetPosition() + offsetPos_;
     const Vector3 transScale = actor_->GetTransform()->GetScale();
     const Vector2 scaledSize = size_ * Vector2(transScale.x,transScale.y);
 
@@ -122,6 +122,13 @@ void SpriteRenderer::RecalculateFrame()
     data_[3].pos_.x = transPos.x + scaledSize.x;
     data_[3].pos_.y = transPos.y + scaledSize.y;
     data_[3].pos_.z = 0.0f;
+
+	//中心点に合わせて移動
+	/*for (auto& d : data_)
+	{
+		d.pos_.x -= pivot_.x;
+		d.pos_.y -= pivot_.y;
+	}*/
 
 	// 中心座標を原点へ
 	const float mx = transPos.x + scaledSize.x * 0.5f;
@@ -220,6 +227,8 @@ bool AbyssEngine::SpriteRenderer::DrawImGui()
 		ImGui::DragFloat2("Size", &size_.x, 0.1f, 0.0f);
 		ImGui::DragFloat2("UV Origin", &uvOrigin_.x, 0.1f, 0.0f);
 		ImGui::DragFloat2("UV Size", &uvSize_.x, 0.1f, 0.0f);
+		ImGui::DragFloat2("Pivot", &pivot_.x, 1, 0.0f);
+		ImGui::DragFloat2("Offset Pos", &offsetPos_.x, 0.1f);
 
 		ImGui::ColorPicker4("Color",&color_.x);
 

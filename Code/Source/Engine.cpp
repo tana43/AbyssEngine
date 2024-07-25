@@ -29,6 +29,8 @@ unique_ptr<Input>                   Engine::inputManager_;
 
 Engine::Engine()
 {
+    srand((unsigned int)time(NULL)); // 現在時刻の情報で初期化
+
     //各マネージャーの生成
     sceneManager_       = make_unique<SceneManager>();
     assetManager_       = make_unique<AssetManager>();
@@ -67,7 +69,6 @@ void Engine::Update()
     inputManager_->Update();
 
     sceneManager_->Update();
-
 
     scriptComManager_->Update();
 

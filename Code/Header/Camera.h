@@ -3,6 +3,9 @@
 #include "Component.h"
 #include "MathHelper.h"
 #include "SystemFunction.h"
+#include "PerlinNoise.h"
+#include "FadeSystem.h"
+
 #include <DirectXCollision.h>
 
 namespace AbyssEngine
@@ -29,8 +32,11 @@ namespace AbyssEngine
 
         void UpdateFrustum();
 
+        //メインのカメラを変更する
         static void ChangeMainCamera(Camera* c);
 
+        //カメラをズームイン・アウトさせる
+        void Zoom();
     public:
         void SetViewTarget(Transform* t) { viewTarget_ = t; }
         Transform* GetViewTarget() { return viewTarget_; }
@@ -79,6 +85,81 @@ namespace AbyssEngine
         DirectX::BoundingFrustum shadowInitialFrustum_;
 
         Vector2 mouseSensitivity_ = { 2.768f ,2.768f };//カメラ感度
+
+        //カメラの寄り引き
+        std::unique_ptr<FadeSystem> zoomParams_;
+
+        //カメラシェイク
+    public:
+        struct  CameraShake
+        {
+            struct Position//位置変更による揺れのパラメータ
+            {
+                float positionAmplitudeMultiplier_ = 1.0f;//すべての位置の揺れに対する振幅の乗数
+                float positionFrequencyMultiplier_ = 1.0f;//すべての位置の揺れに対する周波数の乗数
+                DirectX::XMFLOAT3 positionAmplitude_ = { 1.0f,1.0f,1.0f };//各軸の振幅
+                DirectX::XMFLOAT3 positionFrequency_ = { 1.0f,1.0f,1.0f };//各軸の周波数
+            }position_;
+
+            struct Rotation
+            {
+                float rotationAmplitudeMultiplier_ = 1.0f;//すべての位置の揺れに対する振幅の乗数
+                float rotationFrequencyMultiplier_ = 1.0f;//すべての位置の揺れに対する周波数の乗数
+                DirectX::XMFLOAT3 rotationAmplitude_ = { 1.0f,1.0f,1.0f };//各軸の振幅 
+                DirectX::XMFLOAT3 rotationFrequency_ = { 1.0f,1.0f,1.0f };//各軸の周波数 
+            }rotation_;
+
+            struct Timing//揺れの持続時間等
+            {
+                float duration_ = 1.0f;//揺れの持続時間
+                float blendInTime_ = 0;//この揺れのフェードインの時間
+                float blendOutTime_ = 0;//この揺れのフェードアウトの時間
+            }timing_;
+        };
+        struct  CameraShakeParameters
+        {
+
+            struct Position//位置変更による揺れのパラメータ
+            {
+                float amplitudeMultiplier_ = 1.0f;//すべての位置の揺れに対する振幅の乗数
+                float frequencyMultiplier_ = 1.0f;//すべての位置の揺れに対する周波数の乗数
+                Vector3 amplitude_ = { 1.0f,1.0f,1.0f };//各軸の振幅
+                Vector3 frequency_ = { 1.0f,1.0f,1.0f };//各軸の周波数
+            }position_;
+
+            struct Rotation
+            {
+                float amplitudeMultiplier_ = 1.0f;//すべての位置の揺れに対する振幅の乗数
+                float frequencyMultiplier_ = 1.0f;//すべての位置の揺れに対する周波数の乗数
+                Vector3 amplitude_ = { 1.0f,1.0f,1.0f };//各軸の振幅 ※現在Z軸の回転は反映されない
+                Vector3 frequency_ = { 1.0f,1.0f,1.0f };//各軸の周波数 ※現在Z軸の回転は反映されない
+            }rotation_;
+
+            struct Timing//揺れの持続時間等
+            {
+                float duration_ = 1.0f;//揺れの持続時間
+                float blendInTime_ = 0.1f;//この揺れのフェードインの時間
+                float blendOutTime_ = 0.1f;//この揺れのフェードアウトの時間
+            }timing_;
+
+            CameraShakeParameters operator=(const CameraShakeParameters& param);
+        };
+
+        //カメラ振動　今は重複はできず１つの振動をするだけ
+        void CameraShake(CameraShakeParameters shakePram);
+        void CameraShakeUpdate();
+
+    private:
+        bool activeCameraShake_ = false;
+
+        Vector3 shakePosition_{ 0,0,0 };
+        Vector4 shakeRotation_{ 0,0,0,1 };
+        float shakeTimer_;
+        Vector3 shakePosFreqTimer_;//座標振動の周波数の速度を表すための数値
+        Vector3 shakeRotFreqTimer_;//回転振動の周波数の速度を表すための数値
+
+        CameraShakeParameters shakeParam_;
+        PerlinNoise shakePerlinNoise_;//カメラ振動用のノイズ
     };
 }
 

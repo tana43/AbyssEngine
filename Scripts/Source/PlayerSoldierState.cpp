@@ -55,6 +55,12 @@ void SoldierState::Aim::Update()
         owner_->Weapon_Offset_Aim.rot
     );
 
+    //射撃
+    if (Input::GameSupport::GetShotButton())
+    {
+        owner_->GunShot();
+    }
+
     owner_->TurnY(owner_->GetCamera()->GetTransform()->GetForward(),30.0f);
 
     //エイムボタンが押されていないなら遷移

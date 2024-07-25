@@ -26,6 +26,7 @@ bool Gun::DrawImGui()
 
         ImGui::SliderFloat("Rate Timer", &rateTimer_, 0.0f, rateOfFire_);
         ImGui::SliderFloat("RateOfFire", &rateOfFire_, 0.0f, 0.3f);
+        ImGui::SliderFloat("Precision", &precision_, 0.0f, 0.3f);
 
         ImGui::TreePop();
     }
@@ -46,7 +47,7 @@ void Gun::Update()
     rateTimer_ -= Time::deltaTime_;
 }
 
-void Gun::Shot(AbyssEngine::Vector3 shootingDirection)
+bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
 {
     //Œ‚‚Â‚±‚Æ‚ª‰Â”\‚©
     if (rateTimer_ < 0)
@@ -56,11 +57,26 @@ void Gun::Shot(AbyssEngine::Vector3 shootingDirection)
         const auto& proj = bullet->AddComponent<Bullet>();
         bullet->GetTransform()->SetPosition(muzzlePos_);
 
+        //e‚Ì¸“x‚ğ”½‰f
+        if (precision_ > 0)
+        {
+            //’e‚Ìis•ûŒü‚ğ—”‚ğg‚Á‚Ä—‚·
+            const Vector3 forward = shootingDirection;
+            const Vector3 right = shootingDirection.Cross(Vector3(0, 1.0f, 0));
+            const Vector3 up = forward.Cross(right);
+            shootingDirection = shootingDirection + right * (static_cast<float>(rand() % 20 - 10) / 10.0f * precision_);
+            shootingDirection = shootingDirection + up * (static_cast<float>(rand() % 20 - 10) / 10.0f * precision_);
+            shootingDirection.Normalize();
+        }
+
         proj->SetDirection(shootingDirection);
 
         rateTimer_ = rateOfFire_;
     }
+    else return false;
     
-    //’e”ŠÇ—
+    //TODO:’e”ŠÇ—
 
+
+    return true;
 }

@@ -37,15 +37,59 @@ bool Camera::DrawImGui()
         ImGui::DragFloat("Near Z", &nearZ_, 0.01f, 0.01f,1.0f);
         ImGui::DragFloat("Far Z", &farZ_, 1.0f, 0.1f);
 
-        ImGui::DragFloat("Arm Length", &armLength_, 0.1f, 0.1f);
+        ImGui::DragFloat("Arm Length", &armLength_, 0.01f, 0.1f);
         ImGui::DragFloat("Camera Lag Speed", &cameraLagSpeed_, 0.01f,0.001f);
-        ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.1f);
-        ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.1f);
+        ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.01f);
+        ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.01f);
 
         ImGui::SliderFloat("Mouse Sensitivity Side ",&mouseSensitivity_.y, 0.5f, 5.0f);
         ImGui::SliderFloat("Mouse Sensitivity Vertical",&mouseSensitivity_.x, 0.5f, 5.0f);
 
         ImGui::TreePop();
+
+        if (ImGui::TreeNode("CameraShake"))
+        {
+            static CameraShakeParameters shakeP;
+
+            ImGui::DragFloat3("ShakePos", &shakePosition_.x, 0.1f);
+            ImGui::DragFloat3("ShakeRot", &shakeRotation_.x, 0.01f);
+
+            if (ImGui::Button("StartCameraShake"))
+            {
+                CameraShake(shakeP);
+            }
+
+            if (ImGui::TreeNode("Position"))
+            {
+                ImGui::DragFloat("PosAmplitudeMult", &shakeP.position_.amplitudeMultiplier_, 0.1f);
+                ImGui::DragFloat("PosFrequencMult", &shakeP.position_.frequencyMultiplier_, 0.1f);
+
+                ImGui::DragFloat3("PosAmplitudeMult", &shakeP.position_.amplitude_.x, 0.1f);
+                ImGui::DragFloat3("PosFrequencMult", &shakeP.position_.frequency_.x, 0.1f);
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Rotation"))
+            {
+                ImGui::DragFloat("RotAmplitudeMult", &shakeP.rotation_.amplitudeMultiplier_, 0.1f);
+                ImGui::DragFloat("RotFrequencMult", &shakeP.rotation_.frequencyMultiplier_, 0.1f);
+
+                ImGui::DragFloat3("RotAmplitudeMult", &shakeP.rotation_.amplitude_.x, 0.1f);
+                ImGui::DragFloat3("RotFrequencMult", &shakeP.rotation_.frequency_.x, 0.1f);
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Timing"))
+            {
+                ImGui::DragFloat("Duration", &shakeP.timing_.duration_, 0.1f);
+                ImGui::DragFloat("BlendInTime", &shakeP.timing_.blendInTime_, 0.05f);
+                ImGui::DragFloat("BlendOutTime", &shakeP.timing_.blendOutTime_, 0.05f);
+
+                ImGui::TreePop();
+            }
+
+            ImGui::TreePop();
+        }
     }
 
     return true;
@@ -60,31 +104,44 @@ void Camera::Update()
     //カメラの遅延追従更新
     CameraLagUpdate();
 
+    //カメラシェイク更新
+    CameraShakeUpdate();
+
+    //各方向ベクトルの更新
+    const auto& worldMatrix = transform_->CalcWorldMatrix();
+
     const float aspect = static_cast<float>(DXSystem::GetScreenWidth())
         / static_cast<float>(DXSystem::GetScreenHeight()); //画面比率
     projectionMatrix_ = XMMatrixPerspectiveFovLH(fov_, aspect, nearZ_, farZ_);
 
 
+    //カメラシェイクを反映させた各方向ベクトルを算出
+    const Vector4 rot = transform_->GetRotation() + shakeRotation_;
+    const auto q = Quaternion::Euler(rot.x,rot.y,rot.z);
+    const auto R = Matrix::CreateFromQuaternion(q);
+    const Vector3 forward = {R._31,R._32,R._33};
+    const Vector3 right = { R._11,R._12,R._13 };
+    const Vector3 up = { R._21,R._22,R._23 };
+
     //ビュー行列作成
     if (viewTarget_)
     {
         //const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
-        auto offset = transform_->GetRight() * targetOffset_.x + transform_->GetForward() * targetOffset_.z;
+        auto offset = right * targetOffset_.x + forward * targetOffset_.z;
         offset.y = targetOffset_.y;
 
         focus_ = transform_->GetPosition() + socketOffset_ + offset;
         //focus_.y = focus_.y + (transform_->GetForward() * armLength_).y;
-        eye_ = focus_ - (transform_->GetForward() * armLength_);
+        eye_ = focus_ - (forward * armLength_);
     }
     else
     {
         focus_ = transform_->GetPosition();
-        eye_ = focus_ - transform_->GetForward();
+        eye_ = focus_ - forward;
     }
-    const Vector3 up = transform_->GetUp();
 
-    //各方向ベクトルの更新
-    const auto& worldMatrix = transform_->CalcWorldMatrix();
+    //カメラシェイクを反映
+    eye_ += shakePosition_;
 
     viewMatrix_ = XMMatrixLookAtLH(eye_, focus_, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
@@ -338,4 +395,105 @@ void Camera::CameraLagUpdate()
     }
 
     transform_->SetPosition(cameraPos);
+}
+
+void Camera::CameraShake(CameraShakeParameters shakeParam)
+{
+    //シード値を更新
+    shakePerlinNoise_.SetSeed(rand() % 100);
+
+    //パラメータを更新
+    shakeParam_ = shakeParam;
+
+    //タイマーリセット
+    shakeTimer_ = 0;
+    shakePosFreqTimer_ = { 0,0,0 };
+    shakeRotFreqTimer_ = { 0,0,0 };
+
+    activeCameraShake_ = true;
+}
+
+void Camera::CameraShakeUpdate()
+{
+    if (!activeCameraShake_)return;
+
+    //振動する方向を設定　円を描くようになっている;
+    const Vector3 freqVec = { sinf(shakePosFreqTimer_.x),cosf(shakePosFreqTimer_.y),sinf(shakePosFreqTimer_.z) };
+
+    //右ベクトル、上ベクトルから振動する方向ベクトルを算出
+    const Vector3 forward   = transform_->GetForward();
+    const Vector3 right     = transform_->GetRight();
+    const Vector3 up        = transform_->GetUp();
+
+
+    Vector3 shakeVec = Vector3::Normalize(right * freqVec.x + up * freqVec.y + forward * freqVec.z);
+
+    //位置振動の乗数から振動の強さを表す値を作成
+    float shakePower = 1;
+
+    //フェードイン
+    if (shakeParam_.timing_.blendInTime_ > 0 &&
+        shakeTimer_ < shakeParam_.timing_.blendInTime_)
+    {
+        //フェードイン中の時間を正規化
+        const float t = shakeTimer_ / shakeParam_.timing_.blendInTime_;
+        shakePower = std::lerp(0.0f, 1.0f, t);
+    }
+    //フェードアウト
+    else if (shakeParam_.timing_.blendOutTime_ > 0 &&
+        shakeTimer_ > shakeParam_.timing_.duration_ - shakeParam_.timing_.blendOutTime_)
+    {
+        //フェードアウト中の時間を正規化
+        const auto& tp = shakeParam_.timing_;
+        const float t = (shakeTimer_ - (tp.duration_ - tp.blendOutTime_)) / tp.blendOutTime_;
+        shakePower = std::lerp(1.0f, 0.0f, t);
+    }
+
+    //振動
+    shakeVec = shakeVec * shakePower;
+
+    shakePosition_ = {
+        shakeVec.x * (shakePerlinNoise_.OctaveNoise(3,shakePosFreqTimer_.x) - 0.5f) * shakeParam_.position_.amplitude_.x * shakeParam_.position_.amplitudeMultiplier_,
+        shakeVec.y * (shakePerlinNoise_.OctaveNoise(3,shakePosFreqTimer_.y) - 0.5f) * shakeParam_.position_.amplitude_.y * shakeParam_.position_.amplitudeMultiplier_,
+        shakeVec.z * (shakePerlinNoise_.OctaveNoise(3,shakePosFreqTimer_.z) - 0.5f) * shakeParam_.position_.amplitude_.z * shakeParam_.position_.amplitudeMultiplier_
+    };
+
+    shakeRotation_ = {
+        shakeVec.x * (shakePerlinNoise_.OctaveNoise(3,shakeRotFreqTimer_.x) - 0.5f) * shakeParam_.rotation_.amplitude_.x * shakeParam_.rotation_.amplitudeMultiplier_,
+        shakeVec.y * (shakePerlinNoise_.OctaveNoise(3,shakeRotFreqTimer_.y) - 0.5f) * shakeParam_.rotation_.amplitude_.y * shakeParam_.rotation_.amplitudeMultiplier_,
+        shakeVec.z * (shakePerlinNoise_.OctaveNoise(3,shakeRotFreqTimer_.z) - 0.5f) * shakeParam_.rotation_.amplitude_.z * shakeParam_.rotation_.amplitudeMultiplier_
+    };
+
+
+    //タイマー更新
+    shakeTimer_ += Time::deltaTime_;
+    shakePosFreqTimer_ += (shakeParam_.position_.frequency_ * shakeParam_.position_.frequencyMultiplier_) * Time::deltaTime_;
+    shakeRotFreqTimer_ += (shakeParam_.rotation_.frequency_ * shakeParam_.rotation_.frequencyMultiplier_) * Time::deltaTime_;
+
+    //振動終了
+    if (shakeTimer_ > shakeParam_.timing_.duration_)
+    {
+        activeCameraShake_ = false;
+
+        shakePosition_ = { 0,0,0 };
+        shakeRotation_ = { 0,0,0 };
+    }
+}
+
+Camera::CameraShakeParameters Camera::CameraShakeParameters::operator=(const CameraShakeParameters& param)
+{
+    position_.amplitude_ = param.position_.amplitude_;
+    position_.amplitudeMultiplier_ = param.position_.amplitudeMultiplier_;
+    position_.frequency_ = param.position_.frequency_;
+    position_.frequencyMultiplier_ = param.position_.frequencyMultiplier_;
+
+    rotation_.amplitude_ = param.rotation_.amplitude_;
+    rotation_.amplitudeMultiplier_ = param.rotation_.amplitudeMultiplier_;
+    rotation_.frequency_ = param.rotation_.frequency_;
+    rotation_.frequencyMultiplier_ = param.rotation_.frequencyMultiplier_;
+
+    timing_.duration_ = param.timing_.duration_;
+    timing_.blendInTime_ = param.timing_.blendInTime_;
+    timing_.blendOutTime_ = param.timing_.blendOutTime_;
+    return *this;
 }
