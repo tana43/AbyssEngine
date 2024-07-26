@@ -1,28 +1,49 @@
-//#pragma once
-//
-//#include <memory>
-//#include <vector>
-//
-//namespace AbyssEngine
-//{
-//    class Collider;
-//    class MeshCollider;
-//
-//    class CollisionManager
-//    {
-//    public:
-//        CollisionManager() {}
-//        ~CollisionManager() {}
-//
-//        void Initialize();
-//
-//        void RayCast();
-//
-//        void Finalieze();
-//        void Clear();
-//
-//    private:
-//        std::vector<Collider> colliderList_;
-//        std::vector<MeshCollider> meshColliderList_;
-//    };
-//}
+#pragma once
+
+#include <memory>
+#include <vector>
+
+namespace AbyssEngine
+{
+    class Collider;
+    class MeshCollider;
+
+    class AttackCollider;
+    class HitCollider;
+
+
+    class CollisionManager
+    {
+    public:
+        CollisionManager() {}
+        ~CollisionManager() {}
+
+        void Initialize();
+
+        void RayCast();
+
+        void Finalieze();
+        void Clear();
+
+        /// <summary>
+        /// ínå`îªíË(âüÇµèoÇµ)
+        /// </summary>
+        void TerrainDetection();
+
+        /// <summary>
+        /// çUåÇîªíË
+        /// </summary>
+        void AttackDetection();
+
+        /// <summary>
+        /// ãÚÇÁÇ¢îªíË
+        /// </summary>
+        void HitDetection();
+
+    private:
+        std::vector<std::weak_ptr<Collider>> colliderList_;
+        std::vector<std::weak_ptr<MeshCollider>> meshColliderList_;
+        std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;
+        std::vector<std::weak_ptr<HitCollider>> hitColliderList_;
+    };
+}

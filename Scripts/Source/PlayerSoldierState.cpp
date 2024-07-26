@@ -47,6 +47,9 @@ void SoldierState::Aim::Initialize()
 
     //自動振り向きをオフに
     owner_->SetEnableAutoTurn(false);
+
+    //カメラを寄らせる
+    owner_->GetCamera()->Zoom(zoomParam);
 }
 
 void SoldierState::Aim::Update()
@@ -76,6 +79,9 @@ void SoldierState::Aim::Finalize()
 {
     //自動振り向きをオンに
     owner_->SetEnableAutoTurn(true);
+
+    //カメラを戻す
+    owner_->GetCamera()->ZoomReset(zoomParam.time_);
 }
 
 void SoldierState::Jump::Initialize()

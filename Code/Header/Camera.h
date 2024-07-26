@@ -35,8 +35,35 @@ namespace AbyssEngine
         //メインのカメラを変更する
         static void ChangeMainCamera(Camera* c);
 
+        //ズームによって変更可能なパラメータ
+        struct ZoomParam
+        {
+            float armLength_;
+            Vector3 socketOffset_;
+            Vector3 targetOffset_;
+            float time_;
+        };
+
         //カメラをズームイン・アウトさせる
-        void Zoom();
+        void Zoom(const ZoomParam& param);
+
+        //ズームを元に戻す
+        void ZoomReset(const float time);
+    private:
+        void ZoomUpdate();
+
+        //ズーム関数が呼ばれた際の現在のカメラ情報を保持する
+        ZoomParam retainZoomParam_;
+
+        //ズーム完了後のカメラ情報を保持する
+        ZoomParam nextZoomParam_;
+
+        //ズームする際に使用するタイマー
+        float zoomTimer_;
+
+        //ズーム中か？
+        bool isZooming_ = false;
+
     public:
         void SetViewTarget(Transform* t) { viewTarget_ = t; }
         Transform* GetViewTarget() { return viewTarget_; }
@@ -61,9 +88,13 @@ namespace AbyssEngine
 
         bool isMainCamera_ = false;
 
-        Vector3 socketOffset_;//Viewのオフセット座標
-        Vector3 targetOffset_;//Focusのオフセット座標
-        float armLength_ = 1.0f;//カメラからターゲットまでの距離
+        Vector3 baseSocketOffset_;//基準となるViewのオフセット座標
+        Vector3 baseTargetOffset_;//基準となるFocusのオフセット座標
+        float baseArmLength_ = 1.0f;//基準となるカメラからターゲットまでの距離
+
+        Vector3 socketOffset_;//実際に使用するViewのオフセット座標
+        Vector3 targetOffset_;//実際に使用するFocusのオフセット座標
+        float armLength_ = 1.0f;//実際に使用するカメラからターゲットまでの距離
 
         bool enableCameraLag_ = true;//ターゲットへのカメラの追従を遅延させる
         float cameraLagSpeed_ = 10.0f;//カメラの追従速度

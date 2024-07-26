@@ -26,7 +26,8 @@ void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor
     attachModel_ = actor->GetComponent<SkeletalMesh>();
 
     //エフェクト読み込み
-    const std::string path = "./Assets/Effects/Thruster_01.efk";
+    //const std::string path = "./Assets/Effects/Thruster_01.efk";
+    const std::string path = "./Assets/Effects/Thruster_02.efk";
     const auto it = Engine::assetManager_->cacheEffect_.find(path.c_str());
     if (it != Engine::assetManager_->cacheEffect_.end())
     {

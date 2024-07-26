@@ -169,7 +169,6 @@
     <ClCompile Include="External\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Scripts\Header\TestSceneSecond.cpp" />
     <ClCompile Include="Scripts\Source\Bullet.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
     <ClCompile Include="Scripts\Source\Gun.cpp" />
@@ -182,6 +181,7 @@
     <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
     <ClCompile Include="Scripts\Source\Stage.cpp" />
     <ClCompile Include="Scripts\Source\StageManager.cpp" />
+    <ClCompile Include="Scripts\Source\TestSceneSecond.cpp" />
     <ClCompile Include="Scripts\Source\ThrusterEffect.cpp" />
     <ClCompile Include="Scripts\Source\GameUIAdmin.cpp" />
     <ClCompile Include="Scripts\Source\Vitesse.cpp" />

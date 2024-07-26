@@ -6,6 +6,7 @@
 #include "Engine.h"
 #include "Input.h"
 #include "LineRenderer.h"
+#include "Easing.h"
 
 #include <algorithm>
 #include <Windows.h>
@@ -244,7 +245,7 @@ void Camera::UpdateFrustum()
 #endif // _DEBUG
 }
 
-void AbyssEngine::Camera::ChangeMainCamera(Camera* camera)
+void Camera::ChangeMainCamera(Camera* camera)
 {
     for (auto& c : Engine::renderManager_->GetCameraList())
     {
@@ -270,6 +271,86 @@ Vector3 Camera::ConvertTo2DVectorFromCamera(const Vector2& v)
     result.Normalize();
 
     return Vector3(result.x,0,result.y);
+}
+
+void Camera::Zoom(const ZoomParam& param)
+{
+    //現在のズーム情報を保持させる
+    retainZoomParam_.armLength_    = armLength_;
+    retainZoomParam_.socketOffset_ = socketOffset_;
+    retainZoomParam_.targetOffset_ = targetOffset_;
+
+    //ズーム後の値を保持させる
+    nextZoomParam_.armLength_    = param.armLength_;
+    nextZoomParam_.socketOffset_ = param.socketOffset_;
+    nextZoomParam_.targetOffset_ = param.targetOffset_;
+    nextZoomParam_.time_         = param.time_;
+
+    //タイマーリセット
+    zoomTimer_ = 0.0f;
+
+    //ズームフラグを立てる
+    isZooming_ = true;
+}
+
+void Camera::ZoomReset(const float time)
+{
+    //現在のズーム情報を保持させる
+    retainZoomParam_.armLength_    = armLength_;
+    retainZoomParam_.socketOffset_ = socketOffset_;
+    retainZoomParam_.targetOffset_ = targetOffset_;
+
+    //ズーム後の値を保持させる
+    nextZoomParam_.armLength_    = baseArmLength_;
+    nextZoomParam_.socketOffset_ = baseSocketOffset_;
+    nextZoomParam_.targetOffset_ = baseTargetOffset_;
+    nextZoomParam_.time_ = time;
+
+    //タイマーリセット
+    zoomTimer_ = 0.0f;
+
+    //ズームフラグを立てる
+    isZooming_ = true;
+}
+
+void Camera::ZoomUpdate()
+{
+    if (!isZooming_)return;
+
+    zoomTimer_ += Time::deltaTime_;
+
+    //補完しきっているか
+    if (zoomTimer_ > nextZoomParam_.time_)
+    {
+        armLength_ = nextZoomParam_.armLength_;
+
+        socketOffset_.x = nextZoomParam_.socketOffset_.x;
+        socketOffset_.y = nextZoomParam_.socketOffset_.y;
+        socketOffset_.z = nextZoomParam_.socketOffset_.z;
+
+        targetOffset_.x = nextZoomParam_.targetOffset_.x;
+        targetOffset_.y = nextZoomParam_.targetOffset_.y;
+        targetOffset_.z = nextZoomParam_.targetOffset_.z;
+
+        //ズーム終了
+        isZooming_ = false;
+
+        return;
+    }
+
+    //補完率を計算
+    float compValue = zoomTimer_ / nextZoomParam_.time_;
+
+    //イージングで補完する
+    armLength_ = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.armLength_, nextZoomParam_.armLength_);
+
+    socketOffset_.x = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.socketOffset_.x, nextZoomParam_.socketOffset_.x);
+    socketOffset_.y = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.socketOffset_.y, nextZoomParam_.socketOffset_.y);
+    socketOffset_.z = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.socketOffset_.z, nextZoomParam_.socketOffset_.z);
+
+    targetOffset_.x = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.targetOffset_.x, nextZoomParam_.targetOffset_.x);
+    targetOffset_.y = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.targetOffset_.y, nextZoomParam_.targetOffset_.y);
+    targetOffset_.z = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.targetOffset_.z, nextZoomParam_.targetOffset_.z);
 }
 
 void Camera::DebugCameraController()
