@@ -60,10 +60,12 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     const auto& c = Engine::sceneManager_->GetActiveScene().InstanceActor("Player Camera");
     camera_ = c->AddComponent<Camera>();
     //c->SetParent(actor_);
-    camera_->fov_ = DirectX::XMConvertToRadians(80.0f);
-    camera_->targetOffset_ = Vector3(0.4f, 0.6f, 0);
-    camera_->armLength_ = 0.4f;
-    camera_->cameraLagSpeed_ = 0.05f;
+    camera_->SetFov(DirectX::XMConvertToRadians(80.0f));
+    camera_->SetBaseTargetOffset(Vector3(0.4f, 0.6f, 0));
+    camera_->SetBaseArmLength(0.4f);
+    camera_->SetTargetOffset(Vector3(0.4f, 0.6f, 0));
+    camera_->SetArmLength(0.4f);
+    camera_->SetCameraLagSpeed(0.05f);
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
 
@@ -255,11 +257,11 @@ void Soldier::GunShot()
 {
     //ŽËŒ‚
     //‰æ–Ê’†‰›‚ÉƒŒƒC‚ð”ò‚Î‚µA“–‚½‚Á‚½êŠ‚ÉŒü‚©‚Á‚Ä’e‚ª”ò‚Ô‚æ‚¤‚É‚·‚é
-    Vector3 eyeToFocus = camera_->focus_ - camera_->eye_;
+    Vector3 eyeToFocus = camera_->GetFocus() - camera_->GetEye();
     eyeToFocus.Normalize();
     const float range = 1000.0f;
 
-    const Vector3 start = camera_->eye_;
+    const Vector3 start = camera_->GetEye();
     const Vector3 end = start + eyeToFocus * range;
     Vector3 hitPos,hitNormal,shootDirection;
     if (StageManager::Instance().GetActiveStage()->RayCast(

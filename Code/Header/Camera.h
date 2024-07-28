@@ -74,6 +74,26 @@ namespace AbyssEngine
         void CameraLagUpdate();
 
     public:
+        const Matrix& GetViewMatrix() const { return viewMatrix_; }
+        const Matrix& GetProjectionMatrix() const { return projectionMatrix_; }
+        const Matrix& GetViewProjectionMatrix() const { return viewProjectionMatrix_; }
+
+        const Vector3& GetEye() const { return eye_; }
+        const Vector3& GetFocus() const { return focus_; }
+
+        void SetBaseSocketOffset(const Vector3& offset) { baseSocketOffset_ = offset; }
+        void SetBaseTargetOffset(const Vector3& offset) { baseTargetOffset_ = offset; }
+        void SetBaseArmLength(const float& length) { baseArmLength_ = length; }
+
+        void SetSocketOffset(const Vector3& offset) { socketOffset_ = offset; }
+        void SetTargetOffset(const Vector3& offset) { targetOffset_ = offset; }
+        void SetArmLength(const float& length) { armLength_ = length; }
+
+        void SetCameraLagSpeed(const float& speed) { cameraLagSpeed_ = speed; }
+
+        void SetFov(const float& fov) { fov_ = fov; }
+
+    private: 
         float fov_ = DirectX::XMConvertToRadians(60.0f);
         float nearZ_ = 0.1f;
         float farZ_ = 1000.0f;
@@ -105,7 +125,6 @@ namespace AbyssEngine
 
         friend class RenderManager;
 
-    private: 
         float debCameraSpeed_       = 10.0f;//デバッグ中のカメラスピード
         bool enableDebugController_ = true; //デバッグ操作オン、オフ
 

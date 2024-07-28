@@ -96,8 +96,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     const auto& c = Engine::sceneManager_->GetActiveScene().InstanceActor("Vitesse Camera");
     camera_ = c->AddComponent<Camera>();
     //c->SetParent(actor_);
-    camera_->fov_ = DirectX::XMConvertToRadians(80.0f);
-    camera_->targetOffset_ = Vector3(0.8f, 1.4f, 0);
+    camera_->SetFov(DirectX::XMConvertToRadians(80.0f));
+    camera_->SetBaseTargetOffset(Vector3(0.8f, 1.4f, 0));
+    camera_->SetTargetOffset(Vector3(0.8f, 1.4f, 0));
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
 
@@ -106,8 +107,10 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     transform_->SetPosition(Vector3(0, 3.5f, 4.0f));*/
 
     //カメラ設定
-    camera_->armLength_ = 18.0f;
-    camera_->targetOffset_ = { 12.2f,14.5f,0 };
+    camera_->SetArmLength(18.0f);
+    camera_->SetTargetOffset({ 12.2f,14.5f,0 });
+    camera_->SetBaseArmLength(18.0f);
+    camera_->SetBaseTargetOffset({ 12.2f,14.5f,0 });
 
     //ステートマシン設定
     stateMachine_ = std::make_unique<StateMachine<State<Vitesse>>>();
@@ -348,7 +351,7 @@ void Vitesse::GetOnBoardPilot(const std::shared_ptr<Soldier>& pilot)
 
 void Vitesse::UpdateInputMove()
 {
-    if (!camera_->isMainCamera_)return;
+    if (!camera_->GetIsMainCamera())return;
 
     //飛行中はY軸にも動くようにする
     if (flightMode_)
