@@ -15,7 +15,7 @@ void GameUIAdmin::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     spriteList_.emplace_back(actor->AddComponent<SpriteRenderer>("./Assets/Images/Reticle.png"));
     spriteList_[static_cast<int>(Usefulness::Reticle)]->SetSize({16.0f,16.0f});
-    spriteList_[static_cast<int>(Usefulness::Reticle)]->SetOffsetPosition({954.0f,524.0f});
+    spriteList_[static_cast<int>(Usefulness::Reticle)]->SetOffsetPosition({928.0f,508.0f});
 }
 
 void GameUIAdmin::UpdateAfter()

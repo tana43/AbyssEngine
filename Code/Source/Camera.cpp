@@ -345,16 +345,16 @@ void Camera::ZoomUpdate()
     float compValue = zoomTimer_ / nextZoomParam_.time_;
 
     //イージングで補完する
-    armLength_ = Easing::InOutBack(compValue, 1.0f, 0.5f, retainZoomParam_.armLength_, nextZoomParam_.armLength_);
+    armLength_ = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.armLength_, retainZoomParam_.armLength_);
 
-    socketOffset_.x = Easing::InOutBack(compValue, 2.0f, 1.0f, retainZoomParam_.socketOffset_.x, nextZoomParam_.socketOffset_.x);
-    socketOffset_.y = Easing::InOutBack(compValue, 2.0f, 1.0f, retainZoomParam_.socketOffset_.y, nextZoomParam_.socketOffset_.y);
-    socketOffset_.z = Easing::InOutBack(compValue, 2.0f, 1.0f, retainZoomParam_.socketOffset_.z, nextZoomParam_.socketOffset_.z);
+    socketOffset_.x = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.socketOffset_.x,retainZoomParam_.socketOffset_.x);
+    socketOffset_.y = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.socketOffset_.y,retainZoomParam_.socketOffset_.y);
+    socketOffset_.z = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.socketOffset_.z,retainZoomParam_.socketOffset_.z);
 
-    targetOffset_.x = Easing::InOutBack(compValue, 2.0f, 1.0f, retainZoomParam_.targetOffset_.x, nextZoomParam_.targetOffset_.x);
-    targetOffset_.y = Easing::InOutBack(compValue, 2.0f, 1.0f, retainZoomParam_.targetOffset_.y, nextZoomParam_.targetOffset_.y);
-    targetOffset_.z = Easing::InOutBack(compValue, 2.0f, 1.0f, retainZoomParam_.targetOffset_.z, nextZoomParam_.targetOffset_.z);
-}
+    targetOffset_.x = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.x,retainZoomParam_.targetOffset_.x);
+    targetOffset_.y = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.y,retainZoomParam_.targetOffset_.y);
+    targetOffset_.z = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.z,retainZoomParam_.targetOffset_.z);
+}                                                                                            
 
 void Camera::DebugCameraController()
 {

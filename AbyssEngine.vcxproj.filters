@@ -361,6 +361,12 @@
     <ClInclude Include="Code\Header\PerlinNoise.h">
       <Filter>Code\Header\Other</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\SphereCollider.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\EnemyBot.h">
+      <Filter>Script\Header\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -602,6 +608,12 @@
     </ClCompile>
     <ClCompile Include="Scripts\Source\TestSceneSecond.cpp">
       <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SphereCollider.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\EnemyBot.cpp">
+      <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

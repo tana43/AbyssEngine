@@ -64,6 +64,9 @@ public:
 
     //射撃
     void GunShot();
+
+    //ダッシュ判定
+    void DashDecision();
 public:
     //ヴィテスに搭乗しているか
     const bool& GetVitesseOnBoard() const { return vitesseOnBoard_; }
@@ -77,6 +80,8 @@ public:
     std::unique_ptr<StateMachine<State<Soldier>>>& GetStateMachine() { return stateMachine_; }
 
     const std::shared_ptr<AbyssEngine::Camera>& GetCamera() { return camera_; }
+
+    void SetCanJump(const bool& can) { canJump_ = can; }
 
 private:
     void MoveUpdate();
@@ -99,10 +104,11 @@ private:
 
     float cameraRollSpeed_ = 90.0f;
 
-    float jumpPower_ = 7.0f;
+    float jumpPower_ = 5.0f;
 
     bool vitesseOnBoard_ = false;//ヴィテスに乗っているか
     bool canBoarding_ = false;//搭乗可能か
+    bool canJump_ = true;//ジャンプ可能か
 
     //ヴィテス
     std::shared_ptr<Vitesse> vitesse_;

@@ -68,6 +68,7 @@
     <ClInclude Include="Code\Header\ShapeRenderer.h" />
     <ClInclude Include="Code\Header\SkeletalMesh.h" />
     <ClInclude Include="Code\Header\Skybox.h" />
+    <ClInclude Include="Code\Header\SphereCollider.h" />
     <ClInclude Include="Code\Header\SpriteRenderer.h" />
     <ClInclude Include="Code\Header\State.h" />
     <ClInclude Include="Code\Header\StateMachine.h" />
@@ -88,6 +89,7 @@
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scripts\Header\Bullet.h" />
+    <ClInclude Include="Scripts\Header\EnemyBot.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
     <ClInclude Include="Scripts\Header\Gun.h" />
     <ClInclude Include="Scripts\Header\Helicopter.h" />
@@ -154,6 +156,7 @@
     <ClCompile Include="Code\Source\ShapeRenderer.cpp" />
     <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
     <ClCompile Include="Code\Source\Skybox.cpp" />
+    <ClCompile Include="Code\Source\SphereCollider.cpp" />
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
     <ClCompile Include="Code\Source\StaticMesh.cpp" />
     <ClCompile Include="Code\Source\StaticMeshBatching.cpp" />
@@ -170,6 +173,7 @@
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Scripts\Source\Bullet.cpp" />
+    <ClCompile Include="Scripts\Source\EnemyBot.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
     <ClCompile Include="Scripts\Source\Gun.cpp" />
     <ClCompile Include="Scripts\Source\Helicopter.cpp" />

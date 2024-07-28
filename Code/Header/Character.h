@@ -51,8 +51,10 @@ namespace AbyssEngine
         void SetVelocityY(const float& y) { velocity_.y = y; }
         void SetVelocityZ(const float& z) { velocity_.z = z; }
 
-        const float GetMaxHorizontalSpeed() const { return Max_Horizontal_Speed; }
-        const float GetMaxVerticalSpeed()const { return Max_Vertical_Speed; }
+        const float& GetMaxHorizontalSpeed() const { return Max_Horizontal_Speed; }
+        void SetMaxHorizontalSpeed(const float& speed) { Max_Horizontal_Speed = speed; }
+        const float& GetMaxVerticalSpeed()const { return Max_Vertical_Speed; }
+        void SetMaxVerticalSpeed(const float& speed) { Max_Vertical_Speed = speed; }
 
         void SetEnableAutoTurn(const bool& flag) { enableAutoTurn_ = flag; }
 

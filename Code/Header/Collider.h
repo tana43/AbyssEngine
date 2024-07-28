@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include <DirectXMath.h>
+#include "MathHelper.h"
 #include <string>
 
 namespace AbyssEngine

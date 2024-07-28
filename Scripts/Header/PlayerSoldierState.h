@@ -35,6 +35,12 @@ namespace SoldierState
         {
             0.2f,{0,0,0},{0.25f,0.6f,0.0f},0.2f
         };
+
+        //ADS時の歩行速度
+        const float Max_Move_Speed = 0.5f;
+
+        //エイムステートが別のステートに切り替わる最小時間
+        const float Minimum_Time = 0.15f;
     };
 
     class Jump : Inheritance

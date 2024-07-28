@@ -51,7 +51,8 @@ private:
     int ammoInMag_ = magazineSize_ = 30;
 
     //‚Ç‚ê‚¾‚¯^‚ñ’†‚É‹…‚ğŒ‚‚Â‚©‚Ì¸“x
-    float precision_ = 0.03f;
+    //float precision_ = 0.03f;
+    float precision_ = 0.02f;
 
     //ADS‚Ì¸“x
     float adsPrecision = 0.01f;

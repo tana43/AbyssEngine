@@ -11,10 +11,17 @@ using namespace AbyssEngine;
 void SoldierState::Move::Initialize()
 {
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Move));
+
+    //ジャンプを可能に
+    owner_->SetCanJump(true);
 }
 
 void SoldierState::Move::Update()
 {
+    //ダッシュ判定
+    owner_->DashDecision();
+
+    //移動
     owner_->InputMove();
 
     //武器の位置を変更
@@ -43,6 +50,8 @@ void SoldierState::Move::Finalize()
 
 void SoldierState::Aim::Initialize()
 {
+    timer_ = 0.0f;
+
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Aim));
 
     //自動振り向きをオフに
@@ -50,15 +59,28 @@ void SoldierState::Aim::Initialize()
 
     //カメラを寄らせる
     owner_->GetCamera()->Zoom(zoomParam);
+
+    //ジャンプを不可に
+    owner_->SetCanJump(false);
+
+    //歩行速度を遅くする
+    owner_->SetMaxHorizontalSpeed(Max_Move_Speed);
+
 }
 
 void SoldierState::Aim::Update()
 {
+    //時間更新
+    timer_ += Time::deltaTime_;
+
     //武器の位置を変更
     owner_->ChangeSocketTransformLinear(0.1f,
         owner_->Weapon_Offset_Aim.pos,
         owner_->Weapon_Offset_Aim.rot
     );
+
+    //移動
+    owner_->InputMove();
 
     //射撃
     if (Input::GameSupport::GetShotButton())
@@ -68,8 +90,8 @@ void SoldierState::Aim::Update()
 
     owner_->TurnY(owner_->GetCamera()->GetTransform()->GetForward(),30.0f);
 
-    //エイムボタンが押されていないなら遷移
-    if (!Input::GameSupport::GetAimButton())
+    //エイムボタンが押されていないかつ、時間がしばらく経っていたなら遷移
+    if (!Input::GameSupport::GetAimButton() && timer_ > Minimum_Time)
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Move));
     }
@@ -82,6 +104,9 @@ void SoldierState::Aim::Finalize()
 
     //カメラを戻す
     owner_->GetCamera()->ZoomReset(zoomParam.time_);
+
+    //ジャンプを可能に
+    owner_->SetCanJump(true);
 }
 
 void SoldierState::Jump::Initialize()

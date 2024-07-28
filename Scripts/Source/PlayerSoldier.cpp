@@ -61,9 +61,9 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     camera_ = c->AddComponent<Camera>();
     //c->SetParent(actor_);
     camera_->SetFov(DirectX::XMConvertToRadians(80.0f));
-    camera_->SetBaseTargetOffset(Vector3(0.4f, 0.6f, 0));
+    camera_->SetBaseTargetOffset(Vector3(0.29f, 0.6f, 0));
     camera_->SetBaseArmLength(0.4f);
-    camera_->SetTargetOffset(Vector3(0.4f, 0.6f, 0));
+    camera_->SetTargetOffset(Vector3(0.29f, 0.6f, 0));
     camera_->SetArmLength(0.4f);
     camera_->SetCameraLagSpeed(0.05f);
     camera_->SetViewTarget(transform_.get());
@@ -179,6 +179,8 @@ void Soldier::MuzzlePosUpdate()
 
 void Soldier::BoardingDistanceJudge(const float& range)
 {
+    if (!vitesse_)return;
+
     //機体との距離から搭乗可能かどうかを判断
     auto myPos = GetTransform()->GetPosition();
     auto viPos = vitesse_->GetTransform()->GetPosition();
@@ -199,7 +201,7 @@ void Soldier::InputMove()
     auto inputVec = Input::GameSupport::GetMoveVector();
 
     //入力値がある場合は加速
-    if (inputVec.LengthSquared() > 0.01f)
+    if (inputVec.LengthSquared() > 0.01f) 
     {
         moveVec_ = camera_->ConvertTo2DVectorFromCamera(inputVec);
 
@@ -219,18 +221,12 @@ void Soldier::InputMove()
     }
 
     //ジャンプ
-    if (Input::GameSupport::GetJumpButton())
+    if (canJump_ && Input::GameSupport::GetJumpButton())
     {
         if (Jump(jumpPower_))
         {
             stateMachine_->ChangeState(static_cast<int>(ActionState::Jump));
         }
-    }
-
-    //走っているか
-    if (onGround_)
-    {
-        Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
     }
 }
 
@@ -286,12 +282,21 @@ void Soldier::GunShot()
     {
         //画面振動
         Camera::CameraShakeParameters param;
-        param.position_.amplitudeMultiplier_ = 0.05f;
-        param.position_.frequencyMultiplier_ = 10.0f;
+        param.position_.amplitudeMultiplier_ = 0.03f;
+        param.position_.frequencyMultiplier_ = 5.0f;
         param.rotation_.amplitudeMultiplier_ = 0.0f;
         param.timing_.duration_ = 0.05f;
         param.timing_.blendOutTime_ = 0.05f;
         camera_->CameraShake(param);
+    }
+}
+
+void Soldier::DashDecision()
+{
+    //走っているか
+    if (onGround_)
+    {
+        Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
     }
 }
 
