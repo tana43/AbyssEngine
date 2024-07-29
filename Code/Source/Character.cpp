@@ -276,7 +276,7 @@ void Character::UpdateHorizontalMove()
     Vector3 hitNormal;//光線がヒットした面の法線
 
     //レイの開始地点引き上げ
-    static constexpr float correctionY = 1.0f;//補正値
+    static constexpr float correctionY = 0.5f;//補正値
     Vector3 start = pos;
     start.y += correctionY;
     Vector3 end = moved;
@@ -341,7 +341,7 @@ void Character::UpdateVerticalMove()
     Vector3 hitNormal;//光線がヒットした面の法線
 
     //レイの開始地点引き上げ
-    static constexpr float correctionY = 1.0f;//補正値
+    static constexpr float correctionY = 0.5f;//補正値
     Vector3 start = pos;
     start.y += correctionY;
     Vector3 end = moved;

@@ -10,19 +10,18 @@ void EnemyBot::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     BaseEnemy::Initialize(actor);
 
     //スケルタルメッシュを追加
-    model_ = actor->AddComponent<SkeletalMesh>("./Assets/Models/Enemy/Bot_Rolling.glb");
-    /*model_->GetAnimator()->AppendAnimations(
-        {
-        {
-        "./Assets/Models/Enemy/Bot_Idle.glb",
-        "./Assets/Models/Enemy/Bot_Walk.glb",
-        "./Assets/Models/Enemy/Bot_Jump.glb",
-        "./Assets/Models/Enemy/Bot_Search.glb",
-        "./Assets/Models/Enemy/Bot_Attack.glb",
-        "./Assets/Models/Enemy/Bot_Attack_Assult.glb"
-        },
-        {
-            "Rolling","Walk","Jump","Search","Attack","Attack_Assult"
-        }
-        });*/
+    model_ = actor->AddComponent<SkeletalMesh>("./Assets/Models/Enemy/Bot_Idle.glb");
+    model_->GetAnimator()->AppendAnimations(
+            {
+                "./Assets/Models/Enemy/Bot_Rolling.glb",
+                "./Assets/Models/Enemy/Bot_Walk.glb",
+                "./Assets/Models/Enemy/Bot_Jump.glb",
+                "./Assets/Models/Enemy/Bot_Search.glb",
+                "./Assets/Models/Enemy/Bot_Attack.glb",
+                "./Assets/Models/Enemy/Bot_Attack_Assult.glb"
+            },
+            {
+                "Rolling","Walk","Jump","Search","Attack","Attack_Assult"
+            }
+        );
 }
