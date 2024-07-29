@@ -1,10 +1,17 @@
 #pragma once
-#include "Character.h"
+#include "BaseEnemy.h"
 
-class EnemyBot : public AbyssEngine::Character
+namespace AbyssEngine
+{
+    class SkeletalMesh;
+}
+
+class EnemyBot : public BaseEnemy
 {
 public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
     
+private:
+    std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 };
 

@@ -5,6 +5,9 @@
 #include "SkeletalMesh.h"
 #include "Stage.h"
 #include "StageManager.h"   
+#include "EnemyBot.h"
+#include "RenderManager.h"
+#include "Engine.h"
 
 using namespace AbyssEngine;
 
@@ -12,6 +15,11 @@ std::shared_ptr<Stage> stageCom_F;
 
 void FacilityScene::Initialize()
 {
+    //ポストエフェクト設定
+    Engine::renderManager_->GetBufferScene().data_.exposure_ = 3.58f;
+    Engine::renderManager_->GetBufferEffects().data_.shadowFilterRadius_ = 4.614f;
+    Engine::renderManager_->SetCriticalDepthValue(300.0f);
+
     //カメラ
     const auto& camera = InstanceActor("Debug_Camera_01");
     camera->AddComponent<Camera>();
@@ -22,17 +30,16 @@ void FacilityScene::Initialize()
     stageCom_F = stageActor->AddComponent<Stage>();
     StageManager::Instance().AddStage(stageActor);
 
-    stageCom_F->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.glb");
-    //const auto& floor_01 = InstanceActor("Floor_01");
-    ////floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Demonstration_Floor_01.glb");
-    ////floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Demonstration.glb");
-    //floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Facility.glb");
-    ////floor_01->AddComponent<StaticMesh>("./Assets/Models/Stage/Facility/Map_BigStarStation_F1.glb");
+    const auto& faci = stageCom_F->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.glb");
+    //IBL強度設定
+    faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.14f);
+
+    //判定ポリゴンを更新
     stageCom_F->RegisterTriangles();
 
 
-    //const auto& enemy = InstanceActor("Enemy_Facility_01");
-    //enemy->AddComponent<SkeletalMesh>("./Assets/Models/Enemy/Bot_2024_07_28_2.glb");
+    const auto& enemy = InstanceActor("Enemy_Facility_01");
+    enemy->AddComponent<EnemyBot>();
 
     //Player
     const auto& player = InstanceActor("Player_Facility");

@@ -23,6 +23,7 @@
     <ClInclude Include="Code\Header\Animation.h" />
     <ClInclude Include="Code\Header\Animator.h" />
     <ClInclude Include="Code\Header\AssetManager.h" />
+    <ClInclude Include="Code\Header\BaseEnemy.h" />
     <ClInclude Include="Code\Header\Bloom.h" />
     <ClInclude Include="Code\Header\BoundingBox.h" />
     <ClInclude Include="Code\Header\Camera.h" />
@@ -114,6 +115,7 @@
     <ClCompile Include="Code\Source\Animation.cpp" />
     <ClCompile Include="Code\Source\Animator.cpp" />
     <ClCompile Include="Code\Source\AssetManager.cpp" />
+    <ClCompile Include="Code\Source\BaseEnemy.cpp" />
     <ClCompile Include="Code\Source\Bloom.cpp" />
     <ClCompile Include="Code\Source\Camera.cpp" />
     <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />

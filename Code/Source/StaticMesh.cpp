@@ -149,7 +149,7 @@ bool StaticMesh::FrustumCulling(const DirectX::BoundingFrustum& frustum)
     return false;
 }
 
-bool AbyssEngine::StaticMesh::ShadowCulling(const DirectX::BoundingBox& box)
+bool StaticMesh::ShadowCulling(const DirectX::BoundingBox& box)
 {
     DirectX::ContainmentType ret = boundingBox_.Contains(box);
     if (ret >= DirectX::INTERSECTS)
@@ -157,6 +157,16 @@ bool AbyssEngine::StaticMesh::ShadowCulling(const DirectX::BoundingBox& box)
         return true;
     }
     return false;
+}
+
+void StaticMesh::SetEmissiveIntensity(const float& intensity)
+{
+    model_->primitiveConstants_->data_.emissiveIntensity_ = intensity;
+}
+
+void StaticMesh::SetIBLIntensity(const float& intensity)
+{
+    model_->primitiveConstants_->data_.imageBasedLightingIntensity_ = intensity;
 }
 
 void StaticMesh::SetActive(const bool value)

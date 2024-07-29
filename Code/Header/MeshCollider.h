@@ -23,7 +23,7 @@ namespace AbyssEngine
         void DrawDebug()override;
 
     public:
-        std::vector<Collider::Triangle>	triangles;
+        std::vector<Collider::Triangle>	triangles_;
 
     private:
         std::shared_ptr<GltfCollisionMesh> model_;

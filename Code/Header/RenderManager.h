@@ -68,7 +68,7 @@ namespace AbyssEngine
         //ミューテックス取得
         std::mutex& GetMutex() { return mutex_; }
 
-        const std::vector<std::weak_ptr<Camera>>& GetCameraList() { return cameraList_; };
+        const std::vector<std::weak_ptr<Camera>>& GetCameraList() { return cameraList_; }
 
     private:
         struct Vertex
@@ -131,6 +131,13 @@ namespace AbyssEngine
         };
         std::unique_ptr<ConstantBuffer<ConstantEffects>> bufferEffects_;
 
+    public:
+        ConstantBuffer<ConstantBufferScene>& GetBufferScene() { return *bufferScene_.get(); }
+        ConstantBuffer<ConstantEffects>& GetBufferEffects() { return *bufferEffects_.get(); }
+
+        void SetCriticalDepthValue(const float& value) { criticalDepthValue_ = value; }
+
+    private:
         //Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
 
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> iblShaderResourceView_[7];

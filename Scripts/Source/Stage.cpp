@@ -2,6 +2,8 @@
 #include "Actor.h"
 #include "Engine.h"
 #include "SceneManager.h"
+#include "RenderManager.h"
+#include "PrimitiveRenderer.h";
 
 #include <DirectXCollision.h>
 
@@ -11,6 +13,19 @@ void Stage::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
     actor_ = actor;
     transform_ = actor->GetTransform();
+}
+
+void Stage::DrawDebug()
+{
+#if _DEBUG
+	const auto& priRenderer = Engine::renderManager_->primitiveRenderer_;
+	for (const auto& triangle : triangles_)
+	{
+		priRenderer->AddVertex(triangle.positions[0], DirectX::XMFLOAT4(1, 1, 1, 1));
+		priRenderer->AddVertex(triangle.positions[1], DirectX::XMFLOAT4(1, 1, 1, 1));
+		priRenderer->AddVertex(triangle.positions[2], DirectX::XMFLOAT4(1, 1, 1, 1));
+	}
+#endif // _DEBUG
 }
 
 bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPosition, Vector3& hitNormal)
@@ -113,7 +128,7 @@ void Stage::RegisterTriangles()
     //Ä“o˜^
     for (const auto& model : meshColliders_)
     {
-        for (const auto& tri : model->triangles)
+        for (const auto& tri : model->triangles_)
         {
             triangles_.emplace_back(tri);
         }

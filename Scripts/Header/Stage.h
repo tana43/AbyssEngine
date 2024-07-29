@@ -1,17 +1,20 @@
 #pragma once
-#include "Component.h"
+#include "ScriptComponent.h"
 #include "StaticMesh.h"
 #include "MeshCollider.h"
 
 //ステージを管理する基底クラス
 //空間分割に対応したレイキャスト用
-class Stage : public AbyssEngine::Component
+class Stage : public AbyssEngine::ScriptComponent
 {
 public:
     Stage() {}
     ~Stage() { meshColliders_.clear(); }
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
+
+    //void Update()override;
+    void DrawDebug()override;
 
     struct Area
     {

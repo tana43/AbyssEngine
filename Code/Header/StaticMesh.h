@@ -34,7 +34,10 @@ namespace AbyssEngine
         [[nodiscard]]Socket& GetSocketData() { return socketData_; }
         [[nodiscard]]const Matrix& GetWorldMatrix() { return world_; }
         
+        const std::shared_ptr<GltfStaticMesh>& GetModel() const { return model_; }
 
+        void SetEmissiveIntensity(const float& intensity);
+        void SetIBLIntensity(const float& intensity);
     private:
         void SetActive(const bool value)override;
 

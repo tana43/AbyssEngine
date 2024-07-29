@@ -99,6 +99,8 @@ namespace AbyssEngine
         float airResistance_ = 0.2f;//‹ó‹C’ïR
 
         bool enableAutoTurn_ = true;//‘¬“x‚É‡‚í‚¹‚Ä©“®‚Å‰ñ“]‚³‚¹‚é‚©
+
+        float headHeight_ = 1.7f;//“ª‚Ì‚‚³
     };
 }
 
