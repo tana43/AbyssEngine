@@ -71,7 +71,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
 
 
     //ステートマシン設定
-    stateMachine_ = std::make_unique<StateMachine<State<Soldier>>>();
+    stateMachine_ = actor->AddComponent<StateMachine<State<Soldier>>>();
     stateMachine_->RegisterState(new SoldierState::Move(this));
     stateMachine_->RegisterState(new SoldierState::Aim(this));
     stateMachine_->RegisterState(new SoldierState::Jump(this));
@@ -99,14 +99,15 @@ void Soldier::Update()
 {
     MuzzlePosUpdate();
 
-    //プレイヤーカメラがメインになっていなければ更新しない
-    if (camera_->GetIsMainCamera())
+    //プレイヤーカメラがメインになっていないかつ搭乗中はステートマシンの更新をしない
+    //更新処理をしない
+    if (camera_->GetIsMainCamera() && !vitesseOnBoard_)
     {
-        //搭乗中は更新処理をしない
-        if (!vitesseOnBoard_)
-        {
-            stateMachine_->Update();
-        }
+        stateMachine_->SetActive(true);
+    }
+    else
+    {
+        stateMachine_->SetActive(false);
     }
 
     MoveUpdate();

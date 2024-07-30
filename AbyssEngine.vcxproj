@@ -24,6 +24,7 @@
     <ClInclude Include="Code\Header\Animator.h" />
     <ClInclude Include="Code\Header\AssetManager.h" />
     <ClInclude Include="Code\Header\BaseEnemy.h" />
+    <ClInclude Include="Code\Header\BehaviorTree.h" />
     <ClInclude Include="Code\Header\Bloom.h" />
     <ClInclude Include="Code\Header\BoundingBox.h" />
     <ClInclude Include="Code\Header\Camera.h" />

@@ -42,8 +42,8 @@ namespace AbyssEngine
 
 
     public:
-        const bool& GetIsActive() const { return isActive_; }
-        void SetIsActive(const bool& active) { isActive_ = active; }
+        const bool& GetIsActive() const { return active_; }
+        void SetIsActive(const bool& active) { active_ = active; }
 
         const Vector3& GetVelocity() { return velocity_; }
         void SetVelocity(const Vector3& velo) { velocity_ = velo; }
@@ -79,7 +79,7 @@ namespace AbyssEngine
 
         float weight_ = 1.0f;//重さ（重力の計算に使う）
 
-        bool isActive_ = true;
+        bool active_ = true;
         bool onGround_ = true;
         bool enableGravity_ = true;
 

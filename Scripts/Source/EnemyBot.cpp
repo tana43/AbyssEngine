@@ -24,4 +24,15 @@ void EnemyBot::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
                 "Rolling","Walk","Jump","Search","Attack","Attack_Assult"
             }
         );
+
+    //ƒpƒ‰ƒ[ƒ^‚ÌÝ’è
+    {
+        transform_->SetScaleFactor(0.2f);
+        Max_Horizontal_Speed = 2.0f;
+        acceleration_ = 0.5f;
+    }
+}
+
+void EnemyBot::Update()
+{
 }

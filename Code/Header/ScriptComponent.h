@@ -19,11 +19,11 @@ namespace AbyssEngine
         virtual void UpdateAfter() {}
         virtual void UpdateEnd() {}
 
-        const bool& GetIsActive() const { return isActive_; }
-        void SetIsActive(const bool& active) { isActive_ = active; }
+        const bool& GetActive() const { return active_; }
+        void SetActive(const bool& active) { active_ = active; }
 
     private:
-        bool isActive_ = true;
+        bool active_ = true;
     };
 }
 

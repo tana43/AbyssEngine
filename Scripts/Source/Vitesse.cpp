@@ -113,14 +113,14 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     camera_->SetBaseTargetOffset({ 12.2f,14.5f,0 });
 
     //ステートマシン設定
-    stateMachine_ = std::make_unique<StateMachine<State<Vitesse>>>();
+    stateMachine_ = actor->AddComponent<StateMachine<State<Vitesse>>>();
     stateMachine_->RegisterState(new VitesseState::GroundMove(this));
     stateMachine_->RegisterState(new VitesseState::FlyMove(this));
     stateMachine_->RegisterState(new VitesseState::TakeOff(this));
     stateMachine_->RegisterState(new VitesseState::Landing(this));
 
     //アニメーションステートマシーン設定
-    animStateMachine_ = std::make_unique<StateMachine<State<Animator>>>();
+    animStateMachine_ = actor->AddComponent<StateMachine<State<Animator>>>();
     animStateMachine_->RegisterState(new VitesseAnimState::AnimGroundMove(model_->GetAnimator().get()));
     animStateMachine_->RegisterState(new VitesseAnimState::AnimFlyMove(model_->GetAnimator().get()));
 
@@ -157,7 +157,11 @@ void Vitesse::Update()
     //パイロットが搭乗しているか
     if (pilot && pilot->GetVitesseOnBoard())
     {
-        stateMachine_->Update();
+        stateMachine_->SetActive(true);
+    }
+    else
+    {
+        stateMachine_->SetActive(false);
     }
 
 

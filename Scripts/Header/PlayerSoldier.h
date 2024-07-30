@@ -77,7 +77,7 @@ public:
 
     const bool& GetCanBoarding() const { return canBoarding_; }
 
-    std::unique_ptr<StateMachine<State<Soldier>>>& GetStateMachine() { return stateMachine_; }
+    const std::shared_ptr<AbyssEngine::StateMachine<State<Soldier>>>& GetStateMachine() { return stateMachine_; }
 
     const std::shared_ptr<AbyssEngine::Camera>& GetCamera() { return camera_; }
 
@@ -114,7 +114,7 @@ private:
     std::shared_ptr<Vitesse> vitesse_;
 
     //ステートマシン
-    std::unique_ptr<StateMachine<State<Soldier>>> stateMachine_;
+    std::shared_ptr<AbyssEngine::StateMachine<State<Soldier>>> stateMachine_;
 
     //ヴィテス搭乗可能距離
     float boardingDistance_ = 5.0f;

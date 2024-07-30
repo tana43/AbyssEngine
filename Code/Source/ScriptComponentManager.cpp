@@ -10,7 +10,7 @@ void ScriptComponentManager::Update()
 	{
 		if (const auto& c = scriptComList_[index].lock())
 		{
-			if (!c->GetIsActive())continue;
+			if (!c->GetActive())continue;
 			c->UpdateBegin();
 		}
 	}
@@ -19,7 +19,7 @@ void ScriptComponentManager::Update()
 	{
 		if (const auto& c = scriptComList_[index].lock())
 		{
-			if (!c->GetIsActive())continue;
+			if (!c->GetActive())continue;
 			c->UpdateBefore();
 		}
 	}
@@ -28,7 +28,7 @@ void ScriptComponentManager::Update()
 	{
 		if (const auto& c = scriptComList_[index].lock())
 		{
-			if (!c->GetIsActive())continue;
+			if (!c->GetActive())continue;
 			c->Update();
 		}
 	}
@@ -37,7 +37,7 @@ void ScriptComponentManager::Update()
 	{
 		if (const auto& c = scriptComList_[index].lock())
 		{
-			if (!c->GetIsActive())continue;
+			if (!c->GetActive())continue;
 			c->UpdateAfter();
 		}
 	}
@@ -46,7 +46,7 @@ void ScriptComponentManager::Update()
 	{
 		if (const auto& c = scriptComList_[index].lock())
 		{
-			if (!c->GetIsActive())continue;
+			if (!c->GetActive())continue;
 			c->UpdateEnd();
 		}
 	}

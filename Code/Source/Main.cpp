@@ -30,13 +30,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 		break;
 	}
-	case WM_SIZE:
+	/*case WM_SIZE:
 		if (AbyssEngine::DXSystem::GetDevice() != nullptr && wParam != SIZE_MINIMIZED) {
 			UINT width = LOWORD(lParam);
 			UINT height = HIWORD(lParam);
 			AbyssEngine::DXSystem::Resize(width, height);
 		}
-		break;
+		break;*/
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -105,10 +105,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = szWindowClass;
 	RegisterClass(&wcex);
-
-	//DXSystem生成
-	std::unique_ptr<AbyssEngine::DXSystem> DxSystem = std::make_unique<AbyssEngine::DXSystem>();
-
+	
 	const HWND hwnd = CreateWindow(
 		szWindowClass,
 		szWindowClass,
@@ -125,6 +122,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 	ShowWindow(hwnd, nCmdShow);
 
 	RoInitializeWrapper initialize(RO_INIT_MULTITHREADED);
+
+	//DXSystem生成
+	std::unique_ptr<AbyssEngine::DXSystem> DxSystem = std::make_unique<AbyssEngine::DXSystem>();
 
 	//デバイス初期化
 	if (!AbyssEngine::DXSystem::Initialize(hwnd))

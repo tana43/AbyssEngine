@@ -321,9 +321,6 @@
     <ClInclude Include="Code\Header\State.h">
       <Filter>Code\Header\Other</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\StateMachine.h">
-      <Filter>Code\Header\Other</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scripts\Header\Vitesse.h">
       <Filter>Script\Header\Vitesse</Filter>
@@ -367,7 +364,15 @@
     <ClInclude Include="Scripts\Header\EnemyBot.h">
       <Filter>Script\Header\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\BaseEnemy.h" />
+    <ClInclude Include="Code\Header\BaseEnemy.h">
+      <Filter>Script\Header\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\BehaviorTree.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\StateMachine.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -616,7 +621,9 @@
     <ClCompile Include="Scripts\Source\EnemyBot.cpp">
       <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\BaseEnemy.cpp" />
+    <ClCompile Include="Code\Source\BaseEnemy.cpp">
+      <Filter>Script\Source\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

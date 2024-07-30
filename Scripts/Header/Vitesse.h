@@ -63,7 +63,7 @@ public:
     };
 
 public:
-    const std::unique_ptr<StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
+    const std::shared_ptr<AbyssEngine::StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
     AbyssEngine::AnimBlendSpace2D* GetGroundMoveAnimation() { return groundMoveAnimation_; }
     //AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
     AbyssEngine::AnimBlendSpaceFlyMove* GetFlyMoveAnimation() { return flyMoveAnimation_; }
@@ -103,8 +103,8 @@ private:
     //AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//空中移動
     AbyssEngine::AnimBlendSpaceFlyMove* flyMoveAnimation_;//空中移動
 
-    std::unique_ptr<StateMachine<State<Vitesse>>> stateMachine_;
-    std::unique_ptr<StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;
+    std::shared_ptr<AbyssEngine::StateMachine<State<Vitesse>>> stateMachine_;
+    std::shared_ptr<AbyssEngine::StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;
 
     //必要な基数分のスラスター
     std::shared_ptr<ThrusterEffect> thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units)];
