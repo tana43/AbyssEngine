@@ -98,7 +98,7 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 }
 void GltfSkeletalMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 {
-	ID3D11Device* device = DXSystem::GetDevice();
+	const auto& device = DXSystem::GetDevice();
 
 	HRESULT hr{ S_OK };
 
@@ -676,7 +676,7 @@ int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, 
 }
 int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4& color_, size_t sceneIndex)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 
 	_ASSERT_EXPR(animatedNodes.size() == nodes_.size(), L"");
 
@@ -823,7 +823,7 @@ int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, 
 }
 int GltfSkeletalMesh::CastShadow(const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animatedNodes, size_t sceneIndex)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 
 	_ASSERT_EXPR(animatedNodes.size() == nodes_.size(), L"");
 

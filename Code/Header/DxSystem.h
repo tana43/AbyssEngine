@@ -56,8 +56,9 @@ namespace AbyssEngine
 		static void GBufferClearAndSetTarget();//GBufferのクリアと出力先の変更
 		static void Flip(int n = 0);//フリップ処理
 
-		static ID3D11Device* GetDevice() { return instance->device_.Get(); }
-		static ID3D11DeviceContext* GetDeviceContext() { return instance->deviceContext_.Get(); }
+		static const Microsoft::WRL::ComPtr<ID3D11Device>& GetDevice() { return instance->device_; }
+		static const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& GetDeviceContext() { return instance->deviceContext_; }
+		static const Microsoft::WRL::ComPtr<IDXGISwapChain>& GetSwapChain() { return instance->swapChain_; }
 
 		static int GetScreenWidth() { return screenWidth_; }
 		static int GetScreenHeight() { return screenHeight_; }
@@ -105,6 +106,11 @@ namespace AbyssEngine
 		// DirectX11の初期化後、メモリリーク検出のために次の関数を呼び出す
 		static void ReportLiveObjectsWrapper();
 
+	public:
+		//画面サイズ変更（ImGui対応）
+		static void CleanupRenderTarget();
+		static void CreateRenderTarget();
+		static void Resize(UINT width, UINT height);
 	};
 
 	

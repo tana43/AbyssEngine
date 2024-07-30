@@ -101,7 +101,7 @@ GltfStaticMesh::GltfStaticMesh(const std::string& filename) : GeometricSubstance
 }
 void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 {
-	ID3D11Device* device = DXSystem::GetDevice();
+	const auto& device = DXSystem::GetDevice();
 
 	HRESULT hr = S_OK;
 
@@ -734,7 +734,7 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 //}
 int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 
 	int drawcallCount = 0;
 
@@ -845,7 +845,7 @@ int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform)
 }
 int GltfStaticMesh::CastShadow(const DirectX::XMFLOAT4X4& transform)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 
 	int drawcall_count = 0;
 

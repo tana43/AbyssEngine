@@ -14,7 +14,7 @@ FullscreenQuad::FullscreenQuad()
 
 void FullscreenQuad::Blit(ID3D11ShaderResourceView** shaderResourceView, uint32_t startSlot, uint32_t numViews, ID3D11PixelShader* replacedPixelShader)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 #if 0
 
 	deviceContext->IASetVertexBuffers(0, 0, nullptr, nullptr, nullptr);

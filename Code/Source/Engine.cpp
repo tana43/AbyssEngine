@@ -39,7 +39,7 @@ Engine::Engine()
     inputManager_       = make_unique<Input>();
 
     //ImGuièâä˙âª
-    IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::GetDevice(), DXSystem::GetDeviceContext());
+    IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::GetDevice().Get(), DXSystem::GetDeviceContext().Get());
 }
 
 Engine::~Engine()

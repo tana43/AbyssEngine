@@ -162,10 +162,10 @@ RenderManager::RenderManager()
 
 #if _DEBUG
 	//デバッグ用レンダラー生成
-	debugRenderer_     = std::make_unique<DebugRenderer>(DXSystem::GetDevice());
-	lineRenderer_      = std::make_unique<LineRenderer>(DXSystem::GetDevice(), 1024);
-	primitiveRenderer_ = std::make_unique<PrimitiveRenderer>(DXSystem::GetDevice());
-	shapeRenderer_     = std::make_unique<ShapeRenderer>(DXSystem::GetDevice());
+	debugRenderer_     = std::make_unique<DebugRenderer>(DXSystem::GetDevice().Get());
+	lineRenderer_      = std::make_unique<LineRenderer>(DXSystem::GetDevice().Get(), 1024);
+	primitiveRenderer_ = std::make_unique<PrimitiveRenderer>(DXSystem::GetDevice().Get());
+	shapeRenderer_     = std::make_unique<ShapeRenderer>(DXSystem::GetDevice().Get());
 #endif // _DEBUG
 
 	
@@ -401,8 +401,8 @@ void RenderManager::Render()
 				}
 				if (enableDebugRender_)
 				{
-					debugRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
-					lineRenderer_->Render(DXSystem::GetDeviceContext(), camera->viewMatrix_, camera->projectionMatrix_);
+					debugRenderer_->Render(DXSystem::GetDeviceContext().Get(), camera->viewMatrix_, camera->projectionMatrix_);
+					lineRenderer_->Render(DXSystem::GetDeviceContext().Get(), camera->viewMatrix_, camera->projectionMatrix_);
 					primitiveRenderer_->Render(camera->viewProjectionMatrix_,D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 					shapeRenderer_->Render(camera->viewProjectionMatrix_);
 				}

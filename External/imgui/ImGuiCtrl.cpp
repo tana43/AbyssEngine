@@ -21,6 +21,7 @@ namespace ImGuiCtrl
         // ドッキングできるようにしてる
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
     }
 
     void ClearFrame()

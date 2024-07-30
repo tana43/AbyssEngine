@@ -6,7 +6,7 @@ using namespace AbyssEngine;
 
 FrameBuffer::FrameBuffer(uint32_t width, uint32_t height_, bool hasDepthstencil, bool generateMips)
 {
-	ID3D11Device* device = DXSystem::GetDevice();
+	const auto& device = DXSystem::GetDevice();
 
     HRESULT hr = S_OK;
 
@@ -77,7 +77,7 @@ void FrameBuffer::Clear(float r, float g, float b, float a, float depth, uint8_t
 }
 void FrameBuffer::Activate()
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 	viewportCount_ = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
 	deviceContext->RSGetViewports(&viewportCount_, cachedViewports_);
 	deviceContext->OMGetRenderTargets(1, cachedRenderTargetView_.ReleaseAndGetAddressOf(), cachedDepthStencilView_.ReleaseAndGetAddressOf());
@@ -87,7 +87,7 @@ void FrameBuffer::Activate()
 }
 void FrameBuffer::Deactivate()
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 	deviceContext->RSSetViewports(viewportCount_, cachedViewports_);
 	deviceContext->OMSetRenderTargets(1, cachedRenderTargetView_.GetAddressOf(), cachedDepthStencilView_.Get());
 }

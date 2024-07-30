@@ -6,8 +6,8 @@ using namespace AbyssEngine;
 void EffectManager::Initialize()
 {
     //Effekseerレンダラ生成
-    effekseerRenderer = EffekseerRendererDX11::Renderer::Create(DXSystem::GetDevice(),
-        DXSystem::GetDeviceContext(), 2048);
+    effekseerRenderer = EffekseerRendererDX11::Renderer::Create(DXSystem::GetDevice().Get(),
+        DXSystem::GetDeviceContext().Get(), 2048);
 
     //Effekseerマネージャー生成
     effekseerManager = Effekseer::Manager::Create(2048);

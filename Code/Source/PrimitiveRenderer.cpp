@@ -161,7 +161,7 @@ void PrimitiveRenderer::Render(
 	const DirectX::XMFLOAT4X4& viewProjection,
 	D3D11_PRIMITIVE_TOPOLOGY primitiveTopology)
 {
-	ID3D11DeviceContext* dc = DXSystem::GetDeviceContext();
+	const auto& dc = DXSystem::GetDeviceContext();
 
 	// シェーダー設定
 	dc->VSSetShader(vertexShader.Get(), nullptr, 0);

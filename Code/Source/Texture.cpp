@@ -20,12 +20,12 @@ HRESULT Texture::LoadTextureFromMemory(const void* data_, size_t size, ID3D11Sha
     HRESULT hr = S_OK;
     Microsoft::WRL::ComPtr<ID3D11Resource> resource;
 
-    auto* device = DXSystem::GetDevice();
-    hr = CreateDDSTextureFromMemory(device,reinterpret_cast<const uint8_t*>(data_),
+    const auto& device = DXSystem::GetDevice();
+    hr = CreateDDSTextureFromMemory(device.Get(), reinterpret_cast<const uint8_t*>(data_),
         size, resource.GetAddressOf(), shaderResourceView);
     if (hr != S_OK)
     {
-        hr = CreateWICTextureFromMemory(device, reinterpret_cast<const uint8_t*>(data_),
+        hr = CreateWICTextureFromMemory(device.Get(), reinterpret_cast<const uint8_t*>(data_),
             size, resource.GetAddressOf(), shaderResourceView);
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
@@ -46,13 +46,13 @@ HRESULT Texture::LoadTextureFromFile(const std::string& texturePath, ID3D11Shade
     }
     else
     {
-        auto* device = DXSystem::GetDevice();
+        const auto& device = DXSystem::GetDevice();
 
         std::filesystem::path ddsFilename(texturePath);
         ddsFilename.replace_extension("dds");
         if (std::filesystem::exists(ddsFilename.c_str()))
         {
-            hr = DirectX::CreateDDSTextureFromFile(device, ddsFilename.c_str(), resource.GetAddressOf(), shaderResourceView);
+            hr = DirectX::CreateDDSTextureFromFile(device.Get(), ddsFilename.c_str(), resource.GetAddressOf(), shaderResourceView);
             _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
         }
         else
@@ -62,7 +62,7 @@ HRESULT Texture::LoadTextureFromFile(const std::string& texturePath, ID3D11Shade
             size_t ret = 0;
             mbstowcs_s(&ret, fileName, MAX_PATH, texturePath.c_str(), _TRUNCATE);
 
-            hr = DirectX::CreateWICTextureFromFile(device, fileName, resource.GetAddressOf(), shaderResourceView);
+            hr = DirectX::CreateWICTextureFromFile(device.Get(), fileName, resource.GetAddressOf(), shaderResourceView);
             _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
         }
     }
@@ -101,7 +101,7 @@ HRESULT Texture::MakeDummyTexture(ID3D11ShaderResourceView** shaderResourceView,
     subresourceData.pSysMem = sysmem.get();
     subresourceData.SysMemPitch = sizeof(DWORD) * dimension;
 
-    auto* device = DXSystem::GetDevice();
+    const auto& device = DXSystem::GetDevice();
     Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2d;
     hr = device->CreateTexture2D(&texture2dDesc, &subresourceData, &texture2d);
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
@@ -141,12 +141,12 @@ std::shared_ptr<Texture> Texture::Load(const std::string& texturePath, const u_i
     ddsFilename.replace_extension("dds");
     if (std::filesystem::exists(ddsFilename.c_str()))
     {
-        hr = CreateDDSTextureFromFile(DXSystem::GetDevice(), ddsFilename.c_str(), resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
+        hr = CreateDDSTextureFromFile(DXSystem::GetDevice().Get(), ddsFilename.c_str(), resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
     else
     {
-        hr = CreateWICTextureFromFile(DXSystem::GetDevice(), fileName, resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
+        hr = CreateWICTextureFromFile(DXSystem::GetDevice().Get(), fileName, resource.GetAddressOf(), texture->shaderResourceView_.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
     }
 

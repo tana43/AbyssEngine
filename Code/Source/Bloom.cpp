@@ -37,7 +37,7 @@ Bloom::Bloom(uint32_t width, uint32_t height_)
 
 void Bloom::Make(ID3D11ShaderResourceView* colorMap)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 
 	// Store current states
 	ID3D11ShaderResourceView* nullShaderResourceView{};

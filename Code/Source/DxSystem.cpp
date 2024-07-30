@@ -1,6 +1,8 @@
 #include <initguid.h>
 #include "DXSystem.h"
 
+#include "imgui/imgui.h"
+
 #include <DirectXMath.h>
 #include <dxgidebug.h>
 #include "Misc.h"
@@ -716,4 +718,31 @@ void DXSystem::ReportLiveObjectsWrapper()
     DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**)&instance->dxgiDebug_);
     instance->dxgiDebug_->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
 #endif
+}
+
+void AbyssEngine::DXSystem::CleanupRenderTarget()
+{
+    if (instance->renderTargetView_) {
+        instance->renderTargetView_->Release();
+        instance->renderTargetView_ = nullptr;
+    }
+}
+
+void AbyssEngine::DXSystem::CreateRenderTarget()
+{
+    ID3D11Texture2D* pBackBuffer = nullptr;
+    instance->swapChain_->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+    instance->device_->CreateRenderTargetView(pBackBuffer, nullptr, &instance->renderTargetView_);
+    pBackBuffer->Release();
+}
+
+void AbyssEngine::DXSystem::Resize(UINT width, UINT height)
+{
+    CleanupRenderTarget();
+    instance->swapChain_->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
+    CreateRenderTarget();
+
+    // ImGuiのディスプレイサイズを更新
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 }

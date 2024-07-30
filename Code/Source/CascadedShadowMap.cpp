@@ -34,7 +34,7 @@ std::array<XMFLOAT4, 8> MakeFrustumCornersWorldSpace(const XMFLOAT4X4& view, con
 
 CascadedShadowMap::CascadedShadowMap(UINT width, UINT height_, UINT cascade_count) : cascadeCount(cascade_count)
 {
-	ID3D11Device* device = DXSystem::GetDevice();
+	const auto& device = DXSystem::GetDevice();
 
 	HRESULT hr = S_OK;
 
@@ -96,7 +96,7 @@ void CascadedShadowMap::Make(
 	float criticalDepthValue,
 	std::function<void()> drawcallback)
 {
-	ID3D11DeviceContext* deviceContext = DXSystem::GetDeviceContext();
+	const auto& deviceContext = DXSystem::GetDeviceContext();
 
 	D3D11_VIEWPORT cachedViewports[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE];
 	UINT viewportCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
