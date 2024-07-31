@@ -6,6 +6,7 @@
 #include "Camera.h"
 
 #include "SpriteRenderer.h"
+#include "PlaneRenderer.h"
 #include "Texture.h"
 #include "SkeletalMesh.h"
 #include "StaticMesh.h"
@@ -265,6 +266,11 @@ void RenderManager::Reset()
 void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)
 {
 	renderer2DList_.emplace_back(mRend);
+}
+
+void RenderManager::Add(const shared_ptr<PlaneRenderer>& mRend)
+{
+	renderer3DList_.emplace_back(mRend);
 }
 
 void RenderManager::Add(const shared_ptr<SkeletalMesh>& mRend)

@@ -100,6 +100,12 @@
     <Filter Include="Script\Header\Vitesse">
       <UniqueIdentifier>{de21e7a0-4682-4ed3-9447-ab12b95f31ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script\Source\Scene">
+      <UniqueIdentifier>{10ee65b8-e121-4a66-b10b-eb087ce13ff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\Header\Scene">
+      <UniqueIdentifier>{47d89e32-5c86-42dd-98f3-f9106d5efac7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Camera.h">
@@ -264,12 +270,6 @@
     <ClInclude Include="Code\Header\PrimitiveRenderer.h">
       <Filter>Code\Header\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\SceneGame.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Header\SceneTitle.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Scripts\Header\Stage.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
@@ -295,9 +295,6 @@
       <Filter>Code\Header\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\PlayerSoldierState.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Header\FacilityScene.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\Character.h">
@@ -371,6 +368,18 @@
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\StateMachine.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\SceneTitle.h">
+      <Filter>Script\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\SceneGame.h">
+      <Filter>Script\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\FacilityScene.h">
+      <Filter>Script\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\PlaneRenderer.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
   </ItemGroup>
@@ -525,12 +534,6 @@
     <ClCompile Include="Code\Source\PrimitiveRenderer.cpp">
       <Filter>Code\Source\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\SceneGame.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Source\SceneTitle.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Scripts\Source\Stage.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
@@ -576,9 +579,6 @@
     <ClCompile Include="Scripts\Source\VitesseState.cpp">
       <Filter>Script\Source\VItesse</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\FacilityScene.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
@@ -623,6 +623,18 @@
     </ClCompile>
     <ClCompile Include="Code\Source\BaseEnemy.cpp">
       <Filter>Script\Source\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\SceneTitle.cpp">
+      <Filter>Script\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\SceneGame.cpp">
+      <Filter>Script\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\FacilityScene.cpp">
+      <Filter>Script\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\PlaneRenderer.cpp">
+      <Filter>Code\Source\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -737,6 +749,12 @@
     <FxCompile Include="Shader\IntegrateParticleCS.hlsl">
       <Filter>Shader\Particle</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\PlaneVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PlanePS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
@@ -790,6 +808,9 @@
     <None Include="cpp.hint" />
     <None Include="Shader\Particle.hlsli">
       <Filter>Shader\Particle</Filter>
+    </None>
+    <None Include="Shader\PlaneBillboard.hlsli">
+      <Filter>Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

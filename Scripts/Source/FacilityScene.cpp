@@ -8,6 +8,7 @@
 #include "EnemyBot.h"
 #include "RenderManager.h"
 #include "Engine.h"
+#include "PlaneRenderer.h"
 
 using namespace AbyssEngine;
 
@@ -37,13 +38,17 @@ void FacilityScene::Initialize()
     //”»’èƒ|ƒŠƒSƒ“‚ðXV
     stageCom_F->RegisterTriangles();
 
-
+    //enemy
     const auto& enemy = InstanceActor("Enemy_Facility_01");
     enemy->AddComponent<EnemyBot>();
 
     //Player
     const auto& player = InstanceActor("Player_Facility");
     const auto& pc = player->AddComponent<Soldier>();
+
+    //”Âƒ|ƒŠƒSƒ“
+    const auto& plane = InstanceActor("Plane");
+    plane->AddComponent<PlaneRenderer>("./Assets/Effects/Texture/Explosion_01.png");
 }
 
 void FacilityScene::Update()

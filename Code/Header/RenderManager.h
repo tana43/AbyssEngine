@@ -20,6 +20,7 @@ namespace AbyssEngine
     class FullscreenQuad;
     class Skybox;
     class CascadedShadowMap;
+    class PlaneRenderer;
 
     class DebugRenderer;
     class LineRenderer;
@@ -44,6 +45,7 @@ namespace AbyssEngine
 
         void Reset();
         void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<PlaneRenderer>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<SkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         //void Add(const std::shared_ptr<GltfSkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<StaticMesh>& mRend);//マネージャーにレンダラーを登録する

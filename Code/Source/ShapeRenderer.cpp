@@ -423,7 +423,7 @@ void ShapeRenderer::CreateBoneMesh(ID3D11Device* device, float length)
 // 描画実行
 void ShapeRenderer::Render(const DirectX::XMFLOAT4X4& viewProjection)
 {
-	ID3D11DeviceContext* dc = DXSystem::GetDeviceContext();
+	const auto& dc = DXSystem::GetDeviceContext();
 
 	// シェーダー設定
 	dc->VSSetShader(vertexShader.Get(), nullptr, 0);

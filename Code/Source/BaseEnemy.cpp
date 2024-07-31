@@ -31,8 +31,8 @@ void BaseEnemy::MoveToTarget()
 
 void BaseEnemy::SetRandomTargetPosition()
 {
-    float theta = RandomRange(-DirectX::XM_PI, DirectX::XM_PI);
-    float range = RandomRange(0.0f, territoryRange_);
+    float theta = Math::RandomRange(-DirectX::XM_PI, DirectX::XM_PI);
+    float range = Math::RandomRange(0.0f, territoryRange_);
     targetPosition_.x = territoryOrigin_.x + sinf(theta) * range;
     targetPosition_.y = territoryOrigin_.y;
     targetPosition_.z = territoryOrigin_.z + cosf(theta) * range;

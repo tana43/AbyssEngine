@@ -60,7 +60,7 @@ UINT Align(UINT num, UINT alignment)
 
 void ParticleSystem::Integrate()
 {
-    auto* dc = DXSystem::GetDeviceContext();
+    const auto& dc = DXSystem::GetDeviceContext();
 
     dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav_.GetAddressOf(), NULL);
 
@@ -84,7 +84,7 @@ void ParticleSystem::Integrate()
 void ParticleSystem::Initialize()
 {
     //‰Šú‰»ˆ—
-    auto* dc = DXSystem::GetDeviceContext();
+    const auto& dc = DXSystem::GetDeviceContext();
 
     dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav_.GetAddressOf(), NULL);
 
@@ -107,7 +107,7 @@ void ParticleSystem::Initialize()
 
 void ParticleSystem::Render()
 {
-    auto* dc = DXSystem::GetDeviceContext();
+    const auto& dc = DXSystem::GetDeviceContext();
 
     dc->VSSetShader(particleVS_.Get(), NULL, 0);
     dc->PSSetShader(particlePS_.Get(), NULL, 0);

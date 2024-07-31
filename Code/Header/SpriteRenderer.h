@@ -6,7 +6,6 @@
 namespace AbyssEngine
 {
     class Texture;
-    class Material;
 
     //スプライトレンダラーコンポーネント
     class SpriteRenderer : public Renderer
