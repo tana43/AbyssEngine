@@ -24,8 +24,9 @@ public:
     void Update()override;
 
     
-    
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
+
+    
 };
 

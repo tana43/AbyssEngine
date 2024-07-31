@@ -14,6 +14,15 @@
 
 namespace AbyssEngine
 {
+	float RandomRange(float min, float max)
+	{
+		// 0.0～1.0の間までのランダム値
+		float value = static_cast<float>(rand()) / RAND_MAX;
+
+		// min～maxまでのランダム値に変換
+		return min + (max - min) * value;
+	}
+
 	struct Vector2;
 	struct Vector3;
 	struct Vector4;
@@ -686,6 +695,11 @@ namespace AbyssEngine
 	//------------------------------------------------------------------------------
 	// Binary operators
 	//------------------------------------------------------------------------------
+
+	float RandomRange(float min, float max)
+	{
+		return 0.0f;
+	}
 
 	inline Vector2 operator+ (const Vector2& V1, const Vector2& V2)
 	{

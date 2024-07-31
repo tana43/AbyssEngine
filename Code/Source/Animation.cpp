@@ -530,8 +530,8 @@ void AnimBlendSpace2D::AddBlendAnimation(const int& index, const Vector2& weight
     auto& a = blendAnimDatas_.emplace_back(BlendAnimData(index, weight));
 }
 
-AbyssEngine::AnimBlendSpaceFlyMove::AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D)
-    : Animation(model,name,0/*‚È‚ñ‚Å‚à‚¢‚¢*/),
+AbyssEngine::AnimBlendSpaceFlyMove::AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name_, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D)
+    : Animation(model,name_,0/*‚È‚ñ‚Å‚à‚¢‚¢*/),
     blendSpace1D_(blendSpace1D),
     blendSpace2D_(blendSpace2D)
 {

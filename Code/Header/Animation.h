@@ -158,7 +158,7 @@ namespace AbyssEngine
     class AnimBlendSpaceFlyMove final : public Animation
     {
     public:
-        AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D);
+        AnimBlendSpaceFlyMove(SkeletalMesh* model, const std::string& name_, AnimBlendSpace2D* blendSpace2D, AnimBlendSpace1D* blendSpace1D);
         ~AnimBlendSpaceFlyMove() {}
 
         std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr)override;
