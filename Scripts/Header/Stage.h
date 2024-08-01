@@ -29,6 +29,15 @@ public:
         AbyssEngine::Vector3& hitPosition,
         AbyssEngine::Vector3& hitNormal);
 
+    bool SphereCast(
+        const AbyssEngine::Vector3& origin,
+        const AbyssEngine::Vector3& direction,
+        float radius,
+        float& distance,
+        AbyssEngine::Vector3& hitPosition,
+        AbyssEngine::Vector3& hitNormal
+    );
+
     //ステージに配置するアクターを追加
     std::shared_ptr<AbyssEngine::Actor> AddStageModel(const std::string& actorName,std::string modelPath);
 

@@ -1270,8 +1270,8 @@ bool Collision::IntersectRayVsOrientedCylinder(
 			//’ê–Ê‚ğŠÜ‚Ş•½–Ê‚ÆŒğ·‚µ‚È‚¢
 			return false;
 		}
-
-	}//ã–Ê‚ÌŠO‘¤‚É‚ ‚é‚©‚Ç‚¤‚©
+	}
+	//ã–Ê‚ÌŠO‘¤‚É‚ ‚é‚©‚Ç‚¤‚©
 	else if (md > 0)
 	{
 		if (md > dd && md + nd > dd)

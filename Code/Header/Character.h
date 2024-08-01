@@ -67,6 +67,8 @@ namespace AbyssEngine
 
         virtual void UpdateVelocity();//速力更新
         virtual void UpdateMove();
+
+        //レイキャスト/スフィアキャスト両方に対応
         virtual void UpdateHorizontalMove();//地面に対して水平方向の移動処理による位置更新
         virtual void UpdateVerticalMove();//地面に対して垂直方向の移動処理による位置更新
 
@@ -82,6 +84,11 @@ namespace AbyssEngine
         bool active_ = true;
         bool onGround_ = true;
         bool enableGravity_ = true;
+        bool sphereCast_ = true;//地形判定にスフィアキャストを使用するか（falseの場合レイキャストを使用）
+
+        float terrainRadius_ = 0.5f;//地形判定用の球の半径
+        float terrainStepOffset_ = 0.1f;//スフィアキャストで始点にする位置を足元からどの程度上げるか
+        Vector3 centerOffset_ = {0,0.7f,0};//中心点
 
         Vector3 moveVec_;//移動方向
         Vector3 velocity_;//速度
@@ -100,7 +107,6 @@ namespace AbyssEngine
 
         bool enableAutoTurn_ = true;//速度に合わせて自動で回転させるか
 
-        float headHeight_ = 1.7f;//頭の高さ
     };
 }
 

@@ -5,6 +5,8 @@
 #include "RenderManager.h"
 #include "PrimitiveRenderer.h";
 
+#include "CollisionHelper.h"
+
 #include <DirectXCollision.h>
 
 using namespace AbyssEngine;
@@ -96,6 +98,34 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 		DirectX::XMVECTOR HitPosition = DirectX::XMVectorAdd(start, DirectX::XMVectorScale(Direction, distance));
 		DirectX::XMStoreFloat3(&hitPosition, HitPosition);
 	}
+	return hit;
+}
+
+bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Vector3& direction, float radius, float& distance, AbyssEngine::Vector3& hitPosition, AbyssEngine::Vector3& hitNormal)
+{
+	bool hit = false;
+
+	for (const Collider::Triangle& triangle : triangles_)
+	{
+		DirectX::XMVECTOR Positions[3] = {
+			DirectX::XMLoadFloat3(&triangle.positions[0]),
+			DirectX::XMLoadFloat3(&triangle.positions[1]),
+			DirectX::XMLoadFloat3(&triangle.positions[2])
+		};
+
+		Collision::HitResult result;
+		if(Collision::IntersectSphereCastVsTriangle(
+			origin,direction,distance,radius,Positions,&result
+		))
+		{
+			if (distance < result.distance) continue;
+			distance = result.distance;
+			hitPosition = result.position;
+			hitNormal = result.normal;
+			hit = true;
+		}
+	}
+
 	return hit;
 }
 

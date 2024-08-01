@@ -337,22 +337,51 @@ void Character::UpdateVerticalMove()
     //移動後の座標
     Vector3 moved = {pos.x,pos.y + moveY,pos.z};
 
-    Vector3 hit;//光線がヒットしたところの座標
-    Vector3 hitNormal;//光線がヒットした面の法線
-
-    //レイの開始地点引き上げ
-    static constexpr float correctionY = 0.5f;//補正値
-    Vector3 start = pos;
-    start.y += correctionY;
-    Vector3 end = moved;
-
-    //垂直方向に地形判定
-    const auto& stage = StageManager::Instance().GetActiveStage();
-    if (stage.get() && stage->RayCast(start,end,hit,hitNormal))
+    //スフィアキャスト
+    if (sphereCast_)
     {
-        //着地した
-        Landing();
-        moved.y = hit.y;
+        // キャスト量を算出
+        float distance = moveY;
+        if (distance > 0.0001f)
+        {
+            //オフセット分加算
+            distance += terrainStepOffset_;
+
+            Vector3 origin = transform_->GetPosition() + centerOffset_;
+            Vector3 direction = velocity_.y > 0 ? Vector3(0, 1, 0) : Vector3(0, -1, 0);
+            Vector3 hitPosition, hitNormal;
+
+            //スフィアキャスト
+            const auto& stage = StageManager::Instance().GetActiveStage();
+            if (stage.get() && stage->SphereCast(
+                origin,direction,terrainRadius_,distance,hitPosition,hitNormal))
+            {
+                //着地した
+                Landing();
+                moved.y = hit.y;
+            }
+        }
+    }
+    //レイキャスト
+    else
+    {
+        Vector3 hit;//光線がヒットしたところの座標
+        Vector3 hitNormal;//光線がヒットした面の法線
+
+        //レイの開始地点引き上げ
+        float correctionY = terrainStepOffset_;//補正値
+        Vector3 start = pos;
+        start.y += correctionY;
+        Vector3 end = moved;
+
+        //垂直方向に地形判定
+        const auto& stage = StageManager::Instance().GetActiveStage();
+        if (stage.get() && stage->RayCast(start, end, hit, hitNormal))
+        {
+            //着地した
+            Landing();
+            moved.y = hit.y;
+        }
     }
 
     transform_->SetPosition(moved);
