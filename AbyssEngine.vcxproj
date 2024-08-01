@@ -30,6 +30,7 @@
     <ClInclude Include="Code\Header\Camera.h" />
     <ClInclude Include="Code\Header\CascadedShadowMap.h" />
     <ClInclude Include="Code\Header\Character.h" />
+    <ClInclude Include="Code\Header\CollisionHelper.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
     <ClInclude Include="Code\Header\PerlinNoise.h" />
     <ClInclude Include="Code\Header\Projectile.h" />
@@ -122,6 +123,7 @@
     <ClCompile Include="Code\Source\Camera.cpp" />
     <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />
     <ClCompile Include="Code\Source\Character.cpp" />
+    <ClCompile Include="Code\Source\CollisionHelper.cpp" />
     <ClCompile Include="Code\Source\FadeSystem.cpp" />
     <ClCompile Include="Code\Source\PerlinNoise.cpp" />
     <ClCompile Include="Code\Source\Projectile.cpp" />
