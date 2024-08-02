@@ -35,7 +35,8 @@ public:
         float radius,
         float& distance,
         AbyssEngine::Vector3& hitPosition,
-        AbyssEngine::Vector3& hitNormal
+        AbyssEngine::Vector3& hitNormal,
+        bool drawDebug = false
     );
 
     //ステージに配置するアクターを追加

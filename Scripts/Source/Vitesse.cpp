@@ -164,13 +164,7 @@ void Vitesse::Update()
         stateMachine_->SetActive(false);
     }
 
-
     HumanoidWeapon::Update();
-}
-
-void Vitesse::Move()
-{
-    HumanoidWeapon::Move();
 
     //ã¸
     if (flightMode_ && Input::GameSupport::GetClimdButton())
@@ -184,7 +178,6 @@ void Vitesse::Move()
 
     transform_->CalcWorldMatrix();
 
-    
     ThrusterUpdate();
 }
 

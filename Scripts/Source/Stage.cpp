@@ -4,6 +4,8 @@
 #include "SceneManager.h"
 #include "RenderManager.h"
 #include "PrimitiveRenderer.h";
+#include "DebugRenderer.h";
+#include "LineRenderer.h";
 
 #include "CollisionHelper.h"
 
@@ -101,7 +103,7 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 	return hit;
 }
 
-bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Vector3& direction, float radius, float& distance, AbyssEngine::Vector3& hitPosition, AbyssEngine::Vector3& hitNormal)
+bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Vector3& direction, float radius, float& distance, AbyssEngine::Vector3& hitPosition, AbyssEngine::Vector3& hitNormal,bool drawDebug)
 {
 	bool hit = false;
 
@@ -124,6 +126,21 @@ bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Ve
 			hitNormal = result.normal;
 			hit = true;
 		}
+	}
+
+	//デバッグ表示
+	if (drawDebug)
+	{
+		auto& debugR = Engine::renderManager_->debugRenderer_;
+		auto& lineR = Engine::renderManager_->lineRenderer_;
+		const Vector3 pos = origin + direction * distance;
+		Vector4 color;
+		if (hit)color = { 1,0,0,0.5f };
+		else color = { 1,1,0,0.5f };
+		debugR->DrawSphere(origin, radius, color);
+		debugR->DrawSphere(pos, radius, color);
+		lineR->AddVertex(origin, color);
+		lineR->AddVertex(pos, color);
 	}
 
 	return hit;

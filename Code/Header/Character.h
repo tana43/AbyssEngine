@@ -61,9 +61,6 @@ namespace AbyssEngine
         const bool& GetOnGround() const { return onGround_; }
 
     protected:
-        
-
-        virtual void Move();//移動処理
 
         virtual void UpdateVelocity();//速力更新
         virtual void UpdateMove();
@@ -86,9 +83,12 @@ namespace AbyssEngine
         bool enableGravity_ = true;
         bool sphereCast_ = true;//地形判定にスフィアキャストを使用するか（falseの場合レイキャストを使用）
 
-        float terrainRadius_ = 0.5f;//地形判定用の球の半径
-        float terrainStepOffset_ = 0.1f;//スフィアキャストで始点にする位置を足元からどの程度上げるか
-        Vector3 centerOffset_ = {0,0.7f,0};//中心点
+        float terrainRadius_ = 0.18f;//地形判定用の球の半径
+        float terrainStepOffset_ = 0.14f;//スフィアキャストで始点にする位置を足元からどの程度上げるか
+        float terrainCenterOffset_ = 0.3f;//中心
+        float terrainSkinWidth_ = 0.01f;//キャスト量加算値
+
+        float slopeLimit = 60.0f;//スロープ角度制限
 
         Vector3 moveVec_;//移動方向
         Vector3 velocity_;//速度

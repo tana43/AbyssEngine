@@ -16,7 +16,6 @@ public:
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
     void Update()override;
-    void Move()override;
     bool DrawImGui()override;
 
     //速度によって影響されるスラスター
@@ -120,8 +119,5 @@ private:
 
     //パイロット(プレイヤー)
     std::weak_ptr<Soldier> pilot_;
-
-    
-
 };
 

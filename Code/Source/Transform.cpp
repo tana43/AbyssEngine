@@ -66,7 +66,6 @@ Matrix Transform::CalcWorldMatrix()
         const auto scale = scale_ * scaleFactor_;
         worldMatrix_ = localMatrix * parent->GetTransform()->CalcWorldMatrix();
         worldMatrix_.Decompose(scale_, rotation_, position_);
-        
         R = Matrix::CreateFromQuaternion(rotation_);
     }
     else

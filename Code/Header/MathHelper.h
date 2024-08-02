@@ -194,6 +194,7 @@ namespace AbyssEngine
 
 		void Normalize();
 		void Normalize(Vector3& result) const;
+		Vector3 Normalize()const;
 
 		void Clamp(const Vector3& vmin, const Vector3& vmax);
 		void Clamp(const Vector3& vmin, const Vector3& vmax, Vector3& result) const;
@@ -1407,6 +1408,17 @@ namespace AbyssEngine
 		XMVECTOR v1 = XMLoadFloat3(this);
 		XMVECTOR X = XMVector3Normalize(v1);
 		XMStoreFloat3(this, X);
+	}
+
+	inline Vector3 Vector3::Normalize() const
+	{
+		using namespace DirectX;
+		XMVECTOR v1 = XMLoadFloat3(this);
+		XMVECTOR X = XMVector3Normalize(v1);
+
+		Vector3 result;
+		XMStoreFloat3(&result, X);
+		return result;
 	}
 
 	inline void Vector3::Normalize(Vector3& result) const

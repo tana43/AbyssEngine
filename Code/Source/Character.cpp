@@ -40,6 +40,10 @@ bool Character::DrawImGui()
 
     ImGui::DragFloat3("Move Vec", &moveVec_.x, 0.05f, -1.0f, 1.0f);
 
+    ImGui::DragFloat("Terrain Radius", &terrainRadius_, 0.01f, 0.0f);
+    ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
+    ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
+
     return true;
 }
 
@@ -157,11 +161,6 @@ void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
     transform_->SetRotationY(rotY);
 }
 
-void Character::Move()
-{
-    UpdateMove(); 
-}
-
 void Character::UpdateVelocity()
 {
     //速力更新
@@ -272,55 +271,97 @@ void Character::UpdateHorizontalMove()
 
     Vector3 moved = pos + moveVector;//移動後の座標
 
-    Vector3 hit;//光線がヒットしたところの座標
-    Vector3 hitNormal;//光線がヒットした面の法線
-
-    //レイの開始地点引き上げ
-    static constexpr float correctionY = 0.5f;//補正値
-    Vector3 start = pos;
-    start.y += correctionY;
-    Vector3 end = moved;
-    end.y += correctionY;
-
-
-    //地形判定
-    const auto& stage = StageManager::Instance().GetActiveStage();
-    if (stage.get() && stage->RayCast(start, end, hit, hitNormal))
+    //スフィアキャスト
+    if (sphereCast_)
     {
-        //スタートからレイが当たった位置までのベクトル
-        Vector3 endToHit = hit - end;
+        //中心点
+        Vector3 centerOffset = { 0,terrainRadius_ + terrainCenterOffset_,0 };
 
-        //内積を使い壁ずりベクトルを算出
-        Vector3 projection = hitNormal * (hitNormal.Dot(endToHit));
-
-        //壁ずり移動のために必要な数値を用意
-        Vector3 startWall = hit + hitNormal * 0.01f;//壁にべったりつきすぎないようにしている
-        Vector3 endWall = end + projection + hitNormal * 0.01f;
-
-        //壁ずり移動
-        if (stage->RayCast(startWall, endWall, hit, hitNormal))
+        // キャスト量を算出
+        float distance = moveVector.Length();
+        if (distance > 0.000001f)
         {
-            //再度当たった場合は壁ずりはしない
-            hit.y -= correctionY;
-            moved = hit;
+            //  壁より少し手前で止まってほしいので、キャスト量を増やす(skinWidth)
+            distance += terrainSkinWidth_;
+
+            Vector3 origin = transform_->GetPosition() + centerOffset;
+            Vector3 direction = moveVector.Normalize();
+            Vector3 hitPosition, hitNormal;
+
+            //スフィアキャスト
+            const auto& stage = StageManager::Instance().GetActiveStage();
+            if (stage.get() && stage->SphereCast(
+                origin, direction, terrainRadius_, distance, hitPosition, hitNormal, true))
+            {
+                //  キャスト量を増やした分だけ減らす(skinWidth)
+                distance -= terrainSkinWidth_;
+
+                //移動
+                moved = pos + direction * distance;
+
+                //滑り処理
+                {
+                    //  次回移動が壁に沿うよう移動ベクトルを算出
+                    float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(hitNormal, moveVector));
+                    const Vector3 move = moveVector - hitNormal * dot;
+                    moved = pos + move;
+                }
+            }
+        }
+    }
+    //レイキャストver
+    else
+    {
+        Vector3 hit;//光線がヒットしたところの座標
+        Vector3 hitNormal;//光線がヒットした面の法線
+
+        //レイの開始地点引き上げ
+        static constexpr float correctionY = 0.5f;//補正値
+        Vector3 start = pos;
+        start.y += correctionY;
+        Vector3 end = moved;
+        end.y += correctionY;
+
+
+        //地形判定
+        const auto& stage = StageManager::Instance().GetActiveStage();
+        if (stage.get() && stage->RayCast(start, end, hit, hitNormal))
+        {
+            //スタートからレイが当たった位置までのベクトル
+            Vector3 endToHit = hit - end;
+
+            //内積を使い壁ずりベクトルを算出
+            Vector3 projection = hitNormal * (hitNormal.Dot(endToHit));
+
+            //壁ずり移動のために必要な数値を用意
+            Vector3 startWall = hit + hitNormal * 0.01f;//壁にべったりつきすぎないようにしている
+            Vector3 endWall = end + projection + hitNormal * 0.01f;
+
+            //壁ずり移動
+            if (stage->RayCast(startWall, endWall, hit, hitNormal))
+            {
+                //再度当たった場合は壁ずりはしない
+                hit.y -= correctionY;
+                moved = hit;
+            }
+            else
+            {
+                //当たらなかった
+                endWall.y -= correctionY;
+                moved = endWall;
+            }
+
+            //移動距離に応じて速度を強制的に変更
+            {
+                float moveDistance = Vector3(moved - pos).Length() / Time::deltaTime_;
+                velocity_.Normalize();
+                velocity_ = velocity_ * moveDistance;
+            }
         }
         else
         {
             //当たらなかった
-            endWall.y -= correctionY;
-            moved = endWall;
         }
-
-        //移動距離に応じて速度を強制的に変更
-        {
-            float moveDistance = Vector3(moved - pos).Length() / Time::deltaTime_;
-            velocity_.Normalize();
-            velocity_ = velocity_ * moveDistance;
-        }
-    }
-    else
-    {
-        //当たらなかった
     }
 
     //座標更新
@@ -340,25 +381,45 @@ void Character::UpdateVerticalMove()
     //スフィアキャスト
     if (sphereCast_)
     {
+        //中心点
+        Vector3 centerOffset = { 0,terrainRadius_ + terrainStepOffset_,0 };
+
         // キャスト量を算出
-        float distance = moveY;
-        if (distance > 0.0001f)
+        float distance = fabsf(moveY);
+        if (distance > 0.000001f)
         {
             //オフセット分加算
             distance += terrainStepOffset_;
 
-            Vector3 origin = transform_->GetPosition() + centerOffset_;
+            Vector3 origin = transform_->GetPosition() + centerOffset;
             Vector3 direction = velocity_.y > 0 ? Vector3(0, 1, 0) : Vector3(0, -1, 0);
             Vector3 hitPosition, hitNormal;
 
             //スフィアキャスト
             const auto& stage = StageManager::Instance().GetActiveStage();
             if (stage.get() && stage->SphereCast(
-                origin,direction,terrainRadius_,distance,hitPosition,hitNormal))
+                origin,direction,terrainRadius_,distance,hitPosition,hitNormal,true))
             {
+                //スロープ角度を算出
+                DirectX::XMVECTOR Up = DirectX::XMVectorSet(0, 1, 0, 0);
+                float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(Up, hitNormal));
+                float angle = DirectX::XMConvertToDegrees(acosf(dot));
+
                 //着地した
                 Landing();
-                moved.y = hit.y;
+                distance -= terrainStepOffset_;
+                moved.y = pos.y + direction.y * distance;
+
+                //  制限角度以内なら滑る処理はスキップ
+                if (angle > slopeLimit)
+                {
+                    Vector3 move = { 0, moveY, 0 };
+
+                    //  次回移動が壁に沿うよう移動ベクトルを算出
+                    float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(hitNormal,move));
+                    move = DirectX::XMVectorSubtract(move, DirectX::XMVectorScale(hitNormal, dot));
+                    moved = pos + move;
+                }
             }
         }
     }
