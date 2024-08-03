@@ -40,7 +40,7 @@ namespace AbyssEngine
         float radius_ = 0.1f;
 
         //Žõ–½
-        float lifespan_ = 10.0f;
+        float flashLifespan_ = 10.0f;
     };
 }
 

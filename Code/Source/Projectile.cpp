@@ -23,8 +23,8 @@ void Projectile::Update()
 #endif // _DEBUG
 
     //õ–½ˆ—
-    lifespan_ -= Time::deltaTime_;
-    if (lifespan_ <= 0)
+    flashLifespan_ -= Time::deltaTime_;
+    if (flashLifespan_ <= 0)
     {
         actor_->Destroy(actor_);
     }

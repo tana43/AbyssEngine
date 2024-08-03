@@ -33,9 +33,14 @@ namespace AbyssEngine
         };
 
     public:
+        const bool& GetVisibilty() const { return visibility_; }
         void SetVisibility(const bool& flag) { visibility_ = flag; }
 
         const std::unique_ptr<ConstantBuffer<Constants>>& GetConstantBuffer() { return constantBuffer_; }
+
+        void SetOffsetPos(const Vector3& pos) { offsetPos_ = pos; }
+        void SetRotationZ(const float& rot) { rotZ_ = rot; }
+        void SetScale(const float& sca) { offsetScale_ = sca; }
 
     private:
         // 頂点構造体
@@ -48,6 +53,11 @@ namespace AbyssEngine
     private:
         Vector2 pivot_;//中心点
         Vector2 cropSize_;//テクスチャの切り取りサイズ
+        Vector3 offsetPos_;//オフセット座標
+
+        float rotZ_ = 0.0f;//オフセットｚ回転
+
+        float offsetScale_ = 1.0f;//オフセットスケール
 
         std::shared_ptr<Texture> texture_; //テクスチャ
 

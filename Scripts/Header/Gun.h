@@ -5,6 +5,7 @@
 namespace AbyssEngine
 {
     class Projectile;
+    class BillboardRenderer;
 }
 
 class Gun : public AbyssEngine::ScriptComponent
@@ -24,6 +25,9 @@ public:
     /// </summary>
     /// <param name="hootingDirection">弾を打つ方向(正規化させること)</param>
     bool Shot(AbyssEngine::Vector3 shootingDirection);
+
+    //マズルフラッシュのエフェクトの座標更新
+    void UpdateFlashEffect();
 
 public:
     const AbyssEngine::Vector3& GetMuzzlePos() const { return muzzlePos_; }
@@ -57,5 +61,11 @@ private:
     //ADS時の精度
     float adsPrecision = 0.01f;
 
+    //マズルフラッシュ用の画像
+    std::shared_ptr<AbyssEngine::BillboardRenderer> muzzleFlashComponent_;
+    
+    //エフェクト寿命
+    float flashLifespan_ = 0.0f;
+    float Max_Flash_Lifespan = 0.02f;
 };
 

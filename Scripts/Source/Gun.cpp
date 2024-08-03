@@ -3,6 +3,8 @@
 #include "SceneManager.h"
 #include "Engine.h"
 #include "Bullet.h"
+#include "BillboardRenderer.h"
+
 #include "imgui/imgui.h"
 
 #include "DebugRenderer.h"
@@ -13,6 +15,11 @@ using namespace AbyssEngine;
 void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
     ScriptComponent::Initialize(actor);
+
+    //マズルフラッシュ
+    muzzleFlashComponent_ = actor->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Explosion_02.png");
+    muzzleFlashComponent_->SetVisibility(false);
+    muzzleFlashComponent_->SetScale(0.5f);
 }
 
 bool Gun::DrawImGui()
@@ -45,6 +52,9 @@ void Gun::Update()
 {
     //発射レート更新
     rateTimer_ -= Time::deltaTime_;
+
+    //マズルフラッシュエフェクトの更新
+    UpdateFlashEffect();
 }
 
 bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
@@ -72,6 +82,11 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
         proj->SetDirection(shootingDirection);
 
         rateTimer_ = rateOfFire_;
+
+        //エフェクト設定
+        muzzleFlashComponent_->SetVisibility(true);
+        flashLifespan_ = 0.0f;
+        muzzleFlashComponent_->SetRotationZ(Math::RandomRange(0.0f, 360.0f));
     }
     else return false;
     
@@ -79,4 +94,25 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
 
 
     return true;
+}
+
+void Gun::UpdateFlashEffect()
+{
+    //エフェクトが非表示なら処理しない
+    if (!muzzleFlashComponent_->GetVisibilty())return;
+
+    //マズル位置とアクター座標からエフェクトが出るべき座標のオフセット値を算出
+    const Vector3 pos = transform_->GetPosition();
+    const Vector3 offset = muzzlePos_ - pos;
+    muzzleFlashComponent_->SetOffsetPos(offset);
+
+    //エフェクト寿命計算
+    if (flashLifespan_ > Max_Flash_Lifespan)
+    {
+        muzzleFlashComponent_->SetVisibility(false);
+    }
+    else
+    {
+        flashLifespan_ += Time::deltaTime_;
+    }
 }

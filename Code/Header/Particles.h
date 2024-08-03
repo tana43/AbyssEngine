@@ -24,7 +24,7 @@ namespace AbyssEngine
 		float angularSpeed_ = 0.0f;
 		Vector3 velocity_ = { 0, 0, 0 };
 
-		float lifespan_ = 1.0f;
+		float flashLifespan_ = 1.0f;
 		float age_ = 0.0f;
 
 		Vector2 size_ = { 0,0 }; // x: spawn, y: despawn
@@ -62,7 +62,7 @@ namespace AbyssEngine
 			Vector2 emissionConeAngle_ = { 0.0f, 0.2f }; // x: minimum radian, y: maximum radian
 			Vector2 emissionSpeed = { 0.5f , 1.0f }; // x: minimum speed, y: maximum speed
 			Vector2 emissionAngularSpeed_ = { 0.0f, 1.0f }; // x: minimum angular speed, y: maximum angular speed
-			Vector2 lifespan_ = { 1.0f, 2.5f }; // x: minimum second, y: maximum second
+			Vector2 flashLifespan_ = { 1.0f, 2.5f }; // x: minimum second, y: maximum second
 			Vector2 spawnDelay_ = { 0.0f, 5.0f }; // x: minimum second, y: maximum second
 			Vector2 fadeDuration_ = { 1.0f, 2.5f }; // x: fade in, y: fade out
 

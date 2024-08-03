@@ -84,7 +84,7 @@ void BillboardRenderer::RecalculateFrame()
     if (billboard_)
     {
         const Matrix BillboardMatrix = Matrix::CreateBillboard(
-            transform_->GetPosition(),
+            transform_->GetPosition() + offsetPos_,
             Camera::GetMainCamera()->GetEye(),
             Camera::GetMainCamera()->GetTransform()->GetUp(),
             &Camera::GetMainCamera()->GetTransform()->GetForward()
@@ -93,8 +93,8 @@ void BillboardRenderer::RecalculateFrame()
         //‰ñ“]s—ñ
         const Vector4 r = transform_->GetRotation();
         //const Matrix R = Matrix::CreateFromYawPitchRoll(r.z, r.x, r.y);
-        const Matrix R = Matrix::CreateRotationZ(DirectX::XMConvertToRadians(r.z));
-        const Matrix S = Matrix::CreateScale(transform_->GetScale() * transform_->GetScaleFactor());
+        const Matrix R = Matrix::CreateRotationZ(DirectX::XMConvertToRadians(rotZ_));
+        const Matrix S = Matrix::CreateScale(transform_->GetScale() * transform_->GetScaleFactor() * offsetScale_);
 
         constantBuffer_->data_.worldMatrix_ = S * R * BillboardMatrix;
     }
@@ -155,6 +155,10 @@ bool BillboardRenderer::DrawImGui()
         ImGui::InputFloat2("Crop Size", &cropSize_.x);
         ImGui::InputFloat2("Pivot", &pivot_.x);
 
+        ImGui::DragFloat3("Offset Pos", &offsetPos_.x,0.01f);
+        ImGui::DragFloat("Rot Z", &rotZ_,0.01f);
+        ImGui::DragFloat("Offset Scale", &offsetScale_,0.01f);
+
         ImGui::ColorPicker4("Color", &constantBuffer_->data_.color_.x, ImGuiColorEditFlags_PickerHueWheel);
 
         ImGui::TreePop();
@@ -174,3 +178,4 @@ void AbyssEngine::BillboardRenderer::SetActive(bool value)
         }
     }
 }
+

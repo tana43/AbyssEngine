@@ -9,6 +9,7 @@ namespace AbyssEngine
 {
     class Camera;
     class StaticMesh;
+    class BillboardRenderer;
 }
 
 class Gun;

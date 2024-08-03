@@ -9,7 +9,7 @@ void Bullet::Initialize(const std::shared_ptr<Actor>& actor)
     Projectile::Initialize(actor);
 
     actor->AddComponent<StaticMesh>("./Assets/Models/Cube.glb");
-    transform_->SetScaleFactor(0.1f);
+    transform_->SetScaleFactor(0.03f);
 }
 
 void Bullet::Update()

@@ -11,6 +11,7 @@
 #include "Vitesse.h"
 #include "Gun.h"
 #include "PlayerSoldierState.h"
+#include "BillboardRenderer.h"
 
 #include "StageManager.h"
 

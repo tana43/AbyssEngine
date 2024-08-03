@@ -409,6 +409,7 @@ void RenderManager::Render()
 				EffectManager::Instance().Render(camera->viewMatrix_, camera->projectionMatrix_);
 
 				//エフェクト描画
+				RenderEffect();
 
 #if _DEBUG
 				//デバッグレンダラー
@@ -468,7 +469,7 @@ void RenderManager::Render()
 					};
 					bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
 
-					
+
 
 					postEffectedFrameBuffer_->Deactivate();
 #endif // 0
@@ -486,9 +487,6 @@ void RenderManager::Render()
 			}
 		}
 	}
-
-	RenderEffect();
-
 	Render2D();
 }
 
