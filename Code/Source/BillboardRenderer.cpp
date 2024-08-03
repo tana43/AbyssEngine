@@ -1,13 +1,15 @@
-#include "PlaneRenderer.h"
+#include "BillboardRenderer.h"
 #include "Actor.h"
 #include "Texture.h"
 #include "imgui/imgui.h"
 #include "Engine.h"
 #include "RenderManager.h"
 
+#include "Camera.h"
+
 using namespace AbyssEngine;
 
-void PlaneRenderer::Initialize(const std::shared_ptr<Actor>& actor)
+void BillboardRenderer::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //初期化
     actor_ = actor;
@@ -76,13 +78,34 @@ void PlaneRenderer::Initialize(const std::shared_ptr<Actor>& actor)
     constantBuffer_ = std::make_unique<ConstantBuffer<Constants>>();
 }
 
-void PlaneRenderer::RecalculateFrame()
+void BillboardRenderer::RecalculateFrame()
 {
     //行列更新
-    constantBuffer_->data_.worldMatrix_ = transform_->CalcWorldMatrix();
+    if (billboard_)
+    {
+        const Matrix BillboardMatrix = Matrix::CreateBillboard(
+            transform_->GetPosition(),
+            Camera::GetMainCamera()->GetEye(),
+            Camera::GetMainCamera()->GetTransform()->GetUp(),
+            &Camera::GetMainCamera()->GetTransform()->GetForward()
+        );
+
+        //回転行列
+        const Vector4 r = transform_->GetRotation();
+        //const Matrix R = Matrix::CreateFromYawPitchRoll(r.z, r.x, r.y);
+        const Matrix R = Matrix::CreateRotationZ(DirectX::XMConvertToRadians(r.z));
+        const Matrix S = Matrix::CreateScale(transform_->GetScale() * transform_->GetScaleFactor());
+
+        constantBuffer_->data_.worldMatrix_ = S * R * BillboardMatrix;
+    }
+    else
+    {
+        //通常の更新
+        constantBuffer_->data_.worldMatrix_ = transform_->CalcWorldMatrix();
+    }
 }
 
-void PlaneRenderer::Render()
+void BillboardRenderer::Render()
 {
     if (!canRender_)return;
 
@@ -99,6 +122,7 @@ void PlaneRenderer::Render()
     UINT stride = sizeof(Vertex);
     UINT offset = 0;
     context->IASetVertexBuffers(0, 1, vertexBuffer_.GetAddressOf(), &stride, &offset);
+    context->IASetInputLayout(inputLayout_.Get());
     context->IASetIndexBuffer(indexBuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -113,7 +137,7 @@ void PlaneRenderer::Render()
     context->DrawIndexed(6, 0, 0);
 }
 
-bool PlaneRenderer::DrawImGui()
+bool BillboardRenderer::DrawImGui()
 {
 #if _DEBUG
     if (ImGui::TreeNode("PlaneRenderer"))
@@ -139,13 +163,13 @@ bool PlaneRenderer::DrawImGui()
     return true;
 }
 
-void AbyssEngine::PlaneRenderer::SetActive(bool value)
+void AbyssEngine::BillboardRenderer::SetActive(bool value)
 {
     if (value)
     {
         if (!isCalled_)
         {
-            Engine::renderManager_->Add(static_pointer_cast<PlaneRenderer>(shared_from_this()));
+            Engine::renderManager_->Add(static_pointer_cast<BillboardRenderer>(shared_from_this()));
             isCalled_ = true;
         }
     }

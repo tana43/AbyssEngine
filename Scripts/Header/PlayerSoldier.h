@@ -121,6 +121,9 @@ private:
 
     //ソケット位置を変更するための補完情報
     std::unique_ptr<AbyssEngine::FadeSystem> socketFade_;
+
+    //マズルの位置オフセット
+    AbyssEngine::Vector3 muzzleOffsetPos_ = {0,0,0};
 };
 
 

@@ -80,7 +80,7 @@
     <ClInclude Include="Code\Header\SystemFunction.h" />
     <ClInclude Include="Code\Header\TestScene.h" />
     <ClInclude Include="Code\Header\Texture.h" />
-    <ClInclude Include="Code\Header\PlaneRenderer.h" />
+    <ClInclude Include="Code\Header\BillboardRenderer.h" />
     <ClInclude Include="Code\Header\Transform.h" />
     <ClInclude Include="External\imgui\imconfig.h" />
     <ClInclude Include="External\imgui\imgui.h" />
@@ -169,7 +169,7 @@
     <ClCompile Include="Code\Source\SystemFunction.cpp" />
     <ClCompile Include="Code\Source\TestScene.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />
-    <ClCompile Include="Code\Source\PlaneRenderer.cpp" />
+    <ClCompile Include="Code\Source\BillboardRenderer.cpp" />
     <ClCompile Include="Code\Source\Transform.cpp" />
     <ClCompile Include="External\imgui\imgui.cpp" />
     <ClCompile Include="External\imgui\ImGuiCtrl.cpp" />

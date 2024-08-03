@@ -8,7 +8,7 @@
 #include "EnemyBot.h"
 #include "RenderManager.h"
 #include "Engine.h"
-#include "PlaneRenderer.h"
+#include "BillboardRenderer.h"
 
 using namespace AbyssEngine;
 
@@ -48,7 +48,7 @@ void FacilityScene::Initialize()
 
     //”Âƒ|ƒŠƒSƒ“
     const auto& plane = InstanceActor("Plane");
-    plane->AddComponent<PlaneRenderer>("./Assets/Effects/Texture/Explosion_01.png");
+    plane->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Explosion_02.png");
 }
 
 void FacilityScene::Update()

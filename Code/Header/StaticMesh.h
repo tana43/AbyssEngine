@@ -28,6 +28,8 @@ namespace AbyssEngine
             Vector3 location_ = {0,0,0};
             Vector3 rotation_ = {0,0,0};
             Vector3 scale_ = {1,1,1};
+
+            Matrix worldTransform_;
         };
         bool isAttached_ = false;
 

@@ -261,6 +261,19 @@ void Camera::ChangeMainCamera(Camera* camera)
     camera->SetIsMainCamera(true);
 }
 
+const std::shared_ptr<Camera>& Camera::GetMainCamera()
+{
+    for (auto& c : Engine::renderManager_->GetCameraList())
+    {
+        if (const auto& camera = c.lock())
+        {
+            if (camera->isMainCamera_)return camera;
+        }
+    }
+
+    return nullptr;
+}
+
 Vector3 Camera::ConvertTo2DVectorFromCamera(const Vector2& v)
 {
     Vector2 result;

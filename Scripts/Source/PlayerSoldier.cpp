@@ -93,6 +93,8 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     camera_->SetEnableDebugController(true);
 #endif // _DEBUG
 
+    //銃口のオフセット位置設定
+    muzzleOffsetPos_ = { 0.0f,0.16f,0.49f };
 }
 
 void Soldier::Update()
@@ -128,6 +130,8 @@ bool Soldier::DrawImGui()
         ImGui::DragFloat("Base Acceleration", &baseAcceleration_, 0.1f, 0.0f, 100.0f);
 
         ImGui::DragFloat("Jump Power", &jumpPower_, 0.02f, 0.01f, 100.0f);
+
+        ImGui::DragFloat3("Muzzle Offset", &muzzleOffsetPos_.x, 0.01f);
 
         stateMachine_->DrawImGui();
 
@@ -175,7 +179,16 @@ void Soldier::SocketUpdate()
 
 void Soldier::MuzzlePosUpdate()
 {
-    gunComponent_->SetMuzzlePos(weaponModel_->GetWorldMatrix().Translation());
+    //オフセット行列
+    const Matrix Offset = Matrix::CreateTranslation(muzzleOffsetPos_);
+
+    //ワールド行列算出
+    const Matrix M = Offset * weaponModel_->GetWorldMatrix();
+
+    //移動成分を抽出
+    const Vector3 pos = M.Translation();
+
+    gunComponent_->SetMuzzlePos(pos);
 }
 
 void Soldier::BoardingDistanceJudge(const float& range)

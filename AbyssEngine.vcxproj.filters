@@ -379,7 +379,7 @@
     <ClInclude Include="Scripts\Header\FacilityScene.h">
       <Filter>Script\Header\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\PlaneRenderer.h">
+    <ClInclude Include="Code\Header\BillboardRenderer.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\CollisionHelper.h">
@@ -636,7 +636,7 @@
     <ClCompile Include="Scripts\Source\FacilityScene.cpp">
       <Filter>Script\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\PlaneRenderer.cpp">
+    <ClCompile Include="Code\Source\BillboardRenderer.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\CollisionHelper.cpp">

@@ -6,7 +6,7 @@
 #include "Camera.h"
 
 #include "SpriteRenderer.h"
-#include "PlaneRenderer.h"
+#include "BillboardRenderer.h"
 #include "Texture.h"
 #include "SkeletalMesh.h"
 #include "StaticMesh.h"
@@ -259,6 +259,15 @@ void RenderManager::Reset()
 		}
 	}
 	renderer3DList_.clear();
+
+	for (auto& r : rendererEffectList_)
+	{
+		if (const auto& rend = r.lock())
+		{
+			rend->isCalled_ = false;
+		}
+	}
+	rendererEffectList_.clear();
 	
 	cameraList_.clear();
 }
@@ -268,9 +277,9 @@ void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)
 	renderer2DList_.emplace_back(mRend);
 }
 
-void RenderManager::Add(const shared_ptr<PlaneRenderer>& mRend)
+void RenderManager::Add(const shared_ptr<BillboardRenderer>& mRend)
 {
-	renderer3DList_.emplace_back(mRend);
+	rendererEffectList_.emplace_back(mRend);
 }
 
 void RenderManager::Add(const shared_ptr<SkeletalMesh>& mRend)
@@ -399,6 +408,8 @@ void RenderManager::Render()
 				//3Dエフェクト描画
 				EffectManager::Instance().Render(camera->viewMatrix_, camera->projectionMatrix_);
 
+				//エフェクト描画
+
 #if _DEBUG
 				//デバッグレンダラー
 				if (Keyboard::GetKeyDown(DirectX::Keyboard::D5))
@@ -457,7 +468,7 @@ void RenderManager::Render()
 					};
 					bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
 
-
+					
 
 					postEffectedFrameBuffer_->Deactivate();
 #endif // 0
@@ -475,6 +486,8 @@ void RenderManager::Render()
 			}
 		}
 	}
+
+	RenderEffect();
 
 	Render2D();
 }
@@ -661,6 +674,21 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 	}
 }
 
+void RenderManager::RenderEffect() const
+{
+	for (auto& r : rendererEffectList_)
+	{
+		const auto& pRend = r.lock();
+		if (pRend->actor_->GetActiveInHierarchy())
+		{
+			if (pRend->GetEnabled())
+			{
+				pRend->Render();
+			}
+		}
+	}
+}
+
 void RenderManager::CheckRenderer()
 {
 	//3Dアクター生存確認
@@ -703,6 +731,28 @@ void RenderManager::CheckRenderer()
 		{
 			const auto removeIt = remove_if(renderer2DList_.begin(), renderer2DList_.end(), [](weak_ptr<Renderer> r) { return r.expired(); });
 			renderer2DList_.erase(removeIt, renderer2DList_.end());
+		}
+	}
+
+	//エフェクトアクターの生存確認
+	//参照先のshared_ptrが寿命切れしているなら要素を削除する
+	{
+		bool expired = false;
+		for (auto& r : rendererEffectList_)
+		{
+			if (const auto& rend = r.lock())
+			{
+				rend->RecalculateFrame();
+			}
+			else
+			{
+				expired = true;
+			}
+		}
+		if (expired)
+		{
+			const auto removeIt = remove_if(rendererEffectList_.begin(), rendererEffectList_.end(), [](weak_ptr<Renderer> r) { return r.expired(); });
+			rendererEffectList_.erase(removeIt, rendererEffectList_.end());
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace AbyssEngine
     class FullscreenQuad;
     class Skybox;
     class CascadedShadowMap;
-    class PlaneRenderer;
+    class BillboardRenderer;
 
     class DebugRenderer;
     class LineRenderer;
@@ -45,7 +45,7 @@ namespace AbyssEngine
 
         void Reset();
         void Add(const std::shared_ptr<SpriteRenderer>& mRend);//マネージャーにレンダラーを登録する
-        void Add(const std::shared_ptr<PlaneRenderer>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<BillboardRenderer>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<SkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         //void Add(const std::shared_ptr<GltfSkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<StaticMesh>& mRend);//マネージャーにレンダラーを登録する
@@ -86,6 +86,7 @@ namespace AbyssEngine
     private:
         std::vector<std::weak_ptr<Renderer>> renderer3DList_{};
         std::vector<std::weak_ptr<Renderer>> renderer2DList_{};
+        std::vector<std::weak_ptr<Renderer>> rendererEffectList_{};
         
         std::vector<std::weak_ptr<Camera>> cameraList_{};
 
@@ -187,11 +188,15 @@ namespace AbyssEngine
         
     private:
 
-        //2Dオブジェクトのレンダリング
+        //2Dアクターのレンダリング
         void Render2D() const;
 
+        //3Dアクターのレンダリング
         void Render3D(const std::shared_ptr<Camera>& camera_);
         RS_State rasterizerState3D = RS_State::Cull_None;
+
+        //エフェクトアクターのレンダリング
+        void RenderEffect()const;
 
         //Rendererの生存確認
         void CheckRenderer();

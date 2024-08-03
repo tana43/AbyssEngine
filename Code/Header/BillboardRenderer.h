@@ -10,7 +10,7 @@ namespace AbyssEngine
     class Texture;
 
     //テクスチャ付きの板ポリ
-    class PlaneRenderer : public Renderer
+    class BillboardRenderer : public Renderer
     {
     public:
         void Initialize(const std::shared_ptr<Actor>& actor)override;
@@ -57,7 +57,7 @@ namespace AbyssEngine
         Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader_;
         Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout_;
 
-        bool billboard_ = false;//ビルボードオン・オフ
+        bool billboard_ = true;//ビルボードオン・オフ
 
         bool visibility_ = true;//表示・非表示
 

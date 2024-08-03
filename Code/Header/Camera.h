@@ -35,6 +35,8 @@ namespace AbyssEngine
         //メインのカメラを変更する
         static void ChangeMainCamera(Camera* c);
 
+        static const std::shared_ptr<Camera>& GetMainCamera();
+
         //ズームによって変更可能なパラメータ
         struct ZoomParam
         {
