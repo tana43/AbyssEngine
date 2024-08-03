@@ -409,7 +409,7 @@ void RenderManager::Render()
 				{
 					debugRenderer_->Render(DXSystem::GetDeviceContext().Get(), camera->viewMatrix_, camera->projectionMatrix_);
 					lineRenderer_->Render(DXSystem::GetDeviceContext().Get(), camera->viewMatrix_, camera->projectionMatrix_);
-					primitiveRenderer_->Render(camera->viewProjectionMatrix_,D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+					primitiveRenderer_->Render(camera->viewProjectionMatrix_, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 					shapeRenderer_->Render(camera->viewProjectionMatrix_);
 				}
 				else

@@ -86,7 +86,7 @@ namespace AbyssEngine
         float terrainRadius_ = 0.18f;//地形判定用の球の半径
         float terrainStepOffset_ = 0.14f;//スフィアキャストで始点にする位置を足元からどの程度上げるか
         float terrainCenterOffset_ = 0.3f;//中心
-        float terrainSkinWidth_ = 0.01f;//キャスト量加算値
+        float terrainSkinWidth_ = 0.05f;//キャスト量加算値
 
         float slopeLimit = 60.0f;//スロープ角度制限
 

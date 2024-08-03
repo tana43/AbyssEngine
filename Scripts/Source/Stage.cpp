@@ -10,6 +10,7 @@
 #include "CollisionHelper.h"
 
 #include <DirectXCollision.h>
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 
@@ -23,13 +24,35 @@ void Stage::DrawDebug()
 {
 #if _DEBUG
 	const auto& priRenderer = Engine::renderManager_->primitiveRenderer_;
+	int i = 0;
 	for (const auto& triangle : triangles_)
 	{
-		priRenderer->AddVertex(triangle.positions[0], DirectX::XMFLOAT4(1, 1, 1, 1));
-		priRenderer->AddVertex(triangle.positions[1], DirectX::XMFLOAT4(1, 1, 1, 1));
-		priRenderer->AddVertex(triangle.positions[2], DirectX::XMFLOAT4(1, 1, 1, 1));
+		if (i >= showTriangleCount_)break;
+
+		const Vector4 edgeColor = { 1,1,1,1 };
+
+		priRenderer->AddVertex(triangle.positions[0], edgeColor);
+		priRenderer->AddVertex(triangle.positions[1], edgeColor);
+		priRenderer->AddVertex(triangle.positions[1], edgeColor);
+		priRenderer->AddVertex(triangle.positions[2], edgeColor);
+		priRenderer->AddVertex(triangle.positions[2], edgeColor);
+		priRenderer->AddVertex(triangle.positions[0], edgeColor);
+		i++;
 	}
 #endif // _DEBUG
+}
+
+bool Stage::DrawImGui()
+{
+#if _DEBUG
+	if (ImGui::TreeNode("Stage"))
+	{
+		ImGui::DragInt("Show Triangles", &showTriangleCount_);
+
+		ImGui::TreePop();
+	}
+#endif // _DEBUG
+	return true;
 }
 
 bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPosition, Vector3& hitNormal)

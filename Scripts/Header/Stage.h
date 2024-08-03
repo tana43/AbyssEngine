@@ -15,6 +15,7 @@ public:
 
     //void Update()override;
     void DrawDebug()override;
+    bool DrawImGui()override;
 
     struct Area
     {
@@ -60,5 +61,10 @@ protected:
 
     //Œ»İƒŒƒC‚ª”ò‚Î‚³‚ê‚½ƒGƒŠƒA
     int currentArea_;
+
+#if _DEBUG
+    int showTriangleCount_ = 2000;
+#endif // _DEBUG
+
 };
 
