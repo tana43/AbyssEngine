@@ -70,6 +70,9 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
 
+    //このカメラをメインに
+    camera_->ChangeMainCamera(camera_.get());
+
 
     //ステートマシン設定
     stateMachine_ = actor->AddComponent<StateMachine<State<Soldier>>>();

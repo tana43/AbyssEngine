@@ -152,6 +152,7 @@ bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Ve
 	}
 
 	//デバッグ表示
+#if _DEBUG
 	if (drawDebug)
 	{
 		auto& debugR = Engine::renderManager_->debugRenderer_;
@@ -165,7 +166,8 @@ bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Ve
 		lineR->AddVertex(origin, color);
 		lineR->AddVertex(pos, color);
 	}
-
+#endif // _DEBUG
+	
 	return hit;
 }
 

@@ -17,8 +17,10 @@ void BaseEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 void BaseEnemy::DrawDebug()
 {
+#if _DEBUG
     // “ê’£‚è”ÍˆÍ‚ðƒfƒoƒbƒO‰~’Œ•`‰æ
     Engine::renderManager_->debugRenderer_->DrawCylinder(territoryOrigin_, territoryRange_, 1.0f, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
+#endif // _DEBUG
 }
 
 void BaseEnemy::MoveToTarget()
