@@ -35,6 +35,10 @@ public:
         Jump,
         Fall_Loop,
         Land,
+        Dodge_Back,
+        Dodge_Fwd,
+        Dodge_Right,
+        Dodge_Left,
         Move,
     };
 

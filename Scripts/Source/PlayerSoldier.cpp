@@ -35,10 +35,23 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle_ADS.glb",
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Jump.glb",
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Fall_Loop.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Land.glb"
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Land.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Back.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Forward.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Right.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Left.glb"
                 },
         {
-            "Walk","Run","Aim","Jump","Fall_Loop","Land"
+            "Walk",
+            "Run",
+            "Aim",
+            "Jump",
+            "Fall_Loop",
+            "Land",
+            "Dodge_Roll_Back",
+            "Dodge_Roll_Fwd",
+            "Dodge_Roll_Right",
+            "Dodge_Roll_Left"
         });
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
     moveAnim.AddBlendAnimation(1, 0.6f);
@@ -314,7 +327,14 @@ void Soldier::DashDecision()
     //走っているか
     if (onGround_)
     {
+#if 0
         Max_Horizontal_Speed = Input::GameSupport::GetDashButton() ? Run_Max_Speed : Walk_Max_Speed;
+#else
+        //ダッシュボタンの押し込み関係なく走らせている
+        Max_Horizontal_Speed = Run_Max_Speed;
+#endif // 0
+
+        
     }
 }
 

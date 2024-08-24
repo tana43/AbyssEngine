@@ -72,6 +72,8 @@ namespace AbyssEngine
         float transitionTimeRequired_ = 0;//アニメーションの遷移に掛かる時間
 
         bool isFinished_;//アニメーションの再生が終わっているか
+
+        bool enableRootMotion_;//ルートモーション
     };
 
 }
