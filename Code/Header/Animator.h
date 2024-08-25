@@ -74,6 +74,8 @@ namespace AbyssEngine
         bool isFinished_;//アニメーションの再生が終わっているか
 
         bool enableRootMotion_;//ルートモーション
+        std::vector<GeometricSubstance::Node> zeroAnimatedNodes_;//初期姿勢
+        int rootJointIndex_;//ルートボーン（最も上の階層にあるボーン）のインデックス
     };
 
 }

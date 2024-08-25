@@ -50,6 +50,9 @@ void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMes
 	//初期モーションをアニメーターに追加
 	//かならず０番目のモーションは待機と仮定
 	animations_.emplace_back(std::make_unique<Animation>(skeletalMesh.get(), "Idle", 0, true));
+
+	//初期姿勢を設定
+	skeletalMesh->GetModel()->Animate(0,0, zeroAnimatedNodes_);
 }
 
 void Animator::AnimatorUpdate()
@@ -95,6 +98,17 @@ void Animator::AnimatorUpdate()
 	{
 		//通常の更新と再生終了フラグ更新
 		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model,&isFinished_);
+	}
+
+	//ルートモーション
+	if (enableRootMotion_)
+	{
+		GltfSkeletalMesh::Node& node = animatedNodes_.at(rootJointIndex_);
+
+		if ()
+		{
+
+		}
 	}
 }
 
