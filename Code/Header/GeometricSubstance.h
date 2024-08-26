@@ -180,6 +180,9 @@ namespace AbyssEngine
 		{
 			std::string name_;
 
+			//アニメーション持続時間
+			float duration_ = 0.0f;
+
 			struct Channel
 			{
 				int sampler_{ -1 }; // required

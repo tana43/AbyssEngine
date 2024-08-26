@@ -129,6 +129,7 @@ void Animator::AnimatorUpdate()
 		//移動させる
 		Vector3 translation = transform_->GetPosition();
 		translation = translation + displacement;
+		transform_->SetPosition(translation);
 
 		//ルートノードの変換行列のオフセットを初期姿勢の値に設定
 		node.globalTransform_._41 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._41;
@@ -158,6 +159,7 @@ void Animator::AnimatorUpdate()
 
 	//時間更新
 	timeStamp_ += Time::deltaTime_ * animationSpeed_;
+	
 }
 
 void Animator::PlayAnimation(const size_t& animIndex, float transTime)

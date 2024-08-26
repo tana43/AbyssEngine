@@ -669,6 +669,15 @@ void GeometricSubstance::ExtractAnimations(const tinygltf::Model& transmissionMo
 			}
 		}
 	}
+
+	for (decltype(animations_)::reference animation : animations_)
+	{
+		// Find a longest animation duration in timeline of each channel.
+		for (decltype(animation.keyframeTimes_)::reference timelines : animation.keyframeTimes_)
+		{
+			animation.duration_ = std::max<float>(animation.duration_, timelines.second.back());
+		}
+	}
 }
 
 bool GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes, bool loopback, size_t sceneIndex)

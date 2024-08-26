@@ -29,6 +29,13 @@ void Animation::Initialize()
 std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
 {
     UpdateTime();
+    if (animationClip_ < model->animations_.size())
+    {
+        if (model->animations_.at().duration_ < timeStamp_)
+        {
+            timeStamp_ = 0;
+        }
+    }
     bool flag = model->Animate(animIndex_, timeStamp_, animatedNodes_, loopFlag_);
     if (animationFinished)
     {
