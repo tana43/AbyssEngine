@@ -61,6 +61,16 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));
 
+    //ルートノードを設定
+    for (const auto& node : model_->GetModel()->nodes_)
+    {
+        if (node.name_ == "root")
+        {
+            model_->GetAnimator()->SetRootJointIndex(node.index_);
+            break;
+        }
+    }
+
     //武器を装備させる
     weaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Soldier/Soldier_Gun.glb");
     model_->SocketAttach(weaponModel_, "middle_metacarpal_l");

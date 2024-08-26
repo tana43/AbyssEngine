@@ -50,7 +50,10 @@ namespace AbyssEngine
         std::vector<Animation*> GetAnimations();
 
         const bool& GetAnimationFinished() const { return isFinished_; }
-
+        
+        //ルートジョイントのインデックスを設定
+        //※ルートモーションに必須
+        void SetRootJointIndex(const int& index) { rootJointIndex_ = index; }
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;
@@ -73,9 +76,12 @@ namespace AbyssEngine
 
         bool isFinished_;//アニメーションの再生が終わっているか
 
-        bool enableRootMotion_;//ルートモーション
+        bool enableRootMotion_ = false;//ルートモーション
         std::vector<GeometricSubstance::Node> zeroAnimatedNodes_;//初期姿勢
-        int rootJointIndex_;//ルートボーン（最も上の階層にあるボーン）のインデックス
+        bool isSetZeroAnimatedNodes_ = false;//初期姿勢を設定しているか
+        int rootJointIndex_ = 0;//ルートボーン（最も上の階層にあるボーン）のインデックス
+        Vector3 previousPosition_;//前回の位置
+
     };
 
 }

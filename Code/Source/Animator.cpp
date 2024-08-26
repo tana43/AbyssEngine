@@ -23,6 +23,7 @@ bool Animator::DrawImGui()
 	{
 		ImGui::InputFloat("Time Stamp", &timeStamp_);
 		ImGui::SliderFloat("Global Anim Speed", &animationSpeed_,0.0f,2.0f);
+		ImGui::Checkbox("Root Motion", &enableRootMotion_);
 
 		ImGui::Text("----------Current Anim-----------");
 		animations_[animationClip_]->DrawImGui(this);
@@ -45,14 +46,11 @@ void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMes
 
 	//ノードを設定
 	animatedNodes_  = nextAnimatedNodes_ = skeletalMesh->GetModel()->nodes_;
-	
+	zeroAnimatedNodes_ = animatedNodes_;
 
 	//初期モーションをアニメーターに追加
 	//かならず０番目のモーションは待機と仮定
 	animations_.emplace_back(std::make_unique<Animation>(skeletalMesh.get(), "Idle", 0, true));
-
-	//初期姿勢を設定
-	skeletalMesh->GetModel()->Animate(0,0, zeroAnimatedNodes_);
 }
 
 void Animator::AnimatorUpdate()
@@ -66,9 +64,6 @@ void Animator::AnimatorUpdate()
 
 	//再生終了フラグリセット
 	isFinished_ = false;
-
-	//時間更新
-	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 
 	//model->Animate(animationClip_, timeStamp_, animatedNodes_, animationLoop_);
 	
@@ -105,11 +100,64 @@ void Animator::AnimatorUpdate()
 	{
 		GltfSkeletalMesh::Node& node = animatedNodes_.at(rootJointIndex_);
 
-		if ()
+		//初期姿勢を設定
+		if (!isSetZeroAnimatedNodes_)
 		{
-
+			model->Animate(0, 0, zeroAnimatedNodes_);
+			isSetZeroAnimatedNodes_ = true;
 		}
+
+		if (timeStamp_ == 0)
+		{
+			//アニメーションタイマーが０のときに前回姿勢をリセットする
+			previousPosition_ = { node.globalTransform_._41, node.globalTransform_._42, node.globalTransform_._43 }; // global space
+		}
+
+		//グローバル空間でのモーションによる移動値を算出
+		Vector3 position = { node.globalTransform_._41,node.globalTransform_._42,node.globalTransform_._43 };
+		Vector3 displacement = position - previousPosition_;
+
+		//グローバル → ワールド空間へ変換
+		auto& t = transform_;
+		const Vector3 scale = t->GetScale() * t->GetScaleFactor();
+		const Vector4& r = t->GetRotation();
+		Vector3 euler = { r.x,r.y,r.z };
+		Matrix S = Matrix::CreateScale(scale.x, scale.y, scale.z);
+		Matrix R = Matrix::CreateFromQuaternion(Quaternion::Euler(euler));
+		displacement = DirectX::XMVector3TransformNormal(displacement,S * R);
+
+		//移動させる
+		Vector3 translation = transform_->GetPosition();
+		translation = translation + displacement;
+
+		//ルートノードの変換行列のオフセットを初期姿勢の値に設定
+		node.globalTransform_._41 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._41;
+		node.globalTransform_._42 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._42;
+		node.globalTransform_._43 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._43;
+
+		// 子ノードを再更新
+		std::function<void(int, int)> traverse = [&](int parentIndex, int nodeIndex)
+		{
+			GltfSkeletalMesh::Node& node = animatedNodes_.at(nodeIndex);
+			if (parentIndex > -1)
+			{
+				DirectX::XMMATRIX S = DirectX::XMMatrixScaling(node.scale_.x, node.scale_.y, node.scale_.z);
+				DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(node.rotation_.x, node.rotation_.y, node.rotation_.z, node.rotation_.w));
+				DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(node.translation_.x, node.translation_.y, node.translation_.z);
+				DirectX::XMStoreFloat4x4(&node.globalTransform_, S * R * T * DirectX::XMLoadFloat4x4(&animatedNodes_.at(parentIndex).globalTransform_));
+			}
+			for (int child_index : node.children_)
+			{
+				traverse(nodeIndex, child_index);
+			}
+		};
+		traverse(-1, rootJointIndex_);
+
+		previousPosition_ = position;
 	}
+
+	//時間更新
+	timeStamp_ += Time::deltaTime_ * animationSpeed_;
 }
 
 void Animator::PlayAnimation(const size_t& animIndex, float transTime)

@@ -101,6 +101,7 @@ namespace AbyssEngine
 			int camera_ = -1;  // the index of camera referenced by this node
 			int skin_ = -1;  // the index of skin referenced by this node
 			int model_ = -1;  // the index of mesh referenced by this node
+			int index_ = -1;
 
 			std::vector<int> children_;
 

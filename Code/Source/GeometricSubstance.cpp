@@ -41,12 +41,13 @@ void GeometricSubstance::ExtractNodes(const tinygltf::Model& transmissionModel)
 {
 	for (decltype(transmissionModel.nodes)::const_reference transmission_node : transmissionModel.nodes)
 	{
-		Node& Node = nodes_.emplace_back();
-		Node.name_ = transmission_node.name;
-		Node.camera_ = transmission_node.camera;
-		Node.skin_ = transmission_node.skin;
-		Node.model_ = transmission_node.mesh;
-		Node.children_ = transmission_node.children;
+		Node& node = nodes_.emplace_back();
+		node.index_ = nodes_.size() - 1;
+		node.name_ = transmission_node.name;
+		node.camera_ = transmission_node.camera;
+		node.skin_ = transmission_node.skin;
+		node.model_ = transmission_node.mesh;
+		node.children_ = transmission_node.children;
 
 		if (!transmission_node.matrix.empty())
 		{
@@ -63,33 +64,33 @@ void GeometricSubstance::ExtractNodes(const tinygltf::Model& transmissionModel)
 			bool succeed = DirectX::XMMatrixDecompose(&S, &R, &T, DirectX::XMLoadFloat4x4(&matrix));
 			_ASSERT_EXPR(succeed, L"Failed to decompose matrix.");
 
-			DirectX::XMStoreFloat3(&Node.scale_, S);
-			DirectX::XMStoreFloat4(&Node.rotation_, R);
-			DirectX::XMStoreFloat3(&Node.translation_, T);
+			DirectX::XMStoreFloat3(&node.scale_, S);
+			DirectX::XMStoreFloat4(&node.rotation_, R);
+			DirectX::XMStoreFloat3(&node.translation_, T);
 		}
 		else
 		{
 			if (transmission_node.scale.size() > 0)
 			{
-				Node.scale_.x = static_cast<float>(transmission_node.scale.at(0));
-				Node.scale_.y = static_cast<float>(transmission_node.scale.at(1));
-				Node.scale_.z = static_cast<float>(transmission_node.scale.at(2));
+				node.scale_.x = static_cast<float>(transmission_node.scale.at(0));
+				node.scale_.y = static_cast<float>(transmission_node.scale.at(1));
+				node.scale_.z = static_cast<float>(transmission_node.scale.at(2));
 			}
 			if (transmission_node.translation.size() > 0)
 			{
-				Node.translation_.x = static_cast<float>(transmission_node.translation.at(0));
-				Node.translation_.y = static_cast<float>(transmission_node.translation.at(1));
-				Node.translation_.z = static_cast<float>(transmission_node.translation.at(2));
+				node.translation_.x = static_cast<float>(transmission_node.translation.at(0));
+				node.translation_.y = static_cast<float>(transmission_node.translation.at(1));
+				node.translation_.z = static_cast<float>(transmission_node.translation.at(2));
 			}
 			if (transmission_node.rotation.size() > 0)
 			{
-				Node.rotation_.x = static_cast<float>(transmission_node.rotation.at(0));
-				Node.rotation_.y = static_cast<float>(transmission_node.rotation.at(1));
-				Node.rotation_.z = static_cast<float>(transmission_node.rotation.at(2));
-				Node.rotation_.w = static_cast<float>(transmission_node.rotation.at(3));
+				node.rotation_.x = static_cast<float>(transmission_node.rotation.at(0));
+				node.rotation_.y = static_cast<float>(transmission_node.rotation.at(1));
+				node.rotation_.z = static_cast<float>(transmission_node.rotation.at(2));
+				node.rotation_.w = static_cast<float>(transmission_node.rotation.at(3));
 			}
 		}
-		Node.weights_ = transmission_node.weights;
+		node.weights_ = transmission_node.weights;
 	}
 	for (size_t scene_index{}; scene_index < scenes_.size(); ++scene_index)
 	{
