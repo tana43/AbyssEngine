@@ -41,6 +41,12 @@ void SoldierState::Move::Update()
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Aim));
     }
+
+    //回避
+    if (Input::GameSupport::GetDashButton())
+    {
+        owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Dodge));
+    }
 }
 
 void SoldierState::Move::Finalize()
@@ -156,9 +162,124 @@ void SoldierState::Jump::Finalize()
 
 void SoldierState::Dodge::Initialize()
 {
-    //回避アニメーション再生
-    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Fwd));
+    //左スティック
+    Vector2 ax = Input::GameSupport::GetMoveVector();
+    if (ax.LengthSquared() == 0)
+    {
+        Vector3 f = owner_->GetTransform()->GetForward();
+        f.Normalize();
+        ax = { f.x,f.z };
+    }
+    Vector3 moveVec = owner_->GetCamera()->ConvertTo2DVectorFromCamera(ax);
+    Direction dir = DirectionJudge(moveVec);
 
-    //ルートモーションによる移動処理をする
-    owner_->GetAnimator()->SetEnableRootMotion(true);
+    //回避アニメーション再生
+    switch (dir)
+    {
+    case SoldierState::Dodge::Direction::Back:
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Back));
+        break;
+    case SoldierState::Dodge::Direction::Forward:
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Fwd));
+        break;
+    case SoldierState::Dodge::Direction::Right:
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Right));
+        break;
+    case SoldierState::Dodge::Direction::Left:
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Left));
+        break;
+    }
+
+    timer_ = 0;
+
+    secondDodge_ = false;
+}
+
+void SoldierState::Dodge::Update()
+{
+    if (!secondDodge_)
+    {
+        if (timer_ > Cancel_Time)
+        {
+            if (Input::GameSupport::GetDodgeButton())
+            {
+                Vector2 ax = Input::GameSupport::GetMoveVector();
+                if (ax.LengthSquared() == 0)
+                {
+                    Vector3 f = owner_->GetTransform()->GetForward();
+                    f.Normalize();
+                    ax = { f.x,f.z };
+                }
+                Vector3 moveVec = owner_->GetCamera()->ConvertTo2DVectorFromCamera(ax);
+                Direction dir = DirectionJudge(moveVec);
+
+                //回避アニメーション再生
+                float transTime = 0.3f;//遷移時間
+                switch (dir)
+                {
+                case SoldierState::Dodge::Direction::Back:
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Back), transTime);
+                    break;
+                case SoldierState::Dodge::Direction::Forward:
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Forward), transTime);
+                    break;
+                case SoldierState::Dodge::Direction::Right:
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Right), transTime);
+                    break;
+                case SoldierState::Dodge::Direction::Left:
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Left), transTime);
+                    break;
+                }
+
+                //タイマーリセット
+                //timer_ = 0;
+
+                secondDodge_ = true;
+            }
+        }
+    }
+
+    //ステートの切り替え
+    if (owner_->GetAnimator()->GetAnimationFinished())
+    {
+        owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Move));
+    }
+
+    //経過時間
+    timer_ += Time::deltaTime_;
+}
+
+void SoldierState::Dodge::Finalize()
+{
+}
+
+SoldierState::Dodge::Direction SoldierState::Dodge::DirectionJudge(const Vector3& moveVec)
+{
+    float dot = moveVec.Dot(owner_->GetTransform()->GetForward());
+    float degree = DirectX::XMConvertToDegrees(acosf(dot));
+    
+    //方向を算出
+    Direction dir = Direction::Forward;
+    if (degree < 45.0f)
+    {
+        dir = Direction::Forward;
+    }
+    else if(degree < 135.0f)
+    {
+        //左右判定
+        if (moveVec.x > 0)
+        {
+            dir = Direction::Right;
+        }
+        else
+        {
+            dir = Direction::Left;
+        }
+    }
+    else
+    {
+        dir = Direction::Back;
+    }
+
+    return dir;
 }

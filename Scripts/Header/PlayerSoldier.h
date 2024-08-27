@@ -35,10 +35,14 @@ public:
         Jump,
         Fall_Loop,
         Land,
-        Dodge_Back,
+        Dodge_Back,         //ƒ[ƒŠƒ“ƒO‰ñ”ğ
         Dodge_Fwd,
         Dodge_Right,
         Dodge_Left,
+        Cartwheel_Back,     //‘¤“]‰ñ”ğ
+        Cartwheel_Forward,
+        NoHandSpin_Right,
+        NoHandSpin_Left,
         Move,
     };
 
@@ -47,6 +51,7 @@ public:
         Move,
         Aim,
         Jump,
+        Dodge
     };
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;

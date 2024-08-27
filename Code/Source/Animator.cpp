@@ -80,6 +80,32 @@ void Animator::AnimatorUpdate()
 		float weight = transitionTimer_ / transitionTimeRequired_;
 		model->BlendAnimations(nextAnimatedNodes_, animatedNodes_, weight, animatedNodes_);
 
+		//遷移中はルートモーションをさせない
+#pragma region //ルートノードリセット
+		//ルートノードの変換行列のオフセットを初期姿勢の値に設定
+		GltfSkeletalMesh::Node& node = animatedNodes_.at(rootJointIndex_);
+		node.globalTransform_._41 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._41;
+		node.globalTransform_._42 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._42;
+		node.globalTransform_._43 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._43;
+		// 子ノードを再更新
+		std::function<void(int, int)> traverse = [&](int parentIndex, int nodeIndex)
+		{
+			GltfSkeletalMesh::Node& node = animatedNodes_.at(nodeIndex);
+			if (parentIndex > -1)
+			{
+				DirectX::XMMATRIX S = DirectX::XMMatrixScaling(node.scale_.x, node.scale_.y, node.scale_.z);
+				DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(node.rotation_.x, node.rotation_.y, node.rotation_.z, node.rotation_.w));
+				DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(node.translation_.x, node.translation_.y, node.translation_.z);
+				DirectX::XMStoreFloat4x4(&node.globalTransform_, S * R * T * DirectX::XMLoadFloat4x4(&animatedNodes_.at(parentIndex).globalTransform_));
+			}
+			for (int child_index : node.children_)
+			{
+				traverse(nodeIndex, child_index);
+			}
+		};
+		traverse(-1, rootJointIndex_);
+#pragma endregion
+
 		//遷移が完了していないか
 		if (weight <= 0)
 		{
@@ -107,7 +133,9 @@ void Animator::AnimatorUpdate()
 			isSetZeroAnimatedNodes_ = true;
 		}
 
-		if (animations_[animationClip_]->GetTimeStamp() == 0)
+		//ループモーションのみループしたときに前回位置をリセット
+		const auto& anim = animations_[animationClip_];
+		if ( anim->GetLoopFlag() && anim->GetTimeStamp() == 0)
 		{
 			//アニメーションタイマーが０のときに前回姿勢をリセットする
 			previousPosition_ = { node.globalTransform_._41, node.globalTransform_._42, node.globalTransform_._43 }; // global space
@@ -206,6 +234,11 @@ void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime)
 		transitionTimer_ = 0;
 	}
 
+	previousPosition_ = Vector3::Zero;
+
+	//ルートモーション設定
+	enableRootMotion_ = animations_[animIndex]->GetRootMotion();
+
 	animations_[animIndex]->Initialize();
 }
 
@@ -222,7 +255,8 @@ void Animator::AppendAnimation(const std::string& filename, const std::string& m
 	model->GetModel()->AppendAnimation(filename);
 	animatedNodes_ = model->GetModel()->nodes_;
 	
-	animations_.emplace_back(std::make_unique<Animation>(model.get(), motionName, animations_.size()));
+	auto& anim = animations_.emplace_back(std::make_unique<Animation>(model.get(), motionName, animations_.size()));
+	anim->SetAnimator(this);
 }
 
 void Animator::AppendAnimations(const std::vector<std::string>& filenames, const std::vector<std::string>& motionNames)
@@ -233,7 +267,8 @@ void Animator::AppendAnimations(const std::vector<std::string>& filenames, const
 	model->GetModel()->AppendAnimations(filenames);
 	for (int i = 0; i < filenames.size(); i++)
 	{
-		animations_.emplace_back(std::make_unique<Animation>(model.get(), motionNames[i], animations_.size()));
+		auto& anim = animations_.emplace_back(std::make_unique<Animation>(model.get(), motionNames[i], animations_.size()));
+		anim->SetAnimator(this);
 	}
 }
 
@@ -246,7 +281,8 @@ AnimBlendSpace1D* Animator::AppendAnimation(AnimBlendSpace1D anim)
 	if (!model)return nullptr;
 
 	auto* p = new AnimBlendSpace1D(model.get(), anim);
-	animations_.emplace_back(p);
+	auto& animation = animations_.emplace_back(p);
+	animation->SetAnimator(this);
 	return p;
 }
 
@@ -260,7 +296,8 @@ AnimBlendSpace2D* Animator::AppendAnimation(AnimBlendSpace2D anim)
 
 	auto* p = new AnimBlendSpace2D(model.get(), anim.name_,anim.animIndex_,anim.GetBlendAnims()[0].weight_);
 	p->SetBlendAnims(anim.GetBlendAnims());
-	animations_.emplace_back(p);
+	auto& animation = animations_.emplace_back(p);
+	animation->SetAnimator(this);
 	return p;
 }
 
@@ -270,7 +307,8 @@ AnimBlendSpaceFlyMove* AbyssEngine::Animator::AppendAnimation(AnimBlendSpaceFlyM
 	if (!model)return nullptr;
 
 	auto* p = new AnimBlendSpaceFlyMove(model.get(), anim.name_,anim.GetBlendSpace2D(),anim.GetBlendSpace1D());
-	animations_.emplace_back(p);
+	auto& animation = animations_.emplace_back(p);
+	animation->SetAnimator(this);
 	return p;
 }
 

@@ -61,6 +61,14 @@ namespace SoldierState
     class Dodge : Inheritance
     {
     public:
+        enum class Direction
+        {
+            Back,
+            Forward,
+            Right,
+            Left
+        };
+
         Dodge(Soldier* soldier) : State(soldier, "Dodge") {}
         ~Dodge() {}
 
@@ -68,7 +76,15 @@ namespace SoldierState
         void Update()override;
         void Finalize()override;
 
+        //進行方向から回避先の４方向
+        Direction DirectionJudge(const AbyssEngine::Vector3& moveVec);
+
     private:
+        //回避キャンセル可能タイム
+        const float Cancel_Time = 0.2f;
+
+        //二回目の回避を使用したか
+        bool secondDodge_ = false;
     };
 };
 

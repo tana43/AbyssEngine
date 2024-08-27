@@ -24,24 +24,29 @@ Animation::Animation(SkeletalMesh* model, const std::string& name_, const int& i
 void Animation::Initialize()
 {
     timeStamp_ = 0.0f;
+    
 }
 
 std::vector<GeometricSubstance::Node> Animation::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
 {
     UpdateTime();
 
-    //タイマーのループ処理
-    if (animIndex_ < model->animations_.size())
-    {
-        if (model->animations_.at(animIndex_).duration_ < timeStamp_)
-        {
-            timeStamp_ = 0;
-        }
-    }
     bool flag = model->Animate(animIndex_, timeStamp_, animatedNodes_, loopFlag_);
     if (animationFinished)
     {
         *animationFinished = flag;
+    }
+
+    //タイマーのループ処理
+    if (!flag)
+    {
+        if (animIndex_ < model->animations_.size())
+        {
+            if (model->animations_.at(animIndex_).duration_ < timeStamp_)
+            {
+                timeStamp_ = 0;
+            }
+        }
     }
 
     return animatedNodes_;

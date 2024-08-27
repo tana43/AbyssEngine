@@ -77,6 +77,19 @@ const bool Input::GameSupport::GetDashButton()
     return input;
 }
 
+const bool Input::GameSupport::GetDodgeButton()
+{
+    bool input = false;
+    auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::LeftShift) ||
+        (i->gamePad_.GetButtonDown() & GamePad::BTN_X))
+    {
+        input = true;
+    }
+
+    return input;
+}
+
 const Vector2 Input::GameSupport::GetCameraRollVector()
 {
     //キーボード、コントローラー両方に対応

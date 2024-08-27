@@ -24,10 +24,17 @@ namespace AbyssEngine
 
     public:
         void SetLoopFlag(const bool& flag) { loopFlag_ = flag; }
+        const bool& GetLoopFlag() const { return loopFlag_; }
 
         void SetAnimSpeed(const float& spd) { animSpeed_ = spd; }
 
         const float GetTimeStamp() const { return timeStamp_; }
+
+        void SetRootMotion(const bool& enable) { rootMotion_ = enable; }
+        const bool& GetRootMotion() const { return rootMotion_; }
+
+        void SetAnimator(Animator* animator) { animator_ = animator; }
+        const Animator* GetAnimator() const { return animator_; }
 
         std::string name_;
         int animIndex_;//モデル本体が持っているこのモーションの要素数
@@ -38,8 +45,13 @@ namespace AbyssEngine
         float animSpeed_ = 1.0f;//各アニメーションごとの再生速度
         float timeStamp_ = 0.0f;
 
+        //ルートモーション
+        bool rootMotion_ = false;
+
         //モデルの持つノードへアクセスするためのポインタ
         std::vector<GeometricSubstance::Node> animatedNodes_;
+
+        Animator* animator_ = nullptr;
     };
 
 

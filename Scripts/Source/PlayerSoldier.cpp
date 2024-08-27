@@ -39,7 +39,11 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Back.glb",
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Forward.glb",
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Right.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Left.glb"
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Left.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Back.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Forward.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Right.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Left.glb"
                 },
         {
             "Walk",
@@ -51,13 +55,44 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
             "Dodge_Roll_Back",
             "Dodge_Roll_Fwd",
             "Dodge_Roll_Right",
-            "Dodge_Roll_Left"
+            "Dodge_Roll_Left",
+            "Cartwheel_Back",
+            "Cartwheel_Forward",
+            "NoHandSpin_Right",
+            "NoHandSpin_Left"
         });
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
     moveAnim.AddBlendAnimation(1, 0.6f);
     moveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);
     model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Jump)]->SetLoopFlag(false);
     model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Land)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Back)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Fwd)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Right)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Left)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Back)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Forward)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Right)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Left)]->SetLoopFlag(false);
+
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Back)]->SetRootMotion(true);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Fwd)]->SetRootMotion(true);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Right)]->SetRootMotion(true);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Left)]->SetRootMotion(true);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Back)]->SetRootMotion(true);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Forward)]->SetRootMotion(true);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Right)]->SetRootMotion(true);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Left)]->SetRootMotion(true);
+
+    float dodgeAnimSpeed = 1.3f;
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Back)]->SetAnimSpeed(dodgeAnimSpeed);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Fwd)]->SetAnimSpeed(dodgeAnimSpeed);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Right)]->SetAnimSpeed(dodgeAnimSpeed);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Dodge_Left)]->SetAnimSpeed(dodgeAnimSpeed);
+    //model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Back)]->SetAnimSpeed(dodgeAnimSpeed);
+    //model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Forward)]->SetAnimSpeed(dodgeAnimSpeed);
+    //model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Right)]->SetAnimSpeed(dodgeAnimSpeed);
+    //model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Left)]->SetAnimSpeed(dodgeAnimSpeed);
 
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));
 
@@ -102,6 +137,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     stateMachine_->RegisterState(new SoldierState::Move(this));
     stateMachine_->RegisterState(new SoldierState::Aim(this));
     stateMachine_->RegisterState(new SoldierState::Jump(this));
+    stateMachine_->RegisterState(new SoldierState::Dodge(this));
     stateMachine_->SetState(static_cast<int>(ActionState::Move));
 
     //ソケット情報の設定
