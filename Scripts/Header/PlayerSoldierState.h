@@ -57,5 +57,18 @@ namespace SoldierState
         //’…’n‚µ‚Ä‚©‚ç‚Ìd’¼ŠÔŒv‘ª
         float landTimer_;
     };
+
+    class Dodge : Inheritance
+    {
+    public:
+        Dodge(Soldier* soldier) : State(soldier, "Dodge") {}
+        ~Dodge() {}
+
+        void Initialize()override;
+        void Update()override;
+        void Finalize()override;
+
+    private:
+    };
 };
 

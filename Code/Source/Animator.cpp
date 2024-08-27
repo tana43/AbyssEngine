@@ -107,7 +107,7 @@ void Animator::AnimatorUpdate()
 			isSetZeroAnimatedNodes_ = true;
 		}
 
-		if (timeStamp_ == 0)
+		if (animations_[animationClip_]->GetTimeStamp() == 0)
 		{
 			//アニメーションタイマーが０のときに前回姿勢をリセットする
 			previousPosition_ = { node.globalTransform_._41, node.globalTransform_._42, node.globalTransform_._43 }; // global space

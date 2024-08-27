@@ -27,6 +27,8 @@ namespace AbyssEngine
 
         void SetAnimSpeed(const float& spd) { animSpeed_ = spd; }
 
+        const float GetTimeStamp() const { return timeStamp_; }
+
         std::string name_;
         int animIndex_;//モデル本体が持っているこのモーションの要素数
     protected: 

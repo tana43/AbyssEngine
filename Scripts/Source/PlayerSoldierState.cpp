@@ -153,3 +153,12 @@ void SoldierState::Jump::Finalize()
     
 
 }
+
+void SoldierState::Dodge::Initialize()
+{
+    //回避アニメーション再生
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Fwd));
+
+    //ルートモーションによる移動処理をする
+    owner_->GetAnimator()->SetEnableRootMotion(true);
+}

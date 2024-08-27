@@ -54,6 +54,8 @@ namespace AbyssEngine
         //ルートジョイントのインデックスを設定
         //※ルートモーションに必須
         void SetRootJointIndex(const int& index) { rootJointIndex_ = index; }
+
+        void SetEnableRootMotion(const bool& enable) { enableRootMotion_ = enable; }
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;

@@ -32,6 +32,7 @@ void FacilityScene::Initialize()
     StageManager::Instance().AddStage(stageActor);
 
     const auto& faci = stageCom_F->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.glb");
+
     //IBL‹­“xÝ’è
     faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.14f);
 
