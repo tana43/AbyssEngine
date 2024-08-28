@@ -214,20 +214,21 @@ void SoldierState::Dodge::Update()
                 Direction dir = DirectionJudge(moveVec);
 
                 //‰ñ”ðƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
-                float transTime = 0.3f;//‘JˆÚŽžŠÔ
+                float transTime = 0.1f;//‘JˆÚŽžŠÔ
+                float startTime = 0.15f;//‰½•b–Ú‚©‚ç‚Ìƒ‚[ƒVƒ‡ƒ“‚ðÄ¶‚³‚¹‚é‚©
                 switch (dir)
                 {
                 case SoldierState::Dodge::Direction::Back:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Back), transTime);
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Back), transTime,startTime);
                     break;
                 case SoldierState::Dodge::Direction::Forward:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Forward), transTime);
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Forward), transTime, startTime);
                     break;
                 case SoldierState::Dodge::Direction::Right:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Right), transTime);
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Right), transTime, startTime);
                     break;
                 case SoldierState::Dodge::Direction::Left:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Left), transTime);
+                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Left), transTime, startTime);
                     break;
                 }
 

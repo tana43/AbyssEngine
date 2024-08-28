@@ -268,6 +268,7 @@ namespace DirectX
             Vector3 Cross(const Vector3& V) const noexcept;
 
             void Normalize() noexcept;
+            //Vector3 Normalize() noexcept;
             void Normalize(Vector3& result) const noexcept;
 
             void Clamp(const Vector3& vmin, const Vector3& vmax) noexcept;

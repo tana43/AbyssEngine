@@ -194,7 +194,7 @@ namespace AbyssEngine
 
 		void Normalize();
 		void Normalize(Vector3& result) const;
-		Vector3 Normalize()const;
+		Vector3 Normalize() const;
 
 		void Clamp(const Vector3& vmin, const Vector3& vmax);
 		void Clamp(const Vector3& vmin, const Vector3& vmax, Vector3& result) const;

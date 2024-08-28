@@ -28,6 +28,7 @@ namespace AbyssEngine
 
         void SetAnimSpeed(const float& spd) { animSpeed_ = spd; }
 
+        void SetTimeStamp(const float& time) { timeStamp_ = time; }
         const float GetTimeStamp() const { return timeStamp_; }
 
         void SetRootMotion(const bool& enable) { rootMotion_ = enable; }
@@ -35,6 +36,9 @@ namespace AbyssEngine
 
         void SetAnimator(Animator* animator) { animator_ = animator; }
         const Animator* GetAnimator() const { return animator_; }
+
+        void SetRootMotionSpeed(const float& speed) { rootMotionSpeed_ = speed; }
+        const float& GetRootMotionSpeed() const { return rootMotionSpeed_; }
 
         std::string name_;
         int animIndex_;//モデル本体が持っているこのモーションの要素数
@@ -47,6 +51,9 @@ namespace AbyssEngine
 
         //ルートモーション
         bool rootMotion_ = false;
+
+        //ルートモーションによる移動の速度倍率
+        float rootMotionSpeed_ = 1.0f;
 
         //モデルの持つノードへアクセスするためのポインタ
         std::vector<GeometricSubstance::Node> animatedNodes_;

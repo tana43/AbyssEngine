@@ -21,10 +21,10 @@ namespace AbyssEngine
         void AnimatorUpdate();
 
         //アニメーション再生　モーションの遷移時間を指定
-        void PlayAnimation(const size_t& animIndex,float transTime = 0.1f);//要素数から検索
-        void PlayAnimation(const std::string& animName,float transTime = 0.1f);//名前から検索
+        void PlayAnimation(const size_t& animIndex,float transTime = 0.1f,float startTime = 0.0f);//要素数から検索
+        void PlayAnimation(const std::string& animName,float transTime = 0.1f,float startTime = 0.0f);//名前から検索
     private:
-        void PlayAnimationCommon(const size_t& animIndex,float transTime);
+        void PlayAnimationCommon(const size_t& animIndex,float transTime,float startTime = 0.0f);
 
     public:
         //アニメーションデータの再読み込み
@@ -56,6 +56,9 @@ namespace AbyssEngine
         void SetRootJointIndex(const int& index) { rootJointIndex_ = index; }
 
         void SetEnableRootMotion(const bool& enable) { enableRootMotion_ = enable; }
+
+        const Vector3& GetRootMotionMove() const { return rootMotionMove_; }
+        void SetRootMotionMove(const Vector3& move) { rootMotionMove_ = move; }
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;
@@ -83,6 +86,9 @@ namespace AbyssEngine
         bool isSetZeroAnimatedNodes_ = false;//初期姿勢を設定しているか
         int rootJointIndex_ = 0;//ルートボーン（最も上の階層にあるボーン）のインデックス
         Vector3 previousPosition_;//前回の位置
+
+        //ルートモーションによって移動する値(別途リセットが必要)
+        Vector3 rootMotionMove_;
 
     };
 

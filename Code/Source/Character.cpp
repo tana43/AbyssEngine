@@ -258,16 +258,27 @@ void Character::UpdateMove()
 
 void Character::UpdateHorizontalMove()
 {
-    if (velocity_.x * velocity_.x + velocity_.z * velocity_.z == 0)return;
+    //if (velocity_.x * velocity_.x + velocity_.z * velocity_.z == 0)return;
 
-    //速度から何の判定もしなかったときの移動後の座標を取得
+    //純粋な移動後の座標を取得
     const Vector3 pos = transform_->GetPosition();
-    const Vector3 moveVector =
+    Vector3 move =
     {
         velocity_.x * Time::deltaTime_,
         0,
         velocity_.z * Time::deltaTime_
     };
+
+    //アニメーターを持っているならルートモーションによる移動値を加算
+    if (const auto& animator = actor_->GetComponent<Animator>())
+    {
+        Vector3 rootMotion = animator->GetRootMotionMove();
+        move.x += rootMotion.x;
+        move.z += rootMotion.z;
+        animator->SetRootMotionMove(Vector3(0, rootMotion.y, 0));
+    }
+
+    const Vector3 moveVector = move;
 
     Vector3 moved = pos + moveVector;//移動後の座標
 
@@ -373,7 +384,16 @@ void Character::UpdateVerticalMove()
 {
     //速度から何の判定もしなかったときの移動後の座標を取得
     const Vector3 pos = transform_->GetPosition();
-    const float moveY = velocity_.y * Time::deltaTime_;
+    float moveY = velocity_.y * Time::deltaTime_;
+
+    //アニメーターを持っているならルートモーションによる移動値を加算
+    if (const auto& animator = actor_->GetComponent<Animator>())
+    {
+        Vector3 rootMotion = animator->GetRootMotionMove();
+        moveY += rootMotion.y;
+        animator->SetRootMotionMove(Vector3(rootMotion.x, 0, rootMotion.z));
+
+    }
 
     //移動後の座標
     Vector3 moved = {pos.x,pos.y + moveY,pos.z};

@@ -94,6 +94,12 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     //model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Right)]->SetAnimSpeed(dodgeAnimSpeed);
     //model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Left)]->SetAnimSpeed(dodgeAnimSpeed);
 
+    float rootMotionDodgeSpeed = 2.0f;
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Back)]->SetRootMotionSpeed(rootMotionDodgeSpeed);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::Cartwheel_Forward)]->SetRootMotionSpeed(rootMotionDodgeSpeed);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Right)]->SetRootMotionSpeed(rootMotionDodgeSpeed);
+    model_->GetAnimator()->GetAnimations()[static_cast<int>(AnimState::NoHandSpin_Left)]->SetRootMotionSpeed(rootMotionDodgeSpeed);
+
     model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimState::Move));
 
     //ルートノードを設定

@@ -952,6 +952,16 @@ inline void Vector3::Normalize() noexcept
     const XMVECTOR X = XMVector3Normalize(v1);
     XMStoreFloat3(this, X);
 }
+//
+//inline Vector3 Vector3::Normalize() noexcept
+//{
+//    using namespace DirectX;
+//    Vector3 result;
+//    const XMVECTOR v1 = XMLoadFloat3(this);
+//    const XMVECTOR X = XMVector3Normalize(v1);
+//    XMStoreFloat3(&result, X);
+//    return result;
+//}
 
 inline void Vector3::Normalize(Vector3& result) const noexcept
 {

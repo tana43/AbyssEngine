@@ -62,6 +62,9 @@ void Animation::DrawImGui(Animator* animator)
         }
 
         ImGui::SliderFloat("Anim Speed", &animSpeed_, 0.0f, 2.0f);
+        ImGui::Checkbox("RootMotion", &rootMotion_);
+        ImGui::DragFloat("RootMotion Speed", &rootMotionSpeed_, 0.01f, 0.1f);
+
         ImGui::Checkbox("Loop Flag", &loopFlag_);
         ImGui::Text(std::to_string(static_cast<long double>(animIndex_)).c_str());
 

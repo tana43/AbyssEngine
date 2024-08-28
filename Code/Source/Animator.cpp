@@ -154,10 +154,17 @@ void Animator::AnimatorUpdate()
 		Matrix R = Matrix::CreateFromQuaternion(Quaternion::Euler(euler));
 		displacement = DirectX::XMVector3TransformNormal(displacement,S * R);
 
+		//速度倍率を計算	
+		displacement = displacement * anim->GetRootMotionSpeed();
+
+		//移動値を加算
+		rootMotionMove_ += displacement;
+
+		//Characterの移動関数で実際の移動処理をする
 		//移動させる
-		Vector3 translation = transform_->GetPosition();
-		translation = translation + displacement;
-		transform_->SetPosition(translation);
+		//Vector3 translation = transform_->GetPosition();
+		//translation = translation + displacement;
+		//transform_->SetPosition(translation);
 
 		//ルートノードの変換行列のオフセットを初期姿勢の値に設定
 		node.globalTransform_._41 = zeroAnimatedNodes_.at(rootJointIndex_).globalTransform_._41;
@@ -190,20 +197,20 @@ void Animator::AnimatorUpdate()
 	
 }
 
-void Animator::PlayAnimation(const size_t& animIndex, float transTime)
+void Animator::PlayAnimation(const size_t& animIndex, float transTime, float startTime)
 {
 	_ASSERT_EXPR(animIndex < animations_.size(), u8"指定のアニメーションが見つかりません");
 
-	PlayAnimationCommon(animIndex,transTime);
+	PlayAnimationCommon(animIndex,transTime,startTime);
 }
 
-void Animator::PlayAnimation(const std::string& animName, float transTime)
+void Animator::PlayAnimation(const std::string& animName, float transTime, float startTime)
 {
 	for (size_t index = 0; index < animations_.size(); index++)
 	{
 		if (animations_[index]->name_ == animName)
 		{
-			PlayAnimationCommon(index,transTime);
+			PlayAnimationCommon(index,transTime,startTime);
 			return;
 		}
 	}
@@ -211,7 +218,7 @@ void Animator::PlayAnimation(const std::string& animName, float transTime)
 	_ASSERT_EXPR(false, u8"指定のアニメーションが見つかりません");
 }
 
-void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime)
+void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime, float startTime)
 {
 	//変更後が今と同じアニメーションなら処理しない
 	if (animationClip_ == animIndex)return;
@@ -236,10 +243,15 @@ void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime)
 
 	previousPosition_ = Vector3::Zero;
 
-	//ルートモーション設定
-	enableRootMotion_ = animations_[animIndex]->GetRootMotion();
+	const auto& animation = animations_[animIndex];
 
-	animations_[animIndex]->Initialize();
+	//ルートモーション設定
+	enableRootMotion_ = animation->GetRootMotion();
+
+	animation->Initialize();
+
+	//開始秒数設定
+	animation->SetTimeStamp(startTime);
 }
 
 //void Animator::ReloadAnimation()
