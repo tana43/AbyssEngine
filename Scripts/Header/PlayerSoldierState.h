@@ -81,7 +81,10 @@ namespace SoldierState
 
     private:
         //回避キャンセル可能タイム
-        const float Cancel_Time = 0.2f;
+        const float Dodge_Cancel_Time = 0.2f;
+
+        //別のステートへの行動へのキャンセルタイム　回避種類にあわせて二つ用意
+        const float Other_Cancel_Time[2] = { 0.625f,0.58f };
 
         //二回目の回避を使用したか
         bool secondDodge_ = false;

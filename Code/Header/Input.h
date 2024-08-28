@@ -33,6 +33,7 @@ namespace AbyssEngine
         {
         public:
             static const Vector2 GetMoveVector();//キーボード、コントローラーの入力値からベクトルの取得
+            static const bool GetMoveButtonDown();//移動キーのどれかが入力されたか
             static const bool GetDashButton();//ダッシュ操作
             static const bool GetDodgeButton();//回避操作
             static const Vector2 GetCameraRollVector();//カメラの回転操作

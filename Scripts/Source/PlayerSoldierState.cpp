@@ -199,7 +199,7 @@ void SoldierState::Dodge::Update()
 {
     if (!secondDodge_)
     {
-        if (timer_ > Cancel_Time)
+        if (timer_ > Dodge_Cancel_Time)
         {
             if (Input::GameSupport::GetDodgeButton())
             {
@@ -233,17 +233,50 @@ void SoldierState::Dodge::Update()
                 }
 
                 //タイマーリセット
-                //timer_ = 0;
+                timer_ = 0;
 
                 secondDodge_ = true;
             }
         }
     }
 
+    //武器の位置を変更
+    owner_->ChangeSocketTransformLinear(0.1f,
+        owner_->Weapon_Offset_Move.pos,
+        owner_->Weapon_Offset_Move.rot
+    );
+
     //ステートの切り替え
     if (owner_->GetAnimator()->GetAnimationFinished())
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Move));
+    }
+
+    //キャンセル行動
+    //現在キャンセル可能か
+    bool cancel = false;
+    if (secondDodge_)
+    {
+        if (timer_ > Other_Cancel_Time[1])cancel = true;
+    }
+    else
+    {
+        if (timer_ > Other_Cancel_Time[0])cancel = true;
+    }
+
+    if (cancel)
+    {
+        //エイムボタンが押されているなら遷移
+        if (Input::GameSupport::GetAimButton())
+        {
+            owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Aim));
+        }
+
+        //移動ステートへ
+        if (Input::GameSupport::GetMoveButtonDown())
+        {
+            owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Move));
+        }
     }
 
     //経過時間

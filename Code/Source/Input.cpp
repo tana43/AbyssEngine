@@ -64,6 +64,25 @@ const Vector2 Input::GameSupport::GetMoveVector()
     return input;
 }
 
+const bool AbyssEngine::Input::GameSupport::GetMoveButtonDown()
+{
+    //キーボード、コントローラー両方に対応
+    const auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::W))return true;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::A))return true;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::S))return true;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::D))return true;
+
+    //スティックは一定以上倒しているならtrue
+    Vector2 axis = { i->gamePad_.GetAxisLX() ,i->gamePad_.GetAxisLY() };
+    if (axis.Length() > 1.0f)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 const bool Input::GameSupport::GetDashButton()
 {
     bool input = false;
