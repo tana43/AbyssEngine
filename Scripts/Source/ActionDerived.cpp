@@ -2,7 +2,6 @@
 #include "Player.h"
 #include "Mathf.h"
 
-
 // UŒ‚s“®
 ActionBase::State AttackAction::Run(float elapsedTime)
 {

@@ -35,4 +35,5 @@ void EnemyBot::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 void EnemyBot::Update()
 {
+    BaseEnemy::Update();
 }

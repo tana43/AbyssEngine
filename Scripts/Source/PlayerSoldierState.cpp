@@ -174,21 +174,7 @@ void SoldierState::Dodge::Initialize()
     Direction dir = DirectionJudge(moveVec);
 
     //回避アニメーション再生
-    switch (dir)
-    {
-    case SoldierState::Dodge::Direction::Back:
-        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Back));
-        break;
-    case SoldierState::Dodge::Direction::Forward:
-        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Fwd));
-        break;
-    case SoldierState::Dodge::Direction::Right:
-        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Right));
-        break;
-    case SoldierState::Dodge::Direction::Left:
-        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Left));
-        break;
-    }
+    PlayDodgeAnimation(dir, false);
 
     timer_ = 0;
 
@@ -199,38 +185,57 @@ void SoldierState::Dodge::Update()
 {
     if (!secondDodge_)
     {
+        //ローリング中は自由に旋回させる
+        bool canTurn = true;
+
+        Vector2 ax = Input::GameSupport::GetMoveVector();
+        if (ax.LengthSquared() == 0)
+        {
+            Vector3 f = owner_->GetTransform()->GetForward();
+            f.Normalize();
+            ax = { f.x,f.z };
+
+            //入力値がないときは旋回しない
+            canTurn = false;
+        }
+        Vector3 moveVec = owner_->GetCamera()->ConvertTo2DVectorFromCamera(ax);
+
+        //現在の再生モーションに合わせて旋回
+        if (canTurn)
+        {
+            Vector3 turnVec = moveVec;
+
+            //TODO:回避方向補正　ちょっと別のことさせておくれ
+            //回避方向に合わせて旋回方向を調整
+            switch (currentDirection_)
+            {
+            case SoldierState::Dodge::Direction::Back:
+                turnVec = { -moveVec.x,0,-moveVec.z };
+                break;
+            case SoldierState::Dodge::Direction::Forward:
+                turnVec = { moveVec.x,0,moveVec.z };
+                break;
+            case SoldierState::Dodge::Direction::Right:
+                turnVec = { -moveVec.z,0,moveVec.x };
+                break;
+            case SoldierState::Dodge::Direction::Left:
+                turnVec = { moveVec.x,0,-moveVec.x };
+                break;
+            default:
+                break;
+            }
+            owner_->TurnY(turnVec, 5.0f, true);
+        }
+
+        //側転回避への遷移
         if (timer_ > Dodge_Cancel_Time)
         {
             if (Input::GameSupport::GetDodgeButton())
             {
-                Vector2 ax = Input::GameSupport::GetMoveVector();
-                if (ax.LengthSquared() == 0)
-                {
-                    Vector3 f = owner_->GetTransform()->GetForward();
-                    f.Normalize();
-                    ax = { f.x,f.z };
-                }
-                Vector3 moveVec = owner_->GetCamera()->ConvertTo2DVectorFromCamera(ax);
+                
                 Direction dir = DirectionJudge(moveVec);
 
-                //回避アニメーション再生
-                float transTime = 0.1f;//遷移時間
-                float startTime = 0.15f;//何秒目からのモーションを再生させるか
-                switch (dir)
-                {
-                case SoldierState::Dodge::Direction::Back:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Back), transTime,startTime);
-                    break;
-                case SoldierState::Dodge::Direction::Forward:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Forward), transTime, startTime);
-                    break;
-                case SoldierState::Dodge::Direction::Right:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Right), transTime, startTime);
-                    break;
-                case SoldierState::Dodge::Direction::Left:
-                    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Left), transTime, startTime);
-                    break;
-                }
+                PlayDodgeAnimation(dir,true);
 
                 //タイマーリセット
                 timer_ = 0;
@@ -254,26 +259,34 @@ void SoldierState::Dodge::Update()
 
     //キャンセル行動
     //現在キャンセル可能か
-    bool cancel = false;
+    bool otherCancel = false;
+    bool moveCancel = false;
     if (secondDodge_)
     {
-        if (timer_ > Other_Cancel_Time[1])cancel = true;
+        if (timer_ > Other_Cancel_Time[1])otherCancel = true;
+        if (timer_ > Move_Cancel_Time[1])moveCancel = true;
     }
     else
     {
-        if (timer_ > Other_Cancel_Time[0])cancel = true;
+        if (timer_ > Other_Cancel_Time[0])otherCancel = true;
+        if (timer_ > Move_Cancel_Time[0])moveCancel = true;
     }
 
-    if (cancel)
+
+
+    if (otherCancel)
     {
         //エイムボタンが押されているなら遷移
         if (Input::GameSupport::GetAimButton())
         {
             owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Aim));
         }
+    }
 
+    if (moveCancel)
+    {
         //移動ステートへ
-        if (Input::GameSupport::GetMoveButtonDown())
+        if (Input::GameSupport::GetMoveVector().LengthSquared() > 0.1f)
         {
             owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Move));
         }
@@ -289,7 +302,8 @@ void SoldierState::Dodge::Finalize()
 
 SoldierState::Dodge::Direction SoldierState::Dodge::DirectionJudge(const Vector3& moveVec)
 {
-    float dot = moveVec.Dot(owner_->GetTransform()->GetForward());
+    const Vector3& forward = owner_->GetTransform()->GetForward();
+    float dot = moveVec.Dot(forward);
     float degree = DirectX::XMConvertToDegrees(acosf(dot));
     
     //方向を算出
@@ -301,7 +315,8 @@ SoldierState::Dodge::Direction SoldierState::Dodge::DirectionJudge(const Vector3
     else if(degree < 135.0f)
     {
         //左右判定
-        if (moveVec.x > 0)
+        float crossY = moveVec.z * forward.x - moveVec.x * forward.z;
+        if (crossY > 0)
         {
             dir = Direction::Right;
         }
@@ -316,4 +331,31 @@ SoldierState::Dodge::Direction SoldierState::Dodge::DirectionJudge(const Vector3
     }
 
     return dir;
+}
+
+void SoldierState::Dodge::PlayDodgeAnimation(Direction dir, bool second)
+{
+    //回避アニメーション再生
+    float transTime = 0.1f;//遷移時間
+    float startTime = 0.15f;//何秒目からのモーションを再生させるか
+    switch (dir)
+    {
+    case SoldierState::Dodge::Direction::Back:
+        if(second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Back), transTime, startTime);
+        else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Back));
+        break;
+    case SoldierState::Dodge::Direction::Forward:
+        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Forward), transTime, startTime);
+        else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Fwd));
+        break;
+    case SoldierState::Dodge::Direction::Right:
+        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Right), transTime, startTime);
+        else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Right));
+        break;
+    case SoldierState::Dodge::Direction::Left:
+        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Left), transTime, startTime);
+        else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Left));
+        break;
+    }
+    currentDirection_ = dir;
 }

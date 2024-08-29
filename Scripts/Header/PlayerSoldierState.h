@@ -79,12 +79,20 @@ namespace SoldierState
         //進行方向から回避先の４方向
         Direction DirectionJudge(const AbyssEngine::Vector3& moveVec);
 
+        void PlayDodgeAnimation(Direction dir,bool second);
+
     private:
         //回避キャンセル可能タイム
         const float Dodge_Cancel_Time = 0.2f;
 
         //別のステートへの行動へのキャンセルタイム　回避種類にあわせて二つ用意
         const float Other_Cancel_Time[2] = { 0.625f,0.58f };
+
+        //移動ステートへのキャンセル可能タイム
+        const float Move_Cancel_Time[2] = { 0.655f,0.63f };
+
+        //現在再生中のモーションの回避方向
+        Direction currentDirection_;
 
         //二回目の回避を使用したか
         bool secondDodge_ = false;
