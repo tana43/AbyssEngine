@@ -385,6 +385,15 @@
     <ClInclude Include="Code\Header\CollisionHelper.h">
       <Filter>Code\Header\Other</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\ActionBase.h">
+      <Filter>Code\Header\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\JudgmentDerived.h">
+      <Filter>Script\Header\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\ActionDerived.h">
+      <Filter>Script\Header\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -641,6 +650,12 @@
     </ClCompile>
     <ClCompile Include="Code\Source\CollisionHelper.cpp">
       <Filter>Code\Source\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\ActionDerived.cpp">
+      <Filter>Script\Source\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\JudgmentDerived.cpp">
+      <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

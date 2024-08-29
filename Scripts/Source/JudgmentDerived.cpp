@@ -1,18 +1,16 @@
 #include "JudgmentDerived.h"
-#include "Player.h"
-#include "Mathf.h"
 
 
 // BattleNodeに遷移できるか判定
-bool BattleJudgment::Judgment()
-{
-	// プレイヤーが見つかるか
-	if (owner->SearchPlayer())
-	{
-		return true;
-	}
-	return false;
-}
+//bool BattleJudgment::Judgment()
+//{
+//	// プレイヤーが見つかるか
+//	if (owner->SearchPlayer())
+//	{
+//		return true;
+//	}
+//	return false;
+//}
 
 // AttackNodeに遷移できるか判定
 bool AttackJudgment::Judgment()

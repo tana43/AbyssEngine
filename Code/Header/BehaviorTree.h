@@ -4,8 +4,8 @@
 #include <imgui/imgui.h>
 
 #include "Component.h"
-//#include "JudgmentDerived.h"
-//#include "ActionDerived.h"
+#include "JudgmentDerived.h"
+#include "ActionDerived.h"
 #include <stack>
 #include <map>
 

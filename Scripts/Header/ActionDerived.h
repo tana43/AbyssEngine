@@ -1,59 +1,65 @@
 #pragma once
 #include "ActionBase.h"
-#include "EnemyBlueSlime.h"
 
 // 通常攻撃
-class AttackAction : public ActionBase
+template <class T>
+class AttackAction : public ActionBase<T>
 {
 public:
-	AttackAction(EnemyBlueSlime* enemy) :ActionBase(enemy) {}
+	AttackAction(T* owner) :ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime);
 };
 
 // スキル攻撃行動
-class SkillAction : public ActionBase
+template <class T>
+class SkillAction : public ActionBase<T>
 {
 public:
-	SkillAction(EnemyBlueSlime* enemy) :ActionBase(enemy) {}
+	SkillAction(T* owner) :ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime);
 };
 
 // 追跡行動
-class PursuitAction : public ActionBase
+template <class T>
+class PursuitAction : public ActionBase<T>
 {
 public:
-	PursuitAction(EnemyBlueSlime* enemy) :ActionBase(enemy) {}
+	PursuitAction(T* owner) :ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime);
 };
 
 // 徘徊行動
-class WanderAction : public ActionBase
+template <class T>
+class WanderAction : public ActionBase<T>
 {
 public:
-	WanderAction(EnemyBlueSlime* enemy) :ActionBase(enemy) {}
+	WanderAction(T* owner) :ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime);
 };
 
 // 待機行動
-class IdleAction : public ActionBase
+template <class T>
+class IdleAction : public ActionBase<T>
 {
 public:
-	IdleAction(EnemyBlueSlime* enemy) :ActionBase(enemy) {}
+	IdleAction(T* owner) :ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime);
 };
 
 // 逃走行動
-class LeaveAction : public ActionBase
+template <class T>
+class LeaveAction : public ActionBase<T>
 {
 public:
-	LeaveAction(EnemyBlueSlime* enemy) :ActionBase(enemy) {}
+	LeaveAction(T* owner) :ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime);
 };
 
 // 回復行動
-class RecoverAction : public ActionBase
+template <class T>
+class RecoverAction : public ActionBase<T>
 {
 public:
-	RecoverAction(EnemyBlueSlime* enemy) :ActionBase(enemy) {}
+	RecoverAction(T* owner) :ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime);
 };

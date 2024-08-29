@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Header\ActionBase.h" />
     <ClInclude Include="Code\Header\Actor.h" />
     <ClInclude Include="Code\Header\Animation.h" />
     <ClInclude Include="Code\Header\Animator.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="External\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Scripts\Header\ActionDerived.h" />
     <ClInclude Include="Scripts\Header\Bullet.h" />
     <ClInclude Include="Scripts\Header\EnemyBot.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
@@ -99,6 +101,7 @@
     <ClInclude Include="Scripts\Header\Helicopter.h" />
     <ClInclude Include="Scripts\Header\Human.h" />
     <ClInclude Include="Scripts\Header\HumanoidWeapon.h" />
+    <ClInclude Include="Scripts\Header\JudgmentDerived.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldierState.h" />
     <ClInclude Include="Scripts\Header\PlayerSoldier.h" />
     <ClInclude Include="Scripts\Header\SceneGame.h" />
@@ -179,6 +182,7 @@
     <ClCompile Include="External\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Scripts\Source\ActionDerived.cpp" />
     <ClCompile Include="Scripts\Source\Bullet.cpp" />
     <ClCompile Include="Scripts\Source\EnemyBot.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
@@ -186,6 +190,7 @@
     <ClCompile Include="Scripts\Source\Helicopter.cpp" />
     <ClCompile Include="Scripts\Source\Human.cpp" />
     <ClCompile Include="Scripts\Source\HumanoidWeapon.cpp" />
+    <ClCompile Include="Scripts\Source\JudgmentDerived.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldierState.cpp" />
     <ClCompile Include="Scripts\Source\PlayerSoldier.cpp" />
     <ClCompile Include="Scripts\Source\SceneGame.cpp" />
