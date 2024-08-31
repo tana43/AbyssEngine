@@ -19,35 +19,41 @@ void Transform::Initialize(const std::shared_ptr<Actor>& actor)
     //Jsonファイル読み込み、書き出し
     {
         //ファイルの読み込み
-        nlohmann::json mJson = actor_->ReadingJsonFile();
-        if (mJson.find("Transform") != mJson.end())
-        {
-            //読み込んだデータをそれぞれの変数に代入する
-            auto& data = mJson["Transform"];
-            position_ = { data["Position"][0],data["Position"][1],data["Position"][2] };
-            rotation_ = { data["Rotation"][0], data["Rotation"][1], data["Rotation"][2] };
-            scale_ = { data["Scale"][0], data["Scale"][1], data["Scale"][2] };
-            scaleFactor_ = data["ScaleFactor"];
+        bool exist = true;
+        nlohmann::json mJson = actor_->ReadingJsonFile(exist);
 
-            localPosition_ = { data["L_Position"][0],data["L_Position"][1],data["L_Position"][2] };
-            localRotation_ = { data["L_Rotation"][0], data["L_Rotation"][1], data["L_Rotation"][2] };
-            localScale_ = { data["L_Scale"][0], data["L_Scale"][1], data["L_Scale"][2] };
-            localScaleFactor_ = data["L_ScaleFactor"];
-        }
-        else
+        //ファイルが存在している場合のみ読み込み
+        if(exist)
         {
-            //データが見つからなかったので作成
-            mJson["Transform"] = {
-                {"Position",{0.0f,0.0f,0.0f}},
-                {"Rotation",{0.0f,0.0f,0.0f}},
-                {"Scale",{1.0f,1.0f,1.0f}},
-                {"ScaleFactor",1.0f},
+            if (mJson.find("Transform") != mJson.end())
+            {
+                //読み込んだデータをそれぞれの変数に代入する
+                auto& data = mJson["Transform"];
+                position_ = { data["Position"][0],data["Position"][1],data["Position"][2] };
+                rotation_ = { data["Rotation"][0], data["Rotation"][1], data["Rotation"][2] };
+                scale_ = { data["Scale"][0], data["Scale"][1], data["Scale"][2] };
+                scaleFactor_ = data["ScaleFactor"];
 
-                {"L_Position",{0.0f,0.0f,0.0f}},
-                {"L_Rotation",{0.0f,0.0f,0.0f}},
-                {"L_Scale",{1.0f,1.0f,1.0f}},
-                {"L_ScaleFactor",1.0f}
-            };
+                localPosition_ = { data["L_Position"][0],data["L_Position"][1],data["L_Position"][2] };
+                localRotation_ = { data["L_Rotation"][0], data["L_Rotation"][1], data["L_Rotation"][2] };
+                localScale_ = { data["L_Scale"][0], data["L_Scale"][1], data["L_Scale"][2] };
+                localScaleFactor_ = data["L_ScaleFactor"];
+            }
+            else
+            {
+                //データが見つからなかったので作成
+                mJson["Transform"] = {
+                    {"Position",{0.0f,0.0f,0.0f}},
+                    {"Rotation",{0.0f,0.0f,0.0f}},
+                    {"Scale",{1.0f,1.0f,1.0f}},
+                    {"ScaleFactor",1.0f},
+
+                    {"L_Position",{0.0f,0.0f,0.0f}},
+                    {"L_Rotation",{0.0f,0.0f,0.0f}},
+                    {"L_Scale",{1.0f,1.0f,1.0f}},
+                    {"L_ScaleFactor",1.0f}
+                };
+            }
 
             //ファイルに内容を書き込む
             actor_->WritingJsonFile(mJson);
@@ -178,7 +184,7 @@ bool Transform::DrawImGui()
 void AbyssEngine::Transform::SaveToJson()
 {
     //ファイルの読み込み
-    nlohmann::json mJson = actor_->ReadingJsonFile();
+    nlohmann::json mJson = actor_->ReadAndCreateJsonFile();
 
     auto& data = mJson["Transform"];
     data["Position"] = { position_.x,position_.y,position_.z };

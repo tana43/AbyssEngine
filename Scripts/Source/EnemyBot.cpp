@@ -37,3 +37,10 @@ void EnemyBot::Update()
 {
     BaseEnemy::Update();
 }
+
+bool EnemyBot::SearchPlayer()
+{
+    //if()
+
+    return false;
+}

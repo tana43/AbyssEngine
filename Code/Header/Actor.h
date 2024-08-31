@@ -19,8 +19,10 @@ namespace AbyssEngine
         template<class T>
         std::shared_ptr<T> AddComponent(const char* path = NULL);//コンポーネントをアタッチする(レンダラーなどはパスが必要)
 
-        //json読み込み
-        nlohmann::json ReadingJsonFile();
+        //json読み込み、無ければ生成
+        nlohmann::json ReadAndCreateJsonFile();
+        //Json読み込み 存在しない場合existをfalseに
+        nlohmann::json ReadingJsonFile(bool& exist);
         //json書き込み
         void WritingJsonFile(const nlohmann::json& json);
 

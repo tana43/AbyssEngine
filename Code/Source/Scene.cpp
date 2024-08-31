@@ -4,6 +4,9 @@
 
 #include "Engine.h"
 #include "ScriptComponentManager.h"
+#include "SceneManager.h"
+
+#include <direct.h>
 
 using namespace AbyssEngine;
 using namespace std;
@@ -31,6 +34,7 @@ shared_ptr<Actor> Scene::InstanceActor(const std::string& name)
     
     //Jsonファイル初期設定
     actor->jsonFilename_ = "./Resources/Json/";
+    actor->jsonFilename_ += name_ + "/";
     actor->jsonFilename_ += actor->name_.c_str();
     string Extension = ".json";
     actor->jsonFilename_ += Extension;
@@ -82,6 +86,16 @@ void Scene::DestroyComponent(const std::shared_ptr<Component>& component)
 
 void Scene::Initialize()
 {
+    //Json用のフォルダ作成
+    string folderName = "Resources/Json/";
+    folderName += name_;
+    _mkdir(folderName.c_str());
+
+    //if (_mkdir(folderName.c_str()) == -1)
+    //{
+    //    _ASSERT_EXPR(false, L"Create folder failed !!!");
+    //}
+
     for (const auto& a : actorList_)
     {
         if (a->GetParent().expired()) 

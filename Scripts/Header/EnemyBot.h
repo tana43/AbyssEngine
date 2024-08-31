@@ -23,6 +23,8 @@ public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
     void Update()override;
 
+    //ƒvƒŒƒCƒ„[‚ğõ“G
+    bool SearchPlayer();
     
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;

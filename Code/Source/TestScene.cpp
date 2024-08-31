@@ -24,6 +24,8 @@ Effekseer::Handle effectHandle = -1;
 
 void TestScene::Initialize()
 {
+    Scene::Initialize();
+
     //ƒJƒƒ‰
     const auto& camera_ = InstanceActor("Debug_Camera");
     const auto& cameraCom = camera_->AddComponent<Camera>();

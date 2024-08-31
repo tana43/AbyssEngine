@@ -16,6 +16,8 @@ std::shared_ptr<Stage> stageCom_F;
 
 void FacilityScene::Initialize()
 {
+    Scene::Initialize();
+
     //ポストエフェクト設定
     Engine::renderManager_->GetBufferScene().data_.exposure_ = 3.58f;
     Engine::renderManager_->GetBufferEffects().data_.shadowFilterRadius_ = 4.614f;
@@ -44,7 +46,7 @@ void FacilityScene::Initialize()
     enemy->AddComponent<EnemyBot>();
 
     //Player
-    const auto& player = InstanceActor("Player_Facility");
+    const auto& player = InstanceActor("Player");
     const auto& pc = player->AddComponent<Soldier>();
 
     //板ポリゴン

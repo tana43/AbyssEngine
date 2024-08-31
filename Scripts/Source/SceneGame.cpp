@@ -5,6 +5,8 @@ using namespace AbyssEngine;
 
 void SceneGame::Initialize()
 {
+    Scene::Initialize();
+
     //ƒJƒƒ‰
     const auto& camera_ = InstanceActor("Debug_Camera");
     camera_->AddComponent<Camera>();

@@ -43,7 +43,7 @@ void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor
     //Jsonファイル読み込み、書き出し
     {
         //ファイルの読み込み
-        nlohmann::json mJson = actor_->ReadingJsonFile();
+        nlohmann::json mJson = actor_->ReadAndCreateJsonFile();
         if (mJson.find(name_.c_str()) != mJson.end())
         {
             //読み込んだデータをそれぞれの変数に代入する
@@ -275,7 +275,7 @@ void ThrusterEffect::Stop()
 void ThrusterEffect::SaveToJson()
 {
     //ファイルの読み込み
-    nlohmann::json mJson = actor_->ReadingJsonFile();
+    nlohmann::json mJson = actor_->ReadAndCreateJsonFile();
 
     auto& data = mJson[name_.c_str()];
     data["OffsetPosition"] = { offsetPos_.x,offsetPos_.y,offsetPos_.z };

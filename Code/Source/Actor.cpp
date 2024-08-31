@@ -89,7 +89,7 @@ void Actor::DrawDebug()
 	}
 }
 
-nlohmann::json Actor::ReadingJsonFile()
+nlohmann::json Actor::ReadAndCreateJsonFile()
 {
 	//ファイルの読み込み
 	ifstream ifs(jsonFilename_);
@@ -107,6 +107,28 @@ nlohmann::json Actor::ReadingJsonFile()
 		writingFile.open(jsonFilename_, ios::out);
 		writingFile.close();
 
+		return nlohmann::json();
+	}
+}
+
+nlohmann::json AbyssEngine::Actor::ReadingJsonFile(bool& exist)
+{
+	//ファイル存在フラグをTrueに
+	exist = true;
+
+	//ファイルの読み込み
+	ifstream ifs(jsonFilename_);
+	if (ifs.good())
+	{
+		//ファイル読み込み
+		nlohmann::json mJson;
+		ifs >> mJson;
+		return mJson;
+	}
+	else
+	{
+		//存在フラグをfalseにし、空のjsonを返す
+		exist = false;
 		return nlohmann::json();
 	}
 }
