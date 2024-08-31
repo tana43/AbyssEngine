@@ -25,7 +25,7 @@ public:
     //bool RayCast();
     
     //現在使用してるステージを返す
-    std::shared_ptr<Stage> GetActiveStage() { return activeStage_; }
+    std::shared_ptr<Stage>& GetActiveStage() { return activeStage_; }
 
     //ステージを変更する
     void SetStage(const std::string& name_);

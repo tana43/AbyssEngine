@@ -5,7 +5,7 @@
 #include "SkeletalMesh.h"
 #include "Stage.h"
 #include "StageManager.h"   
-#include "EnemyBot.h"
+#include "BotEnemy.h"
 #include "RenderManager.h"
 #include "Engine.h"
 #include "BillboardRenderer.h"
@@ -43,7 +43,7 @@ void FacilityScene::Initialize()
 
     //enemy
     const auto& enemy = InstanceActor("Enemy_Facility_01");
-    enemy->AddComponent<EnemyBot>();
+    enemy->AddComponent<BotEnemy>();
 
     //Player
     const auto& player = InstanceActor("Player");

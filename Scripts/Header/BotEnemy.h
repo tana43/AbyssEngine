@@ -6,7 +6,7 @@ namespace AbyssEngine
     class SkeletalMesh;
 }
 
-class EnemyBot : public BaseEnemy
+class BotEnemy : public BaseEnemy
 {
 public:
     enum class AnimState
@@ -23,12 +23,24 @@ public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
     void Update()override;
 
+    void DrawDebug()override;
+
     //ƒvƒŒƒCƒ„[‚ğõ“G
-    bool SearchPlayer();
-    
+    bool SearchTarget();
+
+public:
+
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 
-    
+
+    //õ“G”ÍˆÍ
+    float searchAreaRadius_ = 5.0f;
+
+    //‹^—“I‚È‹–ìŠp@“G‚ª‹ŠE“à‚É‚¢‚é‚©‚ğ”»’f‚·‚é
+    float degreeFov_ = 150.0f;
+
+    //ã‚Ì‹–ìŠp‚ğ‚O`‚P‚É³‹K‰»‚µ‚½‚à‚Ì
+    float fov_;
 };
 

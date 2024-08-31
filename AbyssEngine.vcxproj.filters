@@ -358,7 +358,7 @@
     <ClInclude Include="Code\Header\SphereCollider.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\EnemyBot.h">
+    <ClInclude Include="Scripts\Header\BotEnemy.h">
       <Filter>Script\Header\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\BaseEnemy.h">
@@ -630,7 +630,7 @@
     <ClCompile Include="Code\Source\SphereCollider.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\EnemyBot.cpp">
+    <ClCompile Include="Scripts\Source\BotEnemy.cpp">
       <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\BaseEnemy.cpp">

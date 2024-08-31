@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "RenderManager.h"
 #include "DebugRenderer.h"
+#include "SceneManager.h"
 
 using namespace AbyssEngine;
 
@@ -13,13 +14,27 @@ void BaseEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //エネミータグ付け
     Character::ReplaceTag(Character::Tag_Enemy);
+
+    //テリトリー初期値設定
+    territoryOrigin_ = transform_->GetPosition();
+
+    //各行動を可能状態に
+    canAttack_ = true;
+    canDodge_ = false;
+
+    //ターゲット取得
+    const auto& target = Engine::sceneManager_->GetActiveScene().Find("Player");
+    if (const auto& t = target.lock())
+    {
+        targetActor_ = t;
+    }
 }
 
 void BaseEnemy::DrawDebug()
 {
 #if _DEBUG
     // 縄張り範囲をデバッグ円柱描画
-    Engine::renderManager_->debugRenderer_->DrawCylinder(territoryOrigin_, territoryRange_, 1.0f, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
+    Engine::renderManager_->debugRenderer_->DrawCylinder(territoryOrigin_, territoryRange_, 0.5f, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
 #endif // _DEBUG
 }
 

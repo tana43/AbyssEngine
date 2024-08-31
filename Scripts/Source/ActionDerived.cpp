@@ -1,56 +1,15 @@
-//#include "ActionDerived.h"
-//
+#include "ActionDerived.h"
+#include "BaseEnemy.h"
+#include "BotEnemy.h"
+
+//using namespace AbyssEngine;
+
 //// 攻撃行動
-//ActionBase::State AttackAction::Run(float elapsedTime)
-//{
-//	switch (step)
-//	{
-//	case 0:
-//		// 目標地点をプレイヤー位置に設定
-//		owner->SetTargetPosition(Player::Instance().GetPosition());
-//		// アニメーション再生
-//		owner->GetModel()->PlayAnimation(static_cast<int>(EnemyBlueSlime::EnemyAnimation::Attack01), false);
-//		step++;
-//		break;
-//	case 1:
-//
-//		// アニメーションが終了しているとき
-//		if (!owner->GetModel()->IsPlayAnimation())
-//		{
-//			step = 0;
-//			// 攻撃成功を返す
-//			return ActionBase::State::Complete;
-//		}
-//		break;
-//	}
-//	// スキル中を返す
-//	return ActionBase::State::Run;
-//}
-//// スキル攻撃行動
-//ActionBase::State SkillAction::Run(float elapsedTime)
-//{
-//	switch (step)
-//	{
-//		case 0:
-//			// 目標地点をプレイヤー位置に設定
-//			owner->SetTargetPosition(Player::Instance().GetPosition());
-//			// アニメーション再生
-//			owner->GetModel()->PlayAnimation(static_cast<int>(EnemyBlueSlime::EnemyAnimation::Attack02), false);
-//			step++;
-//		case 1:
-//			// アニメーションが終了しているとき
-//			if (!owner->GetModel()->IsPlayAnimation())
-//			{
-//				step = 0;
-//				// 攻撃成功を返す
-//				return ActionBase::State::Complete;
-//			}
-//			break;
-//	}
-//	// スキル中を返す
-//	return ActionBase::State::Run;
-//}
-//
+ActionBase<BotEnemy>::State BotAttackAction::Run()
+{
+    return ActionBase::State();
+}
+
 //// 徘徊行動
 //ActionBase::State WanderAction::Run(float elapsedTime)
 //{
@@ -251,3 +210,4 @@
 //	return ActionBase::State::Run;
 //
 //}
+
