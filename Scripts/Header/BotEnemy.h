@@ -4,7 +4,10 @@
 namespace AbyssEngine
 {
     class SkeletalMesh;
+    class Animator;
 }
+
+class Gun;
 
 class BotEnemy : public BaseEnemy
 {
@@ -23,16 +26,27 @@ public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
     void Update()override;
 
+    bool DrawImGui()override;
     void DrawDebug()override;
 
     //プレイヤーを索敵
     bool SearchTarget();
 
+    //エイム位置を更新
+    void LockOn();
+
+    //射撃
+    void Shot();
+
+    //攻撃
+    void ReloadUpdate();
+
 public:
+    const std::shared_ptr<AbyssEngine::SkeletalMesh>& GetModel() const { return model_; }
+    const std::shared_ptr<AbyssEngine::Animator>& GetAnimator() const;
 
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
-
 
     //索敵範囲
     float searchAreaRadius_ = 5.0f;
@@ -42,5 +56,26 @@ private:
 
     //上の視野角を０～１に正規化したもの
     float fov_;
+
+    //狙っている位置
+    AbyssEngine::Vector3 aimPosition_;
+
+    //銃コンポーネント
+    std::shared_ptr<Gun> gunComponent_;
+
+    //ロックオン中の時間
+    float LockOn_Time = 2.0f;
+
+    //ロックオン完了から発砲に掛かる時間
+    float LockOn_Shot_Time = 0.4f;
+
+    //再度攻撃できるのに掛かる時間
+    float Atk_Reload_Time = 3.5f;
+
+    //リロード時間の計測用タイマー
+    float reloadTimer_ = 0;
+
+    //現在リロードしているか
+    bool reloadNow_ = false;
 };
 

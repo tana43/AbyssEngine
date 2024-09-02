@@ -35,6 +35,14 @@ public:
 
     const bool& GetADS() const { return ADS_; }
     void SetADS(const bool& flag) { ADS_ = flag; }
+
+    const float& GetPrecision() const { return precision_; }
+    void SetPrecision(const float& precision) { precision_ = precision; }
+
+    void SetRateOfFire(const float& rate) { rateOfFire_ = rate; }
+
+    const std::shared_ptr<AbyssEngine::BillboardRenderer>& GetMuzzleFlashComponent() const { return muzzleFlashComponent_; }
+
 private:
     //ADS(スコープを覗いているか)
     bool ADS_ = false;

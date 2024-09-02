@@ -1,12 +1,39 @@
 #include "ActionDerived.h"
 #include "BaseEnemy.h"
 #include "BotEnemy.h"
+#include "Transform.h"
+#include "Animator.h"
+#include "Engine.h"
 
-//using namespace AbyssEngine;
+using namespace AbyssEngine;
 
-//// 攻撃行動
+// 攻撃行動
 ActionBase<BotEnemy>::State BotAttackAction::Run()
 {
+	switch (step)
+	{
+	case 0://初期化
+		//タイマーリセット
+		timer_ = 0;
+
+		//アニメーション再生
+		owner_->GetAnimator()->PlayAnimation(static_cast<int>(BotEnemy::AnimState::Attack));
+
+		//次のステップへ
+		step++;
+
+		break;
+	case 1:
+
+		if(timer_ > )
+
+
+		//タイマー更新
+		timer_ += Time::deltaTime_;
+
+		break;
+	}
+
     return ActionBase::State();
 }
 

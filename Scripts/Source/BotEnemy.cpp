@@ -6,6 +6,9 @@
 #include "StageManager.h"
 #include "SceneManager.h"
 #include "DebugRenderer.h"
+#include "imgui/imgui.h"
+
+#include "Gun.h"
 
 using namespace AbyssEngine;
 
@@ -35,16 +38,38 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     Max_Horizontal_Speed = 2.0f;
     acceleration_ = 0.5f;
 
+    reloadTimer_ = 0.0f;
+
     //視野角を設定
     fov_ = degreeFov_ / 360.0f;
 
     //攻撃設定
     canAttack_ = true;
+
+    //銃
+    gunComponent_ = AddComponent<Gun>();
 }
 
 void BotEnemy::Update()
 {
     BaseEnemy::Update();
+}
+
+bool BotEnemy::DrawImGui()
+{
+    BaseEnemy::DrawImGui();
+
+    if (ImGui::TreeNode("Bot Enemy"))
+    {
+        ImGui::DragFloat("LockOn Time",&LockOn_Time,0.05f);
+        ImGui::DragFloat("LockOn Shot Time",&LockOn_Shot_Time, 0.05f);
+        ImGui::DragFloat("Reload Time",&Atk_Reload_Time, 0.05f);
+        ImGui::DragFloat("Reload Time",&Atk_Reload_Time, 0.05f);
+
+        ImGui::TreePop();
+    }
+
+    return false;
 }
 
 void BotEnemy::DrawDebug()
@@ -95,4 +120,43 @@ bool BotEnemy::SearchTarget()
     }
 
     return false;
+}
+
+void BotEnemy::LockOn()
+{
+    aimPosition_ = targetActor_->GetTransform()->GetPosition();
+}
+
+void BotEnemy::Shot()
+{
+    const Vector3 pos = transform_->GetPosition();
+    Vector3 toAimPos = aimPosition_ - pos;
+    toAimPos.Normalize();
+    gunComponent_->Shot(toAimPos);
+
+    //攻撃を不可に
+    canAttack_ = false;
+
+    //リロードフラグをオン
+    reloadNow_ = true;
+}
+
+void BotEnemy::ReloadUpdate()
+{
+    //リロードしているか
+    if (!reloadNow_)return;
+
+    reloadTimer_ += Time::deltaTime_;
+
+    if (reloadTimer_ > Atk_Reload_Time)
+    {
+        reloadNow_ = false;
+        canAttack_ = true;
+        reloadTimer_ = 0.0f;
+    }
+}
+
+const std::shared_ptr<AbyssEngine::Animator>& BotEnemy::GetAnimator() const
+{
+    return model_->GetAnimator();
 }
