@@ -46,7 +46,7 @@ void BaseEnemy::MoveToTarget()
     moveVec_ = moveVec;
 }
 
-void BaseEnemy::MoveToSide(const AbyssEngine::Vector3& centerPos ,bool& moveRight)
+void BaseEnemy::SideMove(const AbyssEngine::Vector3& centerPos ,bool& moveRight)
 {
     //•Ç‚É“–‚½‚Á‚Ä‚¢‚é‚È‚ç”½‘Î•ûŒü‚Ö
     if (hitWall_)

@@ -6,9 +6,11 @@
 #include "StageManager.h"
 #include "SceneManager.h"
 #include "DebugRenderer.h"
+#include "Gun.h"
+#include "BehaviorTree.h"
+
 #include "imgui/imgui.h"
 
-#include "Gun.h"
 
 using namespace AbyssEngine;
 
@@ -48,6 +50,16 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //銃
     gunComponent_ = AddComponent<Gun>();
+
+    //ビヘイビアツリー初期化
+    BehaviorTreeInitialize();
+}
+
+void BotEnemy::BehaviorTreeInitialize()
+{
+    //ビヘイビアツリー
+    behaviorTree_ = AddComponent<AbyssEngine::BehaviorTree<BotEnemy>>();
+    behaviorTree_->
 }
 
 void BotEnemy::Update()

@@ -63,7 +63,10 @@ ActionBase<BotEnemy>::State BotAttackAction::Run()
 		//射撃
 		owner_->Shot();
 
+		//行動完了
 		state = ActionBase::State::Complete;
+
+		//撃ち終わった後に余韻あった方がいいかも.........？
 
 		break;
 	}
@@ -273,7 +276,7 @@ ActionBase<BotEnemy>::State BotAttackAction::Run()
 //
 //}
 
-ActionBase<BotEnemy>::State BotDodgeAction::Run()
+ActionBase<BotEnemy>::State BotSideDodgeAction::Run()
 {
 	switch (step)
 	{
@@ -282,6 +285,9 @@ ActionBase<BotEnemy>::State BotDodgeAction::Run()
 		//コロコロ回転するアニメーション再生
 		owner_->GetAnimator()->PlayAnimation(static_cast<int>(BotEnemy::AnimState::Rolling));
 
+		//乱数で左右どちらに進むかを設定
+		moveRight_ = rand() % 2;
+
 		//次のステップへ
 		step++;
 
@@ -289,11 +295,50 @@ ActionBase<BotEnemy>::State BotDodgeAction::Run()
 
 	case 1:
 
-		//回転するように移動
-		owner_->
+		//ターゲットを中心に回転するように移動
+		owner_->SideMove(owner_->GetTargetActor()->GetTransform()->GetPosition(),moveRight_);
 
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			//行動完了
+			return ActionBase::State::Complete;
+		}
+		break;
 	}
 
 
-	return ActionBase::State();
+	return ActionBase::State::Run;
+}
+
+ActionBase<BotEnemy>::State BotIdleAction::Run()
+{
+	switch (step)
+	{
+	case 0://初期化
+
+		//待機アニメーション再生
+		owner_->GetAnimator()->PlayAnimation(static_cast<int>(BotEnemy::AnimState::Idle));
+
+		//タイマーリセット
+		timer_ = 0.0f;
+
+		//次のステップへ
+		step++;
+
+		break;
+
+	case 1:
+		//TODO : 敵待機行動　仮で４秒間に設定してる
+		if (timer_ > 4.0f)
+		{
+			//行動完了
+			return State::Complete;
+		}
+
+		//タイマー更新
+		timer_ += Time::deltaTime_;
+		break;
+	}
+
+	return State::Run;
 }

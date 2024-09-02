@@ -24,10 +24,25 @@ private:
 };
 
 // âÒî
-class BotDodgeAction : public ActionBase<BotEnemy>
+class BotSideDodgeAction : public ActionBase<BotEnemy>
 {
 public:
-	BotDodgeAction(BotEnemy* owner) : ActionBase(owner) {}
+	BotSideDodgeAction(BotEnemy* owner) : ActionBase(owner) {}
 	ActionBase::State Run()override;
+private:
+	//ç∂âEÇ«ÇøÇÁÇ…à⁄ìÆÇ∑ÇÈÇ©
+	bool moveRight_;
 };
+
+// ë“ã@
+class BotIdleAction : public ActionBase<BotEnemy>
+{
+public:
+	BotIdleAction(BotEnemy* owner) : ActionBase(owner) {}
+	ActionBase::State Run()override;
+
+private:
+	float timer_;
+};
+
 #pragma endregion

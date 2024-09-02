@@ -3,6 +3,8 @@
 
 namespace AbyssEngine
 {
+    template <class T>
+    class BehaviorTree;
     class SkeletalMesh;
     class Animator;
 }
@@ -24,6 +26,8 @@ public:
     };
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
+    void BehaviorTreeInitialize();
+
     void Update()override;
 
     bool DrawImGui()override;
@@ -52,6 +56,9 @@ public:
 
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
+
+    //ビヘイビアツリー
+    std::shared_ptr<AbyssEngine::BehaviorTree<BotEnemy>> behaviorTree_;
 
     //索敵範囲
     float searchAreaRadius_ = 5.0f;

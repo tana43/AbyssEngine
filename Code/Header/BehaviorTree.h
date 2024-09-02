@@ -3,7 +3,7 @@
 #include <string>
 #include <imgui/imgui.h>
 
-#include "Component.h"
+#include "ScriptComponent.h"
 #include "JudgmentDerived.h"
 #include "ActionDerived.h"
 #include <stack>
@@ -21,7 +21,7 @@ namespace AbyssEngine
 	// ビヘイビアツリー
 	//これがビヘイビアベースの全ての動き
 	template <class T>
-	class BehaviorTree : public Component
+	class BehaviorTree : public ScriptComponent
 	{
 	public:
 		/*
@@ -44,17 +44,74 @@ namespace AbyssEngine
 		// AIのパターンテーブル
 		enum AI_Pattern
 		{
-			BossEnemy_AI,
-			Tutorial_AI,
-			CatFish_AI,
-			CatFish_TutorialAI,
+			BotEnemy_AI,
 		};
 	public:
 		//BehaviorTree() :BaseComponent("BehaviorTree"),root(nullptr), owner(nullptr) {}
 
-		BehaviorTree(T* enemy, int AI_pattern_) :BaseComponent("BehaviorTree"), root_(nullptr), owner_(enemy), AI_pattern(AI_pattern_) {}
+		BehaviorTree(T* enemy, int AiPattern_) :BaseComponent("BehaviorTree"), root_(nullptr), owner_(enemy), AiPattern_(AiPattern_) {}
 
 		~BehaviorTree() { NodeAllClear(root_); }
+
+		// AI_pattern_によって構築することビヘイビアツリーを変える
+		void Initialize() override
+		{
+			switch (AiPattern_)
+			{
+			case BotEnemy_AI:
+				//BossEnemy_AI_Protocol();
+				return;
+			}
+			_ASSERT_EXPR(false, L"AIのパターンが不明です");
+		}
+
+		//通常更新よりも先に更新させるためにBeforeUpdateを使う
+		void BeforeUpdate() override
+		{
+			// ここでビヘイビアツリーによる行動遷移
+
+#if 1 こっちで行けるか実験
+
+		// 現在実行するノードがあれば
+			if (activeNode_ != nullptr)
+			{
+				// ビヘイビアツリーからノードを実行。
+				activeNode_ = Run(activeNode_, behaviorData_, Dante::Time::Timer::Instance().GetDeltaTime());
+			}
+			// 現在実行されているノードが無ければ
+			if (activeNode_ == nullptr)
+			{
+				// 次に実行するノードを推論する。
+				activeNode_ = ActiveNodeInference(behaviorData_);
+			}
+
+# else かつてのやり方
+		// 現在実行されているノードが無ければ
+			if (active_node == nullptr)
+			{
+				// 次に実行するノードを推論する。
+				active_node = ActiveNodeInference(behaviorData);
+			}
+			// 現在実行するノードがあれば
+			if (active_node != nullptr)
+			{
+				// ビヘイビアツリーからノードを実行。
+				active_node = Run(active_node, behaviorData, Nero::Time::Timer::Instance().GetDeltaTime());
+			}
+
+#endif
+
+		}
+
+
+		void DrawImGui() override
+		{
+			if (ImGui::TreeNode(name_.c_str()))
+			{
+				//ImGui::Text(active_node->GetName().c_str());
+				ImGui::TreePop();
+			}
+		}
 
 
 		// 実行ノードを推論する
@@ -149,75 +206,6 @@ namespace AbyssEngine
 			return actionNode;
 		}
 
-
-		// AI_pattern_によって構築することビヘイビアツリーを変える
-		void Init() override
-		{
-			switch (AI_pattern)
-			{
-			case BossEnemy_AI:
-				//BossEnemy_AI_Protocol();
-				return;
-			case Tutorial_AI:
-				//Tutorial_AI_Protocol();
-				return;
-			case CatFish_AI:
-				CatFishAIProtocol();
-				return;
-			case CatFish_TutorialAI:
-				CatFishTutorialAIProtocol();
-				return;
-			}
-			_ASSERT_EXPR(false, L"AIのパターンが不明です");
-		}
-
-		void Update() override
-		{
-			// ここでビヘイビアツリーによる行動遷移
-
-#if 1 こっちで行けるか実験
-
-		// 現在実行するノードがあれば
-			if (activeNode_ != nullptr)
-			{
-				// ビヘイビアツリーからノードを実行。
-				activeNode_ = Run(activeNode_, behaviorData_, Dante::Time::Timer::Instance().GetDeltaTime());
-			}
-			// 現在実行されているノードが無ければ
-			if (activeNode_ == nullptr)
-			{
-				// 次に実行するノードを推論する。
-				activeNode_ = ActiveNodeInference(behaviorData_);
-			}
-
-# else かつてのやり方
-		// 現在実行されているノードが無ければ
-			if (active_node == nullptr)
-			{
-				// 次に実行するノードを推論する。
-				active_node = ActiveNodeInference(behaviorData);
-			}
-			// 現在実行するノードがあれば
-			if (active_node != nullptr)
-			{
-				// ビヘイビアツリーからノードを実行。
-				active_node = Run(active_node, behaviorData, Nero::Time::Timer::Instance().GetDeltaTime());
-			}
-
-#endif
-
-		}
-
-
-		void DrawImGui() override
-		{
-			if (ImGui::TreeNode(name_.c_str()))
-			{
-				//ImGui::Text(active_node->GetName().c_str());
-				ImGui::TreePop();
-			}
-		}
-
 	private:
 		// ノード全削除
 		void NodeAllClear(NodeBase<T>* delNode)
@@ -254,7 +242,7 @@ namespace AbyssEngine
 
 	private:
 		// AIのパターン
-		int AI_pattern;
+		int AiPattern_;
 
 	};
 

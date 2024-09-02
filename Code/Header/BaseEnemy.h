@@ -12,7 +12,7 @@ public:
     void MoveToTarget();
 
     //引数の座標を中心に横へ移動
-    void MoveToSide(const AbyssEngine::Vector3& centerPos, bool& moveRight);
+    void SideMove(const AbyssEngine::Vector3& centerPos, bool& moveRight);
 
     //ターゲット位置をランダム設定
     void SetRandomTargetPosition();
