@@ -64,4 +64,6 @@ bool WanderJudgment::Judgment()
 
 	return false;
 }
+
+
 #pragma endregion

@@ -45,6 +45,11 @@ public:
     const std::shared_ptr<AbyssEngine::SkeletalMesh>& GetModel() const { return model_; }
     const std::shared_ptr<AbyssEngine::Animator>& GetAnimator() const;
 
+    const float& GetLockOnTime() const { return LockOn_Time; }
+    const float& GetLockOnShotTime() const { return LockOn_Shot_Time; }
+    const float& GetAtkReloadTime() const { return Atk_Reload_Time; }
+    
+
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 

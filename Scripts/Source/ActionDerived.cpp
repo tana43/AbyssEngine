@@ -10,9 +10,11 @@ using namespace AbyssEngine;
 // 攻撃行動
 ActionBase<BotEnemy>::State BotAttackAction::Run()
 {
+	auto state = ActionBase::State::Run;
+
 	switch (step)
 	{
-	case 0://初期化
+	case static_cast<int>(Step::Init)://初期化
 		//タイマーリセット
 		timer_ = 0;
 
@@ -23,18 +25,51 @@ ActionBase<BotEnemy>::State BotAttackAction::Run()
 		step++;
 
 		break;
-	case 1:
+	case static_cast<int>(Step::LockOn):
 
-		if(timer_ > )
+		//ターゲットをロックオン
+		owner_->LockOn();
 
+		//ターゲットを正確にロックオンする時間が経過したら次のステップへ
+		if (timer_ > owner_->GetLockOnTime())
+		{
+			//タイマーリセット
+			timer_ = 0;
+
+			step++;
+		}
 
 		//タイマー更新
 		timer_ += Time::deltaTime_;
 
 		break;
-	}
+	case static_cast<int>(Step::LockIdle):
 
-    return ActionBase::State();
+		//待機時間が経過したら次のステップへ
+		if (timer_ > owner_->GetLockOnShotTime())
+		{
+			//タイマーリセット
+			timer_ = 0;
+
+			step++;
+		}
+
+		//タイマー更新
+		timer_ += Time::deltaTime_;
+		break;
+
+	case static_cast<int>(Step::Shot):
+
+		//射撃
+		owner_->Shot();
+
+		state = ActionBase::State::Complete;
+
+		break;
+	}
+	
+
+    return state;
 }
 
 //// 徘徊行動
@@ -238,3 +273,27 @@ ActionBase<BotEnemy>::State BotAttackAction::Run()
 //
 //}
 
+ActionBase<BotEnemy>::State BotDodgeAction::Run()
+{
+	switch (step)
+	{
+	case 0:
+
+		//コロコロ回転するアニメーション再生
+		owner_->GetAnimator()->PlayAnimation(static_cast<int>(BotEnemy::AnimState::Rolling));
+
+		//次のステップへ
+		step++;
+
+		break;
+
+	case 1:
+
+		//回転するように移動
+		owner_->
+
+	}
+
+
+	return ActionBase::State();
+}

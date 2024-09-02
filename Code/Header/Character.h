@@ -107,6 +107,8 @@ namespace AbyssEngine
 
         bool enableAutoTurn_ = true;//‘¬“x‚É‡‚í‚¹‚Ä©“®‚Å‰ñ“]‚³‚¹‚é‚©
 
+        bool hitWall_ = false;//•Ç‚É“–‚½‚Á‚½‚©
+
     };
 }
 

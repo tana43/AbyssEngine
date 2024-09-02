@@ -260,6 +260,9 @@ void Character::UpdateHorizontalMove()
 {
     //if (velocity_.x * velocity_.x + velocity_.z * velocity_.z == 0)return;
 
+    //壁衝突フラグをリセット
+    hitWall_ = false;
+
     //純粋な移動後の座標を取得
     const Vector3 pos = transform_->GetPosition();
     Vector3 move =
@@ -317,6 +320,9 @@ void Character::UpdateHorizontalMove()
                     const Vector3 move = moveVector - hitNormal * dot;
                     moved = pos + move;
                 }
+
+                //壁に当たった
+                hitWall_ = true;
             }
         }
     }
@@ -368,6 +374,9 @@ void Character::UpdateHorizontalMove()
                 velocity_.Normalize();
                 velocity_ = velocity_ * moveDistance;
             }
+
+            //壁に当たった
+            hitWall_ = true;
         }
         else
         {

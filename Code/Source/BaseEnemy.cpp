@@ -46,6 +46,25 @@ void BaseEnemy::MoveToTarget()
     moveVec_ = moveVec;
 }
 
+void BaseEnemy::MoveToSide(const AbyssEngine::Vector3& centerPos ,bool& moveRight)
+{
+    //壁に当たっているなら反対方向へ
+    if (hitWall_)
+    {
+        moveRight = !moveRight;
+    }
+
+    //引数の座標から見て横へ動く
+    //外積を使用
+    Vector3 toCenter = centerPos - transform_->GetPosition();
+    toCenter.Normalize();
+    //左右どちらに移動するかに合わせて外積に使用するベクトルを変更  
+    const Vector3 ud = moveRight ? Vector3(0, -1, 0) : Vector3(0, 1, 0);
+    const Vector3 cross = toCenter.Cross(ud);
+
+    moveVec_ = cross;
+}
+
 void BaseEnemy::SetRandomTargetPosition()
 {
     float theta = Math::RandomRange(-DirectX::XM_PI, DirectX::XM_PI);
