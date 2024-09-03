@@ -10,7 +10,7 @@ class BotAttackAction : public ActionBase<BotEnemy>
 {
 public:
 	BotAttackAction(BotEnemy* owner) : ActionBase(owner) {}
-	ActionBase::State Run()override;
+	ActionBase::State Run(float elapsedTime)override;
 private:
 	enum class Step
 	{
@@ -28,7 +28,7 @@ class BotSideDodgeAction : public ActionBase<BotEnemy>
 {
 public:
 	BotSideDodgeAction(BotEnemy* owner) : ActionBase(owner) {}
-	ActionBase::State Run()override;
+	ActionBase::State Run(float elapsedTime)override;
 private:
 	//ç∂âEÇ«ÇøÇÁÇ…à⁄ìÆÇ∑ÇÈÇ©
 	bool moveRight_;
@@ -39,7 +39,7 @@ class BotIdleAction : public ActionBase<BotEnemy>
 {
 public:
 	BotIdleAction(BotEnemy* owner) : ActionBase(owner) {}
-	ActionBase::State Run()override;
+	ActionBase::State Run(float elapsedTime)override;
 
 private:
 	float timer_;

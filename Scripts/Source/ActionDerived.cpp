@@ -8,7 +8,7 @@
 using namespace AbyssEngine;
 
 // çUåÇçsìÆ
-ActionBase<BotEnemy>::State BotAttackAction::Run()
+ActionBase<BotEnemy>::State BotAttackAction::Run(float elapsedTime)
 {
 	auto state = ActionBase::State::Run;
 
@@ -276,7 +276,7 @@ ActionBase<BotEnemy>::State BotAttackAction::Run()
 //
 //}
 
-ActionBase<BotEnemy>::State BotSideDodgeAction::Run()
+ActionBase<BotEnemy>::State BotSideDodgeAction::Run(float elapsedTime)
 {
 	switch (step)
 	{
@@ -310,7 +310,7 @@ ActionBase<BotEnemy>::State BotSideDodgeAction::Run()
 	return ActionBase::State::Run;
 }
 
-ActionBase<BotEnemy>::State BotIdleAction::Run()
+ActionBase<BotEnemy>::State BotIdleAction::Run(float elapsedTime)
 {
 	switch (step)
 	{

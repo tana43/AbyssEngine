@@ -41,32 +41,19 @@ namespace AbyssEngine
 			Random,				// ランダム
 		};
 
-		// AIのパターンテーブル
-		enum AI_Pattern
-		{
-			BotEnemy_AI,
-		};
 	public:
-		//BehaviorTree() :BaseComponent("BehaviorTree"),root(nullptr), owner(nullptr) {}
-
-		BehaviorTree(T* enemy, int AiPattern_) :BaseComponent("BehaviorTree"), root_(nullptr), owner_(enemy), AiPattern_(AiPattern_) {}
+		BehaviorTree() : root_(nullptr) {}
 
 		~BehaviorTree() { NodeAllClear(root_); }
 
 		// AI_pattern_によって構築することビヘイビアツリーを変える
-		void Initialize() override
+		void Initialize(const std::shared_ptr<Actor>& actor) override
 		{
-			switch (AiPattern_)
-			{
-			case BotEnemy_AI:
-				//BossEnemy_AI_Protocol();
-				return;
-			}
-			_ASSERT_EXPR(false, L"AIのパターンが不明です");
+			ScriptComponent::Initialize(actor);
 		}
 
-		//通常更新よりも先に更新させるためにBeforeUpdateを使う
-		void BeforeUpdate() override
+		//通常更新よりも先に更新させるためにUpdateBeforeを使う
+		void UpdateBefore() override
 		{
 			// ここでビヘイビアツリーによる行動遷移
 
@@ -76,7 +63,7 @@ namespace AbyssEngine
 			if (activeNode_ != nullptr)
 			{
 				// ビヘイビアツリーからノードを実行。
-				activeNode_ = Run(activeNode_, behaviorData_, Dante::Time::Timer::Instance().GetDeltaTime());
+				activeNode_ = Run(activeNode_, behaviorData_, Time::deltaTime_);
 			}
 			// 現在実行されているノードが無ければ
 			if (activeNode_ == nullptr)
@@ -104,13 +91,14 @@ namespace AbyssEngine
 		}
 
 
-		void DrawImGui() override
+		bool DrawImGui() override
 		{
-			if (ImGui::TreeNode(name_.c_str()))
+			if (ImGui::TreeNode("BehaviorTree"))
 			{
 				//ImGui::Text(active_node->GetName().c_str());
 				ImGui::TreePop();
 			}
+			return true;
 		}
 
 
@@ -225,6 +213,9 @@ namespace AbyssEngine
 			}
 		}
 
+	public:
+		void SetOwner(const std::shared_ptr<T>& owner) { owner_ = owner; }
+
 	private:
 		// ルートノード(ツリーの大元)
 		NodeBase<T>* root_;
@@ -238,15 +229,10 @@ namespace AbyssEngine
 
 		// todo テンプレート化
 		// ビヘイビアツリーの使用者(型はCharacterにすべき？)
-		T* owner_;
-
-	private:
-		// AIのパターン
-		int AiPattern_;
+		std::weak_ptr<T> owner_;
 
 	};
 
-    
 
     // ノード
 	template <class T>

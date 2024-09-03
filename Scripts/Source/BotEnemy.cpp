@@ -11,8 +11,9 @@
 
 #include "imgui/imgui.h"
 
-
 using namespace AbyssEngine;
+
+#define Ai_SelectRule BehaviorTree::SelectRule
 
 void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
@@ -58,8 +59,9 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 void BotEnemy::BehaviorTreeInitialize()
 {
     //ビヘイビアツリー
-    behaviorTree_ = AddComponent<AbyssEngine::BehaviorTree<BotEnemy>>();
-    behaviorTree_->
+    aiTree_ = AddComponent<BehaviorTree<BotEnemy>>();
+    aiTree_->SetOwner(std::static_pointer_cast<BotEnemy>(shared_from_this()));
+    //aiTree_->AddNode("", "Root", 0, Ai_SelectRule::);
 }
 
 void BotEnemy::Update()

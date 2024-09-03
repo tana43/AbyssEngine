@@ -15,7 +15,7 @@ public:
 	};
 
 	// Àsˆ—(ƒˆ‰¼‘zŠÖ”)
-	virtual ActionBase::State Run() = 0;
+	virtual ActionBase::State Run(float elapsedTime) = 0;
 protected:
 	T* owner_;
 	int step = 0;

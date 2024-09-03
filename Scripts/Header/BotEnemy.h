@@ -58,7 +58,7 @@ private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 
     //ビヘイビアツリー
-    std::shared_ptr<AbyssEngine::BehaviorTree<BotEnemy>> behaviorTree_;
+    std::shared_ptr<AbyssEngine::BehaviorTree<BotEnemy>> aiTree_;
 
     //索敵範囲
     float searchAreaRadius_ = 5.0f;
