@@ -4,7 +4,10 @@
 class BaseEnemy;
 class BotEnemy;
 
-#pragma region エネミー共通
+//BehaviorTreeは指定のクラスしか、登録できないので
+//基底クラスとかの共通で使用できるようなクラスは作成できない
+
+#pragma region ボットエネミー
 // 通常攻撃
 class BotAttackAction : public ActionBase<BotEnemy>
 {
@@ -12,6 +15,7 @@ public:
 	BotAttackAction(BotEnemy* owner) : ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime)override;
 private:
+
 	enum class Step
 	{
 		Init,
@@ -43,6 +47,14 @@ public:
 
 private:
 	float timer_;
+};
+
+// 徘徊
+class BotWonderActioin : public ActionBase<BotEnemy>
+{
+public:
+	BotWonderActioin(BotEnemy* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float elapsedTime)override;
 };
 
 #pragma endregion

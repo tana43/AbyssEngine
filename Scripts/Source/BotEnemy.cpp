@@ -8,12 +8,13 @@
 #include "DebugRenderer.h"
 #include "Gun.h"
 #include "BehaviorTree.h"
+#include "ActionDerived.h"
 
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 
-#define Ai_SelectRule BehaviorTree::SelectRule
+#define Ai_SelectRule BehaviorTree<BotEnemy>::SelectRule
 
 void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
@@ -35,6 +36,12 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
             "Rolling","Walk","Jump","Search","Attack","Attack_Assult"
         }
     );
+    auto& animator = model_->GetAnimator();
+    animator->GetAnimations()[static_cast<int>(AnimState::Rolling)]->SetLoopFlag(false);
+    animator->GetAnimations()[static_cast<int>(AnimState::Attack)]->SetLoopFlag(false);
+    animator->GetAnimations()[static_cast<int>(AnimState::Attack_Assult)]->SetLoopFlag(false);
+    animator->GetAnimations()[static_cast<int>(AnimState::Jump)]->SetLoopFlag(false);
+    animator->GetAnimations()[static_cast<int>(AnimState::Search)]->SetLoopFlag(false);
 
     //パラメータの設定
     transform_->SetScaleFactor(0.2f);
@@ -50,7 +57,7 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     canAttack_ = true;
 
     //銃
-    gunComponent_ = AddComponent<Gun>();
+    gunComponent_ = actor->AddComponent<Gun>();
 
     //ビヘイビアツリー初期化
     BehaviorTreeInitialize();
@@ -59,14 +66,32 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 void BotEnemy::BehaviorTreeInitialize()
 {
     //ビヘイビアツリー
-    aiTree_ = AddComponent<BehaviorTree<BotEnemy>>();
+    aiTree_ = actor_->AddComponent<BehaviorTree<BotEnemy>>();
     aiTree_->SetOwner(std::static_pointer_cast<BotEnemy>(shared_from_this()));
-    //aiTree_->AddNode("", "Root", 0, Ai_SelectRule::);
+
+    //BehaviorTreeを構築
+    aiTree_->AddNode("", "Root", 0, Ai_SelectRule::Priority,nullptr,nullptr);
+
+    //戦闘
+    aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new BotBattleJudgment(this), nullptr);
+    //偵察
+    aiTree_->AddNode("Root", "Scout",  1, Ai_SelectRule::Sequence, nullptr, nullptr);
+
+    //戦闘ノード
+    aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new AttackJudgment(this), new BotAttackAction(this));
+    aiTree_->AddNode("Battle", "Dodge",  1, Ai_SelectRule::Non, nullptr, new BotSideDodgeAction(this));
+    //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
+
+    //偵察ノード
+    aiTree_->AddNode("Scout", "Wonder", 0, Ai_SelectRule::Non, nullptr, new BotWonderActioin(this));
+    aiTree_->AddNode("Scout", "Idle",   1, Ai_SelectRule::Non, nullptr, new BotIdleAction(this));
 }
 
 void BotEnemy::Update()
 {
     BaseEnemy::Update();
+
+    ReloadUpdate();
 }
 
 bool BotEnemy::DrawImGui()
@@ -111,16 +136,17 @@ bool BotEnemy::SearchTarget()
     float dist = toTarget.Length();
     if (dist < searchAreaRadius_)
     {
-        //レイキャストで視界にターゲットが入っているか判定
+        //レイキャストで障害物がターゲットまでにないか判定
         Vector3 hitPos,hitNormal;
         auto& stage = StageManager::Instance().GetActiveStage();
-        if (stage->RayCast(
+        if (!stage->RayCast(
             myPos,
             targetPos,
             hitPos,
             hitNormal
         ))
         {
+#if 0
             //内積値から視野角を考慮
             toTarget.Normalize();
             float dot = toTarget.Dot(transform_->GetForward());
@@ -130,6 +156,9 @@ bool BotEnemy::SearchTarget()
                 //視界内に入っている
                 return true;
             }
+#else
+            return true;
+#endif // 0
         }
     }
 

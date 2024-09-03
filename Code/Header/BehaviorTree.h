@@ -23,15 +23,14 @@ namespace AbyssEngine
 	template <class T>
 	class BehaviorTree : public ScriptComponent
 	{
-	public:
 		/*
-		 * このビヘイビアツリーの組み方やと、シーケンスは中間ノードが全て実行可能ノードに
-		 * 登録されてないとうまく推論されない(SelectSequence関数のfor文が原因)
-		 * ノードをシーケンスにするときは全ての子ノードを基本的に絶対通るようにする(Failed、実行失敗は大丈夫)
-		 * そういう時はPriorityを使おう。うまくやろう。
-		 */
-
-		 // 選択ルール
+		* このビヘイビアツリーの組み方やと、シーケンスは中間ノードが全て実行可能ノードに
+		* 登録されてないとうまく推論されない(SelectSequence関数のfor文が原因)
+		* ノードをシーケンスにするときは全ての子ノードを基本的に絶対通るようにする(Failed、実行失敗は大丈夫)
+		* そういう時はPriorityを使おう。うまくやろう。
+		*/
+	public:
+		
 		enum class SelectRule
 		{
 			Non,				// 無い(末端ノード用)
@@ -346,7 +345,7 @@ namespace AbyssEngine
 					selectNode = node;
 				}
 			}
-
+			
 			return selectNode;
 		}
 

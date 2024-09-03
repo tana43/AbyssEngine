@@ -4,9 +4,32 @@
 class BaseEnemy;
 class BotEnemy;
 
-#pragma region エネミー共通
+#define Inheritance_Bot public JudgmentBase<BotEnemy>
+
+//BehaviorTreeは指定のクラスしか、登録できないので
+//基底クラスとかの共通で使用できるようなクラスは作成できない
+
+#pragma region ボットエネミー
+// BattleNodeに遷移できるか判定
+class BotBattleJudgment : Inheritance_Bot
+{
+public:
+	BotBattleJudgment(BotEnemy* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+
+// WanderNodeに遷移できるか判定
+class BotWanderJudgment : Inheritance_Bot
+{
+public:
+	BotWanderJudgment(BotEnemy* owner) :JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+
 // AttackNodeに遷移できるか判定
-class AttackJudgment : public JudgmentBase<BotEnemy>
+class AttackJudgment : Inheritance_Bot
 {
 public:
 	AttackJudgment(BotEnemy* owner) :JudgmentBase(owner) {}
@@ -15,30 +38,10 @@ public:
 };
 
 // DodgeNodeに遷移できるか判定
-class DodgeJudgment : public JudgmentBase<BaseEnemy>
+class DodgeJudgment : Inheritance_Bot
 {
 public:
-	DodgeJudgment(BaseEnemy* owner) :JudgmentBase(owner) {}
-	// 判定
-	bool Judgment();
-};
-#pragma endregion
-
-#pragma region ボットエネミー
-// BattleNodeに遷移できるか判定
-class BattleJudgment : public JudgmentBase<BotEnemy>
-{
-public:
-	BattleJudgment(BotEnemy* owner) : JudgmentBase(owner) {}
-	// 判定
-	bool Judgment();
-};
-
-// WanderNodeに遷移できるか判定
-class WanderJudgment : public JudgmentBase<BotEnemy>
-{
-public:
-	WanderJudgment(BotEnemy* owner) :JudgmentBase(owner) {}
+	DodgeJudgment(BotEnemy* owner) :JudgmentBase(owner) {}
 	// 判定
 	bool Judgment();
 };

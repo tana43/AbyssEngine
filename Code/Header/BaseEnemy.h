@@ -6,10 +6,12 @@ class BaseEnemy : public AbyssEngine::Character
 public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
 
+    void UpdateBegin()override;
+
     void DrawDebug()override;
 
-    //目標地点に向かって移動
-    void MoveToTarget();
+    //目標地点に向かって移動 目的に到達したらtrueを返す
+    bool MoveToTarget();
 
     //引数の座標を中心に横へ移動
     void SideMove(const AbyssEngine::Vector3& centerPos, bool& moveRight);
@@ -46,6 +48,9 @@ protected:
     //縄張り設定
     AbyssEngine::Vector3 territoryOrigin_;
     float territoryRange_ = 3.0f;
+
+    //目標地点に到達したかを判定するための円半径
+    float goalRadius_ = 0.5f;
 
     //攻撃可能か
     bool canAttack_;

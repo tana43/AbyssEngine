@@ -30,6 +30,12 @@ void BaseEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     }
 }
 
+void BaseEnemy::UpdateBegin()
+{
+    //移動ベクトルをリセット
+    moveVec_ = {};
+}
+
 void BaseEnemy::DrawDebug()
 {
 #if _DEBUG
@@ -38,12 +44,23 @@ void BaseEnemy::DrawDebug()
 #endif // _DEBUG
 }
 
-void BaseEnemy::MoveToTarget()
+bool BaseEnemy::MoveToTarget()
 {
-    Vector3 moveVec = targetPosition_ - transform_->GetTransform()->GetPosition();
+    Vector3 toTarget = targetPosition_ - transform_->GetTransform()->GetPosition();
+    Vector3 moveVec = toTarget;
     moveVec.y = 0.0f;
     moveVec.Normalize();
     moveVec_ = moveVec;
+
+    //目的地についているか判定
+    float distSq = toTarget.LengthSquared();
+    float radiusSq = goalRadius_ * goalRadius_;
+    if (distSq < radiusSq)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 void BaseEnemy::SideMove(const AbyssEngine::Vector3& centerPos ,bool& moveRight)
@@ -69,6 +86,7 @@ void BaseEnemy::SetRandomTargetPosition()
 {
     float theta = Math::RandomRange(-DirectX::XM_PI, DirectX::XM_PI);
     float range = Math::RandomRange(0.0f, territoryRange_);
+    float a = cosf(theta);
     targetPosition_.x = territoryOrigin_.x + sinf(theta) * range;
     targetPosition_.y = territoryOrigin_.y;
     targetPosition_.z = territoryOrigin_.z + cosf(theta) * range;

@@ -6,10 +6,10 @@
 
 using namespace AbyssEngine;
 
-#pragma region エネミー共通
+#pragma region ボットエネミー
 
 // BattleNodeに遷移できるか判定
-bool BattleJudgment::Judgment()
+bool BotBattleJudgment::Judgment()
 {
 	//プレイヤーが見つかるか
 	if (owner_->SearchTarget())
@@ -41,12 +41,9 @@ bool DodgeJudgment::Judgment()
 	}
 	return false;
 }
-#pragma endregion
 
-
-#pragma region ボットエネミー
 // WanderNodeに遷移できるか判定
-bool WanderJudgment::Judgment()
+bool BotWanderJudgment::Judgment()
 {
 	// 目的地点までのXZ平面での距離判定
 	Vector3 position = owner_->GetTransform()->GetPosition();

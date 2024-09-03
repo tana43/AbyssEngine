@@ -24,7 +24,7 @@ public:
         AbyssEngine::Vector3 rot;
     };
     const SocketOffset Weapon_Offset_Move  = { { 3.35f,-4.75f,6.3f } ,{2.15f,168.7f,-99.25f} };
-    const SocketOffset Weapon_Offset_Aim   = { {-10.85f,3.15f,31.75f}, {-56.85f,206.4,-47.7f} };
+    const SocketOffset Weapon_Offset_Aim   = { {-10.85f,3.15f,31.75f}, {-56.85f,206.4f,-47.7f} };
 
     enum class AnimState
     {
