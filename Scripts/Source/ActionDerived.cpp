@@ -62,16 +62,26 @@ ActionBase<BotEnemy>::State BotAttackAction::Run(float elapsedTime)
 
 	case static_cast<int>(Step::Shot):
 
-		step = 0;
 
 		//射撃
 		owner_->Shot();
 
-		//行動完了
-		state = ActionBase::State::Complete;
-
 		//撃ち終わった後に余韻あった方がいいかも.........？
 
+		step++;
+
+		break;
+
+	case static_cast<int>(Step::AnimFinishWait):
+
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			//行動完了
+			state = ActionBase::State::Complete;
+
+			//ステップリセット
+			step = 0;
+		}
 		break;
 	}
 

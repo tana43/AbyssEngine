@@ -53,7 +53,7 @@ public:
     const float& GetLockOnShotTime() const { return LockOn_Shot_Time; }
     const float& GetAtkReloadTime() const { return Atk_Reload_Time; }
     
-
+    const bool& GetIsTargetFind() const { return isTargetFind_; }
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 
@@ -76,10 +76,10 @@ private:
     std::shared_ptr<Gun> gunComponent_;
 
     //ロックオン中の時間
-    float LockOn_Time = 2.0f;
+    float LockOn_Time = 4.0f;
 
     //ロックオン完了から発砲に掛かる時間
-    float LockOn_Shot_Time = 0.4f;
+    float LockOn_Shot_Time = 1.0f;
 
     //再度攻撃できるのに掛かる時間
     float Atk_Reload_Time = 3.5f;
@@ -89,5 +89,8 @@ private:
 
     //現在リロードしているか
     bool reloadNow_ = false;
+
+    //プレイヤーを見つけているか
+    bool isTargetFind_ = false;
 };
 

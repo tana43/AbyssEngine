@@ -21,7 +21,8 @@ private:
 		Init,
 		LockOn,
 		LockIdle,
-		Shot
+		Shot,
+		AnimFinishWait,	// アニメーション終了待機
 	};
 
 	float timer_ = 0;

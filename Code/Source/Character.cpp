@@ -321,8 +321,11 @@ void Character::UpdateHorizontalMove()
                     moved = pos + move;
                 }
 
-                //•Ç‚É“–‚½‚Á‚½
-                hitWall_ = true;
+                //•Ç‚É“–‚½‚Á‚Ä‚¢‚é‚©
+                if (hitNormal.Dot(Vector3(0, 1, 0)) > 0.8f)
+                {
+                    hitWall_ = true;
+                }
             }
         }
     }

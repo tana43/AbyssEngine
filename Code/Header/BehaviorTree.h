@@ -94,7 +94,8 @@ namespace AbyssEngine
 		{
 			if (ImGui::TreeNode("BehaviorTree"))
 			{
-				//ImGui::Text(active_node->GetName().c_str());
+				ImGui::Text(activeNode_->GetName().c_str());
+
 				ImGui::TreePop();
 			}
 			return true;

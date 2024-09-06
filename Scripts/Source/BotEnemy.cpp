@@ -61,6 +61,8 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //ビヘイビアツリー初期化
     BehaviorTreeInitialize();
+
+    isTargetFind_ = false;
 }
 
 void BotEnemy::BehaviorTreeInitialize()
@@ -157,6 +159,8 @@ bool BotEnemy::SearchTarget()
                 return true;
             }
 #else
+            isTargetFind_ = true;
+
             return true;
 #endif // 0
         }

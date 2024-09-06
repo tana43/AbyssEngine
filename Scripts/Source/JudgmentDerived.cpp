@@ -11,6 +11,14 @@ using namespace AbyssEngine;
 // BattleNodeに遷移できるか判定
 bool BotBattleJudgment::Judgment()
 {
+	//プレイヤーを見付けていて、一定距離離れていないならtrue
+	if (owner_->GetIsTargetFind())
+	{
+		
+
+		return true;
+	}
+
 	//プレイヤーが見つかるか
 	if (owner_->SearchTarget())
 	{
