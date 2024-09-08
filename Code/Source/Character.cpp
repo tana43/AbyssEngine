@@ -161,6 +161,11 @@ void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
     transform_->SetRotationY(rotY);
 }
 
+Vector3 AbyssEngine::Character::GetCenterPos()
+{
+    return transform_->GetPosition() + center_;
+}
+
 void Character::UpdateVelocity()
 {
     //‘¬—ÍXV

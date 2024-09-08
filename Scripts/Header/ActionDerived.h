@@ -37,6 +37,10 @@ public:
 private:
 	//¶‰E‚Ç‚¿‚ç‚ÉˆÚ“®‚·‚é‚©
 	bool moveRight_;
+	
+	//‰ñ”ğŠÔ
+	float timer_ = 0.0f;
+	float dodgeTime_;
 };
 
 // ‘Ò‹@

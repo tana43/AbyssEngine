@@ -37,7 +37,7 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         }
     );
     auto& animator = model_->GetAnimator();
-    animator->GetAnimations()[static_cast<int>(AnimState::Rolling)]->SetLoopFlag(false);
+    animator->GetAnimations()[static_cast<int>(AnimState::Rolling)]->SetAnimSpeed(1.5f);
     animator->GetAnimations()[static_cast<int>(AnimState::Attack)]->SetLoopFlag(false);
     animator->GetAnimations()[static_cast<int>(AnimState::Attack_Assult)]->SetLoopFlag(false);
     animator->GetAnimations()[static_cast<int>(AnimState::Jump)]->SetLoopFlag(false);
@@ -46,7 +46,7 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //パラメータの設定
     transform_->SetScaleFactor(0.2f);
     Max_Horizontal_Speed = 2.0f;
-    acceleration_ = 0.5f;
+    acceleration_ = 3.0f;
 
     reloadTimer_ = 0.0f;
 
@@ -169,13 +169,32 @@ bool BotEnemy::SearchTarget()
     return false;
 }
 
+bool BotEnemy::SearchTargetWithimRange(float range)
+{
+    //ターゲットが指定範囲内にいるか判定
+    const Vector3 pos = transform_->GetPosition();
+    const Vector3 targetPos = targetActor_->GetTransform()->GetPosition();
+    float distSq = Vector3::DistanceSquared(pos, targetPos);
+
+    if (distSq < range * range)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void BotEnemy::LockOn()
 {
-    aimPosition_ = targetActor_->GetTransform()->GetPosition();
+    const auto& chara = targetActor_->GetComponent<Character>();
+    aimPosition_ = chara->GetCenterPos();
 }
 
 void BotEnemy::Shot()
 {
+    //銃口位置を設定
+    gunComponent_->SetMuzzlePos(transform_->GetPosition() + Vector3(0, 0.3f, 0));
+
     const Vector3 pos = transform_->GetPosition();
     Vector3 toAimPos = aimPosition_ - pos;
     toAimPos.Normalize();

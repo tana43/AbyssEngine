@@ -33,8 +33,12 @@ public:
     bool DrawImGui()override;
     void DrawDebug()override;
 
-    //プレイヤーを索敵
+    //ターゲットを索敵
     bool SearchTarget();
+
+    //ターゲットとの距離を判定
+    //引数以内にターゲットがいるならtrue
+    bool SearchTargetWithimRange(float range);
 
     //エイム位置を更新
     void LockOn();
@@ -54,6 +58,7 @@ public:
     const float& GetAtkReloadTime() const { return Atk_Reload_Time; }
     
     const bool& GetIsTargetFind() const { return isTargetFind_; }
+    const bool& GetReloadNow() const { return reloadNow_; }
 private:
     std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
 

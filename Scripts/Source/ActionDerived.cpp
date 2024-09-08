@@ -102,6 +102,9 @@ ActionBase<BotEnemy>::State BotSideDodgeAction::Run(float elapsedTime)
 		//乱数で左右どちらに進むかを設定
 		moveRight_ = rand() % 2;
 
+		//回避時間設定
+		dodgeTime_ = 1.5 + (static_cast<float>(rand() % 10) / 10.0f);
+
 		//次のステップへ
 		step++;
 
@@ -112,13 +115,20 @@ ActionBase<BotEnemy>::State BotSideDodgeAction::Run(float elapsedTime)
 		//ターゲットを中心に回転するように移動
 		owner_->SideMove(owner_->GetTargetActor()->GetTransform()->GetPosition(), moveRight_);
 
-		if (owner_->GetAnimator()->GetAnimationFinished())
+		//リロードが完了しているなら終了
+		//if (owner_->GetAnimator()->GetAnimationFinished())
+		if (timer_ > dodgeTime_)
 		{
 			step = 0;
+
+			timer_ = 0;
 
 			//行動完了
 			return ActionBase::State::Complete;
 		}
+
+		timer_ += Time::deltaTime_;
+
 		break;
 	}
 

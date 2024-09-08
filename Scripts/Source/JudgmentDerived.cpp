@@ -14,9 +14,7 @@ bool BotBattleJudgment::Judgment()
 	//プレイヤーを見付けていて、一定距離離れていないならtrue
 	if (owner_->GetIsTargetFind())
 	{
-		
-
-		return true;
+		return owner_->SearchTargetWithimRange(10.0f);
 	}
 
 	//プレイヤーが見つかるか

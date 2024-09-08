@@ -3,9 +3,10 @@
 #include <memory>
 #include <vector>
 
+#include "Collider.h"
+
 namespace AbyssEngine
 {
-    class Collider;
     class MeshCollider;
 
     class AttackCollider;
@@ -41,9 +42,16 @@ namespace AbyssEngine
         void HitDetection();
 
     private:
-        std::vector<std::weak_ptr<Collider>> colliderList_;
+
         std::vector<std::weak_ptr<MeshCollider>> meshColliderList_;
-        std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;
-        std::vector<std::weak_ptr<HitCollider>> hitColliderList_;
+
+        //押し出し判定コライダー
+        std::vector<std::weak_ptr<Collider>> terrainColliderList_;
+
+        //攻撃判定コライダー
+        std::vector<std::weak_ptr<Collider>> attackColliderList_;
+
+        //喰らい判定コライダー
+        std::vector<std::weak_ptr<Collider>> hitColliderList_;
     };
 }

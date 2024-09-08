@@ -60,6 +60,8 @@ namespace AbyssEngine
 
         const bool& GetOnGround() const { return onGround_; }
 
+        Vector3 GetCenterPos();
+
     protected:
 
         virtual void UpdateVelocity();//‘¬—ÍXV
@@ -108,6 +110,8 @@ namespace AbyssEngine
         bool enableAutoTurn_ = true;//‘¬“x‚É‡‚í‚¹‚Ä©“®‚Å‰ñ“]‚³‚¹‚é‚©
 
         bool hitWall_ = false;//•Ç‚É“–‚½‚Á‚½‚©
+
+        Vector3 center_ = { 0,0.3f,0 };
 
     };
 }
