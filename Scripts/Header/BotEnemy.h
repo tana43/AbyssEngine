@@ -7,7 +7,7 @@ namespace AbyssEngine
     class BehaviorTree;
     class SkeletalMesh;
     class Animator;
-    class SphereColldier;
+    class SphereCollider;
 }
 
 class Gun;
@@ -102,6 +102,6 @@ private:
     //ƒvƒŒƒCƒ„[‚ğŒ©‚Â‚¯‚Ä‚¢‚é‚©
     bool isTargetFind_ = false;
 
-    std::shared_ptr<AbyssEngine::SphereColldier> collider_;
+    std::shared_ptr<AbyssEngine::SphereCollider> collider_;
 };
 

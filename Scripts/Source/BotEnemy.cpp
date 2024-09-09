@@ -11,6 +11,8 @@
 #include "ActionDerived.h"
 #include "SphereCollider.h"
 
+#include <memory>
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;

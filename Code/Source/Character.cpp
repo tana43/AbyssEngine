@@ -204,7 +204,7 @@ void Character::Die()
     actor_->Destroy(actor_);
 }
 
-const std::shared_ptr<SphereCollider>& Character::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius,std::string name)
+std::shared_ptr<SphereCollider> Character::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius,std::string name)
 {
     //コライダー用のアクターを生成
     auto& scene = Engine::sceneManager_->GetActiveScene();
@@ -222,7 +222,7 @@ const std::shared_ptr<SphereCollider>& Character::AddAttackCollider(AbyssEngine:
     return colliderCom;
 }
 
-const std::shared_ptr<SphereCollider>& Character::AddHitCollider(Vector3 localPos, float radius, std::string name)
+std::shared_ptr<SphereCollider> Character::AddHitCollider(Vector3 localPos, float radius, std::string name)
 {
     //コライダー用のアクターを生成
     auto& scene = Engine::sceneManager_->GetActiveScene();

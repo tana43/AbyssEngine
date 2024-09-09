@@ -59,8 +59,8 @@ namespace AbyssEngine
 
         //コライダーを付ける
         void AddTerrainCollider();  //押し出し判定用コライダー
-        const std::shared_ptr<SphereCollider>& AddAttackCollider(Vector3 localPos, float radius,std::string name = "AtkCollider");   //攻撃判定用コライダー
-        const std::shared_ptr<SphereCollider>& AddHitCollider(Vector3 localPos, float radius, std::string name = "HitCollider");      //喰らい判定用コライダー
+        std::shared_ptr<SphereCollider> AddAttackCollider(Vector3 localPos, float radius,std::string name = "AtkCollider");   //攻撃判定用コライダー
+        std::shared_ptr<SphereCollider> AddHitCollider(Vector3 localPos, float radius, std::string name = "HitCollider");      //喰らい判定用コライダー
 
     public:
         const bool& GetIsActive() const { return active_; }
