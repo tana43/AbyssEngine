@@ -2,10 +2,14 @@
 #include "ScriptComponent.h"
 #include "MathHelper.h"
 
+#include <string>
+
 //キャラクターの基底クラス
 //CharacterManagerからUpdate()を呼びだす
 namespace AbyssEngine
 {
+    class SphereCollider;
+
     class Character : public ScriptComponent
     {
     public:
@@ -16,6 +20,13 @@ namespace AbyssEngine
         static constexpr Tag Tag_Default    = 0x01;
         static constexpr Tag Tag_Player     = 0x01 << 1;
         static constexpr Tag Tag_Enemy      = 0x01 << 2;
+
+        enum class DamageResult
+        {
+            Failed,     //失敗
+            Success,    //成功
+            FinalBlow   //とどめ
+        };
 
         Tag GetTag() const { return tag_; }
         void ReplaceTag(Tag t) { tag_ = t; }
@@ -40,6 +51,16 @@ namespace AbyssEngine
         void TurnY(Vector3 dir,bool smooth = true/*なめらかに回転するか*/);
         void TurnY(Vector3 dir, const float& speed, bool smooth = true/*なめらかに回転するか*/);
 
+        //ダメージを与える 攻撃が通ったならtrue
+        bool AddDamage(const float& damage,DamageResult& damageResult);
+
+        //死亡
+        void Die();
+
+        //コライダーを付ける
+        void AddTerrainCollider();  //押し出し判定用コライダー
+        const std::shared_ptr<SphereCollider>& AddAttackCollider(Vector3 localPos, float radius,std::string name = "AtkCollider");   //攻撃判定用コライダー
+        const std::shared_ptr<SphereCollider>& AddHitCollider(Vector3 localPos, float radius, std::string name = "HitCollider");      //喰らい判定用コライダー
 
     public:
         const bool& GetIsActive() const { return active_; }
@@ -113,6 +134,10 @@ namespace AbyssEngine
 
         Vector3 center_ = { 0,0.3f,0 };
 
+        float health_ = 10.0f;//体力
+        float Max_Health = 10.0f;//最大体力
+
+        bool invincible_ = false;//無敵
     };
 }
 

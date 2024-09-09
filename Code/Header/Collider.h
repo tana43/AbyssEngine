@@ -36,7 +36,11 @@ namespace AbyssEngine
         void SetEnable(bool value) { enabled_ = value; }
 
         const unsigned int& GetTag() const { return tag_; }
-        void SetTag(const unsigned int& tag) { tag_ = static_cast<unsigned int>(tag); }
+        void ReplaceTag(unsigned int t) { tag_ = t; }
+        void AddTag(Tag t)
+        {
+            tag_ |= static_cast<unsigned int>(t);
+        }
 
     public:
         struct Triangle

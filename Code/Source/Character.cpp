@@ -3,6 +3,8 @@
 #include "Actor.h"
 #include "StageManager.h"
 #include "SkeletalMesh.h"
+#include "SceneManager.h"
+#include "SphereCollider.h"
 
 #include <algorithm>
 
@@ -19,6 +21,8 @@ void Character::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 void AbyssEngine::Character::Update()
 {
     UpdateMove();
+
+
 }
 
 bool Character::DrawImGui()
@@ -161,7 +165,82 @@ void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
     transform_->SetRotationY(rotY);
 }
 
-Vector3 AbyssEngine::Character::GetCenterPos()
+bool AbyssEngine::Character::AddDamage(const float& damage, DamageResult& damageResult)
+{
+    //無敵か
+    if (invincible_)
+    {
+        damageResult = DamageResult::Failed;
+        return false;
+    }
+
+    //既に死んでいるか
+    if (health_ < 0)
+    {
+        damageResult = DamageResult::Failed;
+        return false;
+    }
+
+    //ダメージ処理
+    health_ -= damage;
+
+    //死亡処理
+    if (health_ < 0)
+    {
+        health_ = 0;
+        Die();
+        damageResult = DamageResult::FinalBlow;
+    }
+    else
+    {
+        damageResult = DamageResult::Success;
+    }
+
+    return true;
+}
+
+void Character::Die()
+{
+    actor_->Destroy(actor_);
+}
+
+const std::shared_ptr<SphereCollider>& Character::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius,std::string name)
+{
+    //コライダー用のアクターを生成
+    auto& scene = Engine::sceneManager_->GetActiveScene();
+    const auto& colliderActor = scene.InstanceActor(name);
+    
+    const auto& colliderCom = colliderActor->AddComponent<SphereCollider>();
+    colliderCom->SetRadius(radius);
+
+    //位置変更
+    colliderActor->GetTransform()->SetLocalPosition(localPos);
+
+    //親子付け
+    colliderActor->SetParent(actor_);
+
+    return colliderCom;
+}
+
+const std::shared_ptr<SphereCollider>& Character::AddHitCollider(Vector3 localPos, float radius, std::string name)
+{
+    //コライダー用のアクターを生成
+    auto& scene = Engine::sceneManager_->GetActiveScene();
+    const auto& colliderActor = scene.InstanceActor(name);
+
+    const auto& colliderCom = colliderActor->AddComponent<SphereCollider>();
+    colliderCom->SetRadius(radius);
+
+    //位置変更
+    colliderActor->GetTransform()->SetLocalPosition(localPos);
+
+    //親子付け
+    colliderActor->SetParent(actor_);
+
+    return colliderCom;
+}
+
+Vector3 Character::GetCenterPos()
 {
     return transform_->GetPosition() + center_;
 }

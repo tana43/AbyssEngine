@@ -11,7 +11,7 @@ void Projectile::Initialize(const std::shared_ptr<Actor>& actor)
 {
     ScriptComponent::Initialize(actor);
 
-    actor->AddComponent<SphereCollider>();
+    collider_ = actor->AddComponent<SphereCollider>();
 }
 
 void Projectile::Update()

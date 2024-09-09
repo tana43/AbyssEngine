@@ -7,6 +7,7 @@ namespace AbyssEngine
     class BehaviorTree;
     class SkeletalMesh;
     class Animator;
+    class SphereColldier;
 }
 
 class Gun;
@@ -48,6 +49,9 @@ public:
 
     //UŒ‚
     void ReloadUpdate();
+
+    //“–‚½‚è”»’è‚Ì‰Šú‰»
+    void ColliderInitialize();
 
 public:
     const std::shared_ptr<AbyssEngine::SkeletalMesh>& GetModel() const { return model_; }
@@ -97,5 +101,7 @@ private:
 
     //ƒvƒŒƒCƒ„[‚ğŒ©‚Â‚¯‚Ä‚¢‚é‚©
     bool isTargetFind_ = false;
+
+    std::shared_ptr<AbyssEngine::SphereColldier> collider_;
 };
 

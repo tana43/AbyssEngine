@@ -71,7 +71,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
 
         //’eŠÛ‚ÌÝ’è
         proj->SetRadius(bulletRadius_);
-        proj->GetCollider()->SetTag(colliderTag_);
+        proj->GetCollider()->ReplaceTag(colliderTag_);
 
         //e‚Ì¸“x‚ð”½‰f
         if (precision_ > 0)

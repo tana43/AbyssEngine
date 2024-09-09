@@ -1,8 +1,11 @@
 #pragma once
 #include "Component.h"
+#include "CollisionHelper.h"
 
 namespace AbyssEngine
 {
+    class Collider;
+
     //独自のコンポーネントを開発する際に継承元として使用するコンポーネント
     //Update処理を持っている
     class ScriptComponent : public Component

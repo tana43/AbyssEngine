@@ -1,6 +1,7 @@
 #pragma once
 #include "ScriptComponent.h"
 #include "MathHelper.h"
+#include "Collider.h"
 
 namespace AbyssEngine
 {
@@ -43,7 +44,7 @@ public:
 
     const std::shared_ptr<AbyssEngine::BillboardRenderer>& GetMuzzleFlashComponent() const { return muzzleFlashComponent_; }
 
-    void SetColliderTag(const Collider::Tag& tag) { colliderTag_ = static_cast<unsigned int>(tag); }
+    void SetColliderTag(AbyssEngine::Collider::Tag tag) { colliderTag_ = static_cast<unsigned int>(tag); }
 
 private:
     //ADS(スコープを覗いているか)

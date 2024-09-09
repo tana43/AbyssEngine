@@ -9,6 +9,7 @@
 #include "Gun.h"
 #include "BehaviorTree.h"
 #include "ActionDerived.h"
+#include "SphereCollider.h"
 
 #include "imgui/imgui.h"
 
@@ -220,6 +221,12 @@ void BotEnemy::ReloadUpdate()
         canAttack_ = true;
         reloadTimer_ = 0.0f;
     }
+}
+
+void BotEnemy::ColliderInitialize()
+{
+    //collider_ = AddHitCollider(Vector3(0, 0.2f, 0), 0.3f);
+    collider_ = AddHitCollider(Vector3(0, 0.2f, 0), 0.3f);
 }
 
 const std::shared_ptr<AbyssEngine::Animator>& BotEnemy::GetAnimator() const
