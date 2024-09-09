@@ -2,6 +2,8 @@
 #include "imgui/imgui.h"
 #include "SceneManager.h"
 
+#include "ScriptComponent.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -144,6 +146,16 @@ void Actor::WritingJsonFile(const nlohmann::json& json)
 void Actor::Destroy(std::shared_ptr<Actor> actor)
 {
 	Engine::sceneManager_->GetActiveScene().DestroyActor(actor);
+}
+
+void AbyssEngine::Actor::OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result)
+{
+	//スクリプトコンポーネントを継承しているクラスの	OnCollisionを呼ぶ
+	for (const auto& c : componentList_)
+	{
+		const auto& sc = std::dynamic_pointer_cast<ScriptComponent>(c);
+		if (sc)sc->OnCollision(collision, result);
+	}
 }
 
 std::weak_ptr<Actor> Actor::GetParent() const

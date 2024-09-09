@@ -3,6 +3,7 @@
 #include "RenderManager.h"
 #include "SceneManager.h"
 #include "ScriptComponentManager.h"
+#include "CollisionManager.h"
 
 #include "Input.h"
 #include "Scene.h"
@@ -26,6 +27,7 @@ unique_ptr<RenderManager>           Engine::renderManager_;
 unique_ptr<SceneManager>            Engine::sceneManager_;
 unique_ptr<ScriptComponentManager>  Engine::scriptComManager_;
 unique_ptr<Input>                   Engine::inputManager_;
+unique_ptr<CollisionManager>        Engine::collisionManager_;
 
 Engine::Engine()
 {
@@ -37,6 +39,7 @@ Engine::Engine()
     renderManager_      = make_unique<RenderManager>();
     scriptComManager_   = make_unique<ScriptComponentManager>();
     inputManager_       = make_unique<Input>();
+    collisionManager_   = make_unique<CollisionManager>();
 
     //ImGui‰Šú‰»
     IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::GetDevice().Get(), DXSystem::GetDeviceContext().Get());
@@ -50,6 +53,8 @@ Engine::~Engine()
     assetManager_->Exit();
     assetManager_.reset();
     scriptComManager_.reset();
+    collisionManager_->Clear();
+    collisionManager_.reset();
 
     //ImGuiŒãˆ—
     IMGUI_CTRL_UNINITIALIZE();
@@ -70,6 +75,8 @@ void Engine::Update()
 
     sceneManager_->Update();
 
+    collisionManager_->Update();
+
     scriptComManager_->Update();
 
     renderManager_->Render();
@@ -83,7 +90,6 @@ void Engine::Update()
 #if _DEBUG
     MouseDragUnrelenting();
 #endif // _DEBUG
-
 }
 
 void Engine::GetHandle(UINT msg, WPARAM wParam, LPARAM lParam)

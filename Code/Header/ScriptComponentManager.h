@@ -16,6 +16,9 @@ namespace AbyssEngine
         void AddScriptCom(const std::shared_ptr<ScriptComponent>& com);
 
         void Clear();
+
+        const std::vector<std::weak_ptr<ScriptComponent>>& GetScriptComList() const { return scriptComList_; }
+
     private:
         std::vector<std::weak_ptr<ScriptComponent>> scriptComList_;
 

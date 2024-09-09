@@ -1,6 +1,5 @@
 #pragma once
 #include "Collider.h"
-#include "MathHelper.h"
 
 namespace AbyssEngine
 {
@@ -13,6 +12,13 @@ namespace AbyssEngine
         void Initialize(const std::shared_ptr<Actor>& actor)override;
 
         void DrawDebug();
+
+        bool IntersectVsSphere(const std::shared_ptr<SphereCollider>& collider, Collision::IntersectionResult* result);
+
+    public:
+        const float& GetRadius() const { return radius_; }
+        void SetRadius(const float& radius) { radius_ = radius; }
+
     private:
         //”¼Œa
         float radius_;

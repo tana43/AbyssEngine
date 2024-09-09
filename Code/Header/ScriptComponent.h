@@ -13,6 +13,9 @@ namespace AbyssEngine
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
 
+        //‰½‚©‚É“–‚½‚Á‚Ä‚¢‚éê‡©“®‚ÅŒÄ‚Î‚ê‚é
+        virtual void OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result) {};
+
         virtual void UpdateBegin() {}
         virtual void UpdateBefore() {}
         virtual void Update() {}

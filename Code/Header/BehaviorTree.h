@@ -163,7 +163,6 @@ namespace AbyssEngine
 		NodeBase<T>* Run(NodeBase<T>* actionNode, BehaviorData<T>* data, float elapsedTime)
 		{
 			// ノード実行
-			// todo ここをEnemyTにしたら謎エラー出るのはなぜ？
 			typename ActionBase<T>::State state = actionNode->Run(elapsedTime);
 
 			// 正常終了

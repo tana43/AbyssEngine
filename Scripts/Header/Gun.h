@@ -43,6 +43,8 @@ public:
 
     const std::shared_ptr<AbyssEngine::BillboardRenderer>& GetMuzzleFlashComponent() const { return muzzleFlashComponent_; }
 
+    void SetColliderTag(const Collider::Tag& tag) { colliderTag_ = static_cast<unsigned int>(tag); }
+
 private:
     //ADS(スコープを覗いているか)
     bool ADS_ = false;
@@ -75,5 +77,11 @@ private:
     //エフェクト寿命
     float flashLifespan_ = 0.0f;
     float Max_Flash_Lifespan = 0.02f;
+
+    //弾丸の大きさ
+    float bulletRadius_;
+
+    //弾丸の判定につけるタグ
+    unsigned int colliderTag_;
 };
 

@@ -1,7 +1,38 @@
 #include "CollisionManager.h"
+#include "Actor.h"
 
+#include "SphereCollider.h"
+#include "ScriptComponentManager.h"
 
-void AbyssEngine::CollisionManager::TerrainDetection()
+#include "ScriptComponent.h"
+
+#include "Engine.h"
+
+using namespace AbyssEngine;
+
+void CollisionManager::Initialize()
+{
+	meshColliderList_.clear();
+	attackColliderList_.clear();
+	hitColliderList_.clear();
+	terrainColliderList_.clear();
+}
+
+void AbyssEngine::CollisionManager::Clear()
+{
+	meshColliderList_.clear();
+	attackColliderList_.clear();
+	hitColliderList_.clear();
+	terrainColliderList_.clear();
+}
+
+void AbyssEngine::CollisionManager::Update()
+{
+	TerrainDetection();
+	AttackDetection();
+}
+
+void CollisionManager::TerrainDetection()
 {
 	for (const auto& collider1 : terrainColliderList_)
 	{
@@ -24,7 +55,7 @@ void AbyssEngine::CollisionManager::TerrainDetection()
 	}
 }
 
-void AbyssEngine::CollisionManager::AttackDetection()
+void CollisionManager::AttackDetection()
 {
 	for (const auto& a : attackColliderList_)
 	{
@@ -35,16 +66,45 @@ void AbyssEngine::CollisionManager::AttackDetection()
 			{
 				if (const auto& hit = h.lock())
 				{
-					if (!hit->GetEnabled())
-					{
-						//両方のコライダーを取得完了
+					if (!hit->GetEnabled())break;
+					
+					//タグが同じか
+					if (atk->GetTag() == hit->GetTag())break;
 
-						//当たり判定
-						atk->OnCollision(hit);
+					//両方のコライダーを取得完了
+
+					//当たり判定
+					Collision::IntersectionResult result;
+					if (atk->IntersectVsSphere(hit,&result))
+					{
+						OnCollision(atk, hit, result);
 					}
 				}
 			}
 		}
-		
+	}
+}
+
+void CollisionManager::AddAttackCollider(const std::shared_ptr<SphereCollider>& collider)
+{
+	attackColliderList_.emplace_back(collider);
+}
+
+void AbyssEngine::CollisionManager::OnCollision(const std::shared_ptr<Collider>& myCollider, const std::shared_ptr<Collider>& collider, const Collision::IntersectionResult& result)
+{
+	//OnCollisionを呼んで判定が当たっていることを通知する
+	//親オブジェクトのOnCollisionも呼んでいく
+
+	std::shared_ptr<Actor>& actor = myCollider->GetActor();
+
+	while (true)
+	{
+		actor->OnCollision(collider,result);
+
+		actor = actor->GetParent().lock();
+		if (!actor)
+		{
+			break;
+		}
 	}
 }

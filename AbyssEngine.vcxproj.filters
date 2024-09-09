@@ -394,6 +394,7 @@
     <ClInclude Include="Scripts\Header\ActionDerived.h">
       <Filter>Script\Header\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\GameCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -657,6 +658,7 @@
     <ClCompile Include="Scripts\Source\JudgmentDerived.cpp">
       <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\GameCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

@@ -12,7 +12,6 @@ Effect::Effect(const char* filename)
     //マルチスレッドでEffectを作成するとDeviceContextを同時アクセスして
     //フリーズする可能性があるので排他制御する
 
-    //TODO:排他制御後でする
     std::lock_guard<std::mutex> lock(AbyssEngine::Engine::renderManager_->GetMutex());
 
     //Effekseerのリソースを読み込む

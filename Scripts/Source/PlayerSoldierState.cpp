@@ -207,24 +207,42 @@ void SoldierState::Dodge::Update()
 
             //TODO:‰ñ”ð•ûŒü•â³@‚¿‚å‚Á‚Æ•Ê‚Ì‚±‚Æ‚³‚¹‚Ä‚¨‚­‚ê
             //‰ñ”ð•ûŒü‚É‡‚í‚¹‚Äù‰ñ•ûŒü‚ð’²®
+            
+            //‰ñ“]•ûŒü‚ð’²®‚·‚é‚½‚ß‚Ì•ûŒü
+            Vector3 forward = {0,0,1};
+            Vector3 right = {1,0,0};
+
             switch (currentDirection_)
             {
             case SoldierState::Dodge::Direction::Back:
-                turnVec = { -moveVec.x,0,-moveVec.z };
+                //foward = «
+                forward = { 0, 0,-1 };
+                right   = {-1, 0, 0 };
                 break;
             case SoldierState::Dodge::Direction::Forward:
-                turnVec = { moveVec.x,0,moveVec.z };
+                //foward = ª@‚»‚Ì‚Ü‚Ü
+
                 break;
             case SoldierState::Dodge::Direction::Right:
-                turnVec = { -moveVec.z,0,moveVec.x };
+                //foward = ¨
+                forward = { 1, 0, 0 };
+                right   = { 0, 0,-1 };
                 break;
             case SoldierState::Dodge::Direction::Left:
-                turnVec = { moveVec.x,0,-moveVec.x };
+                //foward = ©
+                forward = {-1, 0, 0 };
+                right   = { 0, 0, 1 };
                 break;
             default:
                 break;
             }
-            owner_->TurnY(turnVec, 5.0f, true);
+
+            turnVec = {
+                    forward.x * moveVec.z + right.x * moveVec.x,
+                    0,
+                    forward.z * moveVec.z + right.z * moveVec.x };
+
+            owner_->TurnY(turnVec, 200.0f * Time::deltaTime_, true);
         }
 
         //‘¤“]‰ñ”ð‚Ö‚Ì‘JˆÚ

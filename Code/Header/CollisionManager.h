@@ -12,6 +12,8 @@ namespace AbyssEngine
     class AttackCollider;
     class HitCollider;
 
+    class SphereCollider;
+
 
     class CollisionManager
     {
@@ -25,6 +27,8 @@ namespace AbyssEngine
 
         void Finalieze();
         void Clear();
+
+        void Update();
 
         /// <summary>
         /// 地形判定(押し出し)
@@ -41,6 +45,12 @@ namespace AbyssEngine
         /// </summary>
         void HitDetection();
 
+        //攻撃判定コライダーを登録
+        void AddAttackCollider(const std::shared_ptr<SphereCollider>& collider);
+
+        //コライダーがヒットした際に呼ばれる関数
+        void OnCollision(const std::shared_ptr<Collider>& myCollider,const std::shared_ptr<Collider>& collider,const Collision::IntersectionResult& result);
+
     private:
 
         std::vector<std::weak_ptr<MeshCollider>> meshColliderList_;
@@ -49,9 +59,9 @@ namespace AbyssEngine
         std::vector<std::weak_ptr<Collider>> terrainColliderList_;
 
         //攻撃判定コライダー
-        std::vector<std::weak_ptr<Collider>> attackColliderList_;
+        std::vector<std::weak_ptr<SphereCollider>> attackColliderList_;
 
         //喰らい判定コライダー
-        std::vector<std::weak_ptr<Collider>> hitColliderList_;
+        std::vector<std::weak_ptr<SphereCollider>> hitColliderList_;
     };
 }

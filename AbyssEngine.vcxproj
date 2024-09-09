@@ -33,6 +33,7 @@
     <ClInclude Include="Code\Header\Character.h" />
     <ClInclude Include="Code\Header\CollisionHelper.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
+    <ClInclude Include="Code\Header\GameCollider.h" />
     <ClInclude Include="Code\Header\PerlinNoise.h" />
     <ClInclude Include="Code\Header\Projectile.h" />
     <ClInclude Include="Code\Header\ScriptComponentManager.h" />
@@ -128,6 +129,7 @@
     <ClCompile Include="Code\Source\Character.cpp" />
     <ClCompile Include="Code\Source\CollisionHelper.cpp" />
     <ClCompile Include="Code\Source\FadeSystem.cpp" />
+    <ClCompile Include="Code\Source\GameCollider.cpp" />
     <ClCompile Include="Code\Source\PerlinNoise.cpp" />
     <ClCompile Include="Code\Source\Projectile.cpp" />
     <ClCompile Include="Code\Source\ScriptComponentManager.cpp" />

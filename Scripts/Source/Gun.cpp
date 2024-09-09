@@ -10,6 +10,8 @@
 #include "DebugRenderer.h"
 #include "RenderManager.h"
 
+#include "SphereCollider.h"
+
 using namespace AbyssEngine;
 
 void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
@@ -66,6 +68,10 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
         const auto& bullet = Engine::sceneManager_->GetActiveScene().InstanceActor("Bullet");
         const auto& proj = bullet->AddComponent<Bullet>();
         bullet->GetTransform()->SetPosition(muzzlePos_);
+
+        //’eŠÛ‚ÌÝ’è
+        proj->SetRadius(bulletRadius_);
+        proj->GetCollider()->SetTag(colliderTag_);
 
         //e‚Ì¸“x‚ð”½‰f
         if (precision_ > 0)

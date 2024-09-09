@@ -27,6 +27,10 @@ namespace AbyssEngine
         void WritingJsonFile(const nlohmann::json& json);
 
         static void Destroy(std::shared_ptr<Actor> actor);//アクターを削除する
+
+        //何かに当たっている場合自動で呼ばれる
+        void OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result);
+
     public:
         [[nodiscard]] std::weak_ptr<Actor> GetParent() const;
         void SetParent(const std::shared_ptr<Actor>& parent);//親を設定

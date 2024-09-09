@@ -4,6 +4,8 @@
 
 namespace AbyssEngine
 {
+    class SphereCollider;
+
     //飛び道具コンポーネント
     class Projectile : public ScriptComponent
     {
@@ -29,6 +31,10 @@ namespace AbyssEngine
     public:
         void SetDirection(const Vector3& dir) { direction_ = dir; }
 
+        const std::shared_ptr<SphereCollider>& GetCollider() const { return collider_; }
+
+        void SetRadius(const float& radius);
+
     protected:
         //進行方向
         Vector3 direction_;
@@ -41,6 +47,9 @@ namespace AbyssEngine
 
         //寿命
         float flashLifespan_ = 10.0f;
+
+        //球判定
+        std::shared_ptr<SphereCollider> collider_;
     };
 }
 

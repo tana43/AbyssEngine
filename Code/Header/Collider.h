@@ -3,6 +3,8 @@
 #include "MathHelper.h"
 #include <string>
 
+#include "CollisionHelper.h"
+
 namespace AbyssEngine
 {
     class Collider : public AbyssEngine::Component
@@ -10,8 +12,9 @@ namespace AbyssEngine
     public:
         enum class Tag : unsigned int
         {
-            Player  = 0x01 << 1,
-            Enemy   = 0x01 << 2,
+            Non     = 0x00,
+            Player  = 0x01 << 0,
+            Enemy   = 0x01 << 1,
         };
 
         enum class Type
@@ -25,7 +28,7 @@ namespace AbyssEngine
         Collider() {}
         ~Collider() {}
 
-        //void Initialize(const std::shared_ptr<Actor>& actor);
+        void Initialize(const std::shared_ptr<Actor>& actor);
 
         void SetFilePath(const char* path) { filePath_ = path; }
 
@@ -33,10 +36,7 @@ namespace AbyssEngine
         void SetEnable(bool value) { enabled_ = value; }
 
         const unsigned int& GetTag() const { return tag_; }
-        void SetTag(const Tag& tag) { tag_ = static_cast<unsigned int>(tag); }
-
-        //‰½‚©‚É“–‚½‚Á‚Ä‚¢‚éê‡©“®‚ÅŒÄ‚Î‚ê‚é
-        virtual void OnCollision(const std::shared_ptr<Collider>& collision) = 0;
+        void SetTag(const unsigned int& tag) { tag_ = static_cast<unsigned int>(tag); }
 
     public:
         struct Triangle

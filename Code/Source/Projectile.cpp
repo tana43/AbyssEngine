@@ -3,12 +3,15 @@
 #include "Engine.h"
 #include "RenderManager.h"
 #include "DebugRenderer.h"
+#include "SphereCollider.h"
 
 using namespace AbyssEngine;
 
 void Projectile::Initialize(const std::shared_ptr<Actor>& actor)
 {
     ScriptComponent::Initialize(actor);
+
+    actor->AddComponent<SphereCollider>();
 }
 
 void Projectile::Update()
@@ -28,4 +31,10 @@ void Projectile::Update()
     {
         actor_->Destroy(actor_);
     }
+}
+
+void AbyssEngine::Projectile::SetRadius(const float& radius)
+{
+    radius_ = radius;
+    collider_->SetRadius(radius);
 }
