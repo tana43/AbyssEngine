@@ -220,7 +220,7 @@ void SpriteRenderer::RecalculateFrame()
 	}
 }
 
-bool AbyssEngine::SpriteRenderer::DrawImGui()
+void AbyssEngine::SpriteRenderer::DrawImGui()
 {
 	if (ImGui::TreeNode("SpriteRenderer"))
 	{
@@ -234,8 +234,6 @@ bool AbyssEngine::SpriteRenderer::DrawImGui()
 
 		ImGui::TreePop();
 	}
-
-	return false;
 }
 
 void SpriteRenderer::SetActive(const bool value)

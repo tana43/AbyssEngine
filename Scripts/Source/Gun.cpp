@@ -24,7 +24,7 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     muzzleFlashComponent_->SetScale(0.5f);
 }
 
-bool Gun::DrawImGui()
+void Gun::DrawImGui()
 {
     if (ImGui::TreeNode("Gun"))
     {
@@ -39,8 +39,6 @@ bool Gun::DrawImGui()
 
         ImGui::TreePop();
     }
-
-    return true;
 }
 
 void Gun::DrawDebug()

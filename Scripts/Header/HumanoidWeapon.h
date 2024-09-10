@@ -14,7 +14,7 @@ public:
     //速力処理
     void UpdateVelocity()override;
 
-    bool DrawImGui()override;
+    void DrawImGui()override;
 
     virtual void ToFlightMode();//フライトモードへ移行
     virtual void ToLandMode();//陸上モードへ移行

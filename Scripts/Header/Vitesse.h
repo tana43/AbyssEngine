@@ -16,7 +16,7 @@ public:
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
     void Update()override;
-    bool DrawImGui()override;
+    void DrawImGui()override;
 
     //速度によって影響されるスラスター
     void ThrusterInfluenceVelocity();

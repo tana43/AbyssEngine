@@ -21,7 +21,7 @@ namespace AbyssEngine
         //描画
         void Render()override;
 
-        bool DrawImGui()override;
+        void DrawImGui()override;
 
     private:
         void SetActive(bool value)override;//アクティブ状態を切り替える

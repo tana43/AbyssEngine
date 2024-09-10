@@ -1,10 +1,14 @@
 #pragma once
 #include "Component.h"
 #include "CollisionHelper.h"
+#include "MathHelper.h"
+
+#include <string>
 
 namespace AbyssEngine
 {
     class Collider;
+    class SphereCollider;
 
     //独自のコンポーネントを開発する際に継承元として使用するコンポーネント
     //Update処理を持っている
@@ -25,6 +29,12 @@ namespace AbyssEngine
         virtual void UpdateAfter() {}
         virtual void UpdateEnd() {}
 
+        //コライダーを付ける
+        void AddTerrainCollider();  //押し出し判定用コライダー
+        std::shared_ptr<SphereCollider> AddAttackCollider(Vector3 localPos, float radius, std::string name = "AtkCollider");   //攻撃判定用コライダー
+        std::shared_ptr<SphereCollider> AddHitCollider(Vector3 localPos, float radius, std::string name = "HitCollider");      //喰らい判定用コライダー
+
+    public:
         const bool& GetActive() const { return active_; }
         void SetActive(const bool& active) { active_ = active; }
 

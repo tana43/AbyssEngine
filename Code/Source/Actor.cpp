@@ -153,7 +153,7 @@ void AbyssEngine::Actor::OnCollision(const std::shared_ptr<Collider>& collision,
 	//スクリプトコンポーネントを継承しているクラスの	OnCollisionを呼ぶ
 	for (const auto& c : componentList_)
 	{
-		const auto& sc = std::dynamic_pointer_cast<ScriptComponent>(c);
+		const auto& sc = std::static_pointer_cast<ScriptComponent>(c);
 		if (sc)sc->OnCollision(collision, result);
 	}
 }

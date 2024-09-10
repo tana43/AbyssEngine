@@ -12,7 +12,7 @@ public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
     void Update()override;
 
-    bool DrawImGui();
+    void DrawImGui()override;
 
 private:
     //プロペラは行列計算で回転させる

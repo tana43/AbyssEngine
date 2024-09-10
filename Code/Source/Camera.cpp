@@ -22,7 +22,7 @@ void Camera::Initialize(const std::shared_ptr<Actor>& actor)
     Engine::renderManager_->Add(static_pointer_cast<Camera>(shared_from_this()));
 }
 
-bool Camera::DrawImGui()
+void Camera::DrawImGui()
 {
     if (ImGui::TreeNode("Camera"))
     {
@@ -92,8 +92,6 @@ bool Camera::DrawImGui()
             ImGui::TreePop();
         }
     }
-
-    return true;
 }
 
 void Camera::Update()

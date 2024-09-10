@@ -67,9 +67,8 @@ void MeshCollider::Transform(const DirectX::XMFLOAT4X4& worldTransform)
     model_->Transform(worldTransform);
 }
 
-bool MeshCollider::DrawImGui()
+void MeshCollider::DrawImGui()
 {
-    return false;
 }
 
 void MeshCollider::DrawDebug()

@@ -38,7 +38,7 @@ void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
 
 }
 
-bool StaticMesh::DrawImGui()
+void StaticMesh::DrawImGui()
 {
     if (ImGui::TreeNode("StaticMesh"))
     {
@@ -56,8 +56,6 @@ bool StaticMesh::DrawImGui()
 
         ImGui::TreePop();
     }
-
-    return false;
 }
 
 void StaticMesh::RecalculateFrame()

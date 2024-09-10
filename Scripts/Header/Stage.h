@@ -15,7 +15,7 @@ public:
 
     //void Update()override;
     void DrawDebug()override;
-    bool DrawImGui()override;
+    void DrawImGui()override;
 
     struct Area
     {

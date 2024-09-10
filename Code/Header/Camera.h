@@ -16,7 +16,7 @@ namespace AbyssEngine
     {
     public:
         void Initialize(const std::shared_ptr<Actor>& actor)override; //‰Šú‰»
-        bool DrawImGui() override;
+        void DrawImGui() override;
         //bool CanMultiple() override;
         void Update();
 

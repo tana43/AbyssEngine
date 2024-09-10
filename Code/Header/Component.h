@@ -39,7 +39,7 @@ namespace AbyssEngine
         virtual void Initialize(const std::shared_ptr<Actor>& actor) {}
 
         //ImGui表示用の共通関数
-        virtual bool DrawImGui() { return true; }
+        virtual void DrawImGui() {}
 
         //デバッグ表示の関数
         virtual void DrawDebug() {}

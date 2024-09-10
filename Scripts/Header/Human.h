@@ -16,7 +16,7 @@ public:
     virtual void Update()override {}
     //virtual void DelayedUpdate() {}//描画時の行列更新などが終わってから
 
-    bool DrawImGui()override;
+    void DrawImGui()override;
 
 public:
     const std::shared_ptr<AbyssEngine::SkeletalMesh>& GetModel() { return model_; }

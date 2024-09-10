@@ -67,7 +67,7 @@ void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor
     }
 }
 
-bool ThrusterEffect::DrawImGui()
+void ThrusterEffect::DrawImGui()
 {
     ImGui::SetNextItemOpen(false, ImGuiCond_::ImGuiCond_FirstUseEver);
     if (ImGui::TreeNode(name_.c_str()))
@@ -123,8 +123,6 @@ bool ThrusterEffect::DrawImGui()
         }
         ImGui::TreePop();
     }
-
-    return false;
 }
 
 void ThrusterEffect::AttachSocket(const std::string& name)

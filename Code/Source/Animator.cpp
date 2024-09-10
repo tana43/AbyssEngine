@@ -17,7 +17,7 @@ void Animator::Initialize(const std::shared_ptr<Actor>& actor)
 	//animatedNodes_ = skeletalMesh_.lock()->GetModel()->nodes_;
 }
 
-bool Animator::DrawImGui()
+void Animator::DrawImGui()
 {
 	if (ImGui::TreeNode("Animator"))
 	{
@@ -37,7 +37,6 @@ bool Animator::DrawImGui()
 
 		ImGui::TreePop();
 	}
-	return false;
 }
 
 void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMesh)

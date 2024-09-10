@@ -6,7 +6,7 @@ void Human::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     AbyssEngine::Character::Initialize(actor);
 }
 
-bool Human::DrawImGui()
+void Human::DrawImGui()
 {
     return AbyssEngine::Character::DrawImGui();
 }

@@ -114,7 +114,7 @@ Vector3 Transform::GetEulerAngles() const
     return rotation_.To_Euler();
 }
 
-bool Transform::DrawImGui()
+void Transform::DrawImGui()
 {
 #if _DEBUG
     if (ImGui::TreeNode("Transform"))
@@ -178,7 +178,6 @@ bool Transform::DrawImGui()
     }
 
 #endif // _DEBUG
-    return true;
 }
 
 void AbyssEngine::Transform::SaveToJson()

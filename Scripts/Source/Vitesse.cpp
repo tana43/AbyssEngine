@@ -181,7 +181,7 @@ void Vitesse::Update()
     ThrusterUpdate();
 }
 
-bool Vitesse::DrawImGui()
+void Vitesse::DrawImGui()
 {
     HumanoidWeapon::DrawImGui();
 
@@ -208,8 +208,6 @@ bool Vitesse::DrawImGui()
     }
 
     stateMachine_->DrawImGui();
-
-    return true;
 }
 
 void Vitesse::ThrusterInfluenceVelocity()

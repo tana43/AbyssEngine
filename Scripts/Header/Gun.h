@@ -16,7 +16,7 @@ public:
     ~Gun() = default;
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
-    bool DrawImGui()override;
+    void DrawImGui()override;
     void DrawDebug()override;
 
     void Update()override;
@@ -83,6 +83,6 @@ private:
     float bulletRadius_;
 
     //’eŠÛ‚Ì”»’è‚É‚Â‚¯‚éƒ^ƒO
-    unsigned int colliderTag_;
+    unsigned int colliderTag_ = 0;
 };
 

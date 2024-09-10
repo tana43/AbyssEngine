@@ -61,11 +61,15 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //銃
     gunComponent_ = actor->AddComponent<Gun>();
+    gunComponent_->SetColliderTag(Collider::Tag::Enemy);
 
     //ビヘイビアツリー初期化
     BehaviorTreeInitialize();
 
     isTargetFind_ = false;
+
+    //当たり判定初期化
+    ColliderInitialize();
 }
 
 void BotEnemy::BehaviorTreeInitialize()
@@ -99,7 +103,7 @@ void BotEnemy::Update()
     ReloadUpdate();
 }
 
-bool BotEnemy::DrawImGui()
+void BotEnemy::DrawImGui()
 {
     BaseEnemy::DrawImGui();
 
@@ -112,8 +116,6 @@ bool BotEnemy::DrawImGui()
 
         ImGui::TreePop();
     }
-
-    return false;
 }
 
 void BotEnemy::DrawDebug()

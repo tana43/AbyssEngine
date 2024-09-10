@@ -31,7 +31,7 @@ public:
 
     bool CanMultiple()override { return true; }
 
-    bool DrawImGui()override;
+    void DrawImGui()override;
 
 public:
 

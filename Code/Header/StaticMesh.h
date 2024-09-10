@@ -16,7 +16,7 @@ namespace AbyssEngine
         ~StaticMesh() = default;
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
-        bool DrawImGui()override;
+        void DrawImGui()override;
         void RecalculateFrame()override;//s—ñXV“™
 
         struct Socket

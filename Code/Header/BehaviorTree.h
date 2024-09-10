@@ -90,7 +90,7 @@ namespace AbyssEngine
 		}
 
 
-		bool DrawImGui() override
+		void DrawImGui() override
 		{
 			if (ImGui::TreeNode("BehaviorTree"))
 			{
@@ -98,7 +98,6 @@ namespace AbyssEngine
 
 				ImGui::TreePop();
 			}
-			return true;
 		}
 
 

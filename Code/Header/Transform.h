@@ -66,7 +66,7 @@ namespace AbyssEngine
 
         Vector3 GetEulerAngles() const;
 
-        bool DrawImGui()override;
+        void DrawImGui()override;
 
         //現在の位置、回転、スケールをJsonファイルに保存
         void SaveToJson();

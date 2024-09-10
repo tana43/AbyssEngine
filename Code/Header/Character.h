@@ -40,7 +40,7 @@ namespace AbyssEngine
         virtual void Update()override;
         //virtual void DelayedUpdate() {}//描画時の行列更新などが終わってから
 
-        bool DrawImGui()override;
+        void DrawImGui()override;
 
         //複数アタッチ不可
         bool CanMultiple()override { return false; }
@@ -56,11 +56,6 @@ namespace AbyssEngine
 
         //死亡
         void Die();
-
-        //コライダーを付ける
-        void AddTerrainCollider();  //押し出し判定用コライダー
-        std::shared_ptr<SphereCollider> AddAttackCollider(Vector3 localPos, float radius,std::string name = "AtkCollider");   //攻撃判定用コライダー
-        std::shared_ptr<SphereCollider> AddHitCollider(Vector3 localPos, float radius, std::string name = "HitCollider");      //喰らい判定用コライダー
 
     public:
         const bool& GetIsActive() const { return active_; }

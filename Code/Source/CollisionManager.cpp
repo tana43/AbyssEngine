@@ -18,7 +18,7 @@ void CollisionManager::Initialize()
 	terrainColliderList_.clear();
 }
 
-void AbyssEngine::CollisionManager::Clear()
+void CollisionManager::Clear()
 {
 	meshColliderList_.clear();
 	attackColliderList_.clear();
@@ -26,10 +26,33 @@ void AbyssEngine::CollisionManager::Clear()
 	terrainColliderList_.clear();
 }
 
-void AbyssEngine::CollisionManager::Update()
+void CollisionManager::Update()
 {
+	UpdateWorldMatrix();
+
 	TerrainDetection();
 	AttackDetection();
+}
+
+void CollisionManager::UpdateWorldMatrix()
+{
+	for (const auto& collider : attackColliderList_)
+	{
+		if (const auto& col = collider.lock())
+		{
+			if (!col->GetEnabled())return;
+			col->GetTransform()->CalcWorldMatrix();
+		}
+	}
+
+	for (const auto& collider : hitColliderList_)
+	{
+		if (const auto& col = collider.lock())
+		{
+			if (!col->GetEnabled())return;
+			col->GetTransform()->CalcWorldMatrix();
+		}
+	}
 }
 
 void CollisionManager::TerrainDetection()
@@ -85,12 +108,17 @@ void CollisionManager::AttackDetection()
 	}
 }
 
-void CollisionManager::AddAttackCollider(const std::shared_ptr<SphereCollider>& collider)
+void CollisionManager::RegisterAttackCollider(const std::shared_ptr<SphereCollider>& collider)
 {
 	attackColliderList_.emplace_back(collider);
 }
 
-void AbyssEngine::CollisionManager::OnCollision(const std::shared_ptr<Collider>& myCollider, const std::shared_ptr<Collider>& collider, const Collision::IntersectionResult& result)
+void CollisionManager::RegisterHitCollider(const std::shared_ptr<SphereCollider>& collider)
+{
+	hitColliderList_.emplace_back(collider);
+}
+
+void CollisionManager::OnCollision(const std::shared_ptr<Collider>& myCollider, const std::shared_ptr<Collider>& collider, const Collision::IntersectionResult& result)
 {
 	//OnCollisionを呼んで判定が当たっていることを通知する
 	//親オブジェクトのOnCollisionも呼んでいく

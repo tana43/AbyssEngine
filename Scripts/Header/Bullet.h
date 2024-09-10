@@ -1,6 +1,11 @@
 #pragma once
 #include "Projectile.h"
 
+namespace AbyssEngine
+{
+    SphereCollider;
+}
+
 class Bullet : public AbyssEngine::Projectile
 {
 public:
@@ -13,8 +18,13 @@ public:
     const float& GetAttackPoint() const { return attackPoint_; }
     void SetAttackPoint(const float& atk) { attackPoint_ = atk; }
 
+    const std::shared_ptr<AbyssEngine::SphereCollider>& GetCollider() { return collider_; }
+
 private:
     //UŒ‚—Í
     float attackPoint_ = 1.0f;
+
+    //‹…”»’è
+    std::shared_ptr<AbyssEngine::SphereCollider> collider_;
 };
 

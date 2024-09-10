@@ -31,7 +31,7 @@ public:
 
     void Update()override;
 
-    bool DrawImGui()override;
+    void DrawImGui()override;
     void DrawDebug()override;
 
     //ターゲットを索敵

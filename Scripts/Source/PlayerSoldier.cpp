@@ -12,6 +12,7 @@
 #include "Gun.h"
 #include "PlayerSoldierState.h"
 #include "BillboardRenderer.h"
+#include "SphereCollider.h"
 
 #include "StageManager.h"
 
@@ -119,6 +120,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     weaponModel_->GetSocketData().rotation_ = Weapon_Offset_Move.rot;
 
     gunComponent_ = actor_->AddComponent<Gun>();
+    gunComponent_->SetColliderTag(Collider::Tag::Player);
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -164,6 +166,10 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
 
     //銃口のオフセット位置設定
     muzzleOffsetPos_ = { 0.0f,0.16f,0.49f };
+
+    //TODO:仮置きの当たり判定
+    const auto& collider = AddHitCollider(center_,0.5f);
+    collider->ReplaceTag(Collider::Tag::Player);
 }
 
 void Soldier::Update()
@@ -190,7 +196,7 @@ void Soldier::Update()
     
 }
 
-bool Soldier::DrawImGui()
+void Soldier::DrawImGui()
 {
     if (ImGui::TreeNode("Player"))
     {
@@ -208,8 +214,6 @@ bool Soldier::DrawImGui()
 
     }
 
-
-    return false;
 }
 
 void Soldier::MoveUpdate()

@@ -37,6 +37,7 @@ namespace AbyssEngine
 
         const unsigned int& GetTag() const { return tag_; }
         void ReplaceTag(unsigned int t) { tag_ = t; }
+        void ReplaceTag(Tag t) { tag_ = static_cast<unsigned int>(t); }
         void AddTag(Tag t)
         {
             tag_ |= static_cast<unsigned int>(t);

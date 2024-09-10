@@ -17,7 +17,7 @@ namespace AbyssEngine
 
         void UpdateBefore()override; // 更新処理
 
-        bool DrawImGui()override;               // ImGui用
+        void DrawImGui()override;               // ImGui用
 
         void SetState(int newState);        // ステートセット
         void ChangeState(int newState);     // ステート変更
@@ -56,7 +56,7 @@ namespace AbyssEngine
     //}
 
     template<class T>
-    inline bool StateMachine<T>::DrawImGui()
+    inline void StateMachine<T>::DrawImGui()
     {
         static int state = 0;
         if (ImGui::TreeNode("stateMachine"))
@@ -74,8 +74,6 @@ namespace AbyssEngine
 
             ImGui::TreePop();
         }
-
-        return true;
     }
 
     template<class T>

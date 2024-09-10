@@ -34,12 +34,12 @@ Engine::Engine()
     srand((unsigned int)time(NULL)); // 現在時刻の情報で初期化
 
     //各マネージャーの生成
+    collisionManager_   = make_unique<CollisionManager>();
     sceneManager_       = make_unique<SceneManager>();
     assetManager_       = make_unique<AssetManager>();
     renderManager_      = make_unique<RenderManager>();
     scriptComManager_   = make_unique<ScriptComponentManager>();
     inputManager_       = make_unique<Input>();
-    collisionManager_   = make_unique<CollisionManager>();
 
     //ImGui初期化
     IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::GetDevice().Get(), DXSystem::GetDeviceContext().Get());
@@ -73,9 +73,9 @@ void Engine::Update()
 
     inputManager_->Update();
 
-    sceneManager_->Update();
-
     collisionManager_->Update();
+
+    sceneManager_->Update();
 
     scriptComManager_->Update();
 

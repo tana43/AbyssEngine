@@ -25,7 +25,7 @@ namespace AbyssEngine
         //アニメーションの再計算
         void RecalculateFrame()override;
 
-        bool DrawImGui()override;
+        void DrawImGui()override;
 
         //アニメーションの再生
         void PlayAnimation(int animIndex,bool loop = true);

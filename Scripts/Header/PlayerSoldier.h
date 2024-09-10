@@ -56,7 +56,7 @@ public:
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
     void Update()override;
-    bool DrawImGui()override;
+    void DrawImGui()override;
 
     //ヴィテスに搭乗する
     bool BoardingTheVitesse();
@@ -134,6 +134,19 @@ private:
 
     //マズルの位置オフセット
     AbyssEngine::Vector3 muzzleOffsetPos_ = {0,0,0};
+
+
+    //喰らい判定用コライダー
+    enum class HitColliderPart
+    {
+        Head,
+        Chest,
+        Arm_R,
+        Arm_L,
+        Hip,
+        End
+    };
+    std::shared_ptr<AbyssEngine::SphereCollider> hitCollider_[static_cast<int>(HitColliderPart::End)];
 };
 
 

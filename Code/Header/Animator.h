@@ -13,7 +13,7 @@ namespace AbyssEngine
         ~Animator() {}
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
-        bool DrawImGui()override;
+        void DrawImGui()override;
 
         //SkeletalMesh‚©‚çŒÄ‚Î‚ê‚é‰Šú‰»@’Êí‚Ì‰Šú‰»‚Å‚Í‚Å‚«‚È‚¢ˆ—
         void LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMesh);

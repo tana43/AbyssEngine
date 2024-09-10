@@ -31,7 +31,7 @@ namespace AbyssEngine
         void Render()override;      //描画実行
         void RecalculateFrame();//表示座標を計算する
 
-        bool DrawImGui()override;
+        void DrawImGui()override;
 
     public:
         void SetColor(const Vector4& color) { color_ = color; }

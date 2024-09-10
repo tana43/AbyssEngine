@@ -106,13 +106,12 @@ void HumanoidWeapon::UpdateVelocity()
     }
 }
 
-bool HumanoidWeapon::DrawImGui()
+void HumanoidWeapon::DrawImGui()
 {
     Character::DrawImGui();
 
     ImGui::SliderFloat("Climb", &climbSpeed_, 0.0f, 200.0f);
 
-    return true;
 }
 
 void HumanoidWeapon::Climb(float amount)

@@ -3,8 +3,6 @@
 #include "Actor.h"
 #include "StageManager.h"
 #include "SkeletalMesh.h"
-#include "SceneManager.h"
-#include "SphereCollider.h"
 
 #include <algorithm>
 
@@ -25,7 +23,7 @@ void AbyssEngine::Character::Update()
 
 }
 
-bool Character::DrawImGui()
+void Character::DrawImGui()
 {
     ImGui::DragFloat3("Velocity", &velocity_.x);
 
@@ -47,8 +45,6 @@ bool Character::DrawImGui()
     ImGui::DragFloat("Terrain Radius", &terrainRadius_, 0.01f, 0.0f);
     ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
     ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
-
-    return true;
 }
 
 bool Character::Jump(const float& jumpPower)
@@ -202,42 +198,6 @@ bool AbyssEngine::Character::AddDamage(const float& damage, DamageResult& damage
 void Character::Die()
 {
     actor_->Destroy(actor_);
-}
-
-std::shared_ptr<SphereCollider> Character::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius,std::string name)
-{
-    //コライダー用のアクターを生成
-    auto& scene = Engine::sceneManager_->GetActiveScene();
-    const auto& colliderActor = scene.InstanceActor(name);
-    
-    const auto& colliderCom = colliderActor->AddComponent<SphereCollider>();
-    colliderCom->SetRadius(radius);
-
-    //位置変更
-    colliderActor->GetTransform()->SetLocalPosition(localPos);
-
-    //親子付け
-    colliderActor->SetParent(actor_);
-
-    return colliderCom;
-}
-
-std::shared_ptr<SphereCollider> Character::AddHitCollider(Vector3 localPos, float radius, std::string name)
-{
-    //コライダー用のアクターを生成
-    auto& scene = Engine::sceneManager_->GetActiveScene();
-    const auto& colliderActor = scene.InstanceActor(name);
-
-    const auto& colliderCom = colliderActor->AddComponent<SphereCollider>();
-    colliderCom->SetRadius(radius);
-
-    //位置変更
-    colliderActor->GetTransform()->SetLocalPosition(localPos);
-
-    //親子付け
-    colliderActor->SetParent(actor_);
-
-    return colliderCom;
 }
 
 Vector3 Character::GetCenterPos()

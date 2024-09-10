@@ -12,5 +12,5 @@ void AttackCollider::Initialize(const std::shared_ptr<Actor>& actor)
     SphereCollider::Initialize(actor);
 
     //マネージャーに登録
-    Engine::collisionManager_->AddAttackCollider(static_pointer_cast<SphereCollider>(shared_from_this()));
+    Engine::collisionManager_->RegisterAttackCollider(static_pointer_cast<SphereCollider>(shared_from_this()));
 }

@@ -19,7 +19,7 @@ namespace AbyssEngine
         void Transform();//Ž©•ª‚ÌTransform‚ðŽg‚Á‚Ä•ÏŠ·
         void Transform(const DirectX::XMFLOAT4X4& worldTransform);
 
-        bool DrawImGui()override;
+        void DrawImGui()override;
         void DrawDebug()override;
 
     public:

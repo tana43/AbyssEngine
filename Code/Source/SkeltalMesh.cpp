@@ -119,7 +119,7 @@ bool SkeletalMesh::ShadowCulling(const DirectX::BoundingBox& box)
 	return false;
 }
 
-bool SkeletalMesh::DrawImGui()
+void SkeletalMesh::DrawImGui()
 {
 	
 	if (ImGui::TreeNode("Skeletal Mesh"))
@@ -131,8 +131,6 @@ bool SkeletalMesh::DrawImGui()
 
 		ImGui::TreePop();
 	}
-
-	return true;
 }
 
 void SkeletalMesh::PlayAnimation(int animIndex,bool loop)

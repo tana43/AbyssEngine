@@ -42,7 +42,7 @@ void Stage::DrawDebug()
 #endif // _DEBUG
 }
 
-bool Stage::DrawImGui()
+void Stage::DrawImGui()
 {
 #if _DEBUG
 	if (ImGui::TreeNode("Stage"))
@@ -52,7 +52,6 @@ bool Stage::DrawImGui()
 		ImGui::TreePop();
 	}
 #endif // _DEBUG
-	return true;
 }
 
 bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPosition, Vector3& hitNormal)

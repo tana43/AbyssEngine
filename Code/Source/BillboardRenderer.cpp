@@ -137,7 +137,7 @@ void BillboardRenderer::Render()
     context->DrawIndexed(6, 0, 0);
 }
 
-bool BillboardRenderer::DrawImGui()
+void BillboardRenderer::DrawImGui()
 {
 #if _DEBUG
     if (ImGui::TreeNode("PlaneRenderer"))
@@ -164,7 +164,6 @@ bool BillboardRenderer::DrawImGui()
         ImGui::TreePop();
     }
 #endif // _DEBUG
-    return true;
 }
 
 void AbyssEngine::BillboardRenderer::SetActive(bool value)
