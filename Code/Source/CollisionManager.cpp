@@ -90,7 +90,7 @@ void CollisionManager::AttackDetection()
 				if (const auto& hit = h.lock())
 				{
 					if (!hit->GetEnabled())break;
-					
+
 					//ƒ^ƒO‚ª“¯‚¶‚©
 					if (atk->GetTag() == hit->GetTag())break;
 
@@ -116,6 +116,38 @@ void CollisionManager::RegisterAttackCollider(const std::shared_ptr<SphereCollid
 void CollisionManager::RegisterHitCollider(const std::shared_ptr<SphereCollider>& collider)
 {
 	hitColliderList_.emplace_back(collider);
+}
+
+void CollisionManager::DeleteAttackCollider(const std::shared_ptr<SphereCollider>& collider)
+{
+	//—v‘fíœ
+	for (auto it = attackColliderList_.begin(); it != attackColliderList_.end(); it++)
+	{
+		if (const auto& atk = (*it).lock())
+		{
+			if (atk == collider)
+			{
+				attackColliderList_.erase(it);
+				return;
+			}
+		}
+	}
+}
+
+void CollisionManager::DeleteHitCollider(const std::shared_ptr<SphereCollider>& collider)
+{
+	//—v‘fíœ
+	for (auto it = hitColliderList_.begin();it != hitColliderList_.end();it++)
+	{
+		if (const auto& hit = (*it).lock())
+		{
+			if (hit == collider)
+			{
+				hitColliderList_.erase(it);
+				return;
+			}
+		}
+	}
 }
 
 void CollisionManager::OnCollision(const std::shared_ptr<Collider>& myCollider, const std::shared_ptr<Collider>& collider, const Collision::IntersectionResult& result)

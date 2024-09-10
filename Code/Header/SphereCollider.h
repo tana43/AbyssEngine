@@ -11,7 +11,7 @@ namespace AbyssEngine
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
 
-        void DrawDebug();
+        void DrawDebug()override;
 
         void DrawImGui()override;
 
@@ -23,12 +23,12 @@ namespace AbyssEngine
 
         void SetDebugColor(const Vector4& color) { debugColor_ = color; }
 
-    private:
+    protected:
         //半径
         float radius_;
 
         //デバッグ時に表示される球体のカラー
-        Vector4 debugColor_ = { 1,0,1,1 };
+        Vector4 debugColor_ = { 1,1,1,1 };
     };
 }
 

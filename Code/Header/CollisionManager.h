@@ -53,6 +53,12 @@ namespace AbyssEngine
         //喰らい判定用コライダーを登録
         void RegisterHitCollider(const std::shared_ptr<SphereCollider>& collider);
 
+        //攻撃判定コライダーを削除
+        void DeleteAttackCollider(const std::shared_ptr<SphereCollider>& collider);
+
+        //喰らい判定用コライダーを削除
+        void DeleteHitCollider(const std::shared_ptr<SphereCollider>& collider);
+
         //コライダーがヒットした際に呼ばれる関数
         void OnCollision(const std::shared_ptr<Collider>& myCollider,const std::shared_ptr<Collider>& collider,const Collision::IntersectionResult& result);
 

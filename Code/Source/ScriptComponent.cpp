@@ -5,6 +5,7 @@
 #include "SphereCollider.h"
 #include "SceneManager.h"
 #include "CollisionManager.h"
+#include "GameCollider.h"
 
 using namespace AbyssEngine;
 
@@ -21,7 +22,7 @@ std::shared_ptr<SphereCollider> ScriptComponent::AddAttackCollider(AbyssEngine::
     auto& scene = Engine::sceneManager_->GetActiveScene();
     const auto& colliderActor = scene.InstanceActor(name);
 
-    const auto& colliderCom = colliderActor->AddComponent<SphereCollider>();
+    const auto& colliderCom = colliderActor->AddComponent<AttackCollider>();
     colliderCom->SetRadius(radius);
 
     //位置変更
@@ -29,9 +30,6 @@ std::shared_ptr<SphereCollider> ScriptComponent::AddAttackCollider(AbyssEngine::
 
     //親子付け
     colliderActor->SetParent(actor_);
-
-    //マネージャーに登録する
-    Engine::collisionManager_->RegisterAttackCollider(colliderCom);
 
     //デバッグ球のカラー変更
     colliderCom->SetDebugColor(Vector4(1, 0, 0, 1));
@@ -45,7 +43,7 @@ std::shared_ptr<SphereCollider> ScriptComponent::AddHitCollider(Vector3 localPos
     auto& scene = Engine::sceneManager_->GetActiveScene();
     const auto& colliderActor = scene.InstanceActor(name);
 
-    const auto& colliderCom = colliderActor->AddComponent<SphereCollider>();
+    const auto& colliderCom = colliderActor->AddComponent<HitCollider>();
     colliderCom->SetRadius(radius);
 
     //位置変更
@@ -53,12 +51,6 @@ std::shared_ptr<SphereCollider> ScriptComponent::AddHitCollider(Vector3 localPos
 
     //親子付け
     colliderActor->SetParent(actor_);
-
-    //マネージャーに登録する
-    Engine::collisionManager_->RegisterHitCollider(colliderCom);
-    
-    //デバッグ球のカラー変更
-    colliderCom->SetDebugColor(Vector4(1, 0, 1, 1));
 
     return colliderCom;
 }

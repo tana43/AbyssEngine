@@ -19,9 +19,7 @@ namespace AbyssEngine
 
         enum class Type
         {
-            Mesh,
-            Sphere,
-            AABB
+            
         };
 
     public:
