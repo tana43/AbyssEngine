@@ -377,3 +377,7 @@ void SoldierState::Dodge::PlayDodgeAnimation(Direction dir, bool second)
     }
     currentDirection_ = dir;
 }
+
+void SoldierState::Die::Initialize()
+{
+}

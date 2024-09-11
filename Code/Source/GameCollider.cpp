@@ -9,15 +9,16 @@ using namespace AbyssEngine;
 
 AttackCollider::~AttackCollider()
 {
-    const auto& p = dynamic_pointer_cast<SphereCollider>(shared_from_this());
-    if (p)
-    {
-        Engine::collisionManager_->DeleteAttackCollider(p);
-    }
-    else
-    {
-        _ASSERT_EXPR(false,L"キャストに失敗");
-    }
+    //const auto& thisP = shared_from_this();
+    //const auto& p = dynamic_pointer_cast<SphereCollider>(thisP);
+    //if (p)
+    //{
+    //    Engine::collisionManager_->DeleteAttackCollider(p);
+    //}
+    //else
+    //{
+    //    _ASSERT_EXPR(false,L"キャストに失敗");
+    //}
 }
 
 void AttackCollider::Initialize(const std::shared_ptr<Actor>& actor)
@@ -33,7 +34,7 @@ void AttackCollider::Initialize(const std::shared_ptr<Actor>& actor)
 
 HitCollider::~HitCollider()
 {
-    Engine::collisionManager_->DeleteHitCollider(static_pointer_cast<SphereCollider>(shared_from_this()));
+    //Engine::collisionManager_->DeleteHitCollider(static_pointer_cast<SphereCollider>(shared_from_this()));
 }
 
 void HitCollider::Initialize(const std::shared_ptr<Actor>& actor)

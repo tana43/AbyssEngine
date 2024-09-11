@@ -97,5 +97,16 @@ namespace SoldierState
         //“ñ‰ñ–Ú‚Ì‰ñ”ð‚ðŽg—p‚µ‚½‚©
         bool secondDodge_ = false;
     };
+
+    class Die : Inheritance
+    {
+    public:
+        Die(Soldier* soldier) : State(soldier, "Die") {}
+        ~Die() {}
+
+        void Initialize()override;
+        void Update()override;
+        void Finalize()override;
+    };
 };
 
