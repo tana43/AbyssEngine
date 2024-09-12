@@ -68,6 +68,7 @@ namespace AbyssEngine
 		static ID3D11DepthStencilState* GetDepthStencilState(DS_State state) { return instance->depthStencilStates_[static_cast<int>(state)].Get(); }
 		static ID3D11RasterizerState* GetRasterizerState(RS_State state) { return instance->rasterizerStates_[static_cast<int>(state)].Get(); }
 		static ID3D11BlendState* GetBlendState(BS_State state) { return instance->blendStates_[static_cast<int>(state)].Get(); }
+		static void GetViewport(UINT num,D3D11_VIEWPORT* viewport);
 		static void SetViewport(int width, int height_, int num = 1);//ビューポートをセット
 		static void SetDefaultView();//メインウィンドウのレンダーターゲットをセットする
 

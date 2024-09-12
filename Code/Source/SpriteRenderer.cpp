@@ -105,7 +105,7 @@ void SpriteRenderer::RecalculateFrame()
 
     const Vector3 transPos = actor_->GetTransform()->GetPosition() + offsetPos_;
     const Vector3 transScale = actor_->GetTransform()->GetScale();
-    const Vector2 scaledSize = size_ * Vector2(transScale.x,transScale.y);
+    const Vector2 scaledSize = size_ * Vector2(transScale.x * scale_.x,transScale.y * scale_.y);
 
     data_[0].pos_.x = transPos.x;
     data_[0].pos_.y = transPos.y;
@@ -138,7 +138,8 @@ void SpriteRenderer::RecalculateFrame()
 	data_[2].pos_.x -= mx; data_[2].pos_.y -= my;
 	data_[3].pos_.x -= mx; data_[3].pos_.y -= my;
 
-	const float z = transform_->GetEulerAngles().z;
+	//const float z = transform_->GetEulerAngles().z;
+	const float z = angle_;
 	const float cos = cosf(XMConvertToRadians(z));
 	const float sin = sinf(XMConvertToRadians(z));
 
@@ -167,6 +168,14 @@ void SpriteRenderer::RecalculateFrame()
 	data_[1].pos_.x += mx; data_[1].pos_.y += my;
 	data_[2].pos_.x += mx; data_[2].pos_.y += my;
 	data_[3].pos_.x += mx; data_[3].pos_.y += my;
+
+	//ピボットを反映させる
+	float pivotX = scaledSize.x * pivot_.x;
+	float pivotY = scaledSize.x * pivot_.y;
+	data_[0].pos_.x -= pivotX; data_[0].pos_.y -= pivotY;
+	data_[1].pos_.x -= pivotX; data_[1].pos_.y -= pivotY;
+	data_[2].pos_.x -= pivotX; data_[2].pos_.y -= pivotY;
+	data_[3].pos_.x -= pivotX; data_[3].pos_.y -= pivotY;
 
 	// 正規化デバイス座標系
 	for (auto& i : data_)
@@ -222,13 +231,16 @@ void SpriteRenderer::RecalculateFrame()
 
 void AbyssEngine::SpriteRenderer::DrawImGui()
 {
-	if (ImGui::TreeNode("SpriteRenderer"))
+	ImGui::SetNextItemOpen(false,ImGuiCond_FirstUseEver);
+	if (ImGui::TreeNode(filePath_.c_str()))
 	{
 		ImGui::DragFloat2("Size", &size_.x, 0.1f, 0.0f);
+		ImGui::DragFloat2("Scale", &scale_.x, 0.01f, 0.0f);
 		ImGui::DragFloat2("UV Origin", &uvOrigin_.x, 0.1f, 0.0f);
 		ImGui::DragFloat2("UV Size", &uvSize_.x, 0.1f, 0.0f);
 		ImGui::DragFloat2("Pivot", &pivot_.x, 1, 0.0f);
 		ImGui::DragFloat2("Offset Pos", &offsetPos_.x, 0.1f);
+		ImGui::DragFloat("Angle", &angle_);
 
 		ImGui::ColorPicker4("Color",&color_.x);
 

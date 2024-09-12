@@ -80,6 +80,11 @@ void DXSystem::Flip(int n)
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 }
 
+void DXSystem::GetViewport(UINT num, D3D11_VIEWPORT* viewport)
+{
+    instance->deviceContext_->RSGetViewports(&num,viewport);
+}
+
 void DXSystem::SetViewport(int width, int height_, int num)
 {
     D3D11_VIEWPORT vp;

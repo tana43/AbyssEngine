@@ -9,6 +9,7 @@
 #include "RenderManager.h"
 #include "Engine.h"
 #include "BillboardRenderer.h"
+#include "GameUIAdmin.h"
 
 using namespace AbyssEngine;
 
@@ -52,6 +53,11 @@ void FacilityScene::Initialize()
     //”Âƒ|ƒŠƒSƒ“
     const auto& plane = InstanceActor("Plane");
     plane->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Explosion_02.png");
+
+    //UIÝ’è
+    const auto& ui = InstanceActor("GameUI");
+    const auto& uiCom = ui->AddComponent<GameUIAdmin>();
+    uiCom->SetPlayer(pc);
 }
 
 void FacilityScene::Update()

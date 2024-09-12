@@ -27,6 +27,7 @@ void VitesseState::GroundMove::Update()
 
 void VitesseState::GroundMove::Finalize()
 {
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
 }
 
 void VitesseState::FlyMove::Initialize()
@@ -42,10 +43,22 @@ void VitesseState::FlyMove::Update()
 {
     owner_->UpdateInputMove();
     owner_->ThrusterInfluenceVelocity();
+
+    //各ステートに遷移
+    if (owner_->GetOnGround())
+    {
+        //着地しているなら着地ステートへ
+        
+        owner_->ChangeState(Vitesse::ActionState::Landing);
+    }
 }
 
 void VitesseState::FlyMove::Finalize()
 {
+    //アニメステートをデフォルトへ
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
+
+    //スラスター全停止
     owner_->ThrusterAllStop();
 }
 
@@ -54,6 +67,16 @@ void VitesseState::Landing::Initialize()
     //アニメーション設定
     //owner_->ChangeAnimationState(Vitesse::AnimationState::Fly_Move);
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Landing));
+
+    //陸上モードへ移行
+    owner_->ToGroundMode();
+
+    //減速させるために移動方向を０に
+    owner_->SetMoveVec(Vector3::Zero);
+
+    //減速力をキャッシュ、調整
+    cachedDeceleration_ = owner_->GetDeceleration();
+    owner_->SetDeceleration(deceleration_);
 }
 
 void VitesseState::Landing::Update()
@@ -61,13 +84,15 @@ void VitesseState::Landing::Update()
     //アニメーションが終了次第GroundMoveへ
     if (owner_->GetAnimator()->GetAnimationFinished())
     {
-        owner_->ChangeAnimationState(Vitesse::AnimationState::Ground_Move);
+
         owner_->ChangeState(Vitesse::ActionState::GMove);
     }
 }
 
 void VitesseState::Landing::Finalize()
 {
+    //減速力を元に戻す
+    owner_->SetDeceleration(cachedDeceleration_);
 }
 
 
@@ -83,6 +108,9 @@ void VitesseState::TakeOff::Initialize()
 
     //慣性は消しておく
     owner_->SetVelocityY(0.0f);
+
+    //着地フラグをおろしておく
+    owner_->SetOnGround(false);
 
     //目標高度を設定 
     goalAltitude_ = startPosition_ + altitude_;

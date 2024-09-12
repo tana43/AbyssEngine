@@ -381,3 +381,11 @@ void SoldierState::Dodge::PlayDodgeAnimation(Direction dir, bool second)
 void SoldierState::Die::Initialize()
 {
 }
+
+void SoldierState::Die::Update()
+{
+}
+
+void SoldierState::Die::Finalize()
+{
+}

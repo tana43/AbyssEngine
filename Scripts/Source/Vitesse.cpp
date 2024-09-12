@@ -121,6 +121,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //アニメーションステートマシーン設定
     animStateMachine_ = actor->AddComponent<StateMachine<State<Animator>>>();
+    animStateMachine_->RegisterState(new VitesseAnimState::AnimDefault(model_->GetAnimator().get()));
     animStateMachine_->RegisterState(new VitesseAnimState::AnimGroundMove(model_->GetAnimator().get()));
     animStateMachine_->RegisterState(new VitesseAnimState::AnimFlyMove(model_->GetAnimator().get()));
 
@@ -358,6 +359,13 @@ void Vitesse::UpdateInputMove()
     {
         moveVec_ = camera_->ConvertTo2DVectorFromCamera(Input::GameSupport::GetMoveVector());
     }
+}
+
+void Vitesse::ToGroundMode()
+{
+    HumanoidWeapon::ToGroundMode();
+
+    ThrusterAllStop();
 }
 
 void Vitesse::CameraRollUpdate()

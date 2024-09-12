@@ -9,6 +9,18 @@
 //アニメーターの各パラメーターへの受け渡し、
 namespace VitesseAnimState
 {
+    //アニメーションに関する処理が必要ないとき
+    class AnimDefault : Inheritance
+    {
+    public:
+        AnimDefault(AbyssEngine::Animator* animator) : State(animator, "Default") {}
+        ~AnimDefault() {}
+
+        void Initialize()override {}
+        void Update()override {}
+        void Finalize()override {}
+    };
+
     class AnimGroundMove : Inheritance
     {
     public:

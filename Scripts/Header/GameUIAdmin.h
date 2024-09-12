@@ -20,6 +20,8 @@ public:
     {
         Boarding,//搭乗
         Reticle,//レティクル
+        HUD_Reticle_Base,//HUD　基本的に動かないUI
+        HUD_Reticle_Circle,//HUD　常に回転させる厚めUI
     };
 
 public:
@@ -29,6 +31,12 @@ public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
     
     void UpdateAfter()override;
+
+    //TPS時のプレイヤー
+    void UiUpdatePlayerSoldier();
+
+    //ヴィテス搭乗時の
+    void UiUpdateVitesse();
 
     //プレイヤーを設定
     void SetPlayer(const std::shared_ptr<Soldier>& p) { player_ = p; }

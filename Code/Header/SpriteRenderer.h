@@ -46,16 +46,26 @@ namespace AbyssEngine
         void SetOffsetPosition(const Vector2& pos) { offsetPos_ = pos; }
         const Vector2& GetOffsetPosition() const { return offsetPos_; }
 
+        void SetPivot(const Vector2& pivot) { pivot_ = pivot; }
+        const Vector2& GetPivot() const { return pivot_; }
+
+        void SetScale(const Vector2& sca) { scale_ = sca; }
+        const Vector2& GetScale() const { return scale_; }
+
+        void SetAngle(const float& angle) { angle_ = angle; }
+        const float& GetAngle() const { return angle_; }
 
     private:
         void SetActive(const bool value)override;//アクティブ状態を設定する
     private:
         Vector2 size_ = { 100,100 };   //表示サイズ
+        Vector2 scale_ = { 1,1 };   //スケール
         Vector2 uvOrigin_ = { 0,0 };   //テクスチャのUV原点
         Vector2 uvSize_ = { 100,100 }; //テクスチャから切り出すサイズ（UV原点基準）
         Vector4 color_ = { 1,1,1,1 };  //テクスチャカラー
         Vector2 pivot_ = { 0,0 };//中心点
         Vector2 offsetPos_ = { 0,0 };//オフセット座標
+        float angle_ = 0.0f; //角度
         std::shared_ptr<Texture> texture_;       //描画するテクスチャ
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>        vertexBuffer_;

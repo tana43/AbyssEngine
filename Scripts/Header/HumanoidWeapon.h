@@ -17,7 +17,7 @@ public:
     void DrawImGui()override;
 
     virtual void ToFlightMode();//フライトモードへ移行
-    virtual void ToLandMode();//陸上モードへ移行
+    virtual void ToGroundMode();//陸上モードへ移行
 
 protected:
     virtual void Climb(float amount);//上昇

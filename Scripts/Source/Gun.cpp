@@ -22,6 +22,8 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     muzzleFlashComponent_ = actor->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Explosion_02.png");
     muzzleFlashComponent_->SetVisibility(false);
     muzzleFlashComponent_->SetScale(0.5f);
+
+
 }
 
 void Gun::DrawImGui()

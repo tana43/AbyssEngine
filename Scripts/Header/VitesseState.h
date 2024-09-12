@@ -65,6 +65,13 @@ namespace VitesseState
         void Initialize() override;
         void Update() override;
         void Finalize() override;
+
+    private:
+        //減速速度
+        float deceleration_ = 30.0f;
+
+        //元の減速速度をキャッシュ
+        float cachedDeceleration_;
     };
 
 }

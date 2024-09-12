@@ -75,6 +75,12 @@ namespace AbyssEngine
         void SetEnableAutoTurn(const bool& flag) { enableAutoTurn_ = flag; }
 
         const bool& GetOnGround() const { return onGround_; }
+        void SetOnGround(const bool& onGround) { onGround_ = onGround; }
+
+        const float& GetAcceleration() const { return acceleration_; }
+        void SetAcceleration(const float& accel) { acceleration_ = accel; }
+        const float& GetDeceleration()const { return deceleration_; }
+        void SetDeceleration(const float& decel) { deceleration_ = decel; }
 
         Vector3 GetCenterPos();
 

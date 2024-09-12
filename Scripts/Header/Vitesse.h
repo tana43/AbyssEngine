@@ -57,6 +57,7 @@ public:
     //アニメーションステートマシーンEnum
     enum class AnimationState
     {
+        Default,
         Ground_Move,
         Fly_Move,
     };
@@ -84,6 +85,9 @@ public:
 
     //移動入力の反映
     void UpdateInputMove()override;
+
+    //地上モードへ移行
+    void ToGroundMode()override;
 
 private:
     void CameraRollUpdate();

@@ -10,7 +10,7 @@ HumanoidWeapon::HumanoidWeapon()
 {
     Max_Horizontal_Speed = 40.0f;
     baseRotSpeed_ = 500.0f;
-    acceleration_ = 30.0f;
+    acceleration_ = 60.0f;
     deceleration_ = 60.0f;
 }
 
@@ -126,7 +126,7 @@ void HumanoidWeapon::ToFlightMode()
     flightMode_ = true;
 }
 
-void HumanoidWeapon::ToLandMode()
+void HumanoidWeapon::ToGroundMode()
 {
     flightMode_ = false;
 }
