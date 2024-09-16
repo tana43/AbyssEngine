@@ -240,6 +240,9 @@ void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime, floa
 		transitionTimer_ = 0;
 	}
 
+	//アニメーション終了フラグをおろす
+	isFinished_ = false;
+
 	previousPosition_ = Vector3::Zero;
 
 	const auto& animation = animations_[animIndex];

@@ -268,11 +268,17 @@ void Soldier::BoardingDistanceJudge(const float& range)
 {
     if (!vitesse_)return;
 
+    if (!vitesse_->GetCanBoarding())
+    {
+        canBoarding_ = false;
+        return;
+    }
+
     //‹@‘Ì‚Æ‚Ì‹——£‚©‚ç“‹æ‰Â”\‚©‚Ç‚¤‚©‚ð”»’f
-    auto myPos = GetTransform()->GetPosition();
-    auto viPos = vitesse_->GetTransform()->GetPosition();
-    float dist = Vector3::Distance(myPos, viPos);
-    if (dist < range)
+    const Vector3 myPos = GetTransform()->GetPosition();
+    const Vector3 viPos = vitesse_->GetTransform()->GetPosition();
+    float distSq = Vector3::DistanceSquared(myPos, viPos);
+    if (distSq < range * range)
     {
         canBoarding_ = true;
     }

@@ -36,7 +36,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_B.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Up.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Down.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Landing.glb"
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Landing.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Standby.glb",//立ち姿勢から乗り込み姿勢へ
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Complete.glb"//乗り込み姿勢から立ち姿勢へ
         },
         {
             "Run_F",
@@ -50,11 +52,15 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
             "Fly_B",
             "Fly_Up",
             "Fly_Down",
-            "Fly_Landing"
+            "Fly_Landing",
+            "Board_Standby",
+            "Board_Complete",
         });
 
     //ループ再生しないように
     model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Landing))->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Standby))->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Complete))->SetLoopFlag(false);
 
     //地上移動
     AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimationIndex::Stand),Vector2(0,0));
@@ -118,6 +124,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::FlyMove(this));
     stateMachine_->RegisterState(new VitesseState::TakeOff(this));
     stateMachine_->RegisterState(new VitesseState::Landing(this));
+    stateMachine_->RegisterState(new VitesseState::Boarding(this));
 
     //アニメーションステートマシーン設定
     animStateMachine_ = actor->AddComponent<StateMachine<State<Animator>>>();

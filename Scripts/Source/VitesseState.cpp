@@ -23,6 +23,13 @@ void VitesseState::GroundMove::Update()
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::TakeOff));
     }
+
+    //誰も乗っていないなら乗り込みステートへ
+    if (!owner_->GetPilot().lock())
+    {
+        owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::Boarding));
+    }
+
 }
 
 void VitesseState::GroundMove::Finalize()
@@ -144,4 +151,50 @@ void VitesseState::TakeOff::Update()
 
 void VitesseState::TakeOff::Finalize()
 {
+}
+
+void VitesseState::Boarding::Initialize()
+{
+    //アニメーション設定
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Board_Standby));
+
+    //乗り込み可能な状態へ
+    owner_->SetCanBoarding(true);
+
+    board_ = false;
+}
+
+void VitesseState::Boarding::Update()
+{
+    //乗り込んでいないとき
+    //アニメーションが終了しており、プレイヤーが乗り込んでいるなら移動ステートへ遷移
+    if (!board_)
+    {
+        if (owner_->GetAnimator()->GetAnimationFinished())
+        {
+            if (owner_->GetPilot().lock())
+            {
+                owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Board_Complete));
+                board_ = true;
+            }
+        }
+    }
+    //乗り込んだなら、アニメーションの終了と同時にステートを遷移
+    else
+    {
+        if (owner_->GetAnimator()->GetAnimationFinished())
+        {
+            owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::GMove));
+        }
+    }
+
+}
+
+void VitesseState::Boarding::Finalize()
+{
+    //アニメーション設定
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Board_Complete));
+
+    //乗り込み不可へ
+    owner_->SetCanBoarding(false);
 }

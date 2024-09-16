@@ -31,6 +31,7 @@ public:
         FMove,
         TakeOff,
         Landing,
+        Boarding,
     };
 
     //アニメーション
@@ -49,6 +50,8 @@ public:
         Fly_Up,
         Fly_Down,
         Landing,
+        Board_Standby, //乗り込み姿勢へ
+        Board_Complete,//乗り込み姿勢から立ち姿勢へ
         Run_Move,
         Fly_Move1D,
         Fly_Move2D,
@@ -76,6 +79,9 @@ public:
 
     const AbyssEngine::Vector3& GetMoveDirection() const { return moveDirection_; }
     void SetMoveDirection(const AbyssEngine::Vector3& vec) { moveDirection_ = vec; }
+
+    const bool& GetCanBoarding() const { return canBoarding_; }
+    void SetCanBoarding(const bool& can) { canBoarding_ = can; }
 
     void ChangeState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
@@ -123,5 +129,8 @@ private:
 
     //パイロット(プレイヤー)
     std::weak_ptr<Soldier> pilot_;
+
+    //乗り込み可能な状態か
+    bool canBoarding_ = false;
 };
 

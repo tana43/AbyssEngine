@@ -69,5 +69,5 @@ void AbyssEngine::ScriptComponentManager::AddScriptCom(const std::shared_ptr<Scr
 
 void ScriptComponentManager::Clear()
 {
-	scriptComList_.clear();
+	//scriptComList_.clear();
 }

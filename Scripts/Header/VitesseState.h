@@ -74,5 +74,19 @@ namespace VitesseState
         float cachedDeceleration_;
     };
 
+    //パイロット乗り込みステート
+    class Boarding : Inheritance
+    {
+    public:
+        Boarding(Vitesse* vitesse) : State(vitesse, "Boarding") {}
+        ~Boarding() {}
+
+        void Initialize() override;
+        void Update() override;
+        void Finalize() override;
+    private:
+
+        bool board_;//乗り込んだかどうか
+    };
 }
 
