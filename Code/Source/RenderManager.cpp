@@ -674,6 +674,8 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 
 void RenderManager::RenderEffect() const
 {
+	DXSystem::SetDepthStencilState(DS_State::LEqual_No_Write);
+
 	for (auto& r : rendererEffectList_)
 	{
 		const auto& pRend = r.lock();

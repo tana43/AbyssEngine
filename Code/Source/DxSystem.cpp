@@ -365,6 +365,7 @@ bool DXSystem::CreateDepthStencil()
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = FALSE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
     hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilStates[static_cast<int>(DS_State::None_No_Write)].GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 

@@ -135,6 +135,8 @@ void BillboardRenderer::Render()
 
     // •`‰æ
     context->DrawIndexed(6, 0, 0);
+
+    DXSystem::SetDepthStencilState(DS_State::None_No_Write);
 }
 
 void BillboardRenderer::DrawImGui()
