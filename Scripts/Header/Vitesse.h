@@ -18,10 +18,15 @@ public:
     void Update()override;
     void DrawImGui()override;
 
+    void AnimationInitialize();
+
     //速度によって影響されるスラスター
     void ThrusterInfluenceVelocity();
     //スラスターをすべて停止
     void ThrusterAllStop();
+
+    //回避行動
+    void Dodge(AbyssEngine::Vector3 direction/*回避行動*/);
 
 public:
     //行動ステート
@@ -32,6 +37,7 @@ public:
         TakeOff,
         Landing,
         Boarding,
+        HighSpeedFlight,
     };
 
     //アニメーション
@@ -42,34 +48,44 @@ public:
         Run_R,
         Run_L,
         Run_B,
-        Fly_Idle,
-        Fly_F,
-        Fly_R,
-        Fly_L,
-        Fly_B,
-        Fly_Up,
-        Fly_Down,
+        Flight_Idle,
+        Flight_F,
+        Flight_R,
+        Flight_L,
+        Flight_B,
+        Flight_Up,
+        Flight_Down,
         Landing,
         Board_Standby, //乗り込み姿勢へ
         Board_Complete,//乗り込み姿勢から立ち姿勢へ
+        HighSpeedFlight_F,
+        HighSpeedFlight_R,
+        HighSpeedFlight_L,
+        HighSpeedFlight_B,
+
+        //ブレンドモーション
         Run_Move,
-        Fly_Move1D,
-        Fly_Move2D,
-        Fly_Move,
+        Flight_Move1D,
+        Flight_Move2D,
+        Flight_Move,
+        HighSpeedFlight_Move2D,
+        HighSpeedFlight_Move,
     };
     //アニメーションステートマシーンEnum
     enum class AnimationState
     {
         Default,
         Ground_Move,
-        Fly_Move,
+        Flight_Move,
+        HighSpeedFlight,
     };
 
 public:
     const std::shared_ptr<AbyssEngine::StateMachine<State<Vitesse>>>& GetStateMachine() { return stateMachine_; }
     AbyssEngine::AnimBlendSpace2D* GetGroundMoveAnimation() { return groundMoveAnimation_; }
     //AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
-    AbyssEngine::AnimBlendSpaceFlyMove* GetFlyMoveAnimation() { return flyMoveAnimation_; }
+    AbyssEngine::AnimBlendSpaceFlyMove* GetFlightAnimation() { return flightAnimation_; }
+    AbyssEngine::AnimBlendSpaceFlyMove* GetHighSpeedFlightAnimation() { return highSpeedFlightAnimation_; }
     
     const std::weak_ptr<Soldier>& GetPilot() { return pilot_; }
     void SetPilot(const std::shared_ptr<Soldier>& p) { pilot_ = p; }
@@ -82,6 +98,10 @@ public:
 
     const bool& GetCanBoarding() const { return canBoarding_; }
     void SetCanBoarding(const bool& can) { canBoarding_ = can; }
+
+    const float& GetDodgeMaxSpeed() const { return dodgeMaxSpeed_; }
+
+    const std::shared_ptr<AbyssEngine::Camera>& GetCamera() const { return camera_; }
 
     void ChangeState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
@@ -110,7 +130,8 @@ private:
     AbyssEngine::AnimBlendSpace1D* runMoveAnimation_;//走り移動
 #endif // 0
     //AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//空中移動
-    AbyssEngine::AnimBlendSpaceFlyMove* flyMoveAnimation_;//空中移動
+    AbyssEngine::AnimBlendSpaceFlyMove* flightAnimation_;//空中移動
+    AbyssEngine::AnimBlendSpaceFlyMove* highSpeedFlightAnimation_;//高速空中移動
 
     std::shared_ptr<AbyssEngine::StateMachine<State<Vitesse>>> stateMachine_;
     std::shared_ptr<AbyssEngine::StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;
@@ -132,5 +153,11 @@ private:
 
     //乗り込み可能な状態か
     bool canBoarding_ = false;
+
+    //回避行動
+    AbyssEngine::Vector3 dodgeDirection_ = {0,0,0};
+    //回避速度
+    float dodgeSpeed_ = 100.0f;
+    float dodgeMaxSpeed_ = 100.0f;
 };
 

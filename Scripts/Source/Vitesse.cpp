@@ -23,79 +23,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //モデル読み込み
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
-    model_->GetAnimator()->AppendAnimations({
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_F.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_R.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_L.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_B.glb",
-                //"./Assets/Models/Vitesse/Vitesse_UE_01_FrontFly.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Idle.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_F.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_R.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_L.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_B.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Up.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Down.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Landing.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Standby.glb",//立ち姿勢から乗り込み姿勢へ
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Complete.glb"//乗り込み姿勢から立ち姿勢へ
-        },
-        {
-            "Run_F",
-            "Run_R",
-            "Run_L",
-            "Run_B",
-            "Fly_Idle",
-            "Fly_F",
-            "Fly_R",
-            "Fly_L",
-            "Fly_B",
-            "Fly_Up",
-            "Fly_Down",
-            "Fly_Landing",
-            "Board_Standby",
-            "Board_Complete",
-        });
-
-    //ループ再生しないように
-    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Landing))->SetLoopFlag(false);
-    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Standby))->SetLoopFlag(false);
-    model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Complete))->SetLoopFlag(false);
-
-    //地上移動
-    AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimationIndex::Stand),Vector2(0,0));
-    //前、右、左、後の順に追加
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_F), Vector2(0, 1));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_R), Vector2(1, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_L), Vector2(-1, 0));
-    rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_B), Vector2(0, -1));
-    groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
-
-    //空中移動
-#if 0
-    AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimationIndex::Fly_Idle), Vector2(0, 0));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_F), Vector2(0, 1));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_R), Vector2(1, 0));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_L), Vector2(-1, 0));
-    fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_B), Vector2(0, -1));
-#else
-    AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimationIndex::Fly_Idle), static_cast<int>(AnimationIndex::Fly_Up));
-    fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_Down), -1.0f);
-    auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
-    f1d->SetMinWeight(-1.0f);
-
-    AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimationIndex::Fly_Idle), Vector2(0, 0));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_F), Vector2(0, 1));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_R), Vector2(1, 0));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_L), Vector2(-1, 0));
-    fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_B), Vector2(0, -1));
-    auto* f2d = model_->GetAnimator()->AppendAnimation(fMoveAnim2D);
-
-    AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D",f2d,f1d);
-    flyMoveAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
-#endif // 0
-
-    model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimationIndex::Run_Move));
+    
+    //アニメーション初期化
+    AnimationInitialize();
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -121,16 +51,11 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //ステートマシン設定
     stateMachine_ = actor->AddComponent<StateMachine<State<Vitesse>>>();
     stateMachine_->RegisterState(new VitesseState::GroundMove(this));
-    stateMachine_->RegisterState(new VitesseState::FlyMove(this));
+    stateMachine_->RegisterState(new VitesseState::Flight(this));
     stateMachine_->RegisterState(new VitesseState::TakeOff(this));
     stateMachine_->RegisterState(new VitesseState::Landing(this));
     stateMachine_->RegisterState(new VitesseState::Boarding(this));
-
-    //アニメーションステートマシーン設定
-    animStateMachine_ = actor->AddComponent<StateMachine<State<Animator>>>();
-    animStateMachine_->RegisterState(new VitesseAnimState::AnimDefault(model_->GetAnimator().get()));
-    animStateMachine_->RegisterState(new VitesseAnimState::AnimGroundMove(model_->GetAnimator().get()));
-    animStateMachine_->RegisterState(new VitesseAnimState::AnimFlyMove(model_->GetAnimator().get()));
+    stateMachine_->RegisterState(new VitesseState::HighSpeedFlight(this));
 
     //初期ステート設定
     animStateMachine_->SetState(static_cast<int>(AnimationState::Ground_Move));
@@ -216,6 +141,111 @@ void Vitesse::DrawImGui()
     }
 
     stateMachine_->DrawImGui();
+}
+
+void Vitesse::AnimationInitialize()
+{
+    model_->GetAnimator()->AppendAnimations({
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_F.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_R.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_L.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_B.glb",
+                //"./Assets/Models/Vitesse/Vitesse_UE_01_FrontFly.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Idle.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_F.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_R.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_L.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_B.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Up.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Down.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Landing.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Standby.glb",//立ち姿勢から乗り込み姿勢へ
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Complete.glb",//乗り込み姿勢から立ち姿勢へ
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_F.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_R.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_L.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_B.glb"
+        },
+        {
+            "Run_F",
+            "Run_R",
+            "Run_L",
+            "Run_B",
+            "Fly_Idle",
+            "Fly_F",
+            "Fly_R",
+            "Fly_L",
+            "Fly_B",
+            "Fly_Up",
+            "Fly_Down",
+            "Fly_Landing",
+            "Board_Standby",
+            "Board_Complete",
+            "HighSpeedFlight_F",
+            "HighSpeedFlight_R",
+            "HighSpeedFlight_L",
+            "HighSpeedFlight_B",
+        });
+
+        //ループ再生しないように
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Landing))->SetLoopFlag(false);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Standby))->SetLoopFlag(false);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Complete))->SetLoopFlag(false);
+
+        //地上移動
+        AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimationIndex::Stand), Vector2(0, 0));
+        //前、右、左、後の順に追加
+        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_F), Vector2(0, 1));
+        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_R), Vector2(1, 0));
+        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_L), Vector2(-1, 0));
+        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_B), Vector2(0, -1));
+        groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
+
+        //空中移動
+#if 0
+        AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimationIndex::Fly_Idle), Vector2(0, 0));
+        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_F), Vector2(0, 1));
+        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_R), Vector2(1, 0));
+        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_L), Vector2(-1, 0));
+        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_B), Vector2(0, -1));
+#else
+        //飛行のブレンドモーション登録
+        AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimationIndex::Flight_Idle), static_cast<int>(AnimationIndex::Flight_Up));
+        fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_Down), -1.0f);
+        auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
+        f1d->SetMinWeight(-1.0f);
+
+        AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimationIndex::Flight_Idle), Vector2(0, 0));
+        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_F), Vector2(0, 1));
+        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_R), Vector2(1, 0));
+        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_L), Vector2(-1, 0));
+        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_B), Vector2(0, -1));
+        auto* f2d = model_->GetAnimator()->AppendAnimation(fMoveAnim2D);
+
+        AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D", f2d, f1d);
+        flightAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
+
+
+        //高速飛行のブレンドモーション登録
+        AnimBlendSpace2D highSpeedFMoveAnim2D = AnimBlendSpace2D(model_.get(), "HighSpeedFlyMove2D", static_cast<int>(AnimationIndex::Flight_Idle), Vector2(0, 0));
+        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_F), Vector2(0, 1));
+        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_R), Vector2(1, 0));
+        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_L), Vector2(-1, 0));
+        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_B), Vector2(0, -1));
+        auto* hf2d = model_->GetAnimator()->AppendAnimation(highSpeedFMoveAnim2D);
+
+        AnimBlendSpaceFlyMove hfMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "HighSpeedFlyMove3D", hf2d, f1d);
+        highSpeedFlightAnimation_ = model_->GetAnimator()->AppendAnimation(hfMoveAnim);
+#endif // 0
+
+        model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimationIndex::Run_Move));
+
+        //アニメーションステートマシーン設定
+        animStateMachine_ = actor_->AddComponent<StateMachine<State<Animator>>>();
+        animStateMachine_->RegisterState(new VitesseAnimState::AnimDefault(model_->GetAnimator().get()));
+        animStateMachine_->RegisterState(new VitesseAnimState::AnimGroundMove(model_->GetAnimator().get()));
+        animStateMachine_->RegisterState(new VitesseAnimState::AnimFlight(model_->GetAnimator().get()));
+        animStateMachine_->RegisterState(new VitesseAnimState::AnimHighSpeedFlight(model_->GetAnimator().get()));
 }
 
 void Vitesse::ThrusterInfluenceVelocity()
@@ -331,6 +361,16 @@ void Vitesse::ThrusterAllStop()
     {
         t->Stop();
     }
+}
+
+void Vitesse::Dodge(Vector3 direction)
+{
+    //回避方向の設定
+    direction.Normalize();
+    dodgeDirection_ = direction;
+
+    //現在の速度を回避方向へ加速
+    velocity_ = direction * dodgeSpeed_;
 }
 
 void Vitesse::ChangeState(const ActionState& state)

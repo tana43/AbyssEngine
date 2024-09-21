@@ -19,6 +19,9 @@ public:
     virtual void ToFlightMode();//フライトモードへ移行
     virtual void ToGroundMode();//陸上モードへ移行
 
+public:
+    const float& GetDefaultMaxHorizontalSpeed() const { return defaultMaxHorizontalSpeed; }
+
 protected:
     virtual void Climb(float amount);//上昇
 
@@ -33,6 +36,8 @@ protected:
 
     float propulsion_ = 20.0f;//推進力(通常20程度)
     float climbSpeed_ = 50.0f;//上昇速度
+
+    float defaultMaxHorizontalSpeed = 40.0f;
 
     //減速したか
     bool slowDown_ = false;

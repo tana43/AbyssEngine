@@ -559,6 +559,7 @@ void RenderManager::DrawImGui()
 
 	ImGui::Checkbox("Enable Frustum Culling", &enableFrustumCulling_);
 
+#if ENABLE_DIFFERD_RENDERING
 	//GBufferをテクスチャ表示
 	if (ImGui::Begin("G-Buffer"))
 	{
@@ -577,6 +578,7 @@ void RenderManager::DrawImGui()
 		}
 		ImGui::End();
 	}
+#endif
 }
 
 void RenderManager::Beginning()

@@ -24,11 +24,24 @@ namespace VitesseState
 
     //Game:Vitesse 空中移動ステート
     //空中における空中移動ステート（待機も含まれている）
-    class FlyMove : Inheritance
+    class Flight : Inheritance
     {
     public:
-        FlyMove(Vitesse* vitesse) : State(vitesse, "FlyMove") {}
-        ~FlyMove() {}
+        Flight(Vitesse* vitesse) : State(vitesse, "Flight") {}
+        ~Flight() {}
+
+        void Initialize() override;
+        void Update() override;
+        void Finalize() override;
+    };
+
+    //Game:Vitesse 高速飛行ステート
+    //高速移動ステート
+    class HighSpeedFlight : Inheritance
+    {
+    public:
+        HighSpeedFlight(Vitesse* vitesse) : State(vitesse, "HighSpeedFlight") {}
+        ~HighSpeedFlight() {}
 
         void Initialize() override;
         void Update() override;

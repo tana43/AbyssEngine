@@ -32,11 +32,22 @@ namespace VitesseAnimState
         void Finalize()override;
     };
 
-    class AnimFlyMove : Inheritance
+    class AnimFlight : Inheritance
     {
     public:
-        AnimFlyMove(AbyssEngine::Animator* animator) : State(animator, "FlyMove") {}
-        ~AnimFlyMove() {}
+        AnimFlight(AbyssEngine::Animator* animator) : State(animator, "Flight") {}
+        ~AnimFlight() {}
+
+        void Initialize()override;
+        void Update()override;
+        void Finalize()override;
+    };
+
+    class AnimHighSpeedFlight : Inheritance
+    {
+    public:
+        AnimHighSpeedFlight(AbyssEngine::Animator* animator) : State(animator, "HighSpeedFlight") {}
+        ~AnimHighSpeedFlight() {}
 
         void Initialize()override;
         void Update()override;

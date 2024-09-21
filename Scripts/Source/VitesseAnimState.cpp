@@ -50,23 +50,23 @@ void VitesseAnimState::AnimGroundMove::Finalize()
     
 }
 
-void VitesseAnimState::AnimFlyMove::Initialize()
+void VitesseAnimState::AnimFlight::Initialize()
 {
     //アニメーション設定
-    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Fly_Move));
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Move));
 }
 
-void VitesseAnimState::AnimFlyMove::Update()
+void VitesseAnimState::AnimFlight::Update()
 {
     const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
     const auto& velo = vi->GetVelocity();
 
     //ブレンドアニメーションのWeight更新
-    vi->GetFlyMoveAnimation()->SetMoveVec(vi->GetMoveVec());
+    vi->GetFlightAnimation()->SetMoveVec(vi->GetMoveVec());
     Vector3 velocityXZ = { velo.x,0,velo.z };
     if (velocityXZ.LengthSquared() < 0.01f)
     {
-        vi->GetFlyMoveAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 0));
+        vi->GetFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 0));
     }
     else
     {
@@ -87,7 +87,7 @@ void VitesseAnimState::AnimFlyMove::Update()
         result = { sinf(dot),cosf(dot) };
         result = result * (velocityXZ.Length() / vi->GetMaxHorizontalSpeed());
 
-        vi->GetFlyMoveAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
+        vi->GetFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
 
         //移動方向に代入
         vi->SetMoveDirection(Vector3(result.x,0,result.y));
@@ -97,14 +97,74 @@ void VitesseAnimState::AnimFlyMove::Update()
     {
         float result1D = velo.y / vi->GetMaxVerticalSpeed();
         result1D = std::clamp(result1D, -1.0f, 1.0f);
-        vi->GetFlyMoveAnimation()->GetBlendSpace1D()->SetBlendWeight(result1D);
+        vi->GetFlightAnimation()->GetBlendSpace1D()->SetBlendWeight(result1D);
     }
     else
     {
-        vi->GetFlyMoveAnimation()->GetBlendSpace1D()->SetBlendWeight(0.0f);
+        vi->GetFlightAnimation()->GetBlendSpace1D()->SetBlendWeight(0.0f);
     }
 }
 
-void VitesseAnimState::AnimFlyMove::Finalize()
+void VitesseAnimState::AnimFlight::Finalize()
 {
+}
+
+void VitesseAnimState::AnimHighSpeedFlight::Initialize()
+{
+    //アニメーション設定
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_Move));
+}
+
+void VitesseAnimState::AnimHighSpeedFlight::Update()
+{
+    const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
+    const auto& velo = vi->GetVelocity();
+
+    //ブレンドアニメーションのWeight更新
+    vi->GetHighSpeedFlightAnimation()->SetMoveVec(vi->GetMoveVec());
+    Vector3 velocityXZ = { velo.x,0,velo.z };
+    if (velocityXZ.LengthSquared() < 0.01f)
+    {
+        vi->GetHighSpeedFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 0));
+    }
+    else
+    {
+        //前方向と進行方向の差のベクトルを算出
+        const auto& forward = owner_->GetTransform()->GetForward();
+        Vector3 moveDirection;
+        velocityXZ.Normalize(moveDirection);
+
+        Vector2 result;
+
+        //内積による計算
+        float dot = acosf(forward.Dot(moveDirection));
+        float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
+
+        //左右判定
+        //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
+        if (crossY < 0)dot = DirectX::XM_2PI - dot;
+        result = { sinf(dot),cosf(dot) };
+        result = result * (velocityXZ.Length() / vi->GetMaxHorizontalSpeed());
+
+        vi->GetHighSpeedFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
+
+        //移動方向に代入
+        vi->SetMoveDirection(Vector3(result.x, 0, result.y));
+    }
+
+    if (fabsf(velo.y) > 0.1f)
+    {
+        float result1D = velo.y / vi->GetMaxVerticalSpeed();
+        result1D = std::clamp(result1D, -1.0f, 1.0f);
+        vi->GetHighSpeedFlightAnimation()->GetBlendSpace1D()->SetBlendWeight(result1D);
+    }
+    else
+    {
+        vi->GetHighSpeedFlightAnimation()->GetBlendSpace1D()->SetBlendWeight(0.0f);
+    }
+}
+
+void VitesseAnimState::AnimHighSpeedFlight::Finalize()
+{
+
 }

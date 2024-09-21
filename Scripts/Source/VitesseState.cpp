@@ -30,6 +30,11 @@ void VitesseState::GroundMove::Update()
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::Boarding));
     }
 
+    //ダッシュボタンが押されているなら高速ステートへ
+    if (Input::GameSupport::GetDashButton())
+    {
+        owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
+    }
 }
 
 void VitesseState::GroundMove::Finalize()
@@ -37,30 +42,36 @@ void VitesseState::GroundMove::Finalize()
     owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
 }
 
-void VitesseState::FlyMove::Initialize()
+void VitesseState::Flight::Initialize()
 {
     //アニメーション設定
     //owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimState::Fly_Move));
-    owner_->ChangeAnimationState(Vitesse::AnimationState::Fly_Move);
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Flight_Move);
 
     //空中移動
 }
 
-void VitesseState::FlyMove::Update()
+void VitesseState::Flight::Update()
 {
     owner_->UpdateInputMove();
     owner_->ThrusterInfluenceVelocity();
 
     //各ステートに遷移
+    
+    //着地しているなら着地ステートへ
     if (owner_->GetOnGround())
-    {
-        //着地しているなら着地ステートへ
-        
+    {    
         owner_->ChangeState(Vitesse::ActionState::Landing);
+    }
+
+    //ダッシュボタンが押されているなら高速ステートへ
+    if (Input::GameSupport::GetDashButton())
+    {
+        owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
     }
 }
 
-void VitesseState::FlyMove::Finalize()
+void VitesseState::Flight::Finalize()
 {
     //アニメステートをデフォルトへ
     owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
@@ -106,7 +117,7 @@ void VitesseState::Landing::Finalize()
 void VitesseState::TakeOff::Initialize()
 {
     //アニメーション設定
-    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Fly_Up));
+    owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Up));
     startPosition_ = owner_->GetTransform()->GetPosition().y;
     timer_ = 0;
 
@@ -126,12 +137,12 @@ void VitesseState::TakeOff::Initialize()
 void VitesseState::TakeOff::Update()
 {
     //アニメーションが遷移しきっており、ある程度の時間が経過しているなら空中移動モーションへ
-    if (owner_->GetAnimator()->GetNextAnimClip() != static_cast<int>(Vitesse::AnimationIndex::Fly_Move)
-        && owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Fly_Up)
+    if (owner_->GetAnimator()->GetNextAnimClip() != static_cast<int>(Vitesse::AnimationIndex::Flight_Move)
+        && owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Flight_Up)
         && timer_ > requidTime_ / 4.0f)
     {
         //owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Fly_Move),requidTime_ / 4.0f);
-        owner_->ChangeAnimationState(Vitesse::AnimationState::Fly_Move);
+        owner_->ChangeAnimationState(Vitesse::AnimationState::Flight_Move);
     }
 
     //イージングを使ってY座標を上に動かす
@@ -187,7 +198,6 @@ void VitesseState::Boarding::Update()
             owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::GMove));
         }
     }
-
 }
 
 void VitesseState::Boarding::Finalize()
@@ -197,4 +207,55 @@ void VitesseState::Boarding::Finalize()
 
     //乗り込み不可へ
     owner_->SetCanBoarding(false);
+}
+
+void VitesseState::HighSpeedFlight::Initialize()
+{
+    //アニメーション設定
+    owner_->ChangeAnimationState(Vitesse::AnimationState::HighSpeedFlight);
+
+    //一度離陸させてから高速移動へ
+        //フライトモードへ移行
+    owner_->ToFlightMode();
+    owner_->SetOnGround(false);
+
+    //回避
+    auto inputVec = Input::GameSupport::GetMoveVector();
+    auto moveVec = owner_->GetCamera()->ConvertTo3DVectorFromCamera(inputVec);
+    owner_->Dodge(moveVec);
+
+    //最大速度を変更
+    owner_->SetMaxHorizontalSpeed(owner_->GetDodgeMaxSpeed());
+}
+
+void VitesseState::HighSpeedFlight::Update()
+{
+    owner_->UpdateInputMove();
+    owner_->ThrusterInfluenceVelocity();
+
+
+    //各ステートに遷移
+
+    //ダッシュボタンが押されていないなら通常飛行ステートへ
+    if (!Input::GameSupport::GetDashButton())
+    {
+        owner_->ChangeState(Vitesse::ActionState::FMove);
+        return;
+    }
+
+    //着地しているなら着地ステートへ
+    if (owner_->GetOnGround())
+    {
+        owner_->ChangeState(Vitesse::ActionState::Landing);
+        return;
+    }
+}
+
+void VitesseState::HighSpeedFlight::Finalize()
+{
+    //アニメーションステートをデフォルトに
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
+
+    //最大速度を元に戻す
+    owner_->SetMaxHorizontalSpeed(owner_->GetDefaultMaxHorizontalSpeed());
 }
