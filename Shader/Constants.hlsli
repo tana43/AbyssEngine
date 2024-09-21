@@ -41,6 +41,10 @@ struct EffectConstants
     float shadowFilterRadius;
     uint shadowSampleCount;
     uint colorizeCascadedLayer;
+    
+    float radialBlurStrength;
+    uint radialBlurSampleCount;
+    float2 radialBlurUvOffset;
 };
 cbuffer effectConstants : register(b11)
 {

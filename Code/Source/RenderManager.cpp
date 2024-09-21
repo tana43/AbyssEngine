@@ -143,6 +143,7 @@ RenderManager::RenderManager()
 	baseFrameBuffer_[0] = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight());
 	baseFrameBuffer_[1] = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight(),false,true);
 	postEffectedFrameBuffer_ = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight(),false);
+	radialBlurFrameBuffer_ = std::make_unique<FrameBuffer>(DXSystem::GetScreenWidth(), DXSystem::GetScreenHeight(),false);
 	bitBlockTransfer_ = std::make_unique<FullscreenQuad>();
 	bloom_ = std::make_unique<Bloom>(
 		static_cast<size_t>(DXSystem::GetScreenWidth()), 
@@ -152,6 +153,8 @@ RenderManager::RenderManager()
 #else
 	postEffectsPS_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/PostEffectsPS.cso");
 #endif // 0
+
+	radialBlurPS_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/RadialBlurPS.cso");
 
 	toneMapPS_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/ToneMapPS.cso");
 
@@ -469,10 +472,21 @@ void RenderManager::Render()
 					};
 					bitBlockTransfer_->Blit(shaderResourceViews, 0, _countof(shaderResourceViews), postEffectsPS_.Get());
 
-
-
 					postEffectedFrameBuffer_->Deactivate();
 #endif // 0
+				}
+
+				//Radial Blur
+				{
+					radialBlurFrameBuffer_->Activate();
+					DXSystem::SetDepthStencilState(DS_State::None);
+					DXSystem::SetBlendState(BS_State::Off);
+					DXSystem::SetRasterizerState(RS_State::Cull_None);
+
+					ID3D11ShaderResourceView** shaderResourceView = postEffectedFrameBuffer_->GetColorMap().GetAddressOf();
+					bitBlockTransfer_->Blit(shaderResourceView, 0, 1, radialBlurPS_.Get());
+
+					radialBlurFrameBuffer_->Deactivate();
 				}
 
 				//Tone Mapping
@@ -480,7 +494,7 @@ void RenderManager::Render()
 					DXSystem::SetDepthStencilState(DS_State::LEqual,0);
 					DXSystem::SetBlendState(BS_State::Off);
 					DXSystem::SetRasterizerState(RS_State::Cull_None);
-					bitBlockTransfer_->Blit(postEffectedFrameBuffer_->GetColorMap().GetAddressOf(), 0, 1, toneMapPS_.Get());
+					bitBlockTransfer_->Blit(radialBlurFrameBuffer_->GetColorMap().GetAddressOf(), 0, 1, toneMapPS_.Get());
 				}
 
 				break;
@@ -529,6 +543,16 @@ void RenderManager::DrawImGui()
 		ImGui::SliderFloat("Shadow Color", &bufferEffects_->data_.shadowColor_, 0.0f, 1.0f);
 		ImGui::SliderFloat("Shadow Filter Radius", &bufferEffects_->data_.shadowFilterRadius_, 0.0f, 64.0f);
 		ImGui::SliderInt("Shadow Sample Count", reinterpret_cast<int*>(&bufferEffects_->data_.shadowSampleCount_), 0, 64);
+
+		if (ImGui::TreeNode("Radial Blur"))
+		{
+			auto& data = bufferEffects_->data_;
+			ImGui::SliderFloat("Strength", &data.radialBlurStrength_, 0.0f,1.0f);
+			ImGui::SliderInt("Sample Count", &data.radialBlurSampleCount_, 1,5);
+			ImGui::DragFloat2("UV Offset", &data.radialBlurUvOffset_[0], 0.01f, 0.0f,1.0f);
+
+			ImGui::TreePop();
+		}
 
 		ImGui::EndMenu();
 	}

@@ -52,7 +52,7 @@ Engine::~Engine()
     sceneManager_.reset();
     assetManager_->Exit();
     assetManager_.reset();
-    scriptComManager_.reset();
+    //scriptComManager_.reset();
     collisionManager_->Clear();
     collisionManager_.reset();
 

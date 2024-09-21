@@ -131,6 +131,13 @@ namespace AbyssEngine
             float shadowFilterRadius_ = 4.000f;
             int shadowSampleCount_ = 16;
             int colorizeCascadedLayer_ = false;
+
+            //ラジアルブラー強度
+            float radialBlurStrength_ = 0.0f;
+            //ラジアルブラーサンプル数
+            int radialBlurSampleCount_ = 1;
+            //ブラーの中心となるUV値
+            float radialBlurUvOffset_[2] = {0.5f,0.5f};
         };
         std::unique_ptr<ConstantBuffer<ConstantEffects>> bufferEffects_;
 
@@ -147,11 +154,13 @@ namespace AbyssEngine
 
         //オフスクリーンレンダリング
         std::unique_ptr<FrameBuffer> baseFrameBuffer_[2];//エフェクトなしのフレームバッファ
-        std::unique_ptr<FrameBuffer> postEffectedFrameBuffer_;//ポストエフェクトがついたフレームバッファ
+        std::unique_ptr<FrameBuffer> postEffectedFrameBuffer_;//ポストエフェクト後のフレームバッファ
+        std::unique_ptr<FrameBuffer> radialBlurFrameBuffer_;//ラジアルブラー後のフレームバッファ
         std::unique_ptr<FullscreenQuad> bitBlockTransfer_;
         std::unique_ptr<Bloom> bloom_;
 
         Microsoft::WRL::ComPtr<ID3D11PixelShader> postEffectsPS_;
+        Microsoft::WRL::ComPtr<ID3D11PixelShader> radialBlurPS_;
         Microsoft::WRL::ComPtr<ID3D11PixelShader> toneMapPS_;
 
         //スカイボックス
