@@ -46,6 +46,13 @@ namespace VitesseState
         void Initialize() override;
         void Update() override;
         void Finalize() override;
+
+    private:
+        float dodgeTime_ = 0.3f;
+        float dodgeCameraArmLength_ = 40.0f;
+        float highSpeedCameraArmLength_ = 26.0f;
+        float cameraLagSpeed = 35.0f;
+
     };
 
     //Game:Vitesse 離陸ステート
@@ -100,6 +107,7 @@ namespace VitesseState
     private:
 
         bool board_;//乗り込んだかどうか
+
     };
 }
 

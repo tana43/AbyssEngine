@@ -9,9 +9,13 @@ using namespace AbyssEngine;
 HumanoidWeapon::HumanoidWeapon()
 {
     Max_Horizontal_Speed = 40.0f;
+    Max_Vertical_Speed = 40.0f;
+    defaultMaxHorizontalSpeed = Max_Horizontal_Speed;
+    defaultMaxVerticalSpeed = Max_Vertical_Speed;
     baseRotSpeed_ = 500.0f;
     acceleration_ = 60.0f;
     deceleration_ = 60.0f;
+    speedingDecel_ = 200.0f;
 }
 
 void HumanoidWeapon::Update()
@@ -37,10 +41,21 @@ void HumanoidWeapon::UpdateVelocity()
 
                 //‘¬“x§ŒÀ
                 Vector2 velocityXZ = { velocity_.x,velocity_.z };
-                if (velocityXZ.Length() > Max_Horizontal_Speed)
+                float spd = velocityXZ.Length();
+                if (spd > Max_Horizontal_Speed)
                 {
                     velocityXZ.Normalize();
-                    velocityXZ = velocityXZ * Max_Horizontal_Speed;
+                    if (spd - Max_Horizontal_Speed < 0.1f)
+                    {
+                        //‚»‚Ì‚Ü‚ÜÅ‘å‘¬“x‚ð‘ã“ü
+                        velocityXZ = velocityXZ * Max_Horizontal_Speed;
+                    }
+                    else
+                    {
+                        //Œ¸‘¬‚³‚¹‚é
+                        float newSpeed = spd - speedingDecel_ * Time::deltaTime_;
+                        velocityXZ = velocityXZ * newSpeed;
+                    }
 
                     velocity_.x = velocityXZ.x;
                     velocity_.z = velocityXZ.y;

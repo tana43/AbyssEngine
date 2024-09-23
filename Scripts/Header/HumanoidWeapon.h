@@ -21,6 +21,7 @@ public:
 
 public:
     const float& GetDefaultMaxHorizontalSpeed() const { return defaultMaxHorizontalSpeed; }
+    const float& GetDefaultMaxVerticalSpeed() const { return defaultMaxVerticalSpeed; }
 
 protected:
     virtual void Climb(float amount);//è„è∏
@@ -38,6 +39,7 @@ protected:
     float climbSpeed_ = 50.0f;//è„è∏ë¨ìx
 
     float defaultMaxHorizontalSpeed = 40.0f;
+    float defaultMaxVerticalSpeed = 40.0f;
 
     //å∏ë¨ÇµÇΩÇ©
     bool slowDown_ = false;

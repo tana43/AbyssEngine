@@ -118,6 +118,7 @@ namespace AbyssEngine
         Vector3 velocity_;//速度
         float acceleration_ = 1.0f;//加速力
         float deceleration_ = 5.0f;//減速力
+        float speedingDecel_ = 10.0f;//制限速度を超過してしまっているときに減速させられる速度
 
         float Max_Horizontal_Speed = 20.0f;//水平方向に対する最大速度
         float Max_Vertical_Speed = 20.0f;//縦方向に対する最大速度
@@ -139,6 +140,8 @@ namespace AbyssEngine
         float Max_Health = 10.0f;//最大体力
 
         bool invincible_ = false;//無敵
+
+
     };
 }
 

@@ -36,13 +36,23 @@ void VitesseAnimState::AnimGroundMove::Update()
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
         if (crossY < 0)dot = DirectX::XM_2PI - dot;
         result = { sinf(dot),cosf(dot) };
-        result = result * (velocityXZ.Length() / vi->GetMaxHorizontalSpeed());
+
+        //max速度の８割を満たした速度ならブレンド値を１に
+        float weight = fminf(velocityXZ.Length() / (vi->GetMaxHorizontalSpeed() * 0.8f), 1.0f);
+        result = result * weight;
 
         vi->GetGroundMoveAnimation()->SetBlendWeight(result);
 
         //移動方向に代入
         moveDirection = { result.x,0,result.y };
+
+        /*if ((std::fetestexcept(FE_DIVBYZERO)))
+        {
+            _ASSERT_EXPR(false, L"Div by 0");
+        }*/
     }
+
+    
 }
 
 void VitesseAnimState::AnimGroundMove::Finalize()
@@ -85,7 +95,13 @@ void VitesseAnimState::AnimFlight::Update()
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
         if (crossY < 0)dot = DirectX::XM_2PI - dot;
         result = { sinf(dot),cosf(dot) };
-        result = result * (velocityXZ.Length() / vi->GetMaxHorizontalSpeed());
+
+        //０除算を防ぐ
+        if (velocityXZ.LengthSquared() == 0 || vi->GetMaxHorizontalSpeed() == 0)return;
+
+        //max速度の８割を満たした速度ならブレンド値を１に
+        float weight = fminf(velocityXZ.Length() / (vi->GetMaxHorizontalSpeed() * 0.8f),1.0f);
+        result = result * weight;
 
         vi->GetFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
 
@@ -144,7 +160,7 @@ void VitesseAnimState::AnimHighSpeedFlight::Update()
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
         if (crossY < 0)dot = DirectX::XM_2PI - dot;
         result = { sinf(dot),cosf(dot) };
-        result = result * (velocityXZ.Length() / vi->GetMaxHorizontalSpeed());
+
 
         vi->GetHighSpeedFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
 
@@ -162,6 +178,8 @@ void VitesseAnimState::AnimHighSpeedFlight::Update()
     {
         vi->GetHighSpeedFlightAnimation()->GetBlendSpace1D()->SetBlendWeight(0.0f);
     }
+
+    
 }
 
 void VitesseAnimState::AnimHighSpeedFlight::Finalize()

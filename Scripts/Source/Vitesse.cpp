@@ -8,6 +8,7 @@
 #include "RenderManager.h"
 #include "PlayerSoldier.h"
 #include "VitesseAnimState.h"
+#include "StaticMesh.h"
 
 #include "ThrusterEffect.h"
 
@@ -26,6 +27,12 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     
     //アニメーション初期化
     AnimationInitialize();
+
+    //武器を装備させる
+    weaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.glb");
+    model_->SocketAttach(weaponModel_, "rig_J_hand_R");
+    weaponModel_->GetSocketData().location_ = Weapon_Offset.pos;
+    weaponModel_->GetSocketData().rotation_ = Weapon_Offset.rot;
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -47,6 +54,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     camera_->SetTargetOffset({ 12.2f,14.5f,0 });
     camera_->SetBaseArmLength(18.0f);
     camera_->SetBaseTargetOffset({ 12.2f,14.5f,0 });
+    defaultCameraLagSpeed_ = camera_->GetCameraLagSpeed();
 
     //ステートマシン設定
     stateMachine_ = actor->AddComponent<StateMachine<State<Vitesse>>>();

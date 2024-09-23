@@ -8,6 +8,11 @@
 class ThrusterEffect;
 class Soldier;
 
+namespace AbyssEngine
+{
+    class StaticMesh;
+}
+
 class Vitesse : public HumanoidWeapon 
 {
 public:
@@ -100,8 +105,11 @@ public:
     void SetCanBoarding(const bool& can) { canBoarding_ = can; }
 
     const float& GetDodgeMaxSpeed() const { return dodgeMaxSpeed_; }
+    const float& GetHighSpeedFlightMaxSpeed() const { return highSpeedFlightMaxSpeed_; }
 
     const std::shared_ptr<AbyssEngine::Camera>& GetCamera() const { return camera_; }
+
+    const float& GetDefaultCameraLagSpeed() const { return defaultCameraLagSpeed_; }
 
     void ChangeState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
@@ -159,5 +167,25 @@ private:
     //回避速度
     float dodgeSpeed_ = 100.0f;
     float dodgeMaxSpeed_ = 100.0f;
+
+    //高速飛行移動速度
+    float highSpeedFlightMaxSpeed_ = 50.0f;
+
+    //カメラのデフォルト値
+    float defaultCameraLagSpeed_ = 0.0f;
+    
+    //武器
+    std::shared_ptr<AbyssEngine::StaticMesh> weaponModel_;
+
+    struct SocketOffset
+    {
+        AbyssEngine::Vector3 pos;
+        AbyssEngine::Vector3 rot;
+    };
+    const SocketOffset Weapon_Offset =
+    {
+        {-42.650,-5.65f,-20.8f},
+        {-21.2,180.85f,93.95f},
+    };
 };
 

@@ -5,6 +5,7 @@
 #include "Actor.h"
 #include "Engine.h"
 #include "Input.h"
+#include "RenderManager.h"
 
 using namespace AbyssEngine;
 
@@ -226,6 +227,24 @@ void VitesseState::HighSpeedFlight::Initialize()
 
     //最大速度を変更
     owner_->SetMaxHorizontalSpeed(owner_->GetDodgeMaxSpeed());
+    owner_->SetMaxVerticalSpeed(owner_->GetDodgeMaxSpeed());
+
+    //ラジアルブラー設定
+    auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
+    postEffect.radialBlurStrength_ = 0.3f;
+    postEffect.radialBlurSampleCount_ = 3;
+
+    //カメラのズームを変更
+    auto& camera = owner_->GetCamera();
+    Camera::ZoomParam zoomParam;
+    zoomParam.armLength_ = dodgeCameraArmLength_;
+    zoomParam.time_ = 0.05f;
+    zoomParam.socketOffset_ = camera->GetSocketOffset();
+    zoomParam.targetOffset_ = camera->GetTargetOffset();
+    camera->Zoom(zoomParam);
+    camera->SetCameraLagSpeed(cameraLagSpeed);
+
+    timer_ = 0.0f;
 }
 
 void VitesseState::HighSpeedFlight::Update()
@@ -233,6 +252,31 @@ void VitesseState::HighSpeedFlight::Update()
     owner_->UpdateInputMove();
     owner_->ThrusterInfluenceVelocity();
 
+    //カメラアームを調整
+    float blendWeight = fminf(timer_ / dodgeTime_,1.0f);
+    float armLemgth = std::lerp(dodgeCameraArmLength_, highSpeedCameraArmLength_, blendWeight);
+    owner_->GetCamera()->SetArmLength(armLemgth);
+
+    //最大速度を高速移動時の値に変更
+    if (timer_ > dodgeTime_)
+    {
+        owner_->SetMaxHorizontalSpeed(owner_->GetHighSpeedFlightMaxSpeed());
+        owner_->SetMaxVerticalSpeed(owner_->GetHighSpeedFlightMaxSpeed());
+    }
+
+    //ラジアルブラー設定
+    auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
+    const float blurStrength = 0.07f;
+    if (postEffect.radialBlurStrength_ > blurStrength)
+    {
+        postEffect.radialBlurStrength_ -= Time::deltaTime_;
+    }
+    else
+    {
+        postEffect.radialBlurStrength_ = blurStrength;
+    }
+
+    timer_ += Time::deltaTime_;
 
     //各ステートに遷移
 
@@ -244,11 +288,11 @@ void VitesseState::HighSpeedFlight::Update()
     }
 
     //着地しているなら着地ステートへ
-    if (owner_->GetOnGround())
+    /*if (owner_->GetOnGround())
     {
         owner_->ChangeState(Vitesse::ActionState::Landing);
         return;
-    }
+    }*/
 }
 
 void VitesseState::HighSpeedFlight::Finalize()
@@ -258,4 +302,14 @@ void VitesseState::HighSpeedFlight::Finalize()
 
     //最大速度を元に戻す
     owner_->SetMaxHorizontalSpeed(owner_->GetDefaultMaxHorizontalSpeed());
+    owner_->SetMaxVerticalSpeed(owner_->GetDefaultMaxVerticalSpeed());
+
+    //ラジアルブラー初期化
+    auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
+    postEffect.radialBlurStrength_ = 0.0f;
+    postEffect.radialBlurSampleCount_ = 1;
+
+    //ズームをリセット
+    owner_->GetCamera()->ZoomReset(0.6f);
+    owner_->GetCamera()->SetCameraLagSpeed(owner_->GetDefaultCameraLagSpeed());
 }

@@ -40,10 +40,10 @@ namespace AbyssEngine
         //ズームによって変更可能なパラメータ
         struct ZoomParam
         {
-            float armLength_;
-            Vector3 socketOffset_;
-            Vector3 targetOffset_;
-            float time_;
+            float armLength_ = 1.0f;
+            Vector3 socketOffset_ = {0.0f,0.0f,0.0f};
+            Vector3 targetOffset_ = {0.0f,0.0f,0.0f};
+            float time_ = 0.0f;
         };
 
         //カメラをズームイン・アウトさせる
@@ -87,6 +87,10 @@ namespace AbyssEngine
         void SetBaseTargetOffset(const Vector3& offset) { baseTargetOffset_ = offset; }
         void SetBaseArmLength(const float& length) { baseArmLength_ = length; }
 
+        const Vector3& GetSocketOffset() const { return socketOffset_; }
+        const Vector3& GetTargetOffset() const { return targetOffset_; }
+        const float& GetArmLength() const { return armLength_; }
+        const float& GetCameraLagSpeed() const { return cameraLagSpeed_; }
         void SetSocketOffset(const Vector3& offset) { socketOffset_ = offset; }
         void SetTargetOffset(const Vector3& offset) { targetOffset_ = offset; }
         void SetArmLength(const float& length) { armLength_ = length; }

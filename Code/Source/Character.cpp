@@ -224,11 +224,23 @@ void Character::UpdateVelocity()
             }
 
             //速度制限
+            //速度をある程度越えている場合、減速させていく
             Vector2 velocityXZ = { velocity_.x,velocity_.z };
-            if (velocityXZ.Length() > Max_Horizontal_Speed)
+            float spd = velocityXZ.Length();
+            if (spd > Max_Horizontal_Speed)
             {
                 velocityXZ.Normalize();
-                velocityXZ = velocityXZ * Max_Horizontal_Speed;
+                if (spd - Max_Horizontal_Speed < 0.1f)
+                {
+                    //そのまま最大速度を代入
+                    velocityXZ = velocityXZ * Max_Horizontal_Speed;
+                }
+                else
+                {
+                    //減速させる
+                    float newSpeed = spd - speedingDecel_ * Time::deltaTime_;
+                    velocityXZ = velocityXZ * newSpeed;
+                }
 
                 velocity_.x = velocityXZ.x;
                 velocity_.z = velocityXZ.y;

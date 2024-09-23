@@ -80,6 +80,7 @@ void SkeletalMesh::RecalculateFrame()
 	//アニメーション更新
 	animator_->AnimatorUpdate();
 
+
 	//オフセット値
 	const Quaternion q = Quaternion::Euler(offsetRot_);
 	const Matrix R = Matrix::CreateFromQuaternion(q);
