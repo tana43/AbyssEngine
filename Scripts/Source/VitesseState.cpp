@@ -219,6 +219,7 @@ void VitesseState::HighSpeedFlight::Initialize()
     auto moveVec = owner_->GetCamera()->ConvertTo3DVectorFromCamera(inputVec);
     if (moveVec.LengthSquared() < 0.1f)moveVec = owner_->GetTransform()->GetForward();
     owner_->Dodge(moveVec);
+    owner_->SetMoveVec(moveVec);
 
     //アニメーション設定
     //斜め入力のときは、専用モーションへ
@@ -275,8 +276,16 @@ void VitesseState::HighSpeedFlight::Initialize()
 
 void VitesseState::HighSpeedFlight::Update()
 {
-    owner_->UpdateInputMove();
+    //スラスター噴射
     owner_->ThrusterInfluenceVelocity();
+
+    //移動方向の設定
+    owner_->UpdateInputMove();
+    //何も入力がないときは前方向へ動かす
+    if (owner_->GetMoveVec().LengthSquared() < 0.1f)
+    {
+        owner_->SetMoveVec(owner_->GetCamera()->ConvertTo3DVectorFromCamera(Vector2(0,1)));
+    }
 
     //ローリング回避終了判定
     if (rollingDodge_)

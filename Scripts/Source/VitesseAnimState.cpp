@@ -141,7 +141,7 @@ void VitesseAnimState::AnimHighSpeedFlight::Update()
     Vector3 velocityXZ = { velo.x,0,velo.z };
     if (velocityXZ.LengthSquared() < 0.01f)
     {
-        vi->GetHighSpeedFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 0));
+        vi->GetHighSpeedFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 1));
     }
     else
     {
@@ -161,7 +161,7 @@ void VitesseAnimState::AnimHighSpeedFlight::Update()
         if (crossY < 0)dot = DirectX::XM_2PI - dot;
         result = { sinf(dot),cosf(dot) };
 
-
+        result.Normalize();
         vi->GetHighSpeedFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
 
         //ˆÚ“®•ûŒü‚É‘ã“ü
