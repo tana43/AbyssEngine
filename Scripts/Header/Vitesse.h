@@ -68,6 +68,9 @@ public:
         HighSpeedFlight_L,
         HighSpeedFlight_B,
 
+        Dodge_FR,
+        Dodge_FL,
+
         //ブレンドモーション
         Run_Move,
         Flight_Move1D,

@@ -63,7 +63,7 @@ void VitesseAnimState::AnimGroundMove::Finalize()
 void VitesseAnimState::AnimFlight::Initialize()
 {
     //アニメーション設定
-    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Move));
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Move),0.5f);
 }
 
 void VitesseAnimState::AnimFlight::Update()

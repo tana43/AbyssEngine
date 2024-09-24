@@ -53,6 +53,8 @@ namespace VitesseState
         float highSpeedCameraArmLength_ = 26.0f;
         float cameraLagSpeed = 35.0f;
 
+        //斜め回避をしているか
+        bool rollingDodge_ = false;
     };
 
     //Game:Vitesse 離陸ステート

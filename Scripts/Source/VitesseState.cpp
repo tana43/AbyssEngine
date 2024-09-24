@@ -212,19 +212,45 @@ void VitesseState::Boarding::Finalize()
 
 void VitesseState::HighSpeedFlight::Initialize()
 {
+    rollingDodge_ = false;
+
+    //回避(入力値が無い場合、前方向へ回避)
+    auto inputVec = Input::GameSupport::GetMoveVector();
+    auto moveVec = owner_->GetCamera()->ConvertTo3DVectorFromCamera(inputVec);
+    if (moveVec.LengthSquared() < 0.1f)moveVec = owner_->GetTransform()->GetForward();
+    owner_->Dodge(moveVec);
+
     //アニメーション設定
-    owner_->ChangeAnimationState(Vitesse::AnimationState::HighSpeedFlight);
+    //斜め入力のときは、専用モーションへ
+    inputVec.Normalize();
+    const float radius = acosf(inputVec.Dot(Vector2(0, 1)));
+    //しきい値設定
+    const float rollingDodgeArea[2] = { DirectX::XMConvertToRadians(30),DirectX::XMConvertToRadians(60) };
+    const float rollingDodgeAreaBack[2] = { DirectX::XMConvertToRadians(120),DirectX::XMConvertToRadians(150) };
+    if ((radius > rollingDodgeArea[0] && radius < rollingDodgeArea[1]) || 
+        (radius > rollingDodgeAreaBack[0] && radius < rollingDodgeAreaBack[1]))
+    {
+        if (inputVec.x > 0)
+        {
+            owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Dodge_FR));
+        }
+        else
+        {
+            owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Dodge_FR));
+        }
+        rollingDodge_ = true;
+    }
+    else
+    {
+        owner_->ChangeAnimationState(Vitesse::AnimationState::HighSpeedFlight);
+    }
 
     //一度離陸させてから高速移動へ
-        //フライトモードへ移行
+    //フライトモードへ移行
     owner_->ToFlightMode();
     owner_->SetOnGround(false);
 
-    //回避
-    auto inputVec = Input::GameSupport::GetMoveVector();
-    auto moveVec = owner_->GetCamera()->ConvertTo3DVectorFromCamera(inputVec);
-    owner_->Dodge(moveVec);
-
+    
     //最大速度を変更
     owner_->SetMaxHorizontalSpeed(owner_->GetDodgeMaxSpeed());
     owner_->SetMaxVerticalSpeed(owner_->GetDodgeMaxSpeed());
@@ -252,14 +278,29 @@ void VitesseState::HighSpeedFlight::Update()
     owner_->UpdateInputMove();
     owner_->ThrusterInfluenceVelocity();
 
+    //ローリング回避終了判定
+    if (rollingDodge_)
+    {
+        if (owner_->GetAnimator()->GetAnimationFinished())
+        {
+            rollingDodge_ = false;
+
+            //通常回避移動へ
+            //回転するモーションである都合上、一旦高速移動のモーションを挟む必要がある
+            owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),0.0f);
+            owner_->ChangeAnimationState(Vitesse::AnimationState::HighSpeedFlight);
+        }
+    }
+
     //カメラアームを調整
     float blendWeight = fminf(timer_ / dodgeTime_,1.0f);
     float armLemgth = std::lerp(dodgeCameraArmLength_, highSpeedCameraArmLength_, blendWeight);
     owner_->GetCamera()->SetArmLength(armLemgth);
 
-    //最大速度を高速移動時の値に変更
-    if (timer_ > dodgeTime_)
+    //回避終了
+    if (timer_ > dodgeTime_ && !rollingDodge_)
     {
+        //最大速度を高速移動時の値に変更
         owner_->SetMaxHorizontalSpeed(owner_->GetHighSpeedFlightMaxSpeed());
         owner_->SetMaxVerticalSpeed(owner_->GetHighSpeedFlightMaxSpeed());
     }
@@ -280,11 +321,15 @@ void VitesseState::HighSpeedFlight::Update()
 
     //各ステートに遷移
 
-    //ダッシュボタンが押されていないなら通常飛行ステートへ
-    if (!Input::GameSupport::GetDashButton())
+    //回避中は通常移動へ移行しない
+    if (timer_ > dodgeTime_ && !rollingDodge_)
     {
-        owner_->ChangeState(Vitesse::ActionState::FMove);
-        return;
+        //ダッシュボタンが押されていないなら通常飛行ステートへ
+        if (!Input::GameSupport::GetDashButton())
+        {
+            owner_->ChangeState(Vitesse::ActionState::FMove);
+            return;
+        }
     }
 
     //着地しているなら着地ステートへ
@@ -310,6 +355,12 @@ void VitesseState::HighSpeedFlight::Finalize()
     postEffect.radialBlurSampleCount_ = 1;
 
     //ズームをリセット
-    owner_->GetCamera()->ZoomReset(0.6f);
+    owner_->GetCamera()->ZoomReset(1.5f);
     owner_->GetCamera()->SetCameraLagSpeed(owner_->GetDefaultCameraLagSpeed());
+
+    if (owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Dodge_FR) ||
+        owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Dodge_FL))
+    {
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),0.0f);
+    }
 }

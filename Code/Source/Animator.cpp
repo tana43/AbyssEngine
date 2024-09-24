@@ -219,8 +219,17 @@ void Animator::PlayAnimation(const std::string& animName, float transTime, float
 
 void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime, float startTime)
 {
+	//現在モーションの遷移中ではないか
+	if (isTransitioningBlendAnim_)
+	{
+		isTransitioningBlendAnim_ = false;
+		animationClip_ = nextAnimationClip_;
+		nextAnimationClip_ = -1;
+	}
+	
 	//変更後が今と同じアニメーションなら処理しない
 	if (animationClip_ == animIndex)return;
+
 
 	if (transTime > 0)
 	{

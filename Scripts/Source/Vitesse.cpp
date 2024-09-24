@@ -172,7 +172,9 @@ void Vitesse::AnimationInitialize()
                 "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_F.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_R.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_L.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_B.glb"
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_B.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FR.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FL.glb"
         },
         {
             "Run_F",
@@ -193,12 +195,22 @@ void Vitesse::AnimationInitialize()
             "HighSpeedFlight_R",
             "HighSpeedFlight_L",
             "HighSpeedFlight_B",
+            "Dodge_FR",
+            "Dodge_FL"
         });
 
         //ループ再生しないように
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Landing))->SetLoopFlag(false);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Standby))->SetLoopFlag(false);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Board_Complete))->SetLoopFlag(false);
+
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FR))->SetLoopFlag(false);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FL))->SetLoopFlag(false);
+
+        //再生速度の調整
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FR))->SetAnimSpeed(0.5f);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FL))->SetLoopFlag(0.5f);
+
 
         //地上移動
         AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimationIndex::Stand), Vector2(0, 0));
