@@ -13,6 +13,7 @@
 #include "RenderManager.h"
 #include "EffectManager.h"
 #include "GameUIAdmin.h"
+#include "BossMech.h"
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
@@ -100,7 +101,7 @@ void TestScene::Initialize()
     stageCom = stageActor->AddComponent<Stage>();
     StageManager::Instance().AddStage(stageActor);
 
-    for (int i = 0; i < 10; i++)
+    /*for (int i = 0; i < 10; i++)
     {
         std::string name_ = "Skyscraper_001_";
         name_ += std::to_string(i);
@@ -117,7 +118,7 @@ void TestScene::Initialize()
         std::string name_ = "Office_001_";
         name_ += std::to_string(i);
         stageCom->AddStageModel(name_, "./Assets/Models/Stage/Office_001.glb");
-    }
+    }*/
     int gridSize = 12;
     for (int x = 0; x < gridSize; x++)
     {
@@ -151,8 +152,12 @@ void TestScene::Initialize()
     pc->SetMyVitesse(vc);
 
     //F-14
-    const auto& fighterJet = InstanceActor("F-14A");
-    fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
+    //const auto& fighterJet = InstanceActor("F-14A");
+    //fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
+
+    //ボス配置
+    const auto& boss = InstanceActor("Boss_Mech_Test");
+    boss->AddComponent<BossMech>();
 
     swordEfe_ = std::make_unique<Effect>("./Assets/Effects/Thruster_01.efk");
 

@@ -29,13 +29,15 @@ void VitesseAnimState::AnimGroundMove::Update()
         Vector2 result;
 
         //内積による計算
-        float dot = acosf(forward.Dot(moveDirection));
+        float dot = forward.Dot(moveDirection);
+        dot = std::clamp(dot, -1.0f, 1.0f);
+        float radian = acosf(dot);
         float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
 
         //左右判定
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
-        if (crossY < 0)dot = DirectX::XM_2PI - dot;
-        result = { sinf(dot),cosf(dot) };
+        if (crossY < 0)radian = DirectX::XM_2PI - radian;
+        result = { sinf(radian),cosf(radian) };
 
         //max速度の８割を満たした速度ならブレンド値を１に
         float weight = fminf(velocityXZ.Length() / (vi->GetMaxHorizontalSpeed() * 0.8f), 1.0f);
@@ -88,13 +90,15 @@ void VitesseAnimState::AnimFlight::Update()
         Vector2 result;
 
         //内積による計算
-        float dot = acosf(forward.Dot(moveDirection));
+        float dot = forward.Dot(moveDirection);
+        dot = std::clamp(dot, -1.0f, 1.0f);
+        float radian = acosf(dot);
         float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
 
         //左右判定
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
-        if (crossY < 0)dot = DirectX::XM_2PI - dot;
-        result = { sinf(dot),cosf(dot) };
+        if (crossY < 0)radian = DirectX::XM_2PI - radian;
+        result = { sinf(radian),cosf(radian) };
 
         //０除算を防ぐ
         if (velocityXZ.LengthSquared() == 0 || vi->GetMaxHorizontalSpeed() == 0)return;
@@ -153,19 +157,27 @@ void VitesseAnimState::AnimHighSpeedFlight::Update()
         Vector2 result;
 
         //内積による計算
-        float dot = acosf(forward.Dot(moveDirection));
+        float dot = forward.Dot(moveDirection);
+        dot = std::clamp(dot,-1.0f,1.0f);
+        float radian = acosf(dot);
+
         float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
 
         //左右判定
         //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
-        if (crossY < 0)dot = DirectX::XM_2PI - dot;
-        result = { sinf(dot),cosf(dot) };
+        if (crossY < 0)radian = DirectX::XM_2PI - radian;
+        result = { sinf(radian),cosf(radian) };
 
         result.Normalize();
         vi->GetHighSpeedFlightAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
 
         //移動方向に代入
         vi->SetMoveDirection(Vector3(result.x, 0, result.y));
+
+        if (std::isnan(result.x) || std::isnan(result.y))
+        {
+            _ASSERT_EXPR(false, L"Divide by 0");
+        }
     }
 
     if (fabsf(velo.y) > 0.1f)

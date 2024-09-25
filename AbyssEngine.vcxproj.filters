@@ -395,6 +395,8 @@
       <Filter>Script\Header\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\GameCollider.h" />
+    <ClInclude Include="Code\Header\ParticleEmitter.h" />
+    <ClInclude Include="Scripts\Header\BossMech.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -659,6 +661,8 @@
       <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\GameCollider.cpp" />
+    <ClCompile Include="Code\Source\ParticleEmitter.cpp" />
+    <ClCompile Include="Scripts\Source\BossMech.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

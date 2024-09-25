@@ -34,6 +34,7 @@
     <ClInclude Include="Code\Header\CollisionHelper.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
     <ClInclude Include="Code\Header\GameCollider.h" />
+    <ClInclude Include="Code\Header\ParticleEmitter.h" />
     <ClInclude Include="Code\Header\PerlinNoise.h" />
     <ClInclude Include="Code\Header\Projectile.h" />
     <ClInclude Include="Code\Header\ScriptComponentManager.h" />
@@ -95,6 +96,7 @@
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scripts\Header\ActionDerived.h" />
+    <ClInclude Include="Scripts\Header\BossMech.h" />
     <ClInclude Include="Scripts\Header\Bullet.h" />
     <ClInclude Include="Scripts\Header\BotEnemy.h" />
     <ClInclude Include="Scripts\Header\FacilityScene.h" />
@@ -130,6 +132,7 @@
     <ClCompile Include="Code\Source\CollisionHelper.cpp" />
     <ClCompile Include="Code\Source\FadeSystem.cpp" />
     <ClCompile Include="Code\Source\GameCollider.cpp" />
+    <ClCompile Include="Code\Source\ParticleEmitter.cpp" />
     <ClCompile Include="Code\Source\PerlinNoise.cpp" />
     <ClCompile Include="Code\Source\Projectile.cpp" />
     <ClCompile Include="Code\Source\ScriptComponentManager.cpp" />
@@ -185,6 +188,7 @@
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Scripts\Source\ActionDerived.cpp" />
+    <ClCompile Include="Scripts\Source\BossMech.cpp" />
     <ClCompile Include="Scripts\Source\Bullet.cpp" />
     <ClCompile Include="Scripts\Source\BotEnemy.cpp" />
     <ClCompile Include="Scripts\Source\FacilityScene.cpp" />
