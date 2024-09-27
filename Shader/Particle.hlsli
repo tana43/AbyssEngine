@@ -2,6 +2,7 @@
 
 cbuffer PARTICLE_SYSTEM_CONSTANTS : register(b9)
 {
+    float4 emissionColor;
     float4 emissionPosition;
     float2 emissionSize; // x: spawn, y: despawn
     float2 emissionConeAngle; // x: minimum radian, y: maximum radian

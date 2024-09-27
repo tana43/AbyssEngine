@@ -62,7 +62,8 @@ void main(point VS_OUT input[1], inout TriangleStream<GS_OUT> output)
         element.position.xy += corner * float2(size, size * aspectRatio);
 		
 
-        element.color = p.color;
+        //element.color = p.color;
+        element.color = emissionColor;
 #if 0
 		float fade_in_time = 2.0;
 		float fade_out_time = 5.0;

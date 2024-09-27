@@ -16,7 +16,7 @@ void ParticleEmitter::Initialize(const std::shared_ptr<Actor>& actor)
 
     Engine::renderManager_->Add(std::static_pointer_cast<ParticleEmitter>(shared_from_this()));
 
-    particleSystem_ = std::make_unique<ParticleSystem>(100);
+    particleSystem_ = std::make_unique<ParticleSystem>(1000);
     particleSystem_->Initialize();
     Texture::LoadTextureFromFile("./Assets/Effects/Texture/Particle01.png", particleTexture_.GetAddressOf(), NULL);
     particleSystem_->particleSystemData_.spriteSheetGrid_ = { 1, 1 };
@@ -50,7 +50,27 @@ void AbyssEngine::ParticleEmitter::DrawImGui()
 {
     if (ImGui::TreeNode("EffectEmitter"))
     {
-        //particleSystem_->
+        auto& data = particleSystem_->particleSystemData_;
+        ImGui::ColorEdit4("Emission_Color", &data.emissionColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+
+        ImGui::DragFloat("Gravity", &data.gravity_, 0.01f);
+
+        ImGui::DragFloat("Lifespan min", &data.flashLifespan_.x, 0.01f);
+        ImGui::DragFloat("Lifespan min", &data.flashLifespan_.y, 0.01f);
+
+        ImGui::DragFloat("Spawn delay min", &data.spawnDelay_.x, 0.01f);
+        ImGui::DragFloat("Spawn delay max", &data.spawnDelay_.y, 0.01f);
+        ImGui::DragFloat("Fade in duration", &data.fadeDuration_.x, 0.01f );
+        ImGui::DragFloat("Fade out duration", &data.fadeDuration_.y, 0.01f );
+        ImGui::DragFloat("Emission size spawn", &data.emissionSize_.x, 0.01f );
+        ImGui::DragFloat("Emission size despawn", &data.emissionSize_.y, 0.01f);
+        ImGui::DragFloat("Emission speed min", &data.emissionSpeed_.x, 0.01f );
+        ImGui::DragFloat("Emission speed max", &data.emissionSpeed_.y, 0.01f );
+        ImGui::DragFloat("Emission angular_speed min", &data.emissionAngularSpeed_.x, 0.01f);
+        ImGui::DragFloat("Emission angular_speed max", &data.emissionAngularSpeed_.y, 0.01f);
+        ImGui::DragFloat("Emission cone angle min", &data.emissionConeAngle_.x, 0.01f, 0.0f, +3.141592653f );
+        ImGui::DragFloat("Emission cone angle max", &data.emissionConeAngle_.y, 0.01f, 0.0f, +3.141592653f );
+        ImGui::SliderFloat("noiseScale", &data.noiseScale_, +0.0f, +1.0f);
 
         ImGui::TreePop();
     }

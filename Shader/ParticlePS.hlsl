@@ -6,7 +6,7 @@ float4 main(GS_OUT pin) : SV_TARGET
 {
     float4 color = pin.color;
 
-#if 1
+#if 0
     color *= dot(colorMap.Sample(samplerStates[LINEAR_WRAP], pin.texcoord).rgb, float3(0.299, 0.587, 0.114));
 #else
 	color *= colorMap.Sample(samplerStates[LINEAR_WRAP], pin.texcoord);

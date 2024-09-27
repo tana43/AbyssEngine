@@ -57,10 +57,11 @@ namespace AbyssEngine
 
 		struct ParticleSystemConstants
 		{
+			Vector4 emissionColor_ = { 1, 1, 1, 1 };
 			Vector4 emissionPosition_ = {};
 			Vector2 emissionSize_ = { 0.5f, 0.0f }; // x: spawn, y: despawn
 			Vector2 emissionConeAngle_ = { 0.0f, 0.2f }; // x: minimum radian, y: maximum radian
-			Vector2 emissionSpeed = { 0.5f , 1.0f }; // x: minimum speed, y: maximum speed
+			Vector2 emissionSpeed_ = { 0.5f , 1.0f }; // x: minimum speed, y: maximum speed
 			Vector2 emissionAngularSpeed_ = { 0.0f, 1.0f }; // x: minimum angular speed, y: maximum angular speed
 			Vector2 flashLifespan_ = { 1.0f, 2.5f }; // x: minimum second, y: maximum second
 			Vector2 spawnDelay_ = { 0.0f, 5.0f }; // x: minimum second, y: maximum second
