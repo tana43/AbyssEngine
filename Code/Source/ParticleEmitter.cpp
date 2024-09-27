@@ -21,7 +21,7 @@ void ParticleEmitter::Initialize(const std::shared_ptr<Actor>& actor)
     Texture::LoadTextureFromFile("./Assets/Effects/Texture/Particle01.png", particleTexture_.GetAddressOf(), NULL);
     particleSystem_->particleSystemData_.spriteSheetGrid_ = { 1, 1 };
 
-    Texture::LoadTextureFromFile("./Assets/Effects/Texture/_noise_3d.dds", noise3d_.GetAddressOf(), NULL);
+    Texture::LoadTextureFromFile("./Assets/Effects/_noise_3d.dds", noise3d_.GetAddressOf(), NULL);
 
 
 }
@@ -32,13 +32,11 @@ void AbyssEngine::ParticleEmitter::Render()
     DXSystem::SetRasterizerState(RS_State::Cull_None);
     DXSystem::SetBlendState(BS_State::Add);
 
-
-    immediate_context->GSSetConstantBuffers(1, 1, constant_buffers[0].GetAddressOf());
-    immediate_context->PSSetConstantBuffers(1, 1, constant_buffers[0].GetAddressOf());
-
-    immediate_context->PSSetShaderResources(0, 1, particleTexture_.GetAddressOf());
+    DXSystem::GetDeviceContext()->PSSetShaderResources(0, 1, particleTexture_.GetAddressOf());
     //immediate_context->GSSetShaderResources(0, 1, color_temper_chart.GetAddressOf());
-    immediate_context->GSSetShaderResources(1, 1, noise3d_.GetAddressOf());
+    DXSystem::GetDeviceContext()->GSSetShaderResources(1, 1, noise3d_.GetAddressOf());
+
+    particleSystem_->Render();
 
 }
 
