@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "SkeletalMesh.h"
 #include "StaticMesh.h"
+#include "ParticleEmitter.h"
 
 #include "Bloom.h"
 #include "Skybox.h"
@@ -281,6 +282,11 @@ void RenderManager::Add(const shared_ptr<SpriteRenderer>& mRend)
 }
 
 void RenderManager::Add(const shared_ptr<BillboardRenderer>& mRend)
+{
+	rendererEffectList_.emplace_back(mRend);
+}
+
+void RenderManager::Add(const shared_ptr<ParticleEmitter>& mRend)
 {
 	rendererEffectList_.emplace_back(mRend);
 }

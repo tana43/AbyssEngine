@@ -28,6 +28,7 @@ namespace AbyssEngine
     class ShapeRenderer;
 
     class ParticleSystem;
+    class ParticleEmitter;
 
     class RenderManager
     {
@@ -49,6 +50,7 @@ namespace AbyssEngine
         void Add(const std::shared_ptr<SkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         //void Add(const std::shared_ptr<GltfSkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<StaticMesh>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<ParticleEmitter>& mRend);
         void Add(const std::shared_ptr<Camera>& camera);//マネージャーにカメラを登録する
 
         void Render(); //描画実行

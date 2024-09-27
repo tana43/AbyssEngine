@@ -45,6 +45,8 @@ void Character::DrawImGui()
     ImGui::DragFloat("Terrain Radius", &terrainRadius_, 0.01f, 0.0f);
     ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
     ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
+
+    ImGui::DragFloat("Gravity", &Gravity,0.01f);
 }
 
 bool Character::Jump(const float& jumpPower)
@@ -508,6 +510,10 @@ void Character::UpdateVerticalMove()
                     move = DirectX::XMVectorSubtract(move, DirectX::XMVectorScale(hitNormal, dot));
                     moved = pos + move;
                 }
+            }
+            else
+            {
+                onGround_ = false;
             }
         }
     }

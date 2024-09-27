@@ -30,6 +30,9 @@ namespace VitesseAnimState
         void Initialize()override;
         void Update()override;
         void Finalize()override;
+
+    private:
+        bool isPlayFallAnim_ = false;
     };
 
     class AnimFlight : Inheritance

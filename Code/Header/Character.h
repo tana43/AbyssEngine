@@ -94,8 +94,8 @@ namespace AbyssEngine
         virtual void UpdateVerticalMove();//地面に対して垂直方向の移動処理による位置更新
 
         virtual void Landing();//着地
-    public:
-        constexpr static float Gravity = -9.8f;
+
+        float Gravity = -9.8f;
 
     protected:
         Tag tag_ = Tag_Default;

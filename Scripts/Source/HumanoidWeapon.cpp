@@ -16,6 +16,7 @@ HumanoidWeapon::HumanoidWeapon()
     acceleration_ = 60.0f;
     deceleration_ = 60.0f;
     speedingDecel_ = 200.0f;
+    Gravity = -30.0f;
 }
 
 void HumanoidWeapon::Update()

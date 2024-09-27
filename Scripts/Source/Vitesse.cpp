@@ -174,7 +174,12 @@ void Vitesse::AnimationInitialize()
                 "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_L.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_B.glb",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FR.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FL.glb"
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FL.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Ground_Fall.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Start.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Loop.glb",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_1.glb"
+                
         },
         {
             "Run_F",
@@ -196,7 +201,11 @@ void Vitesse::AnimationInitialize()
             "HighSpeedFlight_L",
             "HighSpeedFlight_B",
             "Dodge_FR",
-            "Dodge_FL"
+            "Dodge_FL",
+            "Ground_Fall",
+            "Slash_Dash_Start",
+            "Slash_Dash_Loop",
+            "Slash_N_1"
         });
 
         //ƒ‹[ƒvÄ¶‚µ‚È‚¢‚æ‚¤‚É
@@ -393,7 +402,7 @@ void Vitesse::Dodge(Vector3 direction)
     velocity_ = direction * dodgeSpeed_;
 }
 
-void Vitesse::ChangeState(const ActionState& state)
+void Vitesse::ChangeActionState(const ActionState& state)
 {
     stateMachine_->ChangeState(static_cast<int>(state));
 }

@@ -13,12 +13,14 @@ namespace AbyssEngine
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
         void Render()override;
-
-
+        void RecalculateFrame()override;
+        void DrawImGui()override;
 
     private:
         //本体のパーティクルシステム
-        std::unique_ptr<Particle> particleSystem_;
+        std::unique_ptr<ParticleSystem> particleSystem_;
 
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> particleTexture_;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise3d_;
     };
 }

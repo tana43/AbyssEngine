@@ -88,7 +88,7 @@ const bool Input::GameSupport::GetDashButton()
     bool input = false;
     auto& i = Engine::inputManager_;
     if (i->keyboard_->GetKeyState().LeftShift ||
-        (i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER))
+        (i->gamePad_.GetButton() & GamePad::BTN_X))
     {
         input = true;
     }
@@ -159,7 +159,7 @@ const bool AbyssEngine::Input::GameSupport::GetAimButton()
 {
     auto& i = Engine::inputManager_;
     if (i->mouse_->GetButtonState().rightButton ||
-        i->gamePad_.GetButton() & GamePad::BTN_LEFT_THUMB)
+        i->gamePad_.GetButton() & GamePad::BTN_LEFT_SHOULDER)
     {
         return true;
     }
@@ -171,7 +171,7 @@ const bool AbyssEngine::Input::GameSupport::GetShotButton()
 {
     auto& i = Engine::inputManager_;
     if (i->mouse_->GetButtonState().leftButton ||
-        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_THUMB)
+        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER)
     {
         return true;
     }

@@ -8,50 +8,72 @@ void VitesseAnimState::AnimGroundMove::Initialize()
 {
     //アニメーション設定
     owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Run_Move));
+
+    isPlayFallAnim_ = false;
 }
 
 void VitesseAnimState::AnimGroundMove::Update()
 {
     const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
-    const auto velo = vi->GetVelocity();
-    Vector3 velocityXZ = { velo.x,0,velo.z };
-    if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
+
+    //着地しているか
+    if (vi->GetOnGround())
     {
-        vi->GetGroundMoveAnimation()->SetBlendWeight(Vector2(0, 0));
+        if (isPlayFallAnim_)
+        {
+            owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Run_Move));
+            isPlayFallAnim_ = false;
+        }
+
+        const auto velo = vi->GetVelocity();
+        Vector3 velocityXZ = { velo.x,0,velo.z };
+        if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
+        {
+            vi->GetGroundMoveAnimation()->SetBlendWeight(Vector2(0, 0));
+        }
+        else
+        {
+            //前方向と進行方向の差のベクトルを算出
+            const auto& forward = owner_->GetTransform()->GetForward();
+            Vector3 moveDirection;
+            velocityXZ.Normalize(moveDirection);
+
+            Vector2 result;
+
+            //内積による計算
+            float dot = forward.Dot(moveDirection);
+            dot = std::clamp(dot, -1.0f, 1.0f);
+            float radian = acosf(dot);
+            float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
+
+            //左右判定
+            //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
+            if (crossY < 0)radian = DirectX::XM_2PI - radian;
+            result = { sinf(radian),cosf(radian) };
+
+            //max速度の８割を満たした速度ならブレンド値を１に
+            float weight = fminf(velocityXZ.Length() / (vi->GetMaxHorizontalSpeed() * 0.8f), 1.0f);
+            result = result * weight;
+
+            vi->GetGroundMoveAnimation()->SetBlendWeight(result);
+
+            //移動方向に代入
+            moveDirection = { result.x,0,result.y };
+
+            /*if ((std::fetestexcept(FE_DIVBYZERO)))
+            {
+                _ASSERT_EXPR(false, L"Div by 0");
+            }*/
+        }
     }
     else
     {
-        //前方向と進行方向の差のベクトルを算出
-        const auto& forward = owner_->GetTransform()->GetForward();
-        Vector3 moveDirection;
-        velocityXZ.Normalize(moveDirection);
-
-        Vector2 result;
-
-        //内積による計算
-        float dot = forward.Dot(moveDirection);
-        dot = std::clamp(dot, -1.0f, 1.0f);
-        float radian = acosf(dot);
-        float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
-
-        //左右判定
-        //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
-        if (crossY < 0)radian = DirectX::XM_2PI - radian;
-        result = { sinf(radian),cosf(radian) };
-
-        //max速度の８割を満たした速度ならブレンド値を１に
-        float weight = fminf(velocityXZ.Length() / (vi->GetMaxHorizontalSpeed() * 0.8f), 1.0f);
-        result = result * weight;
-
-        vi->GetGroundMoveAnimation()->SetBlendWeight(result);
-
-        //移動方向に代入
-        moveDirection = { result.x,0,result.y };
-
-        /*if ((std::fetestexcept(FE_DIVBYZERO)))
+        //空中にいるなら落下モーション再生
+        if (!isPlayFallAnim_)
         {
-            _ASSERT_EXPR(false, L"Div by 0");
-        }*/
+            owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Ground_Fall), 0.5f);
+            isPlayFallAnim_ = true;
+        }
     }
 
     

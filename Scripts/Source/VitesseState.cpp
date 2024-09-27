@@ -36,6 +36,15 @@ void VitesseState::GroundMove::Update()
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
     }
+
+    //落下モーション再生中に着地したなら着地ステートへ
+    if (owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Ground_Fall))
+    {
+        if (owner_->GetOnGround())
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::Landing);
+        }
+    }
 }
 
 void VitesseState::GroundMove::Finalize()
@@ -62,7 +71,7 @@ void VitesseState::Flight::Update()
     //着地しているなら着地ステートへ
     if (owner_->GetOnGround())
     {    
-        owner_->ChangeState(Vitesse::ActionState::Landing);
+        owner_->ChangeActionState(Vitesse::ActionState::Landing);
     }
 
     //ダッシュボタンが押されているなら高速ステートへ
@@ -104,7 +113,7 @@ void VitesseState::Landing::Update()
     if (owner_->GetAnimator()->GetAnimationFinished())
     {
 
-        owner_->ChangeState(Vitesse::ActionState::GMove);
+        owner_->ChangeActionState(Vitesse::ActionState::GMove);
     }
 }
 
@@ -336,7 +345,7 @@ void VitesseState::HighSpeedFlight::Update()
         //ダッシュボタンが押されていないなら通常飛行ステートへ
         if (!Input::GameSupport::GetDashButton())
         {
-            owner_->ChangeState(Vitesse::ActionState::FMove);
+            owner_->ChangeActionState(Vitesse::ActionState::FMove);
             return;
         }
     }

@@ -394,9 +394,15 @@
     <ClInclude Include="Scripts\Header\ActionDerived.h">
       <Filter>Script\Header\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\GameCollider.h" />
-    <ClInclude Include="Code\Header\ParticleEmitter.h" />
-    <ClInclude Include="Scripts\Header\BossMech.h" />
+    <ClInclude Include="Scripts\Header\BossMech.h">
+      <Filter>Script\Header\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\GameCollider.h">
+      <Filter>Code\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ParticleEmitter.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -660,9 +666,15 @@
     <ClCompile Include="Scripts\Source\JudgmentDerived.cpp">
       <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\GameCollider.cpp" />
-    <ClCompile Include="Code\Source\ParticleEmitter.cpp" />
-    <ClCompile Include="Scripts\Source\BossMech.cpp" />
+    <ClCompile Include="Scripts\Source\BossMech.cpp">
+      <Filter>Script\Source\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\GameCollider.cpp">
+      <Filter>Code\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\ParticleEmitter.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

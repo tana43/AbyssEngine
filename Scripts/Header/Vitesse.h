@@ -71,6 +71,14 @@ public:
         Dodge_FR,
         Dodge_FL,
 
+        //地上移動時に落下した際の挙動
+        Ground_Fall,
+
+        //近接攻撃
+        Slash_Dash_Start,
+        Slash_Dash_Loop,
+        Slash_N_1,
+
         //ブレンドモーション
         Run_Move,
         Flight_Move1D,
@@ -78,6 +86,8 @@ public:
         Flight_Move,
         HighSpeedFlight_Move2D,
         HighSpeedFlight_Move,
+
+        
     };
     //アニメーションステートマシーンEnum
     enum class AnimationState
@@ -114,8 +124,9 @@ public:
 
     const float& GetDefaultCameraLagSpeed() const { return defaultCameraLagSpeed_; }
 
-    void ChangeState(const ActionState& state);
+    void ChangeActionState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
+    
 
     //パイロット乗り込み
     void GetOnBoardPilot(const std::shared_ptr<Soldier>& pilot);
