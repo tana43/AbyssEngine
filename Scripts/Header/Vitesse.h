@@ -30,6 +30,9 @@ public:
     //スラスターをすべて停止
     void ThrusterAllStop();
 
+    //コライダー設定
+    void ColliderInitialize();
+
     //回避行動
     void Dodge(AbyssEngine::Vector3 direction/*回避行動*/);
 

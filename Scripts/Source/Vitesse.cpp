@@ -89,6 +89,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //Engine::renderManager_->ChangeMainCamera(camera_.get());
 
+    //コライダー設定
+    ColliderInitialize();
+
 }
 
 void Vitesse::Update()
@@ -390,6 +393,33 @@ void Vitesse::ThrusterAllStop()
     {
         t->Stop();
     }
+}
+
+void Vitesse::ColliderInitialize()
+{
+    //こいつはなくてよさげ
+    //AddHitCollider(Vector3::Zero, 3.0f, "HitCollider_UpChest", model_, "rig_J_upbody2");
+    AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_LowChest", model_, "rig_J_upbody01");
+
+    AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_Head", model_, "rig_J_head");
+
+    AddHitCollider(Vector3(-0.1f,0,0), 1.5f, "HitCollider_Uparm_R", model_, "rig_J_uparm_R");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_R", model_, "rig_J_lowarm_R");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_R", model_, "rig_J_hand_R");
+
+    AddHitCollider(Vector3(0.1f,0,0), 1.5f, "HitCollider_Uparm_L", model_, "rig_J_uparm_L");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_L", model_, "rig_J_lowarm_L");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_L", model_, "rig_J_hand_L");
+
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hip", model_, "rig_J_root");
+
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_R", model_, "rig_J_upleg_R");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_R", model_, "rig_J_lowleg_R");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_R", model_, "rig_J_foot_R");
+
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_L", model_, "rig_J_upleg_L");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_L", model_, "rig_J_lowleg_L");
+    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_L", model_, "rig_J_foot_L");
 }
 
 void Vitesse::Dodge(Vector3 direction)
