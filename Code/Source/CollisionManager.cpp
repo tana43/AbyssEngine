@@ -41,7 +41,7 @@ void CollisionManager::UpdateWorldMatrix()
 		if (const auto& col = collider.lock())
 		{
 			if (!col->GetEnabled())return;
-			col->GetTransform()->CalcWorldMatrix();
+			col->UpdateWorldMatrix();
 		}
 	}
 

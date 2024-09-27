@@ -17,18 +17,17 @@ namespace AbyssEngine
             Enemy   = 0x01 << 1,
         };
 
-        enum class Type
-        {
-            
-        };
-
     public:
         Collider() {}
         ~Collider() {}
 
         void Initialize(const std::shared_ptr<Actor>& actor);
 
+        //ワールド行列更新
+        virtual void UpdateWorldMatrix();
+
         void SetFilePath(const char* path) { filePath_ = path; }
+
 
         [[nodiscard]] bool GetEnabled() const { return enabled_; }
         void SetEnable(bool value) { enabled_ = value; }
@@ -59,5 +58,7 @@ namespace AbyssEngine
 
         //
         int type_;
+
+        Matrix worldMatrix_;
     };
 }

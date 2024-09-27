@@ -3,9 +3,11 @@
 
 namespace AbyssEngine
 {
+    class SkeletalMesh;
+
     class SphereCollider : public Collider
     {
-    public: 
+    public:
         SphereCollider() {}
         ~SphereCollider() {}
 
@@ -15,7 +17,11 @@ namespace AbyssEngine
 
         void DrawImGui()override;
 
+        //球との交差判定
         bool IntersectVsSphere(const std::shared_ptr<SphereCollider>& collider, Collision::IntersectionResult* result);
+
+        //モデルにアタッチする
+        void AttachModel(const std::shared_ptr<SkeletalMesh>& model, std::string socketName);
 
     public:
         const float& GetRadius() const { return radius_; }
@@ -23,12 +29,18 @@ namespace AbyssEngine
 
         void SetDebugColor(const Vector4& color) { debugColor_ = color; }
 
+
+
     protected:
         //半径
         float radius_;
 
         //デバッグ時に表示される球体のカラー
         Vector4 debugColor_ = { 1,1,1,1 };
+
+        //アタッチする場合
+        std::weak_ptr<SkeletalMesh> attachModel_;
+        std::string socketName_;
     };
 }
 

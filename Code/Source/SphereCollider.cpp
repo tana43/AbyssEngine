@@ -3,6 +3,7 @@
 #include "RenderManager.h"
 #include "DebugRenderer.h"
 #include "Transform.h"
+#include "SkeletalMesh.h"
 
 #include <imgui/imgui.h>
 
@@ -39,4 +40,10 @@ bool SphereCollider::IntersectVsSphere(const std::shared_ptr<SphereCollider>& co
 
     if (result->penetration > 0)return true;
     return false;
+}
+
+void AbyssEngine::SphereCollider::AttachModel(const std::shared_ptr<SkeletalMesh>& model, std::string socketName)
+{
+    attachModel_ = model;
+    socketName_ = socketName;
 }

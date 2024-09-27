@@ -8,3 +8,9 @@ void Collider::Initialize(const std::shared_ptr<Actor>& actor)
     actor_ = actor;
     transform_ = actor->GetTransform();
 }
+
+void AbyssEngine::Collider::UpdateWorldMatrix()
+{
+    //ワールド行列更新
+    worldMatrix_ = transform_->CalcWorldMatrix();
+}
