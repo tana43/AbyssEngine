@@ -14,6 +14,22 @@ void SphereCollider::Initialize(const std::shared_ptr<Actor>& actor)
     Collider::Initialize(actor);
 }
 
+void SphereCollider::UpdateWorldMatrix()
+{
+    //アタッチ先のモデルがある
+    if (const auto& model = attachModel_.lock())
+    {
+        const Matrix boneTransform = model->FindSocket(socketName_.c_str());
+        const Matrix worldMatrix = boneTransform * transform_->CalcWorldMatrix();
+        transform_->SetWorldMatrix(worldMatrix);
+    }
+    else //アタッチ先のモデルがない
+    {
+        //ワールド行列更新
+        transform_->CalcWorldMatrix();
+    }
+}
+
 void SphereCollider::DrawDebug()
 {
 #if _DEBUG
@@ -23,7 +39,8 @@ void SphereCollider::DrawDebug()
 
 void SphereCollider::DrawImGui()
 {
-    if (ImGui::TreeNode("Sphere Collider"))
+    std::string name = "Sphere Collider" + socketName_;
+    if (ImGui::TreeNode(name.c_str()))
     {
         ImGui::DragFloat("Radius", &radius_, 0.02f, 0.0f);
 
@@ -42,7 +59,7 @@ bool SphereCollider::IntersectVsSphere(const std::shared_ptr<SphereCollider>& co
     return false;
 }
 
-void AbyssEngine::SphereCollider::AttachModel(const std::shared_ptr<SkeletalMesh>& model, std::string socketName)
+void SphereCollider::AttachModel(const std::shared_ptr<SkeletalMesh>& model, std::string socketName)
 {
     attachModel_ = model;
     socketName_ = socketName;

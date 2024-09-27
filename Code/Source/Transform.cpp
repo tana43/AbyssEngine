@@ -109,6 +109,25 @@ Matrix Transform::CalcLocalMatrix()
     return localMatrix_;
 }
 
+void Transform::SetWorldMatrix(const Matrix& mat)
+{
+    worldMatrix_ = mat;
+
+    //行列設定後に各要素抽出
+    worldMatrix_.Decompose(scale_, rotation_, position_);
+    Matrix R = Matrix::CreateFromQuaternion(rotation_);
+
+    //各方向ベクトルの算出
+    forward_ = Vector3::Transform(Vector3::Forward, R);
+    forward_.Normalize();
+
+    right_ = Vector3::Transform(Vector3::Right, R);
+    right_.Normalize();
+
+    up_ = Vector3::Transform(Vector3::Up, R);
+    up_.Normalize();
+}
+
 Vector3 Transform::GetEulerAngles() const 
 {
     return rotation_.To_Euler();

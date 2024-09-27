@@ -12,5 +12,5 @@ void Collider::Initialize(const std::shared_ptr<Actor>& actor)
 void AbyssEngine::Collider::UpdateWorldMatrix()
 {
     //ワールド行列更新
-    worldMatrix_ = transform_->CalcWorldMatrix();
+    transform_->CalcWorldMatrix();
 }

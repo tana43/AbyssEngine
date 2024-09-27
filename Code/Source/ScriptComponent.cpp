@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "CollisionManager.h"
 #include "GameCollider.h"
+#include "SkeletalMesh.h"
 
 using namespace AbyssEngine;
 
@@ -16,7 +17,7 @@ void ScriptComponent::Initialize(const std::shared_ptr<Actor>& actor)
     transform_ = actor->GetTransform();
 }
 
-std::shared_ptr<SphereCollider> ScriptComponent::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius, std::string name)
+std::shared_ptr<SphereCollider> ScriptComponent::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius, std::string name,const std::shared_ptr<SkeletalMesh>& attachModel, std::string socketName)
 {
     //コライダー用のアクターを生成
     auto& scene = Engine::sceneManager_->GetActiveScene();
@@ -34,10 +35,16 @@ std::shared_ptr<SphereCollider> ScriptComponent::AddAttackCollider(AbyssEngine::
     //デバッグ球のカラー変更
     colliderCom->SetDebugColor(Vector4(1, 0, 0, 1));
 
+    //アタッチさせるモデルがあるならアタッチする
+    if (attachModel)
+    {
+        colliderCom->AttachModel(attachModel, socketName);
+    }
+
     return colliderCom;
 }
 
-std::shared_ptr<SphereCollider> ScriptComponent::AddHitCollider(Vector3 localPos, float radius, std::string name)
+std::shared_ptr<SphereCollider> ScriptComponent::AddHitCollider(Vector3 localPos, float radius, std::string name, const std::shared_ptr<SkeletalMesh>& attachModel,std::string socketName)
 {
     //コライダー用のアクターを生成
     auto& scene = Engine::sceneManager_->GetActiveScene();
@@ -51,6 +58,12 @@ std::shared_ptr<SphereCollider> ScriptComponent::AddHitCollider(Vector3 localPos
 
     //親子付け
     colliderActor->SetParent(actor_);
+
+    //アタッチさせるモデルがあるならアタッチする
+    if (attachModel)
+    {
+        colliderCom->AttachModel(attachModel, socketName);
+    }
 
     return colliderCom;
 }

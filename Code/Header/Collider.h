@@ -59,6 +59,5 @@ namespace AbyssEngine
         //
         int type_;
 
-        Matrix worldMatrix_;
     };
 }

@@ -13,6 +13,9 @@ namespace AbyssEngine
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
 
+        //ワールド行列更新
+        void UpdateWorldMatrix()override;
+
         void DrawDebug()override;
 
         void DrawImGui()override;
@@ -22,6 +25,8 @@ namespace AbyssEngine
 
         //モデルにアタッチする
         void AttachModel(const std::shared_ptr<SkeletalMesh>& model, std::string socketName);
+
+
 
     public:
         const float& GetRadius() const { return radius_; }
