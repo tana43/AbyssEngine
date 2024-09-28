@@ -26,7 +26,7 @@ void AttackCollider::Initialize(const std::shared_ptr<Actor>& actor)
     SphereCollider::Initialize(actor);
 
     //マネージャーに登録
-    Engine::collisionManager_->RegisterAttackCollider(static_pointer_cast<SphereCollider>(shared_from_this()));
+    Engine::collisionManager_->RegisterAttackCollider(static_pointer_cast<AttackCollider>(shared_from_this()));
 
     //デバッグ球のカラー変更
     debugColor_ = Vector4(1, 0, 0, 1);
@@ -42,7 +42,7 @@ void HitCollider::Initialize(const std::shared_ptr<Actor>& actor)
     SphereCollider::Initialize(actor);
 
     //マネージャーに登録
-    Engine::collisionManager_->RegisterHitCollider(static_pointer_cast<SphereCollider>(shared_from_this()));
+    Engine::collisionManager_->RegisterHitCollider(static_pointer_cast<HitCollider>(shared_from_this()));
 
     //デバッグ球のカラー変更
     debugColor_ = Vector4(1, 0, 1, 1);

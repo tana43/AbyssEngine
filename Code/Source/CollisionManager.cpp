@@ -6,6 +6,8 @@
 
 #include "ScriptComponent.h"
 
+#include "GameCollider.h"
+
 #include "Engine.h"
 
 using namespace AbyssEngine;
@@ -108,12 +110,12 @@ void CollisionManager::AttackDetection()
 	}
 }
 
-void CollisionManager::RegisterAttackCollider(const std::shared_ptr<SphereCollider>& collider)
+void CollisionManager::RegisterAttackCollider(const std::shared_ptr<AttackCollider>& collider)
 {
 	attackColliderList_.emplace_back(collider);
 }
 
-void CollisionManager::RegisterHitCollider(const std::shared_ptr<SphereCollider>& collider)
+void CollisionManager::RegisterHitCollider(const std::shared_ptr<HitCollider>& collider)
 {
 	hitColliderList_.emplace_back(collider);
 }

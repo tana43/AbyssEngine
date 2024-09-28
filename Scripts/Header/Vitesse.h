@@ -143,6 +143,9 @@ public:
     //地上モードへ移行
     void ToGroundMode()override;
 
+    //ターゲットのコライダーを補足する
+    void TargetAcquisition();
+
 private:
     void CameraRollUpdate();
 
@@ -210,5 +213,9 @@ private:
 
     //ロックオンしているか
     bool activeLockon_ = false;
+    //補足、もしくはロックオン可能になる範囲
+    float lockRadius_ = 200.0f;
+
+    std::weak_ptr<Actor> lockonTarget_;
 };
 

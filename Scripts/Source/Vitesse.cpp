@@ -9,6 +9,8 @@
 #include "PlayerSoldier.h"
 #include "VitesseAnimState.h"
 #include "StaticMesh.h"
+#include "CollisionManager.h"
+#include "GameCollider.h"
 
 #include "ThrusterEffect.h"
 
@@ -472,6 +474,47 @@ void Vitesse::ToGroundMode()
     HumanoidWeapon::ToGroundMode();
 
     ThrusterAllStop();
+}
+
+//ターゲットとなるコライダーを補足する
+void Vitesse::TargetAcquisition()
+{
+    //全ヒットコライダーと内積値とスクリーン座標から補足するターゲットを取得する
+    //補足できるコライダーが複数ある場合はより近い方を補足
+    const auto& colliderList = Engine::collisionManager_->GetHitColliderList();
+    for (auto& collider : colliderList)
+    {
+        if (const auto& col = collider.lock())
+        {
+            if (!col->GetEnabled())continue;
+            if (!col->GetLockonTarget())continue;
+
+            const Vector3 colPos = col->GetTransform()->GetPosition();
+            const Vector3 pos = transform_->GetPosition();
+
+            const Vector3 toCollider = Vector3::Normalize(colPos - pos);
+            const Vector3 cameraForward = Vector3::Normalize(camera_->GetFocus() - camera_->GetEye());
+            
+            //内積値が負のコライダーは確実にカメラから写らないので省く
+            float dot = cameraForward.Dot(toCollider);
+            if (dot < 0)continue;
+
+            //スクリーン座標から画面中央からどの程度の位置にいるか検索
+            Vector2 colliderScreenPos = camera_->WorldToScreenPosition(colPos);
+            D3D11_VIEWPORT viewport;
+            DXSystem::GetViewport(1, &viewport);
+            Vector2 center = { viewport.Width / 2, viewport.Height / 2 };
+
+            const Vector2 centerToCollider = colliderScreenPos - center;
+            const float distSq = centerToCollider.LengthSquared();
+
+            //距離判定
+            if (distSq < lockRadius_ * lockRadius_)
+            {
+
+            }
+        }
+    }
 }
 
 void Vitesse::CameraRollUpdate()

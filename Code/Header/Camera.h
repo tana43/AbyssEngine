@@ -22,7 +22,7 @@ namespace AbyssEngine
 
         void SetEnableDebugController(const bool& enable) { enableDebugController_ = enable; }
         void SetIsMainCamera(const bool& isMainCamera) { isMainCamera_ = isMainCamera; }
-
+            
         const bool& GetIsMainCamera() const { return isMainCamera_; }
 
         //カメラが見ている方向が前方向になるような正規化済みベクトルを計算する
@@ -51,6 +51,9 @@ namespace AbyssEngine
 
         //ズームを元に戻す
         void ZoomReset(const float time);
+
+        Vector2 WorldToScreenPosition(Vector3 worldPosition);
+
     private:
         void ZoomUpdate();
 

@@ -327,6 +327,30 @@ void Camera::ZoomReset(const float time)
     isZooming_ = true;
 }
 
+Vector2 Camera::WorldToScreenPosition(Vector3 worldPosition)
+{
+    //ビューポート
+    D3D11_VIEWPORT viewport;
+    DXSystem::GetViewport(1,&viewport);
+
+    DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
+
+    DirectX::XMVECTOR ScreenPosition = DirectX::XMVector3Project(
+        worldPosition,
+        viewport.TopLeftX, viewport.TopLeftY,
+        viewport.Width, viewport.Height,
+        viewport.MinDepth, viewport.MaxDepth,
+        projectionMatrix_, viewMatrix_, World
+    );
+
+    Vector2 screenPosition;
+    DirectX::XMStoreFloat2(&screenPosition, ScreenPosition);
+
+    const float screenPositionZ = DirectX::XMVectorGetZ(ScreenPosition);
+
+    return screenPosition;
+}
+
 void Camera::ZoomUpdate()
 {
     if (!isZooming_)return;

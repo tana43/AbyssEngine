@@ -48,10 +48,10 @@ namespace AbyssEngine
         void HitDetection();
 
         //攻撃判定コライダーを登録
-        void RegisterAttackCollider(const std::shared_ptr<SphereCollider>& collider);
+        void RegisterAttackCollider(const std::shared_ptr<AttackCollider>& collider);
 
         //喰らい判定用コライダーを登録
-        void RegisterHitCollider(const std::shared_ptr<SphereCollider>& collider);
+        void RegisterHitCollider(const std::shared_ptr<HitCollider>& collider);
 
         //攻撃判定コライダーを削除
         void DeleteAttackCollider(const std::shared_ptr<SphereCollider>& collider);
@@ -62,6 +62,9 @@ namespace AbyssEngine
         //コライダーがヒットした際に呼ばれる関数
         void OnCollision(const std::shared_ptr<Collider>& myCollider,const std::shared_ptr<Collider>& collider,const Collision::IntersectionResult& result);
 
+        const std::vector<std::weak_ptr<AttackCollider>>& GetAttackColliderList() const { return attackColliderList_; }
+        const std::vector<std::weak_ptr<HitCollider>>& GetHitColliderList() const { return hitColliderList_; }
+
     private:
 
         std::vector<std::weak_ptr<MeshCollider>> meshColliderList_;
@@ -70,9 +73,9 @@ namespace AbyssEngine
         std::vector<std::weak_ptr<Collider>> terrainColliderList_;
 
         //攻撃判定コライダー
-        std::vector<std::weak_ptr<SphereCollider>> attackColliderList_;
+        std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;
 
         //喰らい判定コライダー
-        std::vector<std::weak_ptr<SphereCollider>> hitColliderList_;
+        std::vector<std::weak_ptr<HitCollider>> hitColliderList_;
     };
 }

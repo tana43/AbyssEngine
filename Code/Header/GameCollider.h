@@ -19,6 +19,14 @@ namespace AbyssEngine
         ~HitCollider();
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
+
+    public:
+        const bool& GetLockonTarget() const { return lockonTarget_; }
+        void SetLockonTarget(const bool& active) { lockonTarget_ = active; }
+
+    private:
+        //ロックオンの的になるか
+        bool lockonTarget_ = false;
     };
 }
 
