@@ -120,6 +120,9 @@ public:
     const bool& GetCanBoarding() const { return canBoarding_; }
     void SetCanBoarding(const bool& can) { canBoarding_ = can; }
 
+    const bool& GetActiveLockon() const { return activeLockon_; }
+    void SetActiveLockon(const bool& active) { activeLockon_ = active; }
+
     const float& GetDodgeMaxSpeed() const { return dodgeMaxSpeed_; }
     const float& GetHighSpeedFlightMaxSpeed() const { return highSpeedFlightMaxSpeed_; }
 
@@ -204,5 +207,8 @@ private:
         {-42.650,-5.65f,-20.8f},
         {-21.2,180.85f,93.95f},
     };
+
+    //ÉçÉbÉNÉIÉìÇµÇƒÇ¢ÇÈÇ©
+    bool activeLockon_ = false;
 };
 

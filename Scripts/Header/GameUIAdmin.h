@@ -21,7 +21,10 @@ public:
         Boarding,//搭乗
         Reticle,//レティクル
         HUD_Reticle_Base,//HUD　基本的に動かないUI
-        HUD_Reticle_Circle,//HUD　常に回転させる厚めUI
+        //HUD_Reticle_Circle,//HUD　常に回転させる厚めUI
+        Vitesse_Reticle,//ヴィテス専用のレティクル
+        HUD_Reticle_Lockon_Out,//ロックオン時に通常レティクルと切り替えて表示させる
+        HUD_Reticle_Lockon_In,//ロックオン時のみ常に回転させる
     };
 
 public:
