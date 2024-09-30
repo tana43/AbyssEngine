@@ -4,6 +4,7 @@
 namespace AbyssEngine
 {
     SphereCollider;
+    AttackCollider;
 }
 
 class Bullet : public AbyssEngine::Projectile
@@ -18,13 +19,13 @@ public:
     const float& GetAttackPoint() const { return attackPoint_; }
     void SetAttackPoint(const float& atk) { attackPoint_ = atk; }
 
-    const std::shared_ptr<AbyssEngine::SphereCollider>& GetCollider() { return collider_; }
+    const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
 
 private:
     //UŒ‚—Í
     float attackPoint_ = 1.0f;
 
-    //‹…”»’è
-    std::shared_ptr<AbyssEngine::SphereCollider> collider_;
+    //‹…UŒ‚”»’è
+    std::shared_ptr<AbyssEngine::AttackCollider> attackCollider_;
 };
 

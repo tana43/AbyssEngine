@@ -230,7 +230,7 @@ void BotEnemy::ReloadUpdate()
 void BotEnemy::ColliderInitialize()
 {
     //collider_ = AddHitCollider(Vector3(0, 0.2f, 0), 0.3f);
-    collider_ = AddHitCollider(Vector3(0, 0.2f, 0), 0.3f);
+    hitCollider_ = AddHitCollider(Vector3(0, 0.2f, 0), 0.3f);
 }
 
 const std::shared_ptr<AbyssEngine::Animator>& BotEnemy::GetAnimator() const

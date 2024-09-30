@@ -8,6 +8,7 @@ namespace AbyssEngine
     class SkeletalMesh;
     class Animator;
     class SphereCollider;
+    class HitCollider;
 }
 
 class Gun;
@@ -102,6 +103,6 @@ private:
     //ƒvƒŒƒCƒ„[‚ğŒ©‚Â‚¯‚Ä‚¢‚é‚©
     bool isTargetFind_ = false;
 
-    std::shared_ptr<AbyssEngine::SphereCollider> collider_;
+    std::shared_ptr<AbyssEngine::HitCollider> hitCollider_;
 };
 

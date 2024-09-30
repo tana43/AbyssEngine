@@ -403,6 +403,10 @@
     <ClInclude Include="Code\Header\ParticleEmitter.h">
       <Filter>Code\Header\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\ComboAttack.h" />
+    <ClInclude Include="Code\Header\ComboSystem.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">

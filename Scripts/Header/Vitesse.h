@@ -123,12 +123,16 @@ public:
     const bool& GetActiveLockon() const { return activeLockon_; }
     void SetActiveLockon(const bool& active) { activeLockon_ = active; }
 
+    const bool& GetChangeLockonTarget() const { return changeLockonTarget_; }
+
     const float& GetDodgeMaxSpeed() const { return dodgeMaxSpeed_; }
     const float& GetHighSpeedFlightMaxSpeed() const { return highSpeedFlightMaxSpeed_; }
 
     const std::shared_ptr<AbyssEngine::Camera>& GetCamera() const { return camera_; }
 
     const float& GetDefaultCameraLagSpeed() const { return defaultCameraLagSpeed_; }
+
+    const std::weak_ptr<AbyssEngine::Actor>& GetLockonActor() const { return lockonTarget_; }
 
     void ChangeActionState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
@@ -151,6 +155,12 @@ private:
 
     //スラスター更新処理
     void ThrusterUpdate();
+
+    //パイロットが搭乗しているかを判定するとこ
+    void PilotUpdate();
+
+    //上昇の入力を反映させる
+    void RiseInputUpdate();
 
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
@@ -216,6 +226,10 @@ private:
     //補足、もしくはロックオン可能になる範囲
     float lockRadius_ = 200.0f;
 
-    std::weak_ptr<Actor> lockonTarget_;
+    //目標となるアクター
+    std::weak_ptr<AbyssEngine::Actor> lockonTarget_;
+
+    //ロックオンしているターゲットが変更されたときにtrue
+    bool changeLockonTarget_ = false;
 };
 

@@ -32,6 +32,8 @@
     <ClInclude Include="Code\Header\CascadedShadowMap.h" />
     <ClInclude Include="Code\Header\Character.h" />
     <ClInclude Include="Code\Header\CollisionHelper.h" />
+    <ClInclude Include="Code\Header\ComboAttack.h" />
+    <ClInclude Include="Code\Header\ComboSystem.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
     <ClInclude Include="Code\Header\GameCollider.h" />
     <ClInclude Include="Code\Header\ParticleEmitter.h" />

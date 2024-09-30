@@ -34,7 +34,7 @@ namespace AbyssEngine
 
         void SetDebugColor(const Vector4& color) { debugColor_ = color; }
 
-
+        const std::string& GetSocketName() const { return socketName_; }
 
     protected:
         //”¼Œa

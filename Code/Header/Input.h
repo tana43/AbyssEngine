@@ -38,7 +38,7 @@ namespace AbyssEngine
             static const bool GetDodgeButton();//回避操作
             static const Vector2 GetCameraRollVector();//カメラの回転操作
             static const bool GetJumpButton();///ジャンプボタン
-            static const bool GetClimdButton();///上昇ボタン
+            static const bool GetRiseButton();///上昇ボタン
 
             static const bool GetAimButton();//銃を構えるボタン
             static const bool GetShotButton();//銃を撃つボタン

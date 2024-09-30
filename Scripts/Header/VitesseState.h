@@ -111,5 +111,6 @@ namespace VitesseState
         bool board_;//æ‚è‚ñ‚¾‚©‚Ç‚¤‚©
 
     };
+
 }
 

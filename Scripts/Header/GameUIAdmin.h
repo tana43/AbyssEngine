@@ -44,10 +44,25 @@ public:
     //プレイヤーを設定
     void SetPlayer(const std::shared_ptr<Soldier>& p) { player_ = p; }
 
+    const std::shared_ptr<AbyssEngine::SpriteRenderer>& GetUI(Usefulness index) const { return spriteList_[static_cast<int>(index)]; }
+
+private:
+    void LockonUiMove();
+
 private:
     std::vector<std::shared_ptr<AbyssEngine::SpriteRenderer>> spriteList_;
 
     //各種データを参照するためのプレイヤー
     std::shared_ptr<Soldier> player_;
+
+    static AbyssEngine::Vector2 screenCenter_;
+
+    //敵をロックしたときにレティクルを移動する前の値
+    AbyssEngine::Vector2 reticleBeforeMovePos_ = {};
+
+    //ターゲットをロックした際にUIを移動させるために使用するタイマー
+    float lockonMovetimer_ = 0.0f;
+    //ロック変更の際にUIの移動に掛ける時間
+    float Lockon_Move_Time = 0.1f;
 };
 

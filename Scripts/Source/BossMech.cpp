@@ -39,7 +39,7 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 void BossMech::ColliderInitialize()
 {
-    const std::shared_ptr<SphereCollider> collider[] =
+    const std::shared_ptr<HitCollider> collider[] =
     {
         AddHitCollider(Vector3::Zero, 10.0f, "Collider_Chest",          model_, "spine_02"),
 
@@ -70,4 +70,32 @@ void BossMech::ColliderInitialize()
         AddHitCollider(Vector3(0,0.2f,0),  6.0f, "Collider_Upfoot_L",          model_, "foot_l"),
         AddHitCollider(Vector3::Zero,  6.0f, "Collider_Foot_L",          model_, "foot_l")
     };
+
+    //ロックオン可能なコライダーを設定
+    std::string lockonCollider[] = {
+        "Collider_Chest",
+        "Collider_Head",
+        "Collider_Lowerarm_R",
+        "Collider_Lowerarm_L",
+        "Collider_Hip",
+        "Collider_Knee_R",
+        "Collider_Knee_L"
+    };
+
+    //タグを設定
+    for (const auto& col : collider)
+    {
+        col->ReplaceTag(Collider::Tag::Enemy);
+
+        //ロックオン可能なコライダーを設定
+        for (const auto& lockon : lockonCollider)
+        {
+            if (col->GetActor()->name_ == lockon)
+            {
+                col->SetLockonTarget(true);
+            }
+        }
+    }
+    
+    
 }

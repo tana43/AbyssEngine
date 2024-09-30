@@ -143,7 +143,7 @@ const bool Input::GameSupport::GetJumpButton()
     return false;
 }
 
-const bool Input::GameSupport::GetClimdButton()
+const bool Input::GameSupport::GetRiseButton()
 {
     auto& i = Engine::inputManager_;
     if (i->keyboard_->GetKeyState().Space ||

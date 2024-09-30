@@ -98,25 +98,16 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 void Vitesse::Update()
 {
-    const auto& pilot = pilot_.lock();
-    
     //パイロットが搭乗しているか
-    if (pilot && pilot->GetVitesseOnBoard())
-    {
-        stateMachine_->SetActive(true);
-    }
-    else
-    {
-        stateMachine_->SetActive(false);
-    }
+    PilotUpdate();
 
     HumanoidWeapon::Update();
 
+    //ターゲットの更新
+    TargetAcquisition();
+
     //上昇
-    if (flightMode_ && Input::GameSupport::GetClimdButton())
-    {
-        Climb(climbSpeed_ * Time::deltaTime_);
-    }
+    RiseInputUpdate();
 
     animStateMachine_->Update();
 
@@ -220,6 +211,9 @@ void Vitesse::AnimationInitialize()
 
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FR))->SetLoopFlag(false);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FL))->SetLoopFlag(false);
+
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_Dash_Start))->SetLoopFlag(false);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_N_1))->SetLoopFlag(false);
 
         //再生速度の調整
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FR))->SetAnimSpeed(0.5f);
@@ -461,7 +455,7 @@ void Vitesse::UpdateInputMove()
     if (flightMode_)
     {
         moveVec_ = camera_->ConvertTo3DVectorFromCamera(Input::GameSupport::GetMoveVector());
-        moveVec_.y += Input::GameSupport::GetClimdButton() ? 1.0f : 0.0f;
+        moveVec_.y += Input::GameSupport::GetRiseButton() ? 1.0f : 0.0f;
     }
     else
     {
@@ -482,12 +476,23 @@ void Vitesse::TargetAcquisition()
     //全ヒットコライダーと内積値とスクリーン座標から補足するターゲットを取得する
     //補足できるコライダーが複数ある場合はより近い方を補足
     const auto& colliderList = Engine::collisionManager_->GetHitColliderList();
+
+    //現在ターゲットに設定されているアクターまでのスクリーン距離
+    float nearestDistSq = FLT_MAX;
+
+    //ターゲットを検知したかのフラグ
+    bool findTarget = false;
+
+    //ターゲットが変更フラグをリセットしておく
+    changeLockonTarget_ = false;
+
     for (auto& collider : colliderList)
     {
         if (const auto& col = collider.lock())
         {
             if (!col->GetEnabled())continue;
             if (!col->GetLockonTarget())continue;
+            if (col->GetTag() != static_cast<unsigned int>(Collider::Tag::Enemy))continue;
 
             const Vector3 colPos = col->GetTransform()->GetPosition();
             const Vector3 pos = transform_->GetPosition();
@@ -511,7 +516,68 @@ void Vitesse::TargetAcquisition()
             //距離判定
             if (distSq < lockRadius_ * lockRadius_)
             {
+                findTarget = true;
 
+                //ターゲットがすでに設定されているか
+                if (lockonTarget_.lock())
+                {
+                    //現在のターゲットとの距離を比較、必要ならターゲット更新
+                    if (nearestDistSq > distSq)
+                    {
+                        //ターゲットを設定
+                        lockonTarget_ = col->GetActor();
+                        nearestDistSq = distSq;
+
+                        //ターゲット変更フラグを立てる
+                        //changeLockonTarget_ = true;
+                    }
+                }
+                else
+                {
+                    //ターゲットを設定
+                    lockonTarget_ = col->GetActor();
+                    nearestDistSq = distSq;
+
+                    //ターゲット変更フラグを立てる
+                    changeLockonTarget_ = true;
+                }
+            }
+        }
+    }
+
+    //ターゲットが見つからなかった場合は既存のターゲットを更新する
+    if (!findTarget)
+    {
+        if (const auto& actor = lockonTarget_.lock())
+        {
+            const Vector3 targetPos = actor->GetTransform()->GetPosition();
+            const Vector3 pos = transform_->GetPosition();
+
+            const Vector3 toCollider = Vector3::Normalize(targetPos - pos);
+            const Vector3 cameraForward = Vector3::Normalize(camera_->GetFocus() - camera_->GetEye());
+
+            //内積値が負ならリセットする
+            float dot = cameraForward.Dot(toCollider);
+            if (dot < 0)lockonTarget_.reset();
+            else
+            {
+                //スクリーン座標から画面中央からどの程度の位置にいるか検索
+                Vector2 targetScreenPos = camera_->WorldToScreenPosition(targetPos);
+                D3D11_VIEWPORT viewport;
+                DXSystem::GetViewport(1, &viewport);
+                Vector2 targetViewport = { targetScreenPos.x/viewport.Width, targetScreenPos.y/viewport.Height};
+                
+                //ビューポート座標から画面外に出ていないか調べる
+                if ((targetViewport.x > 0 && targetViewport.x < 1) &&
+                    (targetViewport.y > 0 && targetViewport.y < 1))
+                {
+                    //画面内にいるので引き続き補足
+                }
+                else
+                {
+                    //画面外に出ているのでリセット
+                    lockonTarget_.reset();
+                }
             }
         }
     }
@@ -536,5 +602,26 @@ void Vitesse::ThrusterUpdate()
     {
         t->UpdateInjection();
         t->UpdateTransform();
+    }
+}
+
+void Vitesse::PilotUpdate()
+{
+    const auto& pilot = pilot_.lock();
+    if (pilot && pilot->GetVitesseOnBoard())
+    {
+        stateMachine_->SetActive(true);
+    }
+    else
+    {
+        stateMachine_->SetActive(false);
+    }
+}
+
+void Vitesse::RiseInputUpdate()
+{
+    if (flightMode_ && Input::GameSupport::GetRiseButton())
+    {
+        Rise(riseSpeed_ * Time::deltaTime_);
     }
 }

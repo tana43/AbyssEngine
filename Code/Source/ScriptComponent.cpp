@@ -17,7 +17,7 @@ void ScriptComponent::Initialize(const std::shared_ptr<Actor>& actor)
     transform_ = actor->GetTransform();
 }
 
-std::shared_ptr<SphereCollider> ScriptComponent::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius, std::string name,const std::shared_ptr<SkeletalMesh>& attachModel, std::string socketName)
+std::shared_ptr<AttackCollider> ScriptComponent::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius, std::string name,const std::shared_ptr<SkeletalMesh>& attachModel, std::string socketName)
 {
     //コライダー用のアクターを生成
     auto& scene = Engine::sceneManager_->GetActiveScene();
@@ -44,7 +44,7 @@ std::shared_ptr<SphereCollider> ScriptComponent::AddAttackCollider(AbyssEngine::
     return colliderCom;
 }
 
-std::shared_ptr<SphereCollider> ScriptComponent::AddHitCollider(Vector3 localPos, float radius, std::string name, const std::shared_ptr<SkeletalMesh>& attachModel,std::string socketName)
+std::shared_ptr<HitCollider> ScriptComponent::AddHitCollider(Vector3 localPos, float radius, std::string name, const std::shared_ptr<SkeletalMesh>& attachModel,std::string socketName)
 {
     //コライダー用のアクターを生成
     auto& scene = Engine::sceneManager_->GetActiveScene();

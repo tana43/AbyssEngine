@@ -10,6 +10,8 @@ namespace AbyssEngine
     class Collider;
     class SphereCollider;
     class SkeletalMesh;
+    class AttackCollider;
+    class HitCollider;
 
     //独自のコンポーネントを開発する際に継承元として使用するコンポーネント
     //Update処理を持っている
@@ -32,8 +34,8 @@ namespace AbyssEngine
 
         //コライダーを付ける
         void AddTerrainCollider();  //押し出し判定用コライダー
-        std::shared_ptr<SphereCollider> AddAttackCollider(Vector3 localPos, float radius, std::string name = "AtkCollider", const std::shared_ptr<SkeletalMesh>& attachModel = NULL, std::string socketName = "");   //攻撃判定用コライダー
-        std::shared_ptr<SphereCollider> AddHitCollider(Vector3 localPos, float radius, std::string name = "HitCollider",const std::shared_ptr<SkeletalMesh>& attachModel = NULL, std::string socketName = "");      //喰らい判定用コライダー
+        std::shared_ptr<AttackCollider> AddAttackCollider(Vector3 localPos, float radius, std::string name = "AtkCollider", const std::shared_ptr<SkeletalMesh>& attachModel = NULL, std::string socketName = "");   //攻撃判定用コライダー
+        std::shared_ptr<HitCollider> AddHitCollider(Vector3 localPos, float radius, std::string name = "HitCollider",const std::shared_ptr<SkeletalMesh>& attachModel = NULL, std::string socketName = "");      //喰らい判定用コライダー
 
     public:
         const bool& GetActive() const { return active_; }

@@ -126,11 +126,11 @@ void HumanoidWeapon::DrawImGui()
 {
     Character::DrawImGui();
 
-    ImGui::SliderFloat("Climb", &climbSpeed_, 0.0f, 200.0f);
+    ImGui::SliderFloat("Climb", &riseSpeed_, 0.0f, 200.0f);
 
 }
 
-void HumanoidWeapon::Climb(float amount)
+void HumanoidWeapon::Rise(float amount)
 {
     _ASSERT_EXPR(flightMode_, "åªç›îÚçsÉÇÅ[ÉhÇ≈ÇÕÇ†ÇËÇ‹ÇπÇÒ");
     if (!flightMode_)return;

@@ -24,7 +24,7 @@ public:
     const float& GetDefaultMaxVerticalSpeed() const { return defaultMaxVerticalSpeed; }
 
 protected:
-    virtual void Climb(float amount);//上昇
+    virtual void Rise(float amount);//上昇
 
 
     virtual void UpdateInputMove() {}
@@ -36,7 +36,7 @@ protected:
     float Fall_Max_Speed;//重力によって加算される速度の上限
 
     float propulsion_ = 20.0f;//推進力(通常20程度)
-    float climbSpeed_ = 50.0f;//上昇速度
+    float riseSpeed_ = 50.0f;//上昇速度
 
     float defaultMaxHorizontalSpeed = 40.0f;
     float defaultMaxVerticalSpeed = 40.0f;

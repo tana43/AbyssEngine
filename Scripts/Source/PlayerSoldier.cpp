@@ -13,6 +13,7 @@
 #include "PlayerSoldierState.h"
 #include "BillboardRenderer.h"
 #include "SphereCollider.h"
+#include "GameCollider.h"
 
 #include "StageManager.h"
 
