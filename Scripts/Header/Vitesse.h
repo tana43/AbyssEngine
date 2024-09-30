@@ -36,6 +36,9 @@ public:
     //回避行動
     void Dodge(AbyssEngine::Vector3 direction/*回避行動*/);
 
+    //ステップ移動(処理内容は回避と同じ)
+    void StepMove(AbyssEngine::Vector3 moveDirection, float speed);
+
 public:
     //行動ステート
     enum class ActionState
@@ -132,7 +135,7 @@ public:
 
     const float& GetDefaultCameraLagSpeed() const { return defaultCameraLagSpeed_; }
 
-    const std::weak_ptr<AbyssEngine::Actor>& GetLockonActor() const { return lockonTarget_; }
+    const std::weak_ptr<AbyssEngine::Actor>& GetLockonTarget() const { return lockonTarget_; }
 
     void ChangeActionState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
@@ -231,5 +234,9 @@ private:
 
     //ロックオンしているターゲットが変更されたときにtrue
     bool changeLockonTarget_ = false;
+
+    //近接攻撃による速度
+    float meleeAttackDashSpeed_ = 70.0f;
+    float meleeAttackMaxSpeed_ = 70.0f;
 };
 

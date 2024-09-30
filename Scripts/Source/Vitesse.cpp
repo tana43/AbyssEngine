@@ -428,6 +428,16 @@ void Vitesse::Dodge(Vector3 direction)
     velocity_ = direction * dodgeSpeed_;
 }
 
+void Vitesse::StepMove(AbyssEngine::Vector3 moveDirection, float speed)
+{
+    //‰ñ”ð•ûŒü‚ÌÝ’è
+    moveDirection.Normalize();
+    dodgeDirection_ = moveDirection;
+
+    //Œ»Ý‚Ì‘¬“x‚ð‰ñ”ð•ûŒü‚Ö‰Á‘¬
+    velocity_ = moveDirection * speed;
+}
+
 void Vitesse::ChangeActionState(const ActionState& state)
 {
     stateMachine_->ChangeState(static_cast<int>(state));

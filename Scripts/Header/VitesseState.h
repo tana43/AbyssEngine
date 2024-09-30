@@ -112,5 +112,16 @@ namespace VitesseState
 
     };
 
+    //近接攻撃を仕掛けにいくときのダッシュ
+    class MeleeAttackDash : Inheritance
+    {
+    public:
+        MeleeAttackDash(Vitesse* vitesse) : State(vitesse, "MeleeAttackDash") {}
+        ~MeleeAttackDash() {}
+
+        void Initialize() override;
+        void Update() override;
+        void Finalize() override;
+    };
 }
 

@@ -382,3 +382,47 @@ void VitesseState::HighSpeedFlight::Finalize()
         owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),0.0f);
     }
 }
+
+void VitesseState::MeleeAttackDash::Initialize()
+{
+    //ターゲットの位置を算出
+    const auto& targetPtr =  owner_->GetLockonTarget();
+    if (const auto& target = targetPtr.lock())
+    {
+
+    }
+    else
+    {
+
+    }
+
+    //敵の方向へ
+    owner_->StepMove();
+
+    //一度離陸させてから高速移動へ
+    //フライトモードへ移行
+    owner_->ToFlightMode();
+    owner_->SetOnGround(false);
+
+
+    //最大速度を変更
+    owner_->SetMaxHorizontalSpeed(owner_->GetDodgeMaxSpeed());
+    owner_->SetMaxVerticalSpeed(owner_->GetDodgeMaxSpeed());
+
+    //ラジアルブラー設定
+    auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
+    postEffect.radialBlurStrength_ = 0.3f;
+    postEffect.radialBlurSampleCount_ = 3;
+
+    //カメラのズームを変更
+    auto& camera = owner_->GetCamera();
+    Camera::ZoomParam zoomParam;
+    zoomParam.armLength_ = dodgeCameraArmLength_;
+    zoomParam.time_ = 0.05f;
+    zoomParam.socketOffset_ = camera->GetSocketOffset();
+    zoomParam.targetOffset_ = camera->GetTargetOffset();
+    camera->Zoom(zoomParam);
+    camera->SetCameraLagSpeed(cameraLagSpeed);
+
+    timer_ = 0.0f;
+}

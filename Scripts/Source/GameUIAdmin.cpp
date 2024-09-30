@@ -110,7 +110,7 @@ void GameUIAdmin::UiUpdateVitesse()
         //ロックオンしているときのみレティクルを変更
         const auto& vitesse = player_->GetMyVitesse();
         //ロックオンされているアクター取得
-        const auto& lockonActor = vitesse->GetLockonActor().lock();
+        const auto& lockonActor = vitesse->GetLockonTarget().lock();
         if (lockonActor)
         {
             //ロックオン時
@@ -160,7 +160,7 @@ void GameUIAdmin::LockonUiMove()
     //ロックオンしているときのみレティクルを変更
     const auto& vitesse = player_->GetMyVitesse();
     //ロックオンされているアクター取得
-    const auto& lockonActor = vitesse->GetLockonActor().lock();
+    const auto& lockonActor = vitesse->GetLockonTarget().lock();
 
     //ロック変更があったか
     if (vitesse->GetChangeLockonTarget())
