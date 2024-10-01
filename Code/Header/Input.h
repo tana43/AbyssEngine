@@ -43,6 +43,8 @@ namespace AbyssEngine
             static const bool GetAimButton();//銃を構えるボタン
             static const bool GetShotButton();//銃を撃つボタン
 
+            static const bool GetMeleeAttackButton();//近接攻撃
+
             static const bool GetBoardingButton();//ヴィテス搭乗ボタン-
         };
         

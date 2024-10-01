@@ -12,7 +12,7 @@ namespace AbyssEngine
     class StaticMesh : public Renderer
     {
     public:
-        StaticMesh() {}
+        StaticMesh();
         ~StaticMesh() = default;
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
@@ -61,6 +61,10 @@ namespace AbyssEngine
 
         //ソケットアタッチ
         Socket socketData_;
+
+        //生成数（imguiが被らんようにゴリ押し）
+        static int instanceNum_;
+        int myNum_;
     };
 }
 

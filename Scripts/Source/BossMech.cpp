@@ -59,15 +59,15 @@ void BossMech::ColliderInitialize()
 
                                                       //‘å‘Ú
         AddHitCollider(Vector3::Zero,  6.0f, "Collider_Thigh_R",         model_, "thigh_r"),
-        AddHitCollider(Vector3(0,0.2f,0),  6.0f, "Collider_Upknee_R",          model_, "calf_r"),
+        AddHitCollider(Vector3(0.2f,0,0),  6.0f, "Collider_Lowthing_R",          model_, "thigh_r"),
         AddHitCollider(Vector3::Zero,  8.0f, "Collider_Knee_R",          model_, "calf_r"),
-        AddHitCollider(Vector3(0,0.2f,0),  6.0f, "Collider_Upfoot_R",          model_, "foot_r"),
+        AddHitCollider(Vector3(0.3f,0,0),  6.0f, "Collider_Downknee_R",          model_, "calf_r"),
         AddHitCollider(Vector3::Zero,  6.0f, "Collider_Foot_R",          model_, "foot_r"),
 
         AddHitCollider(Vector3::Zero,  6.0f, "Collider_Thigh_L",         model_, "thigh_l"),
-        AddHitCollider(Vector3(0,0.2f,0),  6.0f, "Collider_Upknee_L",          model_, "calf_l"),
+        AddHitCollider(Vector3(-0.2f,0,0),  6.0f, "Collider_Lowthing_L",          model_, "thigh_l"),
         AddHitCollider(Vector3::Zero,  8.0f, "Collider_Knee_L",          model_, "calf_l"),
-        AddHitCollider(Vector3(0,0.2f,0),  6.0f, "Collider_Upfoot_L",          model_, "foot_l"),
+        AddHitCollider(Vector3(-0.3f,0,0),  6.0f, "Collider_Downknee_L",          model_, "calf_l"),
         AddHitCollider(Vector3::Zero,  6.0f, "Collider_Foot_L",          model_, "foot_l")
     };
 

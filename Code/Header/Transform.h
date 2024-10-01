@@ -28,6 +28,7 @@ namespace AbyssEngine
 
         [[nodiscard]] const Vector4& GetRotation() const { return rotation_; };
         void SetRotation(const Vector4& rotation) { rotation_ = rotation; }
+        void SetRotation(const Vector3& rotation) { rotation_.x = rotation.x; rotation_.y = rotation.y; rotation_.z = rotation.z; }
         void SetRotationX(const float& x) { rotation_.x = x; }
         void SetRotationY(const float& y) { rotation_.y = y; }
         void SetRotationZ(const float& z) { rotation_.z = z; }
@@ -49,6 +50,7 @@ namespace AbyssEngine
 
         [[nodiscard]] const Vector4& GetLocalRotation() const { return localRotation_; }
         void SetLocalRotation(const Vector4& rotation) { localRotation_ = rotation; }
+        void SetLocalRotation(const Vector3& rotation) { localRotation_.x = rotation.x; localRotation_.y = rotation.y; localRotation_.z = rotation.z;}
         void SetLocalRotationX(const float& x) { localRotation_.x = x; }
         void SetLocalRotationY(const float& y) { localRotation_.y = y; }
         void SetLocalRotationZ(const float& z) { localRotation_.z = z; }

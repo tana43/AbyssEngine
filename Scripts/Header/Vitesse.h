@@ -39,6 +39,10 @@ public:
     //ステップ移動(処理内容は回避と同じ)
     void StepMove(AbyssEngine::Vector3 moveDirection, float speed);
 
+    //攻撃判定がヒットした
+    void OnCollision(const std::shared_ptr<AbyssEngine::Collider>& hitCollider, 
+        AbyssEngine::Collision::IntersectionResult result)override;
+
 public:
     //行動ステート
     enum class ActionState
@@ -49,6 +53,8 @@ public:
         Landing,
         Boarding,
         HighSpeedFlight,
+        MeleeAtkDash,
+        MeleeAtk,
     };
 
     //アニメーション
@@ -114,6 +120,8 @@ public:
     const std::weak_ptr<Soldier>& GetPilot() { return pilot_; }
     void SetPilot(const std::shared_ptr<Soldier>& p) { pilot_ = p; }
 
+    const std::shared_ptr<AbyssEngine::StaticMesh>& GetRightWeaponModel() const { return rightWeaponModel_; }
+
     const AbyssEngine::Vector3& GetMoveVec() const { return moveVec_; }
     void SetMoveVec(const AbyssEngine::Vector3& vec) { moveVec_ = vec; }
 
@@ -131,11 +139,22 @@ public:
     const float& GetDodgeMaxSpeed() const { return dodgeMaxSpeed_; }
     const float& GetHighSpeedFlightMaxSpeed() const { return highSpeedFlightMaxSpeed_; }
 
+    const float& GetMeleeAtkDashSpeed() const { return meleeAtkDashSpeed_; }
+    const float& GetMeleeAtkMaxSpeed() const { return meleeAtkDashMaxSpeed_; }
+
+    const float& GetMeleeAtkSpeed() const { return meleeAtkSpeed_; }
+
+    const float& GetMeleeAtkRange() const { return meleeAtkRange_; }
+
     const std::shared_ptr<AbyssEngine::Camera>& GetCamera() const { return camera_; }
 
     const float& GetDefaultCameraLagSpeed() const { return defaultCameraLagSpeed_; }
 
     const std::weak_ptr<AbyssEngine::Actor>& GetLockonTarget() const { return lockonTarget_; }
+
+    //ターゲットまでのベクトルを算出
+    //ターゲットがいない場合は見ている方向を返す
+    AbyssEngine::Vector3 ToTarget();
 
     void ChangeActionState(const ActionState& state);
     void ChangeAnimationState(const AnimationState& state);
@@ -153,6 +172,12 @@ public:
     //ターゲットのコライダーを補足する
     void TargetAcquisition();
 
+    //アニメーション再生
+    void PlayAnimation(AnimationIndex index,float transTime = 0.1f,float startTime = 0.0f);
+
+    //ラジアルブラーをターゲットがいる所を中心として演出させる
+    void RadialBlurFromTarget();
+
 private:
     void CameraRollUpdate();
 
@@ -165,6 +190,7 @@ private:
     //上昇の入力を反映させる
     void RiseInputUpdate();
 
+    
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
 
@@ -210,18 +236,25 @@ private:
     //カメラのデフォルト値
     float defaultCameraLagSpeed_ = 0.0f;
     
-    //武器
-    std::shared_ptr<AbyssEngine::StaticMesh> weaponModel_;
+    //右手武器
+    std::shared_ptr<AbyssEngine::StaticMesh> rightWeaponModel_;
+    //左手武器
+    std::shared_ptr<AbyssEngine::StaticMesh> leftWeaponModel_;
 
     struct SocketOffset
     {
         AbyssEngine::Vector3 pos;
         AbyssEngine::Vector3 rot;
     };
-    const SocketOffset Weapon_Offset =
+    const SocketOffset Left_Weapon_Offset =
     {
-        {-42.650,-5.65f,-20.8f},
-        {-21.2,180.85f,93.95f},
+        {-42.650f,-5.65f,-20.8f},
+        {-21.2f,180.0f,95.2f},
+    };
+    const SocketOffset Right_Weapon_Offset =
+    {
+        {42.650f,5.65f,20.8f},
+        {159.8f,180.0f,95.2f},
     };
 
     //ロックオンしているか
@@ -235,8 +268,14 @@ private:
     //ロックオンしているターゲットが変更されたときにtrue
     bool changeLockonTarget_ = false;
 
-    //近接攻撃による速度
-    float meleeAttackDashSpeed_ = 70.0f;
-    float meleeAttackMaxSpeed_ = 70.0f;
+    //近接攻撃をする際に敵に近寄る速度
+    float meleeAtkDashSpeed_ = 70.0f;
+    float meleeAtkDashMaxSpeed_ = 70.0f;
+
+    //近接攻撃が可能になる範囲
+    float meleeAtkRange_ = 25.0f;
+
+    //近接攻撃中の速度
+    float meleeAtkSpeed_ = 10.0f;
 };
 

@@ -52,7 +52,8 @@ namespace AbyssEngine
         //ズームを元に戻す
         void ZoomReset(const float time);
 
-        Vector2 WorldToScreenPosition(Vector3 worldPosition);
+        Vector2 WorldToScreenPosition(Vector3 worldPosition); //ワールド座標からスクリーン座標へ
+        Vector3 WorldToViewportPosition(Vector3 worldPosition); //ワールド座標からビューポート座標へ
 
     private:
         void ZoomUpdate();

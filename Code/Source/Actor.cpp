@@ -148,13 +148,13 @@ void Actor::Destroy(std::shared_ptr<Actor> actor)
 	Engine::sceneManager_->GetActiveScene().DestroyActor(actor);
 }
 
-void AbyssEngine::Actor::OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result)
+void AbyssEngine::Actor::OnCollision(const std::shared_ptr<Collider>& hitCollider, Collision::IntersectionResult result)
 {
 	//スクリプトコンポーネントを継承しているクラスの	OnCollisionを呼ぶ
 	for (const auto& c : componentList_)
 	{
 		const auto& sc = std::dynamic_pointer_cast<ScriptComponent>(c);
-		if (sc)sc->OnCollision(collision, result);
+		if (sc)sc->OnCollision(hitCollider, result);
 	}
 }
 

@@ -179,6 +179,27 @@ const bool AbyssEngine::Input::GameSupport::GetShotButton()
     return false;
 }
 
+const bool AbyssEngine::Input::GameSupport::GetMeleeAttackButton()
+{
+    auto& i = Engine::inputManager_;
+    //Game:¡‚¾‚¯E‚ÅŠi“¬‚³‚¹‚é
+#if 0  
+    if (i->mouse_->GetButtonState().leftButton ||
+        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER)
+    {
+        return true;
+    }
+#else
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::E) ||
+        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER)
+    {
+        return true;
+    }
+#endif // 0
+
+    return false;
+}
+
 const bool AbyssEngine::Input::GameSupport::GetBoardingButton()
 {
     auto& i = Engine::inputManager_;

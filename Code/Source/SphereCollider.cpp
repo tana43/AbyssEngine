@@ -19,8 +19,8 @@ void SphereCollider::UpdateWorldMatrix()
     //アタッチ先のモデルがある
     if (const auto& model = attachModel_.lock())
     {
-        const Matrix boneTransform = model->FindSocket(socketName_.c_str());
-        const Matrix worldMatrix = boneTransform * transform_->CalcWorldMatrix();
+        Matrix boneTransform = model->FindSocket(socketName_.c_str());
+        const Matrix worldMatrix = transform_->CalcLocalMatrix() * boneTransform *  model->GetTransform()->GetWorldMatrix();
         transform_->SetWorldMatrix(worldMatrix);
     }
     else //アタッチ先のモデルがない

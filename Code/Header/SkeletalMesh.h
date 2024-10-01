@@ -37,7 +37,7 @@ namespace AbyssEngine
         void SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, const char* socketName);
 
 
-        const Matrix& FindSocket(const char* socketName);
+        Matrix FindSocket(const char* socketName);
 
     public:
         GltfSkeletalMesh* GetModel() { return model_.get(); }

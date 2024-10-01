@@ -14,6 +14,14 @@
 using namespace AbyssEngine;
 using namespace std;
 
+int StaticMesh::instanceNum_ = 0;
+
+AbyssEngine::StaticMesh::StaticMesh()
+{
+    myNum_ = instanceNum_;
+    instanceNum_++;
+}
+
 void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
 {
     //マネージャーの登録と初期化
@@ -25,6 +33,7 @@ void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
     if (it != Engine::assetManager_->cacheStaticMesh_.end())
     {
         model_ = it->second;
+
     }
     else
     {
@@ -40,7 +49,9 @@ void StaticMesh::Initialize(const std::shared_ptr<Actor>& actor)
 
 void StaticMesh::DrawImGui()
 {
-    if (ImGui::TreeNode("StaticMesh"))
+    std::string name = "StaticMesh_" + filePath_ + std::to_string(myNum_);
+    
+    if (ImGui::TreeNode(name.c_str()))
     {
         ImGui::Checkbox("Enabled", &enabled_);
 

@@ -148,7 +148,7 @@ void SkeletalMesh::SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, 
 	socketData.attachedMesh_ = static_pointer_cast<SkeletalMesh>(shared_from_this());
 }
 
-const Matrix& AbyssEngine::SkeletalMesh::FindSocket(const char* socketName)
+Matrix AbyssEngine::SkeletalMesh::FindSocket(const char* socketName)
 {
 	auto& animNodes = GetAnimator()->GetAnimatedNodes();
 	std::vector<GeometricSubstance::Node>::iterator node;

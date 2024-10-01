@@ -122,6 +122,25 @@ namespace VitesseState
         void Initialize() override;
         void Update() override;
         void Finalize() override;
+
+    private:
+        float cameraArmLength_ = 35.0f;
+        float cameraLagSpeed_ = 30.0f;
+
+        int step_ = 0;
+    };
+
+    //ãﬂê⁄çUåÇ
+    class MeleeAttack : Inheritance
+    {
+    public:
+        MeleeAttack(Vitesse* vitesse) : State(vitesse, "MeleeAttack") {}
+        ~MeleeAttack() {}
+
+        void Initialize() override;
+        void Update() override;
+        void Finalize() override;
+
     };
 }
 

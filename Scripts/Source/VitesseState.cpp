@@ -6,6 +6,7 @@
 #include "Engine.h"
 #include "Input.h"
 #include "RenderManager.h"
+#include "StaticMesh.h"
 
 using namespace AbyssEngine;
 
@@ -45,6 +46,12 @@ void VitesseState::GroundMove::Update()
             owner_->ChangeActionState(Vitesse::ActionState::Landing);
         }
     }
+
+    //攻撃ボタンが押されたら近接攻撃ステートへ
+    if (Input::GameSupport::GetMeleeAttackButton())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
+    }
 }
 
 void VitesseState::GroundMove::Finalize()
@@ -78,6 +85,12 @@ void VitesseState::Flight::Update()
     if (Input::GameSupport::GetDashButton())
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
+    }
+
+    //攻撃ボタンが押されたら近接攻撃ステートへ
+    if (Input::GameSupport::GetMeleeAttackButton())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
     }
 }
 
@@ -183,6 +196,9 @@ void VitesseState::Boarding::Initialize()
     owner_->SetCanBoarding(true);
 
     board_ = false;
+
+    //右手武器がすごく邪魔なので描画オフに
+    owner_->GetRightWeaponModel()->SetEnable(false);
 }
 
 void VitesseState::Boarding::Update()
@@ -217,6 +233,9 @@ void VitesseState::Boarding::Finalize()
 
     //乗り込み不可へ
     owner_->SetCanBoarding(false);
+
+    //右手武器の描画オンに
+    owner_->GetRightWeaponModel()->SetEnable(true);
 }
 
 void VitesseState::HighSpeedFlight::Initialize()
@@ -348,6 +367,12 @@ void VitesseState::HighSpeedFlight::Update()
             owner_->ChangeActionState(Vitesse::ActionState::FMove);
             return;
         }
+
+        //攻撃ボタンが押されたら近接攻撃ステートへ
+        if (Input::GameSupport::GetMeleeAttackButton())
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
+        }
     }
 
     //着地しているなら着地ステートへ
@@ -376,28 +401,29 @@ void VitesseState::HighSpeedFlight::Finalize()
     owner_->GetCamera()->ZoomReset(1.5f);
     owner_->GetCamera()->SetCameraLagSpeed(owner_->GetDefaultCameraLagSpeed());
 
+    //回転するモーションがまだ再生しているなら、変にブレンドされないように終了モーションに差し替える
     if (owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Dodge_FR) ||
         owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Dodge_FL))
     {
         owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),0.0f);
     }
+
 }
 
 void VitesseState::MeleeAttackDash::Initialize()
 {
-    //ターゲットの位置を算出
-    const auto& targetPtr =  owner_->GetLockonTarget();
-    if (const auto& target = targetPtr.lock())
+    //アニメーション再生
+    owner_->PlayAnimation(Vitesse::AnimationIndex::Slash_Dash_Start);
+
+    //ステップ方向を算出し、移動する
     {
+        //ターゲットのまでのベクトル
+        Vector3 moveVec = owner_->ToTarget();
+        moveVec.Normalize();
 
+        //移動
+        owner_->StepMove(moveVec,owner_->GetMeleeAtkDashSpeed());
     }
-    else
-    {
-
-    }
-
-    //敵の方向へ
-    owner_->StepMove();
 
     //一度離陸させてから高速移動へ
     //フライトモードへ移行
@@ -406,8 +432,8 @@ void VitesseState::MeleeAttackDash::Initialize()
 
 
     //最大速度を変更
-    owner_->SetMaxHorizontalSpeed(owner_->GetDodgeMaxSpeed());
-    owner_->SetMaxVerticalSpeed(owner_->GetDodgeMaxSpeed());
+    owner_->SetMaxHorizontalSpeed(owner_->GetMeleeAtkMaxSpeed());
+    owner_->SetMaxVerticalSpeed(owner_->GetMeleeAtkMaxSpeed());
 
     //ラジアルブラー設定
     auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
@@ -417,12 +443,107 @@ void VitesseState::MeleeAttackDash::Initialize()
     //カメラのズームを変更
     auto& camera = owner_->GetCamera();
     Camera::ZoomParam zoomParam;
-    zoomParam.armLength_ = dodgeCameraArmLength_;
+    zoomParam.armLength_ = cameraArmLength_;
     zoomParam.time_ = 0.05f;
     zoomParam.socketOffset_ = camera->GetSocketOffset();
     zoomParam.targetOffset_ = camera->GetTargetOffset();
     camera->Zoom(zoomParam);
-    camera->SetCameraLagSpeed(cameraLagSpeed);
+    camera->SetCameraLagSpeed(cameraLagSpeed_);
 
-    timer_ = 0.0f;
+    //ステップ数をリセット
+    step_ = 0;
+}
+
+void VitesseState::MeleeAttackDash::Update()
+{
+    switch (step_)
+    {
+    case 0://スタートモーションからループモーションへ
+
+        if (owner_->GetAnimator()->GetAnimationFinished())
+        {
+            owner_->PlayAnimation(Vitesse::AnimationIndex::Slash_Dash_Loop);
+            step_++;
+        }
+
+        break;
+    case 1:
+        break;
+    }
+
+    //敵が範囲内にいるかを判定し、遷移させる
+    Vector3 toTarget = owner_->ToTarget();
+    float distanceSq = toTarget.LengthSquared();
+    float range = owner_->GetMeleeAtkRange();
+
+    //ターゲットが近接攻撃範囲内か判定
+    if (distanceSq < range * range)
+    {
+        //近接攻撃ステートへ
+        owner_->ChangeActionState(Vitesse::ActionState::MeleeAtk);
+        return;
+    }
+
+    //ターゲットの方向へ動かす
+    toTarget.Normalize();
+    owner_->SetMoveVec(toTarget);
+
+    //スラスター噴射
+    owner_->ThrusterInfluenceVelocity();
+
+    //ターゲットを中心にラジアルブラー
+    owner_->RadialBlurFromTarget();
+}
+
+void VitesseState::MeleeAttackDash::Finalize()
+{
+    //アニメーションステートをデフォルトに
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
+
+    //最大速度を元に戻す
+    owner_->SetMaxHorizontalSpeed(owner_->GetDefaultMaxHorizontalSpeed());
+    owner_->SetMaxVerticalSpeed(owner_->GetDefaultMaxVerticalSpeed());
+
+    //ラジアルブラー初期化
+    auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
+    postEffect.radialBlurStrength_ = 0.0f;
+    postEffect.radialBlurSampleCount_ = 1;
+    postEffect.radialBlurUvOffset_[0] = 0.5f;
+    postEffect.radialBlurUvOffset_[1] = 0.5f;
+
+    //ズームをリセット
+    owner_->GetCamera()->ZoomReset(1.5f);
+    owner_->GetCamera()->SetCameraLagSpeed(owner_->GetDefaultCameraLagSpeed());
+}
+
+void VitesseState::MeleeAttack::Initialize()
+{
+    //仮でN攻撃１段目を再生
+    owner_->PlayAnimation(Vitesse::AnimationIndex::Slash_N_1);
+
+    //速度を変更
+    Vector3 toTarget;
+    owner_->ToTarget().Normalize(toTarget);
+    owner_->SetVelocity(toTarget * owner_->GetMeleeAtkSpeed());
+    owner_->SetMaxVerticalSpeed(owner_->GetMeleeAtkSpeed());
+    owner_->SetMaxHorizontalSpeed(owner_->GetMeleeAtkSpeed());
+
+    owner_->StepMove(toTarget, owner_->GetMeleeAtkSpeed());
+}
+
+void VitesseState::MeleeAttack::Update()
+{
+    //アニメーション終了時に通常飛行へ遷移
+    if(owner_->GetAnimator()->GetAnimationFinished())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::FMove);
+        return;
+    }
+}
+
+void VitesseState::MeleeAttack::Finalize()
+{
+    //最大速度を元に戻す
+    owner_->SetMaxHorizontalSpeed(owner_->GetDefaultMaxHorizontalSpeed());
+    owner_->SetMaxVerticalSpeed(owner_->GetDefaultMaxVerticalSpeed());
 }

@@ -66,7 +66,10 @@ namespace AbyssEngine
             float temp = currentState_->GetTimer();
             ImGui::DragFloat("time", &temp);
 
-            ImGui::SliderInt("state", &state, 0, statePool_.size() - 1);
+            ImGui::SliderInt("state", &state, 0, static_cast<int>(statePool_.size()) - 1);
+            std::string stateName = statePool_.at(state)->GetName();
+            std::string text = "SetState : " + stateName;
+            ImGui::Text(text.c_str());
             if (ImGui::Button("Set State"))
             {
                 ChangeState(state);

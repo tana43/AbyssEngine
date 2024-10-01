@@ -29,7 +29,8 @@ namespace AbyssEngine
         static void Destroy(std::shared_ptr<Actor> actor);//アクターを削除する
 
         //何かに当たっている場合自動で呼ばれる
-        void OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result);
+        //当たっている相手のコライダーが引数として渡される
+        void OnCollision(const std::shared_ptr<Collider>& hitCollider, Collision::IntersectionResult result);
 
     public:
         [[nodiscard]] std::weak_ptr<Actor> GetParent() const;

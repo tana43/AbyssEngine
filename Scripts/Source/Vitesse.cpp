@@ -26,15 +26,22 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //モデル読み込み
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
+
+    
     
     //アニメーション初期化
     AnimationInitialize();
 
     //武器を装備させる
-    weaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.glb");
-    model_->SocketAttach(weaponModel_, "rig_J_hand_R");
-    weaponModel_->GetSocketData().location_ = Weapon_Offset.pos;
-    weaponModel_->GetSocketData().rotation_ = Weapon_Offset.rot;
+    leftWeaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.glb");
+    rightWeaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.glb");
+    model_->SocketAttach(leftWeaponModel_, "rig_J_hand_R");
+    model_->SocketAttach(rightWeaponModel_, "rig_J_hand_L");
+    leftWeaponModel_->GetSocketData().location_ = Left_Weapon_Offset.pos;
+    leftWeaponModel_->GetSocketData().rotation_ = Left_Weapon_Offset.rot;
+
+    rightWeaponModel_->GetSocketData().location_ = Right_Weapon_Offset.pos;
+    rightWeaponModel_->GetSocketData().rotation_ = Right_Weapon_Offset.rot;
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -66,10 +73,14 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::Landing(this));
     stateMachine_->RegisterState(new VitesseState::Boarding(this));
     stateMachine_->RegisterState(new VitesseState::HighSpeedFlight(this));
+    stateMachine_->RegisterState(new VitesseState::MeleeAttackDash(this));
+    stateMachine_->RegisterState(new VitesseState::MeleeAttack(this));
 
     //初期ステート設定
     animStateMachine_->SetState(static_cast<int>(AnimationState::Ground_Move));
-    stateMachine_->SetState(static_cast<int>(ActionState::GMove));
+    stateMachine_->SetState(static_cast<int>(ActionState::Boarding));
+
+    stateMachine_->SetActive(false);
 
     //エフェクト追加
     const int unitSize = static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units);
@@ -393,29 +404,52 @@ void Vitesse::ThrusterAllStop()
 
 void Vitesse::ColliderInitialize()
 {
-    //こいつはなくてよさげ
-    //AddHitCollider(Vector3::Zero, 3.0f, "HitCollider_UpChest", model_, "rig_J_upbody2");
-    AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_LowChest", model_, "rig_J_upbody01");
 
-    AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_Head", model_, "rig_J_head");
+    //喰らい判定コライダー設定
+    std::vector<std::shared_ptr<HitCollider>> hitColliders =
+    {
+        //こいつはなくてよさげ
+        //AddHitCollider(Vector3::Zero, 3.0f, "HitCollider_UpChest", model_, "rig_J_upbody2");
+        AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_LowChest", model_, "rig_J_upbody01"),
 
-    AddHitCollider(Vector3(-0.1f,0,0), 1.5f, "HitCollider_Uparm_R", model_, "rig_J_uparm_R");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_R", model_, "rig_J_lowarm_R");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_R", model_, "rig_J_hand_R");
+        AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_Head", model_, "rig_J_head"),
 
-    AddHitCollider(Vector3(0.1f,0,0), 1.5f, "HitCollider_Uparm_L", model_, "rig_J_uparm_L");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_L", model_, "rig_J_lowarm_L");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_L", model_, "rig_J_hand_L");
+        AddHitCollider(Vector3(-0.1f, 0, 0), 1.5f, "HitCollider_Uparm_R", model_, "rig_J_uparm_R"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_R", model_, "rig_J_lowarm_R"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_R", model_, "rig_J_hand_R"),
 
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hip", model_, "rig_J_root");
+        AddHitCollider(Vector3(0.1f, 0, 0), 1.5f, "HitCollider_Uparm_L", model_, "rig_J_uparm_L"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_L", model_, "rig_J_lowarm_L"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_L", model_, "rig_J_hand_L"),
 
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_R", model_, "rig_J_upleg_R");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_R", model_, "rig_J_lowleg_R");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_R", model_, "rig_J_foot_R");
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hip", model_, "rig_J_root"),
 
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_L", model_, "rig_J_upleg_L");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_L", model_, "rig_J_lowleg_L");
-    AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_L", model_, "rig_J_foot_L");
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_R", model_, "rig_J_upleg_R"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_R", model_, "rig_J_lowleg_R"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_R", model_, "rig_J_foot_R"),
+
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_L", model_, "rig_J_upleg_L"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_L", model_, "rig_J_lowleg_L"),
+        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_L", model_, "rig_J_foot_L"),
+    };
+    for (const auto& collider : hitColliders)
+    {
+        collider->ReplaceTag(Collider::Tag::Player);
+    }
+
+    //攻撃判定コライダー設定
+    std::vector<std::shared_ptr<AttackCollider>> atkColliders =
+    {
+        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_1", model_, "rig_J_hand_L"),
+        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_2", model_, "rig_J_hand_L"),
+        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_3", model_, "rig_J_hand_L"),
+        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_4", model_, "rig_J_hand_L"),
+    };
+    for (const auto& collider : atkColliders)
+    {
+        collider->ReplaceTag(Collider::Tag::Player);
+        collider->GetTransform()->SetLocalRotation(Left_Weapon_Offset.rot);
+    }
 }
 
 void Vitesse::Dodge(Vector3 direction)
@@ -436,6 +470,36 @@ void Vitesse::StepMove(AbyssEngine::Vector3 moveDirection, float speed)
 
     //現在の速度を回避方向へ加速
     velocity_ = moveDirection * speed;
+}
+
+void Vitesse::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& hitCollider, Collision::IntersectionResult result)
+{
+    
+}
+
+Vector3 Vitesse::ToTarget()
+{
+    Vector3 result = {};
+
+    //自機の中心から計算する
+    //中心のジョイントから計算する
+    Matrix mat = model_->FindSocket("rig_J_upbody2") * transform_->GetWorldMatrix();
+    Vector3 pos = { mat._41,mat._42,mat._43, };
+
+    // ターゲットの位置を算出
+    if (const auto& target = lockonTarget_.lock())
+    {
+        //ターゲットへの方向へ
+        Vector3 toTarget = target->GetTransform()->GetPosition() - pos;
+        result = toTarget;
+    }
+    else
+    {
+        //ターゲットがいないなら、カメラが見ている方向へ
+        result = camera_->GetTransform()->GetForward();
+    }
+
+    return result;
 }
 
 void Vitesse::ChangeActionState(const ActionState& state)
@@ -590,6 +654,29 @@ void Vitesse::TargetAcquisition()
                 }
             }
         }
+    }
+}
+
+void Vitesse::PlayAnimation(AnimationIndex index, float transTime,float startTime)
+{
+    model_->GetAnimator()->PlayAnimation(static_cast<int>(index), transTime, startTime);
+}
+
+void Vitesse::RadialBlurFromTarget()
+{
+    if (const auto& target = lockonTarget_.lock())
+    {
+        const Vector3 targetViewportPos = camera_->WorldToViewportPosition(target->GetTransform()->GetPosition());
+
+        auto& effectData = Engine::renderManager_->GetBufferEffects().data_;
+        effectData.radialBlurUvOffset_[0] = targetViewportPos.x;
+        effectData.radialBlurUvOffset_[1] = targetViewportPos.y;
+    }
+    else
+    {
+        auto& effectData = Engine::renderManager_->GetBufferEffects().data_;
+        effectData.radialBlurUvOffset_[0] = 0.5f;
+        effectData.radialBlurUvOffset_[1] = 0.5f;
     }
 }
 

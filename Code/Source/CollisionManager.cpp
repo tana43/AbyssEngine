@@ -42,7 +42,7 @@ void CollisionManager::UpdateWorldMatrix()
 	{
 		if (const auto& col = collider.lock())
 		{
-			if (!col->GetEnabled())return;
+			if (!col->GetEnabled())continue;
 			col->UpdateWorldMatrix();
 		}
 	}
@@ -51,7 +51,7 @@ void CollisionManager::UpdateWorldMatrix()
 	{
 		if (const auto& col = collider.lock())
 		{
-			if (!col->GetEnabled())return;
+			if (!col->GetEnabled())continue;
 			col->UpdateWorldMatrix();
 		}
 	}
@@ -63,12 +63,12 @@ void CollisionManager::TerrainDetection()
 	{
 		if (const auto& col1 = collider1.lock())
 		{
-			if (!col1->GetEnabled())break;
+			if (!col1->GetEnabled())continue;
 			for (const auto& collider2 : terrainColliderList_)
 			{
 				if (const auto& col2 = collider2.lock())
 				{
-					if (!col1->GetEnabled())break;
+					if (!col1->GetEnabled())continue;
 					if (col1 == col2)break;
 
 					//判定処理
@@ -86,15 +86,15 @@ void CollisionManager::AttackDetection()
 	{
 		if (const auto& atk = a.lock())
 		{
-			if (!atk->GetEnabled())break;
+			if (!atk->GetEnabled())continue;
 			for (const auto& h : hitColliderList_)
 			{
 				if (const auto& hit = h.lock())
 				{
-					if (!hit->GetEnabled())break;
+					if (!hit->GetEnabled())continue;
 
 					//タグが同じか
-					if (atk->GetTag() == hit->GetTag())break;
+					if (atk->GetTag() == hit->GetTag())continue;
 
 					//両方のコライダーを取得完了
 
@@ -157,7 +157,7 @@ void CollisionManager::OnCollision(const std::shared_ptr<Collider>& myCollider, 
 	//OnCollisionを呼んで判定が当たっていることを通知する
 	//親オブジェクトのOnCollisionも呼んでいく
 
-	std::shared_ptr<Actor>& actor = myCollider->GetActor();
+	std::shared_ptr<Actor> actor = myCollider->GetActor();
 
 	while (true)
 	{

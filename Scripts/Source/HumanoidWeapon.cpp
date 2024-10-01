@@ -13,7 +13,7 @@ HumanoidWeapon::HumanoidWeapon()
     defaultMaxHorizontalSpeed = Max_Horizontal_Speed;
     defaultMaxVerticalSpeed = Max_Vertical_Speed;
     baseRotSpeed_ = 500.0f;
-    acceleration_ = 60.0f;
+    acceleration_ = 100.0f;
     deceleration_ = 60.0f;
     speedingDecel_ = 200.0f;
     Gravity = -30.0f;

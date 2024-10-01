@@ -351,6 +351,31 @@ Vector2 Camera::WorldToScreenPosition(Vector3 worldPosition)
     return screenPosition;
 }
 
+Vector3 AbyssEngine::Camera::WorldToViewportPosition(Vector3 worldPosition)
+{
+    //ビューポート
+    D3D11_VIEWPORT viewport;
+    DXSystem::GetViewport(1, &viewport);
+
+    DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
+
+    DirectX::XMVECTOR ViewportPosition = DirectX::XMVector3Project(
+        worldPosition,
+        viewport.TopLeftX, viewport.TopLeftY,
+        viewport.Width, viewport.Height,
+        viewport.MinDepth, viewport.MaxDepth,
+        projectionMatrix_, viewMatrix_, World
+    );
+
+    Vector3 viewportPosition;
+    DirectX::XMStoreFloat3(&viewportPosition, ViewportPosition);
+
+    viewportPosition.x /= viewport.Width;
+    viewportPosition.y /= viewport.Height;
+    
+    return viewportPosition;
+}
+
 void Camera::ZoomUpdate()
 {
     if (!isZooming_)return;
