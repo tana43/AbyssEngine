@@ -941,9 +941,9 @@ int GltfStaticMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform)
 
 		ID3D11ShaderResourceView* nullShaderResourceView = NULL;
 		std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices_));
-		for (int texture_index = 0; texture_index < shaderResourceViews.size(); ++texture_index)
+		for (int textureIndex = 0; textureIndex < shaderResourceViews.size(); ++textureIndex)
 		{
-			shaderResourceViews.at(texture_index) = textureIndices_[texture_index] > -1 ? textureResourceViews_.at(textures_.at(textureIndices_[texture_index]).source_).Get() : nullShaderResourceView;
+			shaderResourceViews.at(textureIndex) = textureIndices_[textureIndex] > -1 ? textureResourceViews_.at(textures_.at(textureIndices_[textureIndex]).source_).Get() : nullShaderResourceView;
 		}
 		deviceContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
 
