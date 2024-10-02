@@ -17,7 +17,61 @@
 #define TINYGLTF_NO_INCLUDE_STB_IMAGE_WRITE
 #include "tinygltf-release/tiny_gltf.h"
 
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/unordered_map.hpp>
+
 #include "ConstantBuffer.h"
+
+namespace DirectX
+{
+	template<class T>
+	void serialize(T& archive, DirectX::XMFLOAT2& v)
+	{
+		archive(
+			cereal::make_nvp("x", v.x),
+			cereal::make_nvp("y", v.y)
+		);
+	}
+
+	template<class T>
+	void serialize(T& archive, DirectX::XMFLOAT3& v)
+	{
+		archive(
+			cereal::make_nvp("x", v.x),
+			cereal::make_nvp("y", v.y),
+			cereal::make_nvp("z", v.z)
+		);
+	}
+
+	template<class T>
+	void serialize(T& archive, DirectX::XMFLOAT4& v)
+	{
+		archive(
+			cereal::make_nvp("x", v.x),
+			cereal::make_nvp("y", v.y),
+			cereal::make_nvp("z", v.z),
+			cereal::make_nvp("w", v.w)
+		);
+	}
+
+	template<class T>
+	void serialize(T& archive, DirectX::XMFLOAT4X4& m)
+	{
+		archive(
+			cereal::make_nvp("_11", m._11), cereal::make_nvp("_12", m._12),
+			cereal::make_nvp("_13", m._13), cereal::make_nvp("_14", m._14),
+			cereal::make_nvp("_21", m._21), cereal::make_nvp("_22", m._22),
+			cereal::make_nvp("_23", m._23), cereal::make_nvp("_24", m._24),
+			cereal::make_nvp("_31", m._31), cereal::make_nvp("_32", m._32),
+			cereal::make_nvp("_33", m._33), cereal::make_nvp("_34", m._34),
+			cereal::make_nvp("_41", m._41), cereal::make_nvp("_42", m._42),
+			cereal::make_nvp("_43", m._43), cereal::make_nvp("_44", m._44)
+		);
+	}
+}
 
 namespace AbyssEngine
 {
@@ -66,8 +120,13 @@ namespace AbyssEngine
 			std::string generator_;
 			std::string minversion_;
 			std::string copyright_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(version_, generator_, minversion_, copyright_);
+			}
 		};
-		Asset asset_;
 
 		// KHR_lights_punctual
 		// https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_lights_punctual
@@ -81,19 +140,28 @@ namespace AbyssEngine
 
 			float innerConeAngle_ = 0.0f;
 			float outerConeAngle_ = 3.14159265358979f / 4.0f;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_, color_, intensity_, type_, range_, innerConeAngle_, outerConeAngle_);
+			}
 		};
-		std::vector<PunctualLight> punctualLights_;
 
 		// KHR_materials_variants
 		// https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_variants
-		std::vector<std::string> variants_;
 
 		struct Scene
 		{
 			std::string name_;
 			std::vector<int> nodes_; // Array of 'root' nodes
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_, nodes_);
+			}
 		};
-		std::vector<Scene> scenes_;
 
 		struct Node
 		{
@@ -122,8 +190,13 @@ namespace AbyssEngine
 			{
 				return this->name_ == name_;
 			}
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_, camera_,skin_, model_, index_, children_, rotation_, scale_, translation_, weights_,globalTransform_, minValue_,maxValue_);
+			}
 		};
-		std::vector<Node> nodes_;
 
 		struct BufferView
 		{
@@ -135,8 +208,15 @@ namespace AbyssEngine
 			{
 				return strideInBytes_ > 0 ? sizeInBytes_ / strideInBytes_ : 0;
 			}
+
+			std::vector<UINT8> verticesBinary_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(format_, buffer_, strideInBytes_, sizeInBytes_, verticesBinary_);
+			}
 		};
-		std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> buffers_;
 
 		struct Primitive
 		{
@@ -157,13 +237,24 @@ namespace AbyssEngine
 			{
 				return rhs.material_ == material_;
 			}
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(material_, topology_, minValue_, maxValue_, vertexBufferViews_, indexBufferView_, indexLocation_, indexCount_);
+			}
 		};
 		struct Mesh
 		{
 			std::string name_;
 			std::vector<Primitive> primitives_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_,primitives_);
+			}
 		};
-		std::vector<Mesh> meshes_;
 
 		// The coordinate values of the bounding box (AABB) of the entire model in the global coordinate system.
 		DirectX::XMFLOAT3 minValue_ = { +FLT_MAX, +FLT_MAX, +FLT_MAX };
@@ -173,8 +264,13 @@ namespace AbyssEngine
 		{
 			std::vector<DirectX::XMFLOAT4X4> inverseBindMatrices_;
 			std::vector<int> joints_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(inverseBindMatrices_, joints_);
+			}
 		};
-		std::vector<Skin> skins_;
 
 		struct Animation
 		{
@@ -188,6 +284,12 @@ namespace AbyssEngine
 				int sampler_{ -1 }; // required
 				int targetNode_{ -1 }; // required (index of the node to target)
 				std::string targetPath_; // required in ["translation", "rotation", "scale", "weights"]
+
+				template<class T>
+				void serialize(T& archive)
+				{
+					archive(sampler_, targetNode_, targetPath_);
+				}
 			};
 			std::vector<Channel> channels_;
 
@@ -196,6 +298,12 @@ namespace AbyssEngine
 				int input_{ -1 };
 				int output_{ -1 };
 				std::string interpolation_;
+
+				template<class T>
+				void serialize(T& archive)
+				{
+					archive(input_, output_, interpolation_);
+				}
 			};
 			std::vector<Sampler> samplers_;
 
@@ -203,8 +311,16 @@ namespace AbyssEngine
 			std::unordered_map<int, std::vector<DirectX::XMFLOAT3>> keyframeScales_;
 			std::unordered_map<int, std::vector<DirectX::XMFLOAT4>> keyframeRotations_;
 			std::unordered_map<int, std::vector<DirectX::XMFLOAT3>> keyframeTranslations_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_, duration_, channels_, samplers_, keyframeTimes_, keyframeScales_, keyframeRotations_, keyframeTranslations_);
+			}
 		};
-		std::vector<Animation> animations_;
+
+
+		
 
 		// KHR_texture_transform
 		// https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_texture_transform
@@ -245,6 +361,12 @@ namespace AbyssEngine
 
 				}
 			}
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(offset_, rotation_, scale_,texcoord_);
+			}
 		};
 
 		// https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#reference-textureinfo
@@ -272,6 +394,12 @@ namespace AbyssEngine
 						khrTextureTransform_.init(value.second.Get<tinygltf::Value::Object>());
 					}
 				}
+			}
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(index_, texcoord_, khrTextureTransform_);
 			}
 		};
 		// https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#reference-material-normaltextureinfo
@@ -305,15 +433,27 @@ namespace AbyssEngine
 					}
 				}
 			}
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(index_, texcoord_, scale_,khrTextureTransform_);
+			}
 		};
 		// https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#reference-material-occlusiontextureinfo
 		struct OcclusionTextureInfo
 		{
 			int index_ = -1;   // required
 			int texcoord_ = 0;     // The set index of texture's TEXCOORD attribute used for texture coordinate mapping.
-			float strength = 1;  // A scalar parameter controlling the amount of occlusion applied. A value of `0.0` means no occlusion. A value of `1.0` means full occlusion. This value affects the final occlusion value as: `1.0 + strength * (<sampled occlusion texture value> - 1.0)`.
+			float strength_ = 1;  // A scalar parameter controlling the amount of occlusion applied. A value of `0.0` means no occlusion. A value of `1.0` means full occlusion. This value affects the final occlusion value as: `1.0 + strength * (<sampled occlusion texture value> - 1.0)`.
 
-			KhrTextureTransform khr_texture_transform;
+			KhrTextureTransform khrTextureTransform_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(index_, texcoord_, strength_, khrTextureTransform_);
+			}
 		};
 		// https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#reference-material-pbrmetallicroughness
 		struct PbrMetallicRoughness
@@ -323,6 +463,12 @@ namespace AbyssEngine
 			float metallicFactor_ = 1;   // default 1
 			float roughnessFactor_ = 1;  // default 1
 			TextureInfo metallicRoughnessTexture_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(basecolorFactor_, basecolorFactor_, metallicFactor_,roughnessFactor_, metallicRoughnessTexture_);
+			}
 		};
 
 
@@ -335,6 +481,12 @@ namespace AbyssEngine
 			float specularFactor_[3] = { 1, 1, 1 };
 			float glossinessFactor_ = 1;
 			TextureInfo specularGlossinessTexture_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(diffuseFactor_, diffuseTexture_, specularFactor_,glossinessFactor_,specularGlossinessTexture_);
+			}
 		};
 		// KHR_materials_sheen
 		// https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_materials_sheen/README.md
@@ -344,6 +496,12 @@ namespace AbyssEngine
 			TextureInfo sheenColorTexture_;
 			float sheenRoughnessFactor_ = 0;
 			TextureInfo sheenRoughnessTexture_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(sheenColorFactor_, sheenColorTexture_, sheenRoughnessFactor_,sheenRoughnessTexture_);
+			}
 		};
 		// KHR_materials_specular
 		// https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_materials_specular/README.md
@@ -353,6 +511,12 @@ namespace AbyssEngine
 			TextureInfo specularTexture_;
 			float specularColorFactor_[3] = { 1, 1, 1 };
 			TextureInfo specularColorTexture_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(specularFactor_, specularTexture_, specularColorFactor_,specularColorTexture_);
+			}
 		};
 		// KHR_materials_clearcoat
 		// https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_clearcoat
@@ -363,6 +527,12 @@ namespace AbyssEngine
 			float clearcoatRoughnessFactor_ = 0;
 			TextureInfo clearcoatRoughnessTexture_;
 			NormalTextureInfo clearcoatNormalTexture_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(clearcoatFactor_, clearcoatTexture_, clearcoatRoughnessFactor_,clearcoatRoughnessTexture_,clearcoatNormalTexture_);
+			}
 		};
 		// KHR_materials_transmission
 		// https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_transmission
@@ -370,6 +540,12 @@ namespace AbyssEngine
 		{
 			float transmissionFactor_ = 0;
 			TextureInfo transmissionTexture_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(transmissionFactor_, transmissionTexture_);
+			}
 		};
 		// KHR_materials_volume
 		// https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_materials_volume/README.md
@@ -379,18 +555,36 @@ namespace AbyssEngine
 			TextureInfo thicknessTexture_;
 			float attenuationDistance_ = 0;
 			float attenuationColor_[3] = { 1, 1, 1 };
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(thicknessFactor_, thicknessTexture_, attenuationDistance_, attenuationColor_);
+			}
 		};
 		// KHR_materials_emissive_strength
 		// https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_materials_emissive_strength/README.md
 		struct KhrMaterialsEmissiveStrength
 		{
 			float emissiveStrength_ = 1;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(emissiveStrength_);
+			}
 		};
 		// KHR_materials_ior
 		// https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_materials_ior/README.md
 		struct KhrMaterialsIor
 		{
 			float ior_ = 1.4f;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(ior_);
+			}
 		};
 
 		// https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#reference-material
@@ -418,6 +612,21 @@ namespace AbyssEngine
 				KhrMaterialsVolume khrMaterialsVolume_;
 				KhrMaterialsEmissiveStrength khrMaterialsEmissiveStrength_;
 				KhrMaterialsIor khrMaterialsIor_;
+
+				template<class T>
+				void serialize(T& archive)
+				{
+					archive(emissiveFactor_, alphaMode_, alphaCutoff_, doubleSided_, 
+						KhrMaterialsPbrSpecularGlossiness_, 
+						khrMaterialsSheen_,
+						khrMaterialsSpecular_,
+						khrMaterialsClearcoat_,
+						khrMaterialsTransmission_,
+						khrMaterialsVolume_,
+						khrMaterialsEmissiveStrength_,
+						khrMaterialsIor_
+						);
+				}
 			};
 			CBuffer data_;
 
@@ -435,15 +644,16 @@ namespace AbyssEngine
 				return data.emissive_factor[0] != 0 || data.emissive_factor[1] != 0 || data.emissive_factor[2] != 0;
 			}
 #endif
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_,data_);
+			}
 		};
-		std::vector<Material> materials_;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> materialResourceView_;
 		// The slot number of 'material_constants' are defined in 'material.hlsli'.
 		const int Material_Slot = 0; // t0
 
-
-		std::vector<std::string> extensionsUsed_;
-		std::vector<std::string> extensionsRequired_;
 
 		struct GSTexture
 		{
@@ -451,8 +661,13 @@ namespace AbyssEngine
 
 			int sampler_ = -1;
 			int source_ = -1;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_, sampler_, source_);
+			}
 		};
-		std::vector<GSTexture> textures_;
 		struct Sampler
 		{
 			int magFilter_ = 0;
@@ -460,8 +675,13 @@ namespace AbyssEngine
 			int wrapS_ = 10497;
 			int wrapT_ = 10497;
 			std::string name_;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(magFilter_, minFilter_, wrapS_,wrapT_,name_);
+			}
 		};
-		std::vector<Sampler> samplers_;
 		struct Image
 		{
 			std::string name_;
@@ -481,10 +701,39 @@ namespace AbyssEngine
 			// the moment. (You can manipulate this by providing your own LoadImageData
 			// function)
 			bool asIs_ = false;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(name_, width_, height_,component_,bits_,pixelType_,bufferView_,mimeType_,uri_,asIs_);
+			}
 		};
+
+
+		Asset asset_;
+
+		std::vector<PunctualLight> punctualLights_;
+		std::vector<std::string> variants_;
+
+		std::vector<Node> nodes_;
+		std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> buffers_;
+		std::vector<Mesh> meshes_;
+		std::vector<Skin> skins_;
+		std::vector<Scene> scenes_;
+		std::vector<Animation> animations_;
+
+		std::vector<Material> materials_;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> materialResourceView_;
+
+		std::vector<std::string> extensionsUsed_;
+		std::vector<std::string> extensionsRequired_;
+
+		std::vector<GSTexture> textures_;
+		std::vector<Sampler> samplers_;
 		std::vector<Image> images_;
 		std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textureResourceViews_;
-
+		
+	public:
 		//アニメーション関数　アニメーションが終わっているならTrueを返す
 		bool Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes, bool loopback = true, size_t sceneIndex = 0);
 		void AppendAnimation(const std::string& filename);
@@ -501,6 +750,12 @@ namespace AbyssEngine
 			int skin_ = -1;
 			float emissiveIntensity_ = 15.0f;
 			float imageBasedLightingIntensity_ = 1.0f;
+
+			template<class T>
+			void serialize(T& archive)
+			{
+				archive(transform_, color_, material_,startInstanceLocation_,skin_,emissiveIntensity_,imageBasedLightingIntensity_);
+			}
 		};
 		std::unique_ptr<ConstantBuffer<PrimitiveConstants>> primitiveConstants_;
 		const int Primitive_Slot = 0; // b0

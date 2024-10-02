@@ -7,7 +7,7 @@
 #include <stack>
 #include <string>
 #include <sstream>
-
+#include <fstream>
 #include <functional>
 #include <filesystem>
 #include <tuple>
@@ -29,75 +29,174 @@ GltfStaticMesh::GltfStaticMesh(const std::string& filename) : GeometricSubstance
 {
 	HRESULT hr{ S_OK };
 
-	tinygltf::TinyGLTF tinyGltf;
+#pragma region Serialize
+
+	auto* device = DXSystem::GetDevice().Get();
+
+	std::filesystem::path cerealFilename(filename);
+	cerealFilename.replace_extension("cereal");
+	if (std::filesystem::exists(cerealFilename.c_str()))
+	{
+		std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);
+		cereal::BinaryInputArchive deserialization(ifs);
+		deserialization(asset_, punctualLights_, variants_, nodes_, meshes_, skins_, scenes_,materials_,
+			extensionsUsed_,extensionsRequired_,textures_,samplers_,images_,batchPrimitives_);
+
+		D3D11_TEXTURE2D_DESC texture2dDesc;
+		for (int i = 0; i < images_.size(); ++i)
+		{
+			ID3D11ShaderResourceView* shaderResourceView{};
+			std::string fileName = images_.at(i).name_;
+			hr = Texture::LoadTextureFromFile(fileName, &shaderResourceView, &texture2dDesc);
+			if (hr == S_OK)
+			{
+				textureResourceViews_.emplace_back().Attach(shaderResourceView);
+			}
+		}
+
+		for (int meshIndex = 0; meshIndex < meshes_.size(); ++meshIndex)
+		{
+			for (int primitiveIndex = 0; primitiveIndex < meshes_.at(meshIndex).primitives_.size(); ++primitiveIndex)
+			{
+				const BufferView& indexBufferView = meshes_.at(meshIndex).primitives_.at(primitiveIndex).indexBufferView_;
+				D3D11_BUFFER_DESC bufferDesc = {};
+				bufferDesc.ByteWidth = static_cast<UINT>(indexBufferView.sizeInBytes_);
+				bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+				bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+				bufferDesc.CPUAccessFlags = 0;
+				bufferDesc.MiscFlags = 0;
+				bufferDesc.StructureByteStride = 0;
+				D3D11_SUBRESOURCE_DATA subresourceData = {};
+				subresourceData.pSysMem = indexBufferView.verticesBinary_.data();
+				subresourceData.SysMemPitch = 0;
+				subresourceData.SysMemSlicePitch = 0;
+				hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
+				_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
+				for (auto& vertexBufferView : meshes_.at(meshIndex).primitives_.at(primitiveIndex).vertexBufferViews_)
+				{
+					if (static_cast<UINT>(vertexBufferView.second.sizeInBytes_) == 0)
+					{
+						continue;
+					}
+					bufferDesc.ByteWidth = static_cast<UINT>(vertexBufferView.second.sizeInBytes_);
+					bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+					bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+					subresourceData.pSysMem = vertexBufferView.second.verticesBinary_.data();
+					hr = device->CreateBuffer(&bufferDesc, &subresourceData,buffers_.emplace_back().ReleaseAndGetAddressOf());
+					if (FAILED(hr))
+					{
+						_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+					}
+
+				}
+			}
+		}
+
+		std::vector<Material::CBuffer> materialData;
+		for (std::vector<Material>::const_reference material : materials_)
+		{
+			materialData.emplace_back(material.data_);
+		}
+		Microsoft::WRL::ComPtr<ID3D11Buffer> materialBuffer;
+		D3D11_BUFFER_DESC bufferDesc{};
+		bufferDesc.ByteWidth = static_cast<UINT>(sizeof(Material::CBuffer) * materialData.size());
+		bufferDesc.StructureByteStride = sizeof(Material::CBuffer);
+		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		D3D11_SUBRESOURCE_DATA subresourceData{};
+		subresourceData.pSysMem = materialData.data();
+		hr = device->CreateBuffer(&bufferDesc, &subresourceData, materialBuffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
+		shaderResourceViewDesc.Format = DXGI_FORMAT_UNKNOWN;
+		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+		shaderResourceViewDesc.Buffer.NumElements = static_cast<UINT>(materialData.size());
+		hr = device->CreateShaderResourceView(materialBuffer.Get(),
+			&shaderResourceViewDesc, materialResourceView_.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+	}
+	else
+#pragma endregion
+	{
+		tinygltf::TinyGLTF tinyGltf;
 #if 1
-	tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
+		tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
 #endif
 
-	tinygltf::Model transmissionModel;
-	std::string error, warning;
-	bool succeeded{ false };
-	if (filename.find(".glb") != std::string::npos)
-	{
-		succeeded = tinyGltf.LoadBinaryFromFile(&transmissionModel, &error, &warning, filename.c_str());
-	}
-	else if (filename.find(".gltf") != std::string::npos)
-	{
-		succeeded = tinyGltf.LoadASCIIFromFile(&transmissionModel, &error, &warning, filename.c_str());
-	}
-	if (!warning.empty())
-	{
-		OutputDebugStringA(warning.c_str());
-	}
-	if (!error.empty())
-	{
-		throw std::exception(error.c_str());
-	}
-	if (!succeeded)
-	{
-		throw std::exception("Failed to load glTF file");
+		tinygltf::Model transmissionModel;
+		std::string error, warning;
+		bool succeeded{ false };
+		if (filename.find(".glb") != std::string::npos)
+		{
+			succeeded = tinyGltf.LoadBinaryFromFile(&transmissionModel, &error, &warning, filename.c_str());
+		}
+		else if (filename.find(".gltf") != std::string::npos)
+		{
+			succeeded = tinyGltf.LoadASCIIFromFile(&transmissionModel, &error, &warning, filename.c_str());
+		}
+		if (!warning.empty())
+		{
+			OutputDebugStringA(warning.c_str());
+		}
+		if (!error.empty())
+		{
+			throw std::exception(error.c_str());
+		}
+		if (!succeeded)
+		{
+			throw std::exception("Failed to load glTF file");
+		}
+
+		ExtractAssets(transmissionModel);
+		ExtractExtensions(transmissionModel);
+
+		ExtractScenes(transmissionModel);
+		ExtractNodes(transmissionModel);
+
+		ExtractMaterials(transmissionModel);
+		ExtractTextures(transmissionModel);
+		ExtractMeshes(transmissionModel);
+
+		//シリアルファイル書き出し
+		std::ofstream ofs(cerealFilename.c_str(), std::ios::binary);
+		cereal::BinaryOutputArchive serialization(ofs);
+		serialization(asset_, punctualLights_, variants_, nodes_, meshes_, skins_, scenes_, materials_,
+			extensionsUsed_, extensionsRequired_, textures_, samplers_, images_, batchPrimitives_);
+
 	}
 
-	ExtractAssets(transmissionModel);
-	ExtractExtensions(transmissionModel);
-
-	ExtractScenes(transmissionModel);
-	ExtractNodes(transmissionModel);
-
-	ExtractMaterials(transmissionModel);
-	ExtractTextures(transmissionModel);
-	ExtractMeshes(transmissionModel);
-
-	D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 3, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 4, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-	staticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/StaticMeshVS.cso",inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
+		D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 3, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 4, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		};
+		staticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/StaticMeshVS.cso", inputLayout_.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
 #if ENABLE_DIFFERD_RENDERING
-	staticMeshPs_ =  Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstanceGBufferPS.cso");
+		staticMeshPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstanceGBufferPS.cso");
 #else
-	staticMeshPs_ =  Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstancePS.cso");
+		staticMeshPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/GeometricSubstancePS.cso");
 #endif
 
-	D3D11_INPUT_ELEMENT_DESC csmOpaqueInputElementDesc[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-	csmOpaqueStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmOpaqueStaticMeshVS.cso", csmOpaquInputLayout_.ReleaseAndGetAddressOf(), csmOpaqueInputElementDesc, _countof(csmOpaqueInputElementDesc));
-	csmOpaqueGs_ = Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmOpaqueGS.cso");
+		D3D11_INPUT_ELEMENT_DESC csmOpaqueInputElementDesc[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		};
+		csmOpaqueStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmOpaqueStaticMeshVS.cso", csmOpaquInputLayout_.ReleaseAndGetAddressOf(), csmOpaqueInputElementDesc, _countof(csmOpaqueInputElementDesc));
+		csmOpaqueGs_ = Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmOpaqueGS.cso");
 
-	D3D11_INPUT_ELEMENT_DESC csmTransparentInputElementDesc[]
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	csmTransparentStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmTransparentStaticMeshVS.cso",csmTransparentInputLayout_.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
-	csmTransparentGs_ = Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmTransparentGS.cso");
-	csmTransparentPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/CsmTransparentPS.cso");
+		D3D11_INPUT_ELEMENT_DESC csmTransparentInputElementDesc[]
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		csmTransparentStaticMeshVs_ = Shader<ID3D11VertexShader>::Emplace("./Resources/Shader/CsmTransparentStaticMeshVS.cso", csmTransparentInputLayout_.ReleaseAndGetAddressOf(), csmTransparentInputElementDesc, _countof(csmTransparentInputElementDesc));
+		csmTransparentGs_ = Shader<ID3D11GeometryShader>::Emplace("./Resources/Shader/CsmTransparentGS.cso");
+		csmTransparentPs_ = Shader<ID3D11PixelShader>::Emplace("./Resources/Shader/CsmTransparentPS.cso");
 }
 void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 {
@@ -250,9 +349,9 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 				}
 
 				// Combine primitives using the same material into a single vertex buffer. In addition, apply a coordinate transformation to position, normal and tangent of primitives.
-				for (decltype(transmissionPrimitive.attributes)::const_reference transmission_attribute : transmissionPrimitive.attributes)
+				for (decltype(transmissionPrimitive.attributes)::const_reference transmissionAttribute : transmissionPrimitive.attributes)
 				{
-					const tinygltf::Accessor transmissionAccessor = transmissionModel.accessors.at(transmission_attribute.second);
+					const tinygltf::Accessor transmissionAccessor = transmissionModel.accessors.at(transmissionAttribute.second);
 					const tinygltf::BufferView& transmissionBufferView = transmissionModel.bufferViews.at(transmissionAccessor.bufferView);
 
 					if (transmissionAccessor.count == 0)
@@ -260,7 +359,7 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 						continue;
 					}
 
-					if (transmission_attribute.first == "POSITION")
+					if (transmissionAttribute.first == "POSITION")
 					{
 						_ASSERT_EXPR(transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && transmissionAccessor.type == TINYGLTF_TYPE_VEC3, L"'POSITION' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC3.");
 						const XMFLOAT3* buffer = reinterpret_cast<const XMFLOAT3*>(transmissionModel.buffers.at(transmissionBufferView.buffer).data.data() + transmissionBufferView.byteOffset + transmissionAccessor.byteOffset);
@@ -286,7 +385,7 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 						}
 #endif
 					}
-					else if (transmission_attribute.first == "NORMAL")
+					else if (transmissionAttribute.first == "NORMAL")
 					{
 						_ASSERT_EXPR(transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && transmissionAccessor.type == TINYGLTF_TYPE_VEC3, L"'NORMAL' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC3.");
 						const XMFLOAT3* buffer = reinterpret_cast<const XMFLOAT3*>(transmissionModel.buffers.at(transmissionBufferView.buffer).data.data() + transmissionBufferView.byteOffset + transmissionAccessor.byteOffset);
@@ -297,7 +396,7 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 							combinedBuffer_.vertices_.normals_.emplace_back(normal);
 						}
 					}
-					else if (transmission_attribute.first == "TANGENT")
+					else if (transmissionAttribute.first == "TANGENT")
 					{
 						_ASSERT_EXPR(transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && transmissionAccessor.type == TINYGLTF_TYPE_VEC4, L"'TANGENT' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC4.");
 						const XMFLOAT4* buffer = reinterpret_cast<const XMFLOAT4*>(transmissionModel.buffers.at(transmissionBufferView.buffer).data.data() + transmissionBufferView.byteOffset + transmissionAccessor.byteOffset);
@@ -311,7 +410,7 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 							combinedBuffer_.vertices_.tangents_.emplace_back(tangent);
 						}
 					}
-					else if (transmission_attribute.first == "TEXCOORD_0")
+					else if (transmissionAttribute.first == "TEXCOORD_0")
 					{
 						_ASSERT_EXPR(transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && transmissionAccessor.type == TINYGLTF_TYPE_VEC2, L"'TEXCOORD_0' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC2.");
 						const XMFLOAT2* buffer = reinterpret_cast<const XMFLOAT2*>(transmissionModel.buffers.at(transmissionBufferView.buffer).data.data() + transmissionBufferView.byteOffset + transmissionAccessor.byteOffset);
@@ -320,7 +419,7 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 							combinedBuffer_.vertices_.texcoords0_.emplace_back(buffer[accessor_index]);
 						}
 					}
-					else if (transmission_attribute.first == "TEXCOORD_1")
+					else if (transmissionAttribute.first == "TEXCOORD_1")
 					{
 						_ASSERT_EXPR(transmissionAccessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT && transmissionAccessor.type == TINYGLTF_TYPE_VEC2, L"'TEXCOORD_1' attribute must be of type TINYGLTF_COMPONENT_TYPE_FLOAT & TINYGLTF_TYPE_VEC2.");
 						const XMFLOAT2* buffer = reinterpret_cast<const XMFLOAT2*>(transmissionModel.buffers.at(transmissionBufferView.buffer).data.data() + transmissionBufferView.byteOffset + transmissionAccessor.byteOffset);
@@ -453,7 +552,7 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 		batchPrimitive.minValue_ = combinedBuffer_.second.minValue_;
 
 		D3D11_BUFFER_DESC bufferDesc = {};
-		D3D11_SUBRESOURCE_DATA subresource_data = {};
+		D3D11_SUBRESOURCE_DATA subresourceData = {};
 
 		if (combinedBuffer_.second.indices_.size() > 0)
 		{
@@ -470,10 +569,14 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 			bufferDesc.CPUAccessFlags = 0;
 			bufferDesc.MiscFlags = 0;
 			bufferDesc.StructureByteStride = 0;
-			subresource_data.pSysMem = combinedBuffer_.second.indices_.data();
-			subresource_data.SysMemPitch = 0;
-			subresource_data.SysMemSlicePitch = 0;
-			hr = device->CreateBuffer(&bufferDesc, &subresource_data, buffers_.emplace_back().ReleaseAndGetAddressOf());
+			subresourceData.pSysMem = combinedBuffer_.second.indices_.data();
+			subresourceData.SysMemPitch = 0;
+			subresourceData.SysMemSlicePitch = 0;
+
+			batchPrimitive.indexBufferView_.verticesBinary_.resize(bufferDesc.ByteWidth);
+			memcpy(batchPrimitive.indexBufferView_.verticesBinary_.data(), subresourceData.pSysMem, bufferDesc.ByteWidth);
+
+			hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 		}
 
@@ -487,10 +590,15 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 
 			bufferDesc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer_.second.vertices_.positions_.data();
-			hr = device->CreateBuffer(&bufferDesc, &subresource_data, buffers_.emplace_back().ReleaseAndGetAddressOf());
+			subresourceData.pSysMem = combinedBuffer_.second.vertices_.positions_.data();
+
+			vertexBufferView.verticesBinary_.resize(bufferDesc.ByteWidth);
+			memcpy(vertexBufferView.verticesBinary_.data(), subresourceData.pSysMem, bufferDesc.ByteWidth);
+
+			hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			batchPrimitive.vertexBufferViews_.emplace(std::make_pair("POSITION", vertexBufferView));
+
 		}
 		if (combinedBuffer_.second.vertices_.normals_.size() > 0)
 		{
@@ -501,8 +609,12 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 
 			bufferDesc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer_.second.vertices_.normals_.data();
-			hr = device->CreateBuffer(&bufferDesc, &subresource_data, buffers_.emplace_back().ReleaseAndGetAddressOf());
+			subresourceData.pSysMem = combinedBuffer_.second.vertices_.normals_.data();
+
+			vertexBufferView.verticesBinary_.resize(bufferDesc.ByteWidth);
+			memcpy(vertexBufferView.verticesBinary_.data(), subresourceData.pSysMem, bufferDesc.ByteWidth);
+
+			hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			batchPrimitive.vertexBufferViews_.emplace(std::make_pair("NORMAL", vertexBufferView));
 		}
@@ -515,8 +627,12 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 
 			bufferDesc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer_.second.vertices_.tangents_.data();
-			hr = device->CreateBuffer(&bufferDesc, &subresource_data, buffers_.emplace_back().ReleaseAndGetAddressOf());
+			subresourceData.pSysMem = combinedBuffer_.second.vertices_.tangents_.data();
+			hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
+
+			vertexBufferView.verticesBinary_.resize(bufferDesc.ByteWidth);
+			memcpy(vertexBufferView.verticesBinary_.data(), subresourceData.pSysMem, bufferDesc.ByteWidth);
+
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			batchPrimitive.vertexBufferViews_.emplace(std::make_pair("TANGENT", vertexBufferView));
 		}
@@ -529,8 +645,12 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 
 			bufferDesc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer_.second.vertices_.texcoords0_.data();
-			hr = device->CreateBuffer(&bufferDesc, &subresource_data, buffers_.emplace_back().ReleaseAndGetAddressOf());
+			subresourceData.pSysMem = combinedBuffer_.second.vertices_.texcoords0_.data();
+
+			vertexBufferView.verticesBinary_.resize(bufferDesc.ByteWidth);
+			memcpy(vertexBufferView.verticesBinary_.data(), subresourceData.pSysMem, bufferDesc.ByteWidth);
+
+			hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			batchPrimitive.vertexBufferViews_.emplace(std::make_pair("TEXCOORD_0", vertexBufferView));
 		}
@@ -543,8 +663,12 @@ void GltfStaticMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 
 			bufferDesc.ByteWidth = static_cast<UINT>(vertexBufferView.sizeInBytes_);
 			bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			subresource_data.pSysMem = combinedBuffer_.second.vertices_.texcoords1_.data();
-			hr = device->CreateBuffer(&bufferDesc, &subresource_data, buffers_.emplace_back().ReleaseAndGetAddressOf());
+			subresourceData.pSysMem = combinedBuffer_.second.vertices_.texcoords1_.data();
+
+			vertexBufferView.verticesBinary_.resize(bufferDesc.ByteWidth);
+			memcpy(vertexBufferView.verticesBinary_.data(), subresourceData.pSysMem, bufferDesc.ByteWidth);
+
+			hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
 			_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
 			batchPrimitive.vertexBufferViews_.emplace(std::make_pair("TEXCOORD_1", vertexBufferView));
 		}

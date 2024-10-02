@@ -407,6 +407,7 @@
     <ClInclude Include="Code\Header\ComboSystem.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Header\SerialTestScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -679,6 +680,7 @@
     <ClCompile Include="Code\Source\ParticleEmitter.cpp">
       <Filter>Code\Source\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Source\SerialTestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

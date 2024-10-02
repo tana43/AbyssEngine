@@ -216,8 +216,8 @@ void GeometricSubstance::ExtractMaterials(const tinygltf::Model& transmissionMod
 
 		material_.data_.occlusionTexture_.index_ = transmissionMaterial.occlusionTexture.index;
 		material_.data_.occlusionTexture_.texcoord_ = transmissionMaterial.occlusionTexture.texCoord;
-		material_.data_.occlusionTexture_.strength = static_cast<float>(transmissionMaterial.occlusionTexture.strength);
-		material_.data_.occlusionTexture_.khr_texture_transform.init(transmissionMaterial.occlusionTexture.extensions);
+		material_.data_.occlusionTexture_.strength_ = static_cast<float>(transmissionMaterial.occlusionTexture.strength);
+		material_.data_.occlusionTexture_.khrTextureTransform_.init(transmissionMaterial.occlusionTexture.extensions);
 
 		material_.data_.emissiveTexture_.index_ = transmissionMaterial.emissiveTexture.index;
 		material_.data_.emissiveTexture_.texcoord_ = transmissionMaterial.emissiveTexture.texCoord;
@@ -467,19 +467,22 @@ void GeometricSubstance::ExtractTextures(const tinygltf::Model& transmissionMode
 		sampler.wrapT_ = transmissionSampler.wrapT;
 		sampler.name_ = transmissionSampler.name;
 	}
-	for (decltype(transmissionModel.images)::const_reference transmission_image : transmissionModel.images)
+	for (decltype(transmissionModel.images)::const_reference transmissionImage : transmissionModel.images)
 	{
 		Image& image = images_.emplace_back();
-		image.name_ = transmission_image.name;
-		image.width_ = transmission_image.width;
-		image.height_ = transmission_image.height;
-		image.component_ = transmission_image.component;
-		image.bits_ = transmission_image.bits;
-		image.pixelType_ = transmission_image.pixel_type;
-		image.bufferView_ = transmission_image.bufferView;
-		image.mimeType_ = transmission_image.mimeType;
-		image.uri_ = transmission_image.uri;
-		image.asIs_ = transmission_image.as_is;
+		image.name_ = transmissionImage.name;
+		image.width_ = transmissionImage.width;
+		image.height_ = transmissionImage.height;
+		image.component_ = transmissionImage.component;
+		image.bits_ = transmissionImage.bits;
+		image.pixelType_ = transmissionImage.pixel_type;
+		image.bufferView_ = transmissionImage.bufferView;
+		image.mimeType_ = transmissionImage.mimeType;
+		image.uri_ = transmissionImage.uri;
+		image.asIs_ = transmissionImage.as_is;
+
+		const std::filesystem::path path(name_);
+		image.name_ = path.parent_path().concat("/").string() + std::string(image.uri_.begin(), image.uri_.end());
 	}
 
 	for (decltype(images_)::const_reference image : images_)
@@ -502,11 +505,11 @@ void GeometricSubstance::ExtractTextures(const tinygltf::Model& transmissionMode
 				name_ = wss.str();
 			}
 
-			ID3D11ShaderResourceView* texture_resource_view = {};
-			hr = Texture::LoadTextureFromMemory(data, bufferView.byteLength, &texture_resource_view);
+			ID3D11ShaderResourceView* textureResourceView = {};
+			hr = Texture::LoadTextureFromMemory(data, bufferView.byteLength, &textureResourceView);
 			if (hr == S_OK)
 			{
-				textureResourceViews_.emplace_back().Attach(texture_resource_view);
+				textureResourceViews_.emplace_back().Attach(textureResourceView);
 			}
 		}
 		else if (image.uri_.size() > 0)

@@ -2,6 +2,8 @@
 
 #include <sstream>
 #include <functional>
+#include <fstream>
+#include <filesystem>
 
 #include "Misc.h"
 #include "Shader.h"
@@ -16,43 +18,144 @@ GltfSkeletalMesh::GltfSkeletalMesh(const std::string& filename) : GeometricSubst
 {
 	HRESULT hr = S_OK;
 
-	tinygltf::TinyGLTF tinyGltf;
-	tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
+#pragma region Serialize
 
-	tinygltf::Model transmissionModel;
-	std::string error, warning;
-	bool succeeded{ false };
-	if (filename.find(".glb") != std::string::npos)
-	{
-		succeeded = tinyGltf.LoadBinaryFromFile(&transmissionModel, &error, &warning, filename.c_str());
-	}
-	else if (filename.find(".gltf") != std::string::npos)
-	{
-		succeeded = tinyGltf.LoadASCIIFromFile(&transmissionModel, &error, &warning, filename.c_str());
-	}
-	if (!warning.empty())
-	{
-		OutputDebugStringA(warning.c_str());
-	}
-	if (!error.empty())
-	{
-		throw std::exception(error.c_str());
-	}
-	if (!succeeded)
-	{
-		throw std::exception("Failed to load glTF file");
-	}
+	auto* device = DXSystem::GetDevice().Get();
 
-	ExtractAssets(transmissionModel);
-	ExtractExtensions(transmissionModel);
+	std::filesystem::path cerealFilename(filename);
+	cerealFilename.replace_extension("cereal");
+	if (std::filesystem::exists(cerealFilename.c_str()))
+	{
+		std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);
+		cereal::BinaryInputArchive deserialization(ifs);
+		deserialization(asset_, punctualLights_, variants_, nodes_, meshes_, skins_, scenes_, animations_, materials_,
+			extensionsUsed_, extensionsRequired_, textures_, samplers_, images_);
 
-	ExtractScenes(transmissionModel);
-	ExtractNodes(transmissionModel);
+		D3D11_TEXTURE2D_DESC texture2dDesc;
+		for (int i = 0; i < images_.size(); ++i)
+		{
+			ID3D11ShaderResourceView* shaderResourceView{};
+			std::string fileName = images_.at(i).name_;
+			hr = Texture::LoadTextureFromFile(fileName, &shaderResourceView, &texture2dDesc);
+			if (hr == S_OK)
+			{
+				textureResourceViews_.emplace_back().Attach(shaderResourceView);
+			}
+		}
 
-	ExtractMaterials(transmissionModel);
-	ExtractTextures(transmissionModel);
-	ExtractMeshes(transmissionModel);
-	ExtractAnimations(transmissionModel);
+		for (int meshIndex = 0; meshIndex < meshes_.size(); ++meshIndex)
+		{
+			for (int primitiveIndex = 0; primitiveIndex < meshes_.at(meshIndex).primitives_.size(); ++primitiveIndex)
+			{
+				const BufferView& indexBufferView = meshes_.at(meshIndex).primitives_.at(primitiveIndex).indexBufferView_;
+				D3D11_BUFFER_DESC bufferDesc = {};
+				bufferDesc.ByteWidth = static_cast<UINT>(indexBufferView.sizeInBytes_);
+				bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+				bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+				bufferDesc.CPUAccessFlags = 0;
+				bufferDesc.MiscFlags = 0;
+				bufferDesc.StructureByteStride = 0;
+				D3D11_SUBRESOURCE_DATA subresourceData = {};
+				subresourceData.pSysMem = indexBufferView.verticesBinary_.data();
+				subresourceData.SysMemPitch = 0;
+				subresourceData.SysMemSlicePitch = 0;
+				hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
+				_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
+				for (auto& vertexBufferView : meshes_.at(meshIndex).primitives_.at(primitiveIndex).vertexBufferViews_)
+				{
+					if (static_cast<UINT>(vertexBufferView.second.sizeInBytes_) == 0)
+					{
+						continue;
+					}
+					bufferDesc.ByteWidth = static_cast<UINT>(vertexBufferView.second.sizeInBytes_);
+					bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+					bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+					subresourceData.pSysMem = vertexBufferView.second.verticesBinary_.data();
+					hr = device->CreateBuffer(&bufferDesc, &subresourceData, buffers_.emplace_back().ReleaseAndGetAddressOf());
+					if (FAILED(hr))
+					{
+						_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+
+					}
+
+				}
+			}
+		}
+
+		std::vector<Material::CBuffer> materialData;
+		for (std::vector<Material>::const_reference material : materials_)
+		{
+			materialData.emplace_back(material.data_);
+		}
+		Microsoft::WRL::ComPtr<ID3D11Buffer> materialBuffer;
+		D3D11_BUFFER_DESC bufferDesc{};
+		bufferDesc.ByteWidth = static_cast<UINT>(sizeof(Material::CBuffer) * materialData.size());
+		bufferDesc.StructureByteStride = sizeof(Material::CBuffer);
+		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		D3D11_SUBRESOURCE_DATA subresourceData{};
+		subresourceData.pSysMem = materialData.data();
+		hr = device->CreateBuffer(&bufferDesc, &subresourceData, materialBuffer.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
+		shaderResourceViewDesc.Format = DXGI_FORMAT_UNKNOWN;
+		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+		shaderResourceViewDesc.Buffer.NumElements = static_cast<UINT>(materialData.size());
+		hr = device->CreateShaderResourceView(materialBuffer.Get(),
+			&shaderResourceViewDesc, materialResourceView_.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+	}
+	else
+#pragma endregion
+	{
+
+		tinygltf::TinyGLTF tinyGltf;
+		tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
+
+		tinygltf::Model transmissionModel;
+		std::string error, warning;
+		bool succeeded{ false };
+		if (filename.find(".glb") != std::string::npos)
+		{
+			succeeded = tinyGltf.LoadBinaryFromFile(&transmissionModel, &error, &warning, filename.c_str());
+		}
+		else if (filename.find(".gltf") != std::string::npos)
+		{
+			succeeded = tinyGltf.LoadASCIIFromFile(&transmissionModel, &error, &warning, filename.c_str());
+		}
+		if (!warning.empty())
+		{
+			OutputDebugStringA(warning.c_str());
+		}
+		if (!error.empty())
+		{
+			throw std::exception(error.c_str());
+		}
+		if (!succeeded)
+		{
+			throw std::exception("Failed to load glTF file");
+		}
+
+		ExtractAssets(transmissionModel);
+		ExtractExtensions(transmissionModel);
+
+		ExtractScenes(transmissionModel);
+		ExtractNodes(transmissionModel);
+
+		ExtractMaterials(transmissionModel);
+		ExtractTextures(transmissionModel);
+		ExtractMeshes(transmissionModel);
+		ExtractAnimations(transmissionModel);
+
+
+		//シリアルファイル書き出し
+		std::ofstream ofs(cerealFilename.c_str(), std::ios::binary);
+		cereal::BinaryOutputArchive serialization(ofs);
+		serialization(asset_, punctualLights_, variants_, nodes_, meshes_, skins_, scenes_, animations_,materials_,
+			extensionsUsed_, extensionsRequired_, textures_, samplers_, images_);
+	}
 
 	D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{

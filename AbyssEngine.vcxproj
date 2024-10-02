@@ -72,6 +72,7 @@
     <ClInclude Include="Code\Header\Scene.h" />
     <ClInclude Include="Code\Header\SceneManager.h" />
     <ClInclude Include="Code\Header\ScriptComponent.h" />
+    <ClInclude Include="Code\Header\SerialTestScene.h" />
     <ClInclude Include="Code\Header\Shader.h" />
     <ClInclude Include="Code\Header\ShapeRenderer.h" />
     <ClInclude Include="Code\Header\SkeletalMesh.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="Code\Source\Scene.cpp" />
     <ClCompile Include="Code\Source\SceneManager.cpp" />
     <ClCompile Include="Code\Source\ScriptComponent.cpp" />
+    <ClCompile Include="Code\Source\SerialTestScene.cpp" />
     <ClCompile Include="Code\Source\Shader.cpp" />
     <ClCompile Include="Code\Source\ShapeRenderer.cpp" />
     <ClCompile Include="Code\Source\SkeltalMesh.cpp" />
