@@ -45,6 +45,11 @@ shared_ptr<Actor> Scene::InstanceActor(const std::string& name)
     return actor;
 }
 
+void AbyssEngine::Scene::RegistDestroyActor(const std::shared_ptr<Actor>& actor)
+{
+    destroyActorList_.emplace_back(actor);
+}
+
 void Scene::DestroyActor(const std::shared_ptr<Actor>& actor)
 {
     //‰ð•úˆ—‚ð‚µ‚Ä‚©‚çƒŠƒXƒg‚©‚çíœ‚·‚é
@@ -139,6 +144,15 @@ void Scene::Finalize()
     Reset();
 
     Engine::scriptComManager_->Clear();
+}
+
+void AbyssEngine::Scene::UpdateRemoveActors()
+{
+    for (auto& actor : destroyActorList_)
+    {
+        DestroyActor(actor);
+    }
+    destroyActorList_.clear();
 }
 
 void Scene::DrawDebug()

@@ -33,7 +33,7 @@ void Actor::Release()
 	{
 		if (const auto& child = children_[i].lock())
 		{
-			Destroy(child);
+			Engine::sceneManager_->GetActiveScene().DestroyActor(child);
 		}
 	}
 	children_.clear();
@@ -145,7 +145,7 @@ void Actor::WritingJsonFile(const nlohmann::json& json)
 
 void Actor::Destroy(std::shared_ptr<Actor> actor)
 {
-	Engine::sceneManager_->GetActiveScene().DestroyActor(actor);
+	Engine::sceneManager_->GetActiveScene().RegistDestroyActor(actor);
 }
 
 void AbyssEngine::Actor::OnCollision(const std::shared_ptr<Collider>& hitCollider, Collision::IntersectionResult result)

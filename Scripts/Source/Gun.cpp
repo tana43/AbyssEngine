@@ -10,7 +10,7 @@
 #include "DebugRenderer.h"
 #include "RenderManager.h"
 
-#include "SphereCollider.h"
+#include "GameCollider.h"
 
 using namespace AbyssEngine;
 
@@ -71,7 +71,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
 
         //’eŠÛ‚ÌÝ’è
         proj->SetRadius(bulletRadius_);
-        proj->GetCollider()->ReplaceTag(colliderTag_);
+        proj->GetAtkCollider()->ReplaceTag(colliderTag_);
 
         //e‚Ì¸“x‚ð”½‰f
         if (precision_ > 0)

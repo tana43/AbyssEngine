@@ -12,7 +12,7 @@ void Bullet::Initialize(const std::shared_ptr<Actor>& actor)
     actor->AddComponent<StaticMesh>("./Assets/Models/Cube.glb");
     transform_->SetScaleFactor(0.03f);
 
-    attackCollider_ = AddAttackCollider(Vector3::Zero, radius_);
+    
 }
 
 void Bullet::Update()
@@ -29,6 +29,8 @@ void Bullet::OnCollision(const std::shared_ptr<Collider>& collision, Collision::
         {
             Character::DamageResult dmgResult;
             chara->AddDamage(attackPoint_,dmgResult);
+
+            Actor::Destroy(actor_);
         }
     }
 }

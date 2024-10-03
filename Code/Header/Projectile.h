@@ -31,7 +31,7 @@ namespace AbyssEngine
     public:
         void SetDirection(const Vector3& dir) { direction_ = dir; }
 
-        const std::shared_ptr<SphereCollider>& GetCollider() const { return collider_; }
+        const std::shared_ptr<AttackCollider>& GetAtkCollider() const { return atkCollider_; }
 
         void SetRadius(const float& radius);
 
@@ -46,10 +46,10 @@ namespace AbyssEngine
         float radius_ = 0.1f;
 
         //Žõ–½
-        float flashLifespan_ = 10.0f;
+        float flashLifespan_ = 2.0f;
 
         //‹…”»’è
-        std::shared_ptr<SphereCollider> collider_;
+        std::shared_ptr<AttackCollider> atkCollider_;
     };
 }
 

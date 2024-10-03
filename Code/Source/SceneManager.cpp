@@ -47,7 +47,12 @@ void SceneManager::Update()
     {
         ChangeScene();
 
-        if(activeScene_)activeScene_->Update();
+        if (activeScene_)
+        {
+            activeScene_->Update();
+
+            activeScene_->UpdateRemoveActors();
+        }
     }
 }
 

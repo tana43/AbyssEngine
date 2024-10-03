@@ -75,9 +75,9 @@ void Engine::Update()
 
     collisionManager_->Update();
 
-    sceneManager_->Update();
-
     scriptComManager_->Update();
+
+    sceneManager_->Update();
 
     renderManager_->Render();
 

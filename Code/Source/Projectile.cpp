@@ -4,6 +4,7 @@
 #include "RenderManager.h"
 #include "DebugRenderer.h"
 #include "SphereCollider.h"
+#include "GameCollider.h"
 
 using namespace AbyssEngine;
 
@@ -11,7 +12,8 @@ void Projectile::Initialize(const std::shared_ptr<Actor>& actor)
 {
     ScriptComponent::Initialize(actor);
 
-    collider_ = actor->AddComponent<SphereCollider>();
+    atkCollider_ = AddAttackCollider(Vector3::Zero, radius_);
+    //collider_ = actor->AddComponent<SphereCollider>();
 }
 
 void Projectile::Update()
@@ -36,5 +38,5 @@ void Projectile::Update()
 void AbyssEngine::Projectile::SetRadius(const float& radius)
 {
     radius_ = radius;
-    collider_->SetRadius(radius);
+    atkCollider_->SetRadius(radius);
 }

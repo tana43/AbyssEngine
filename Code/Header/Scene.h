@@ -18,6 +18,8 @@ namespace AbyssEngine
         std::string name_;   //シーン名
 
         std::shared_ptr<Actor> InstanceActor(const std::string& name);      //シーン内にオブジェクト配置する
+
+        void RegistDestroyActor(const std::shared_ptr<Actor>& actor);       //削除するアクターとして登録する基本これを使う
         void DestroyActor(const std::shared_ptr<Actor>& actor);             //アクターを削除する
         void DestroyComponent(const std::shared_ptr<Component>& component); //コンポーネントを削除する
         void DrawWorldOutLinerImGui(); //ImGuiデバッグ表示
@@ -29,13 +31,18 @@ namespace AbyssEngine
         virtual void Update();      //更新
         virtual void Reset();       //シーンをリセット
         virtual void Finalize();    //後始末
+        void UpdateRemoveActors();  //アクターを破棄する
 
         virtual void DrawDebug(); //デバッグ表示
         virtual void DrawImGui(); //ImGuiデバッグ表示
         void ImGuiSaveAllActors();//すべてのアクターのトランスフォーム情報を保存
 
+    private:
+
 
         std::vector<std::shared_ptr<Actor>> actorList_;//シーン内の全アクター
+
+        std::vector<std::shared_ptr<Actor>> destroyActorList_;//破棄するアクター
 
         std::unordered_map<std::string, int> nameCount_;
 
