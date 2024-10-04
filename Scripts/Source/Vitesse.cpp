@@ -11,6 +11,7 @@
 #include "StaticMesh.h"
 #include "CollisionManager.h"
 #include "GameCollider.h"
+#include "AttackerSystem.h"
 
 #include "ThrusterEffect.h"
 
@@ -27,8 +28,6 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //モデル読み込み
     //model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.gltf");
-
-    
     
     //アニメーション初期化
     AnimationInitialize();
@@ -106,6 +105,8 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //コライダー設定
     ColliderInitialize();
 
+    //アタッカーコンポーネント設定
+    AttackerInitialize();
 }
 
 void Vitesse::Update()
@@ -455,6 +456,9 @@ void Vitesse::ColliderInitialize()
     {
         collider->ReplaceTag(Collider::Tag::Player);
         collider->GetTransform()->SetLocalPosition(shaftVecL * i);
+
+        //設定したコライダーを登録
+        lWeaponAtkColliderList_.emplace_back(collider);
         ++i;
     }
 
@@ -474,8 +478,44 @@ void Vitesse::ColliderInitialize()
     {
         collider->ReplaceTag(Collider::Tag::Player);
         collider->GetTransform()->SetLocalPosition(shaftVecR * i);
+
+        //設定したコライダーを登録
+        rWeaponAtkColliderList_.emplace_back(collider);
+
         ++i;
     }
+}
+
+void Vitesse::AttackerInitialize()
+{
+    attackerSystem_ = actor_->AddComponent<AttackerSystem>();
+    //各種コライダー登録
+    for (const auto& collider : lWeaponAtkColliderList_)
+    {
+        attackerSystem_->RegistCollider(collider);
+    }
+    for (const auto& collider : rWeaponAtkColliderList_)
+    {
+        attackerSystem_->RegistCollider(collider);
+    }
+
+    //斬撃N攻撃
+    {
+        AttackData atkData;
+        atkData.power_ = 10.0f;//攻撃力
+        for (const auto& collider : rWeaponAtkColliderList_)
+        {
+            atkData.attackColliderList_.emplace_back(collider);
+        }
+        atkData.duration_ = 1.0f;//持続時間
+        //atkData.staggerValue_
+        atkData.maxHits_ = 1;//攻撃最大ヒット回数
+        atkData.hitStop_ = 0.1f;//ヒットストップ時間
+
+        //アタッカーシステムに登録
+        attackerSystem_->RegistAttackData("Slash_N_1", atkData);
+    }
+    
 }
 
 void Vitesse::Dodge(Vector3 direction)

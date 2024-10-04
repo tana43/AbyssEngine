@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "RenderManager.h"
 #include "StaticMesh.h"
+#include "AttackerSystem.h"
 
 using namespace AbyssEngine;
 
@@ -529,6 +530,9 @@ void VitesseState::MeleeAttack::Initialize()
     owner_->SetMaxHorizontalSpeed(owner_->GetMeleeAtkSpeed());
 
     owner_->StepMove(toTarget, owner_->GetMeleeAtkSpeed());
+
+    //アタッカーシステムに攻撃させる
+    owner_->GetAttackerSystem()->Attack("Slash_N_1");
 }
 
 void VitesseState::MeleeAttack::Update()

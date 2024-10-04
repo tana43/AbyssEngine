@@ -33,7 +33,14 @@ void SphereCollider::UpdateWorldMatrix()
 void SphereCollider::DrawDebug()
 {
 #if _DEBUG
-    Engine::renderManager_->debugRenderer_->DrawSphere(transform_->GetPosition(), radius_, debugColor_);
+    if (enabled_)
+    {
+        Engine::renderManager_->debugRenderer_->DrawSphere(transform_->GetPosition(), radius_, debugColor_);
+    }
+    else
+    {
+        Engine::renderManager_->debugRenderer_->DrawSphere(transform_->GetPosition(), radius_, debugDisabledColor_);
+    }
 #endif // _DEBUG
 }
 

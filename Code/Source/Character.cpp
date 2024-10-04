@@ -19,8 +19,6 @@ void Character::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 void AbyssEngine::Character::Update()
 {
     UpdateMove();
-
-
 }
 
 void Character::DrawImGui()
@@ -163,7 +161,7 @@ void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
     transform_->SetRotationY(rotY);
 }
 
-bool AbyssEngine::Character::AddDamage(const float& damage, DamageResult& damageResult)
+bool AbyssEngine::Character::ApplyDamage(const float& damage, DamageResult& damageResult)
 {
     //–³“G‚©
     if (invincible_)

@@ -52,7 +52,7 @@ namespace AbyssEngine
         void TurnY(Vector3 dir, const float& speed, bool smooth = true/*‚È‚ß‚ç‚©‚É‰ñ“]‚·‚é‚©*/);
 
         //ƒ_ƒ[ƒW‚ğ—^‚¦‚é UŒ‚‚ª’Ê‚Á‚½‚È‚çtrue
-        bool AddDamage(const float& damage,DamageResult& damageResult);
+        bool ApplyDamage(const float& damage,DamageResult& damageResult);
 
         //€–S
         void Die();

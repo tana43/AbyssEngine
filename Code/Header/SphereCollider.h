@@ -43,6 +43,9 @@ namespace AbyssEngine
         //デバッグ時に表示される球体のカラー
         Vector4 debugColor_ = { 1,1,1,1 };
 
+        //無効化されているときのカラー
+        Vector4 debugDisabledColor_ = { 0,0,0,0.5f };
+
         //アタッチする場合
         std::weak_ptr<SkeletalMesh> attachModel_;
         std::string socketName_;

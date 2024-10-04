@@ -38,6 +38,23 @@ void CollisionManager::Update()
 
 void CollisionManager::UpdateWorldMatrix()
 {
+#if _DEBUG
+	for (const auto& collider : attackColliderList_)
+	{
+		if (const auto& col = collider.lock())
+		{
+			col->UpdateWorldMatrix();
+		}
+	}
+
+	for (const auto& collider : hitColliderList_)
+	{
+		if (const auto& col = collider.lock())
+		{
+			col->UpdateWorldMatrix();
+		}
+	}
+#else
 	for (const auto& collider : attackColliderList_)
 	{
 		if (const auto& col = collider.lock())
@@ -55,6 +72,7 @@ void CollisionManager::UpdateWorldMatrix()
 			col->UpdateWorldMatrix();
 		}
 	}
+#endif // _DEBUG
 }
 
 void CollisionManager::TerrainDetection()

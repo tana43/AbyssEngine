@@ -11,6 +11,8 @@ class Soldier;
 namespace AbyssEngine
 {
     class StaticMesh;
+    class AttackerSystem;
+    class AttackCollidier;
 }
 
 class Vitesse : public HumanoidWeapon 
@@ -30,8 +32,7 @@ public:
     //スラスターをすべて停止
     void ThrusterAllStop();
 
-    //コライダー設定
-    void ColliderInitialize();
+    
 
     //回避行動
     void Dodge(AbyssEngine::Vector3 direction/*回避行動*/);
@@ -152,6 +153,8 @@ public:
 
     const std::weak_ptr<AbyssEngine::Actor>& GetLockonTarget() const { return lockonTarget_; }
 
+    const std::shared_ptr<AbyssEngine::AttackerSystem>& GetAttackerSystem() const { return attackerSystem_; }
+
     //ターゲットまでのベクトルを算出
     //ターゲットがいない場合は見ている方向を返す
     AbyssEngine::Vector3 ToTarget();
@@ -190,6 +193,11 @@ private:
     //上昇の入力を反映させる
     void RiseInputUpdate();
 
+    //コライダー設定
+    void ColliderInitialize();
+
+    //アタッカー設定(コライダーを設定した後がいいかも)
+    void AttackerInitialize();
     
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
@@ -277,5 +285,12 @@ private:
 
     //近接攻撃中の速度
     float meleeAtkSpeed_ = 10.0f;
+
+    //アタッカーシステム
+    std::shared_ptr<AbyssEngine::AttackerSystem> attackerSystem_;
+
+    //アタックコライダー
+    std::vector<std::shared_ptr<AbyssEngine::AttackCollider>> lWeaponAtkColliderList_;
+    std::vector<std::shared_ptr<AbyssEngine::AttackCollider>> rWeaponAtkColliderList_;
 };
 
