@@ -11,7 +11,8 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     enableGravity_ = false;
 
-    model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.glb");
+    //model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.glb");
+    model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.gltf");
     model_->GetAnimator()->AppendAnimations({
         "./Assets/Models/Enemy/Boss/Mech_Run.glb",
         "./Assets/Models/Enemy/Boss/Mech_Jump_Start.glb",

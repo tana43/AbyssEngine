@@ -25,7 +25,8 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     HumanoidWeapon::Initialize(actor);
 
     //モデル読み込み
-    model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
+    //model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
+    model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.gltf");
 
     
     
@@ -33,8 +34,8 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     AnimationInitialize();
 
     //武器を装備させる
-    leftWeaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.glb");
-    rightWeaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.glb");
+    leftWeaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.gltf");
+    rightWeaponModel_ = actor_->AddComponent<StaticMesh>("./Assets/Models/Vitesse/Weapon/Vitesse_GunBlade.gltf");
     model_->SocketAttach(leftWeaponModel_, "rig_J_hand_R");
     model_->SocketAttach(rightWeaponModel_, "rig_J_hand_L");
     leftWeaponModel_->GetSocketData().location_ = Left_Weapon_Offset.pos;
@@ -438,17 +439,42 @@ void Vitesse::ColliderInitialize()
     }
 
     //攻撃判定コライダー設定
-    std::vector<std::shared_ptr<AttackCollider>> atkColliders =
+    //左武器
+    std::vector<std::shared_ptr<AttackCollider>> atkCollidersL =
     {
-        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_1", model_, "rig_J_hand_L"),
-        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_2", model_, "rig_J_hand_L"),
-        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_3", model_, "rig_J_hand_L"),
-        AddAttackCollider(Vector3::Zero, 1.0f, "AtkCol_Weapon_L_4", model_, "rig_J_hand_L"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_1", model_, "rig_J_hand_L"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_2", model_, "rig_J_hand_L"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_3", model_, "rig_J_hand_L"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_4", model_, "rig_J_hand_L"),
     };
-    for (const auto& collider : atkColliders)
+    //この方向に一定間隔でコライダーを設置していく
+    Vector3 shaftVecL = { 1.0f,0.4f,0.1f };
+    shaftVecL.Normalize();
+    int i = 0;
+    for (const auto& collider : atkCollidersL)
     {
         collider->ReplaceTag(Collider::Tag::Player);
-        collider->GetTransform()->SetLocalRotation(Left_Weapon_Offset.rot);
+        collider->GetTransform()->SetLocalPosition(shaftVecL * i);
+        ++i;
+    }
+
+    //右武器
+    std::vector<std::shared_ptr<AttackCollider>> atkCollidersR =
+    {
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_1", model_, "rig_J_hand_R"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_2", model_, "rig_J_hand_R"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_3", model_, "rig_J_hand_R"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_4", model_, "rig_J_hand_R"),
+    };
+    //この方向に一定間隔でコライダーを設置していく
+    Vector3 shaftVecR = shaftVecL * -1.0f;
+    
+    i = 0;
+    for (const auto& collider : atkCollidersR)
+    {
+        collider->ReplaceTag(Collider::Tag::Player);
+        collider->GetTransform()->SetLocalPosition(shaftVecR * i);
+        ++i;
     }
 }
 

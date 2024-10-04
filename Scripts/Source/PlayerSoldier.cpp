@@ -30,6 +30,43 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     Character::Initialize(actor);
 
     //ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
+#if 1
+    model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.gltf");
+    model_->GetAnimator()->AppendAnimations({
+                //"./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_WalkFwd.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_RunFwd.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle_ADS.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Jump.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Fall_Loop.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Land.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Back.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Forward.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Right.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Left.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Back.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Forward.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Right.glb",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Left.glb"
+        },
+        {
+            //"Idle",
+            "Walk",
+            "Run",
+            "Aim",
+            "Jump",
+            "Fall_Loop",
+            "Land",
+            "Dodge_Roll_Back",
+            "Dodge_Roll_Fwd",
+            "Dodge_Roll_Right",
+            "Dodge_Roll_Left",
+            "Cartwheel_Back",
+            "Cartwheel_Forward",
+            "NoHandSpin_Right",
+            "NoHandSpin_Left"
+        });
+#else
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb");
     model_->GetAnimator()->AppendAnimations({
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_WalkFwd.glb",
@@ -46,7 +83,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Forward.glb",
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Right.glb",
                 "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Left.glb"
-                },
+        },
         {
             "Walk",
             "Run",
@@ -63,6 +100,9 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
             "NoHandSpin_Right",
             "NoHandSpin_Left"
         });
+#endif // 0
+
+    
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
     moveAnim.AddBlendAnimation(1, 0.6f);
     moveAnimation_ = model_->GetAnimator()->AppendAnimation(moveAnim);

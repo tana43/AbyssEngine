@@ -34,10 +34,11 @@ void FacilityScene::Initialize()
     stageCom_F = stageActor->AddComponent<Stage>();
     StageManager::Instance().AddStage(stageActor);
 
-    const auto& faci = stageCom_F->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.glb");
+    const auto& faci = stageCom_F->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.gltf");
 
     //IBL強度設定
-    faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.14f);
+    faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.1f);
+    faci->GetComponent<StaticMesh>()->SetEmissiveIntensity(120.0f);
 
     //判定ポリゴンを更新
     stageCom_F->RegisterTriangles();
@@ -51,8 +52,8 @@ void FacilityScene::Initialize()
     const auto& pc = player->AddComponent<Soldier>();
 
     //板ポリゴン
-    const auto& plane = InstanceActor("Plane");
-    plane->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Explosion_02.png");
+    /*const auto& plane = InstanceActor("Plane");
+    plane->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Explosion_02.png");*/
 
     //UI設定
     const auto& ui = InstanceActor("GameUI");

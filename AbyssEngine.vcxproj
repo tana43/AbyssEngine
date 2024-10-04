@@ -98,6 +98,7 @@
     <ClInclude Include="External\imgui\imstb_truetype.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scripts\Header\ActionDerived.h" />
+    <ClInclude Include="Scripts\Header\AttackerSystem.h" />
     <ClInclude Include="Scripts\Header\BossMech.h" />
     <ClInclude Include="Scripts\Header\Bullet.h" />
     <ClInclude Include="Scripts\Header\BotEnemy.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="External\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Scripts\Source\ActionDerived.cpp" />
+    <ClCompile Include="Scripts\Source\AttackerSystem.cpp" />
     <ClCompile Include="Scripts\Source\BossMech.cpp" />
     <ClCompile Include="Scripts\Source\Bullet.cpp" />
     <ClCompile Include="Scripts\Source\BotEnemy.cpp" />

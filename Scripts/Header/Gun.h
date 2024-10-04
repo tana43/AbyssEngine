@@ -80,7 +80,7 @@ private:
     float Max_Flash_Lifespan = 0.02f;
 
     //’eŠÛ‚Ì‘å‚«‚³
-    float bulletRadius_;
+    float bulletRadius_ = 0.1f;
 
     //’eŠÛ‚Ì”»’è‚É‚Â‚¯‚éƒ^ƒO
     unsigned int colliderTag_ = 0;

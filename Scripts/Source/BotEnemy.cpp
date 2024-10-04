@@ -134,6 +134,7 @@ bool BotEnemy::SearchTarget()
     if (!targetActor_)
     {
         targetActor_ = Engine::sceneManager_->GetActiveScene().Find("Player").lock();
+        if (!targetActor_)return false;
     }
 
     //ターゲットが索敵範囲内に入っているか
