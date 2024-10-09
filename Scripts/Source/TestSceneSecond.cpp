@@ -19,6 +19,5 @@ void TestSceneSecond::Initialize()
 
     const auto& effectEmitter = InstanceActor("Effect");
     effectEmitter->AddComponent<ParticleEmitter>();
-
     
 }

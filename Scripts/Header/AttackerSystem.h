@@ -51,6 +51,9 @@ namespace AbyssEngine
     private:
         void ApplyDamage(const std::shared_ptr<Character>& target);
 
+        //現在攻撃が有効な状態かの判定をする
+        void AttackEnabledUpdate();
+
     private:
 
         //全ての攻撃情報を管理しているマップ
@@ -71,5 +74,8 @@ namespace AbyssEngine
 
         //アタックシステムを適用させるコライダー
         std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;
+
+        //現在攻撃が有効な状態か
+        bool attackEnabled_ = false;
     };
 }

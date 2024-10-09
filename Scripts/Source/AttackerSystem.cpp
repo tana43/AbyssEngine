@@ -19,29 +19,26 @@ void AttackerSystem::Update()
 
     //タイマー更新
     durationTimer_ += Time::deltaTime_;
+
+    //攻撃が有効かを判定
+    AttackEnabledUpdate();
+    
 }
 
 void AbyssEngine::AttackerSystem::OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result)
 {
     //一度攻撃がヒットしたフレームか
-    if (hit_)return;
-
-    //持続時間を越えていないか
-    if (durationTimer_ > currentAttack_.duration_)return;
-
-    //連続攻撃
-    if (hitCount_ >= currentAttack_.maxHits_)return;
-
-    //ヒット後のインターバル中か
-    if (hitIntervalTimer_ < currentAttack_.hitInterval_)return;
-
+    if (!attackEnabled_)return;
 
     //ダメージを与える
-    const std::shared_ptr<Character>& target = collision->GetActor()->GetComponent<Character>();
+    const std::shared_ptr<Character>& target = collision->GetActor()->GetParent().lock()->GetComponent<Character>();
     if (target)
     {
         ApplyDamage(target);
     }
+
+    //攻撃が有効かを更新
+    AttackEnabledUpdate();
 }
 
 void AbyssEngine::AttackerSystem::RegistAttackData(std::string atkName, const AttackData atkData)
@@ -82,6 +79,7 @@ void AbyssEngine::AttackerSystem::Attack(std::string atkName)
     {
         if (const auto& atk = p.lock())
         {
+            atk->SetEnable(false);
             for (const auto& c : currentAttack_.attackColliderList_)
             {
                 if (const auto& active = c.lock())
@@ -89,10 +87,7 @@ void AbyssEngine::AttackerSystem::Attack(std::string atkName)
                     if (atk == active)
                     {
                         atk->SetEnable(true);
-                    }
-                    else
-                    {
-                        atk->SetEnable(false);
+                        break;
                     }
                 }
             }
@@ -111,6 +106,37 @@ void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& 
 
         //ヒットインターバルをリセット
         hitIntervalTimer_ = 0;
+    }
+}
+
+void AbyssEngine::AttackerSystem::AttackEnabledUpdate()
+{
+    //更新前の値
+    bool cachedEnabled = attackEnabled_;
+
+    //攻撃が有効な状態か判定
+    if (hit_ || /*一度攻撃がヒットしたフレームか*/
+        durationTimer_ > currentAttack_.duration_ ||/*持続時間を越えていないか*/
+        hitCount_ >= currentAttack_.maxHits_ || /*連続攻撃の最大ヒット数を越えていないか*/
+        hitIntervalTimer_ < currentAttack_.hitInterval_)/*ヒット後のインターバル中か*/
+    {
+        attackEnabled_ = false;
+    }
+    else
+    {
+        attackEnabled_ = true;
+    }
+
+    //オンオフが切り替わったならコライダーも設定しなおす
+    if (attackEnabled_ != cachedEnabled)
+    {
+        for (const auto& col : currentAttack_.attackColliderList_)
+        {
+            if (const auto& collider = col.lock())
+            {
+                collider->SetEnable(attackEnabled_);
+            }
+        }
     }
 }
 

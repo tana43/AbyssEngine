@@ -163,32 +163,37 @@ void Vitesse::DrawImGui()
 void Vitesse::AnimationInitialize()
 {
     model_->GetAnimator()->AppendAnimations({
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_F.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_R.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_L.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_B.glb",
-                //"./Assets/Models/Vitesse/Vitesse_UE_01_FrontFly.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Idle.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_F.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_R.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_L.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_B.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Up.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Down.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Landing.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Standby.glb",//立ち姿勢から乗り込み姿勢へ
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Complete.glb",//乗り込み姿勢から立ち姿勢へ
-                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_F.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_R.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_L.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_B.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FR.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FL.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Ground_Fall.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Start.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Loop.glb",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_1.glb"
-                
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_F.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_R.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_L.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Run_B.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Idle.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_F.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_R.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_L.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_B.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Up.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Fly_Down.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Landing.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Standby.gltf",//立ち姿勢から乗り込み姿勢へ
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Board_Complete.gltf",//乗り込み姿勢から立ち姿勢へ
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_F.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_R.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_L.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_HighSpeedFlight_B.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FR.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Dodge_FL.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Ground_Fall.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Start.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Loop.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Loop_R.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_Dash_Loop_L.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_1.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_2.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_2_End.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_3.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_3_End.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_R_1.gltf"
         },
         {
             "Run_F",
@@ -214,7 +219,14 @@ void Vitesse::AnimationInitialize()
             "Ground_Fall",
             "Slash_Dash_Start",
             "Slash_Dash_Loop",
-            "Slash_N_1"
+            "Slash_Dash_Loop_R",
+            "Slash_Dash_Loop_L",
+            "Slash_N_1",
+            "Slash_N_2",
+            "Slash_N_2_End",
+            "Slash_N_3",
+            "Slash_N_3_End",
+            "Slash_R_1"
         });
 
         //ループ再生しないように
@@ -440,8 +452,36 @@ void Vitesse::ColliderInitialize()
     }
 
     //攻撃判定コライダー設定
+    
+    //この方向に一定間隔でコライダーを設置していく
+    Vector3 shaftVecL = { 1.0f,0.4f,0.1f };
+    shaftVecL.Normalize();
+    Vector3 shaftVecR = shaftVecL * -1.0f;
+
     //左武器
     std::vector<std::shared_ptr<AttackCollider>> atkCollidersL =
+    {
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_1", model_, "rig_J_hand_R"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_2", model_, "rig_J_hand_R"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_3", model_, "rig_J_hand_R"),
+        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_4", model_, "rig_J_hand_R"),
+    };
+    
+    
+    int i = 0;
+    for (const auto& collider : atkCollidersL)
+    {
+        collider->ReplaceTag(Collider::Tag::Player);
+        collider->GetTransform()->SetLocalPosition(shaftVecR * i);
+
+        //設定したコライダーを登録
+        lWeaponAtkColliderList_.emplace_back(collider);
+
+        ++i;
+    }
+
+    //右武器
+    std::vector<std::shared_ptr<AttackCollider>> atkCollidersR =
     {
         AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_1", model_, "rig_J_hand_L"),
         AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_2", model_, "rig_J_hand_L"),
@@ -449,41 +489,17 @@ void Vitesse::ColliderInitialize()
         AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_4", model_, "rig_J_hand_L"),
     };
     //この方向に一定間隔でコライダーを設置していく
-    Vector3 shaftVecL = { 1.0f,0.4f,0.1f };
-    shaftVecL.Normalize();
-    int i = 0;
-    for (const auto& collider : atkCollidersL)
+    i = 0;
+    for (const auto& collider : atkCollidersR)
     {
         collider->ReplaceTag(Collider::Tag::Player);
         collider->GetTransform()->SetLocalPosition(shaftVecL * i);
 
         //設定したコライダーを登録
-        lWeaponAtkColliderList_.emplace_back(collider);
-        ++i;
-    }
-
-    //右武器
-    std::vector<std::shared_ptr<AttackCollider>> atkCollidersR =
-    {
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_1", model_, "rig_J_hand_R"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_2", model_, "rig_J_hand_R"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_3", model_, "rig_J_hand_R"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_4", model_, "rig_J_hand_R"),
-    };
-    //この方向に一定間隔でコライダーを設置していく
-    Vector3 shaftVecR = shaftVecL * -1.0f;
-    
-    i = 0;
-    for (const auto& collider : atkCollidersR)
-    {
-        collider->ReplaceTag(Collider::Tag::Player);
-        collider->GetTransform()->SetLocalPosition(shaftVecR * i);
-
-        //設定したコライダーを登録
         rWeaponAtkColliderList_.emplace_back(collider);
-
         ++i;
     }
+
 }
 
 void Vitesse::AttackerInitialize()

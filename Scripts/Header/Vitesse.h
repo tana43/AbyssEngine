@@ -90,7 +90,14 @@ public:
         //近接攻撃
         Slash_Dash_Start,
         Slash_Dash_Loop,
+        Slash_Dash_Loop_R,
+        Slash_Dash_Loop_L,
         Slash_N_1,
+        Slash_N_2,
+        Slash_N_2_End,
+        Slash_N_3,
+        Slash_N_3_End,
+        Slash_R_1,
 
         //ブレンドモーション
         Run_Move,
@@ -99,8 +106,6 @@ public:
         Flight_Move,
         HighSpeedFlight_Move2D,
         HighSpeedFlight_Move,
-
-        
     };
     //アニメーションステートマシーンEnum
     enum class AnimationState
