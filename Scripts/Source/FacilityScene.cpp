@@ -62,12 +62,16 @@ void FacilityScene::Initialize()
     const auto& ui = InstanceActor("GameUI");
     const auto& uiCom = ui->AddComponent<GameUIAdmin>();
     uiCom->SetPlayer(pc);
+
+    //ロードするシーンを設定
+    Engine::sceneManager_->SetLoadScene("Test");
 }
 
 void FacilityScene::Update()
 {
     if (Keyboard::GetKeyDown(DirectX::Keyboard::Enter))
     {
+        //if()
         Engine::sceneManager_->SetNextScene("Test");
     }
 

@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <string>
 #include "Scene.h"
+#include <thread>
 
 namespace AbyssEngine
 {
@@ -23,11 +24,16 @@ namespace AbyssEngine
         void Update(); //更新
 
         //シーンの追加
-        void AddScene(Scene* scene,std::string name_);
+        void AddScene(Scene* scene,std::string name);
 
     public:
-        //シーンの変更
-        void SetNextScene(std::string name_);
+        //シーンの変更 ロード済のシーンがあるときは必ずそれを呼ぶこと
+        void SetNextScene(std::string name = "");
+
+        //ロードするシーンを設定
+        void SetLoadScene(std::string name);
+
+        const bool& GetLoadComplete() const { return loadComplete_; }
 
     private:
         void DrawImGui();//シーンのImGUi表示
@@ -39,9 +45,19 @@ namespace AbyssEngine
         //シーンの変更があった場合の更新処理
         void ChangeScene();
 
+        //ロードするシーンがあるならローディング
+        static void LoadingScene(SceneManager* scaneManager);
+
         std::unordered_map<std::string, std::unique_ptr<Scene>> sceneMap_;
         Scene* activeScene_;//現在アクティブなシーン
+
+        Scene* loadScene_; //ロードするシーン
+        bool loadComplete_ = false;//ロードが完了しているか
+
         std::string nextSceneName_; //次のシーン
+
+
+        std::unique_ptr<std::thread> thread_;//スレッド
 
         friend class Engine;
     };

@@ -56,15 +56,35 @@ void SceneManager::Update()
     }
 }
 
-void SceneManager::AddScene(Scene* scene, string name_)
+void SceneManager::AddScene(Scene* scene, string name)
 {
-    sceneMap_[name_].reset(scene);
-    scene->name_ = name_;
+    sceneMap_[name].reset(scene);
+    scene->name_ = name;
 }
 
-void SceneManager::SetNextScene(std::string name_)
+void SceneManager::SetNextScene(std::string name)
 {
-    nextSceneName_ = name_;
+    if (loadScene_)
+    {
+        if (loadScene_->name_ != name)
+        {
+            _ASSERT_EXPR(false, L"別のシーンがロード済です。正しいシーンを設定しなおしてください。");
+        }
+    }
+    nextSceneName_ = name;
+}
+
+void AbyssEngine::SceneManager::SetLoadScene(std::string name)
+{
+    if (sceneMap_.find(name) == sceneMap_.end())
+    {
+        _ASSERT_EXPR(false, L"ロードするシーンがございません");
+    }
+
+    loadScene_ = sceneMap_[name].get();
+
+    //スレッド開始
+    thread_ = make_unique<thread>(LoadingScene,this);
 }
 
 void SceneManager::DrawImGui()
@@ -111,7 +131,35 @@ void SceneManager::ChangeScene()
 
     activeScene_ = sceneMap_[nextSceneName_].get();
 
-    activeScene_->Initialize();
+    //ロードしているなら初期化しない
+    if (!loadComplete_)
+    {
+        activeScene_->Initialize();
+    }
+    else
+    {
+        thread_->join();
+        loadComplete_ = false;
+        thread_.reset();
+
+        loadScene_ = nullptr;
+    }
 
     nextSceneName_ = "";
+
+}
+
+void AbyssEngine::SceneManager::LoadingScene(SceneManager* sceneManager)
+{
+    //COM関連の初期化でスレッド毎に呼ぶ必要がある
+    CoInitialize(nullptr);
+
+    //シーンの初期化を行う
+    sceneManager->loadScene_->Initialize();
+
+    //スレッドが終わる前にCOM関連の終了化
+    CoUninitialize();
+
+    //次のシーンの準備完了
+    sceneManager->loadComplete_ = true;
 }
