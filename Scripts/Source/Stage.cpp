@@ -7,6 +7,8 @@
 #include "DebugRenderer.h";
 #include "LineRenderer.h";
 
+#include "StageManager.h"
+
 #include "CollisionHelper.h"
 
 #include <DirectXCollision.h>
@@ -18,6 +20,8 @@ void Stage::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
     actor_ = actor;
     transform_ = actor->GetTransform();
+
+	Engine::stageManager_->AddStage(actor);
 }
 
 void Stage::DrawDebug()
@@ -197,12 +201,15 @@ void Stage::RegisterTriangles()
     triangles_.clear();
 
     //Ä“o˜^
-    for (const auto& model : meshColliders_)
+    for (const auto& m : meshColliders_)
     {
-        for (const auto& tri : model->triangles_)
-        {
-            triangles_.emplace_back(tri);
-        }
+		if (const auto& model = m.lock())
+		{
+			for (const auto& tri : model->triangles_)
+			{
+				triangles_.emplace_back(tri);
+			}
+		}
     }
 }
 

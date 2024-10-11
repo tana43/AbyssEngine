@@ -21,7 +21,7 @@ namespace AbyssEngine
         void DrawImGui()override;
 
         //球との交差判定
-        bool IntersectVsSphere(const std::shared_ptr<SphereCollider>& collider, Collision::IntersectionResult* result);
+        bool IntersectVsSphere(const SphereCollider& collider, Collision::IntersectionResult* result);
 
         //モデルにアタッチする
         void AttachModel(const std::shared_ptr<SkeletalMesh>& model, std::string socketName);

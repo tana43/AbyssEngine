@@ -359,8 +359,8 @@ void Character::UpdateHorizontalMove()
             Vector3 hitPosition, hitNormal;
 
             //スフィアキャスト
-            const auto& stage = StageManager::Instance().GetActiveStage();
-            if (stage.get() && stage->SphereCast(
+            const auto& stage = Engine::stageManager_->GetActiveStage().lock();
+            if (stage && stage->SphereCast(
                 origin, direction, terrainRadius_, distance, hitPosition, hitNormal, true))
             {
                 //  キャスト量を増やした分だけ減らす(skinWidth)
@@ -400,7 +400,7 @@ void Character::UpdateHorizontalMove()
 
 
         //地形判定
-        const auto& stage = StageManager::Instance().GetActiveStage();
+        const auto& stage = Engine::stageManager_->GetActiveStage().lock();
         if (stage.get() && stage->RayCast(start, end, hit, hitNormal))
         {
             //スタートからレイが当たった位置までのベクトル
@@ -484,8 +484,8 @@ void Character::UpdateVerticalMove()
             Vector3 hitPosition, hitNormal;
 
             //スフィアキャスト
-            const auto& stage = StageManager::Instance().GetActiveStage();
-            if (stage.get() && stage->SphereCast(
+            const auto& stage = Engine::stageManager_->GetActiveStage().lock();
+            if (stage && stage->SphereCast(
                 origin,direction,terrainRadius_,distance,hitPosition,hitNormal,true))
             {
                 //スロープ角度を算出
@@ -528,8 +528,8 @@ void Character::UpdateVerticalMove()
         Vector3 end = moved;
 
         //垂直方向に地形判定
-        const auto& stage = StageManager::Instance().GetActiveStage();
-        if (stage.get() && stage->RayCast(start, end, hit, hitNormal))
+        const auto& stage = Engine::stageManager_->GetActiveStage().lock();
+        if (stage && stage->RayCast(start, end, hit, hitNormal))
         {
             //着地した
             Landing();

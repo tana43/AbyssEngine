@@ -5,44 +5,45 @@
 #include "Stage.h"
 
 //ステージを管理するマネージャークラス
-//シングルトン
-class StageManager
+namespace AbyssEngine
 {
-private:
-    StageManager() {}
-    ~StageManager() 
-    { 
-        stageMap_.clear();
-    }
 
-public:
-    static StageManager& Instance()
+    class StageManager
     {
-        static StageManager instance;
-        return instance;
-    }
+    public:
+        StageManager() {}
+        ~StageManager()
+        {
+            stageMap_.clear();
+        }
 
-    //bool RayCast();
-    
-    //現在使用してるステージを返す
-    std::shared_ptr<Stage>& GetActiveStage() { return activeStage_; }
+        //bool RayCast();
 
-    //ステージを変更する
-    void SetStage(const std::string& name_);
+        //現在使用してるステージを返す
+        std::weak_ptr<Stage>& GetActiveStage() { return activeStage_; }
 
-    //ステージを追加する
-    void AddStage(const std::shared_ptr<AbyssEngine::Actor>& stageActor);
-    //void 
+        //ステージを変更する
+        //void SetStage(const std::string& name);
+        void SetStage(const std::shared_ptr<Stage>& stage);
 
-private:
-    //void ChangeStage();
+    private:
 
-private:
-    std::shared_ptr<Stage> activeStage_;
-    //std::string nextStageName_;
+        //ステージを追加する
+        void AddStage(const std::shared_ptr<AbyssEngine::Actor>& stageActor);
+        //void 
 
-    //キーとなる名前はステージのアクター名を使う
-    std::unordered_map<std::string, std::shared_ptr<Stage>> stageMap_;
+    private:
+        //void ChangeStage();
 
-};
+    private:
+        std::weak_ptr<Stage> activeStage_;
+        //std::string nextStageName_;
+
+        //キーとなる名前はステージのアクター名を使う
+        std::unordered_map<std::string, std::weak_ptr<Stage>> stageMap_;
+
+        friend class Stage;
+
+    };
+}
 

@@ -394,7 +394,8 @@ void Soldier::GunShot()
     const Vector3 start = camera_->GetEye();
     const Vector3 end = start + eyeToFocus * range;
     Vector3 hitPos,hitNormal,shootDirection;
-    if (StageManager::Instance().GetActiveStage()->RayCast(
+    const auto& stage = Engine::stageManager_->GetActiveStage().lock();
+    if (stage->RayCast(
         start,end,hitPos,hitNormal
     ))
     {

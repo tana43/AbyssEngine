@@ -47,3 +47,19 @@ void HitCollider::Initialize(const std::shared_ptr<Actor>& actor)
     //デバッグ球のカラー変更
     debugColor_ = Vector4(1, 0, 1, 1);
 }
+
+AbyssEngine::TerrainCollider::~TerrainCollider()
+{
+
+}
+
+void TerrainCollider::Initialize(const std::shared_ptr<Actor>& actor)
+{
+    SphereCollider::Initialize(actor);
+
+    //マネージャーに登録
+    Engine::collisionManager_->RegisterTerrainCollider(static_pointer_cast<SphereCollider>(shared_from_this()));
+
+    //デバッグ球のカラー変更
+    debugColor_ = Vector4(0, 0, 1, 0.5f);
+}

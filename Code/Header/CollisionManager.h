@@ -47,6 +47,10 @@ namespace AbyssEngine
         /// </summary>
         void HitDetection();
 
+        //押し出し判定用コライダーを設定
+        void RegisterTerrainCollider(const std::shared_ptr<SphereCollider>& collider);
+
+
         //攻撃判定コライダーを登録
         void RegisterAttackCollider(const std::shared_ptr<AttackCollider>& collider);
 
@@ -70,7 +74,7 @@ namespace AbyssEngine
         std::vector<std::weak_ptr<MeshCollider>> meshColliderList_;
 
         //押し出し判定コライダー
-        std::vector<std::weak_ptr<Collider>> terrainColliderList_;
+        std::vector<std::weak_ptr<SphereCollider>> terrainColliderList_;
 
         //攻撃判定コライダー
         std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;

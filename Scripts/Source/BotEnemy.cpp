@@ -146,7 +146,7 @@ bool BotEnemy::SearchTarget()
     {
         //レイキャストで障害物がターゲットまでにないか判定
         Vector3 hitPos,hitNormal;
-        auto& stage = StageManager::Instance().GetActiveStage();
+        const auto& stage = Engine::stageManager_->GetActiveStage().lock();
         if (!stage->RayCast(
             myPos,
             targetPos,

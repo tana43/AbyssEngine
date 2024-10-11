@@ -28,6 +28,7 @@ unique_ptr<SceneManager>            Engine::sceneManager_;
 unique_ptr<ScriptComponentManager>  Engine::scriptComManager_;
 unique_ptr<Input>                   Engine::inputManager_;
 unique_ptr<CollisionManager>        Engine::collisionManager_;
+unique_ptr<StageManager>            Engine::stageManager_;
 
 Engine::Engine()
 {
@@ -40,6 +41,7 @@ Engine::Engine()
     renderManager_      = make_unique<RenderManager>();
     scriptComManager_   = make_unique<ScriptComponentManager>();
     inputManager_       = make_unique<Input>();
+    stageManager_       = make_unique<StageManager>();
 
     //ImGui‰Šú‰»
     IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::GetDevice().Get(), DXSystem::GetDeviceContext().Get());

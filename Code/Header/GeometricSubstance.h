@@ -495,7 +495,7 @@ namespace AbyssEngine
 		struct PrimitiveConstants
 		{
 			DirectX::XMFLOAT4X4 transform_ = {};
-			DirectX::XMFLOAT4 color_ = {};
+			DirectX::XMFLOAT4 color_ = {1,1,1,1};
 			int material_ = -1;
 			int startInstanceLocation_ = 0; // Index of start of cascade plane
 			int skin_ = -1;

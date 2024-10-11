@@ -57,6 +57,7 @@ void StaticMesh::DrawImGui()
 
         ImGui::DragFloat("Emissive Intensity", &model_->primitiveConstants_->data_.emissiveIntensity_, 0.01f, 0.0f);
         ImGui::DragFloat("Image Based Lighting Intensity", &model_->primitiveConstants_->data_.imageBasedLightingIntensity_, 0.01f, 0.0f);
+        ImGui::ColorPicker4("Color", &model_->primitiveConstants_->data_.color_.x,ImGuiColorEditFlags_PickerHueWheel);
 
         if (isAttached_)
         {

@@ -670,11 +670,11 @@ void GltfSkeletalMesh::ExtractMeshes(const tinygltf::Model& transmissionModel)
 	}
 }
 
-int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT4& color_, size_t sceneIndex)
-{
-	return Draw(pass, transform, nodes_, color_, sceneIndex);
-}
-int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4& color_, size_t sceneIndex)
+//int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, size_t sceneIndex)
+//{
+//	return Draw(pass, transform, sceneIndex);
+//}
+int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const std::vector<Node>& animatedNodes,size_t sceneIndex)
 {
 	const auto& deviceContext = DXSystem::GetDeviceContext();
 
@@ -790,7 +790,6 @@ int GltfSkeletalMesh::Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, 
 				deviceContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
 
 				XMStoreFloat4x4(&primitiveConstants_->data_.transform_, globalTransform * worldTransform);
-				primitiveConstants_->data_.color_ = color_;
 				primitiveConstants_->data_.material_ = primitive.material_ < 0 ? static_cast<int>(materials_.size() - 1) : primitive.material_;
 				primitiveConstants_->data_.skin_ = node.skin_;
 				primitiveConstants_->Activate(Primitive_Slot, CBufferUsage::vp);

@@ -11,6 +11,7 @@ namespace AbyssEngine
     class ScriptComponentManager;
     class Input;
     class CollisionManager;
+    class StageManager;
 
     class Engine
     {
@@ -30,6 +31,7 @@ namespace AbyssEngine
         static std::unique_ptr<ScriptComponentManager> scriptComManager_;
         static std::unique_ptr<Input> inputManager_;
         static std::unique_ptr<CollisionManager> collisionManager_;
+        static std::unique_ptr<StageManager> stageManager_;
 
     private:
         static void DrawDebug();

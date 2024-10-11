@@ -39,6 +39,14 @@ void CollisionManager::Update()
 void CollisionManager::UpdateWorldMatrix()
 {
 #if _DEBUG
+	for (const auto& collider : terrainColliderList_)
+	{
+		if (const auto& col = collider.lock())
+		{
+			col->UpdateWorldMatrix();
+		}
+	}
+
 	for (const auto& collider : attackColliderList_)
 	{
 		if (const auto& col = collider.lock())
@@ -55,6 +63,15 @@ void CollisionManager::UpdateWorldMatrix()
 		}
 	}
 #else
+	for (const auto& collider : terrainColliderList_)
+	{
+		if (const auto& col = collider.lock())
+		{
+			if (!col->GetEnabled())continue;
+			col->UpdateWorldMatrix();
+		}
+	}
+
 	for (const auto& collider : attackColliderList_)
 	{
 		if (const auto& col = collider.lock())
@@ -86,12 +103,46 @@ void CollisionManager::TerrainDetection()
 			{
 				if (const auto& col2 = collider2.lock())
 				{
-					if (!col1->GetEnabled())continue;
+					if (!col2->GetEnabled())continue;
 					if (col1 == col2)break;
+					if (col1->GetTag() == col2->GetTag())break;
+
+					//基準となるコライダーを判定
+					SphereCollider* reci = col1.get();//受ける方のコライダー
+					SphereCollider* push = col2.get();//押し出す方のコライダー
+
+					if (col1->GetTag() > col2->GetTag())
+					{
+						reci = col2.get();
+						push = col1.get();
+					}
 
 					//判定処理
+					Collision::IntersectionResult result;
+					if (!reci->IntersectVsSphere(*push, &result))break;
 
+					
 
+					//押し出す側の親アクターが存在しているか判定
+					if (const auto& reciActor = reci->GetActor()->GetParent().lock())
+					{
+						if (const auto& pushActor = push->GetActor()->GetParent().lock())
+						{
+							//押し出し処理
+							const Vector3 pushPos = push->GetTransform()->GetPosition();
+							const Vector3 reciPos = reci->GetTransform()->GetPosition();
+							const Vector3 normal = Vector3::Normalize(reciPos - pushPos);
+							Vector3 vec = normal * (reci->GetRadius() + push->GetRadius());
+
+							const Vector3 newReciPos = pushPos + vec;
+							const Vector3 correctVec = newReciPos - reciPos;
+							const Vector3 newPos = reciActor->GetTransform()->GetPosition() + correctVec;
+
+							//位置を設定
+							reciActor->GetTransform()->SetPosition(newPos);
+						}
+						
+					}
 				}
 			}
 		}
@@ -118,7 +169,7 @@ void CollisionManager::AttackDetection()
 
 					//当たり判定
 					Collision::IntersectionResult result;
-					if (atk->IntersectVsSphere(hit,&result))
+					if (atk->IntersectVsSphere(*hit.get(), &result))
 					{
 						OnCollision(atk, hit, result);
 					}
@@ -126,6 +177,12 @@ void CollisionManager::AttackDetection()
 			}
 		}
 	}
+}
+
+void AbyssEngine::CollisionManager::RegisterTerrainCollider(const std::shared_ptr<SphereCollider>& collider)
+{
+	terrainColliderList_.emplace_back(collider);
+
 }
 
 void CollisionManager::RegisterAttackCollider(const std::shared_ptr<AttackCollider>& collider)

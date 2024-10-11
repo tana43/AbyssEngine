@@ -14,12 +14,9 @@ void SceneGame::Initialize()
 
 void SceneGame::Update()
 {
+
 }
 
 void SceneGame::DrawImGui()
-{
-}
-
-void SceneGame::Finalize()
 {
 }

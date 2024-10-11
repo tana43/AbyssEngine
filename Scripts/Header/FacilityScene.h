@@ -7,6 +7,5 @@ private:
     void Initialize()override;
     void Update()override;
     void DrawImGui()override;
-    void Finalize()override;
 };
 

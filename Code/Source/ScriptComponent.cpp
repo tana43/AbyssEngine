@@ -17,6 +17,20 @@ void ScriptComponent::Initialize(const std::shared_ptr<Actor>& actor)
     transform_ = actor->GetTransform();
 }
 
+std::shared_ptr<TerrainCollider> ScriptComponent::AddTerrainCollider(Vector3 localPos, float radius, std::string name, const std::shared_ptr<SkeletalMesh>& attachModel, std::string socketName)
+{
+    //コライダー用のアクターを生成
+    auto& scene = Engine::sceneManager_->GetActiveScene();
+    const auto& colliderActor = scene.InstanceActor(name);
+
+    const auto& colliderCom = colliderActor->AddComponent<TerrainCollider>();
+
+    //座標や半径の設定
+    AddColliderCommon(colliderCom, localPos, radius, attachModel, socketName);
+
+    return colliderCom;
+}
+
 std::shared_ptr<AttackCollider> ScriptComponent::AddAttackCollider(AbyssEngine::Vector3 localPos, float radius, std::string name,const std::shared_ptr<SkeletalMesh>& attachModel, std::string socketName)
 {
     //コライダー用のアクターを生成
@@ -24,22 +38,9 @@ std::shared_ptr<AttackCollider> ScriptComponent::AddAttackCollider(AbyssEngine::
     const auto& colliderActor = scene.InstanceActor(name);
 
     const auto& colliderCom = colliderActor->AddComponent<AttackCollider>();
-    colliderCom->SetRadius(radius);
 
-    //位置変更
-    colliderActor->GetTransform()->SetLocalPosition(localPos);
-
-    //親子付け
-    colliderActor->SetParent(actor_);
-
-    //デバッグ球のカラー変更
-    colliderCom->SetDebugColor(Vector4(1, 0, 0, 1));
-
-    //アタッチさせるモデルがあるならアタッチする
-    if (attachModel)
-    {
-        colliderCom->AttachModel(attachModel, socketName);
-    }
+    //座標や半径の設定
+    AddColliderCommon(colliderCom, localPos, radius, attachModel, socketName);
 
     return colliderCom;
 }
@@ -51,7 +52,17 @@ std::shared_ptr<HitCollider> ScriptComponent::AddHitCollider(Vector3 localPos, f
     const auto& colliderActor = scene.InstanceActor(name);
 
     const auto& colliderCom = colliderActor->AddComponent<HitCollider>();
+    
+    //座標や半径の設定
+    AddColliderCommon(colliderCom,localPos,radius,attachModel,socketName);
+
+    return colliderCom;
+}
+
+void AbyssEngine::ScriptComponent::AddColliderCommon(const std::shared_ptr<SphereCollider>& colliderCom,Vector3 localPos, float radius, const std::shared_ptr<SkeletalMesh>& attachModel, std::string socketName)
+{
     colliderCom->SetRadius(radius);
+    const auto& colliderActor = colliderCom->GetActor();
 
     //位置変更
     colliderActor->GetTransform()->SetLocalPosition(localPos);
@@ -64,6 +75,4 @@ std::shared_ptr<HitCollider> ScriptComponent::AddHitCollider(Vector3 localPos, f
     {
         colliderCom->AttachModel(attachModel, socketName);
     }
-
-    return colliderCom;
 }

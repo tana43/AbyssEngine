@@ -10,6 +10,7 @@ namespace AbyssEngine
     class Collider : public AbyssEngine::Component
     {
     public:
+        //タグ　下に行くほど押し出し判定の優先度が高い
         enum class Tag : unsigned int
         {
             Non     = 0x00,

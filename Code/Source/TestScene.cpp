@@ -20,12 +20,18 @@
 
 using namespace AbyssEngine;
 
-std::shared_ptr<Stage> stageCom;
+//std::shared_ptr<Stage> stageCom;
 Effekseer::Handle effectHandle = -1;
 
 void TestScene::Initialize()
 {
     Scene::Initialize();
+
+    //ポストエフェクト設定
+    Engine::renderManager_->GetBufferScene().data_.exposure_ = 1.0f;
+    Engine::renderManager_->GetBufferEffects().data_.shadowFilterRadius_ = 4.0f;
+    Engine::renderManager_->GetBufferEffects().data_.shadowColor_ = 0.25f;
+    Engine::renderManager_->SetCriticalDepthValue(2000.0f);
 
     //カメラ
     const auto& camera_ = InstanceActor("Debug_Camera");
@@ -98,8 +104,7 @@ void TestScene::Initialize()
 #else
     const auto& stageActor = InstanceActor("Test_Stage");
     //const auto& stageCom = stageActor->AddComponent<Stage>();
-    stageCom = stageActor->AddComponent<Stage>();
-    StageManager::Instance().AddStage(stageActor);
+    const auto& stageCom = stageActor->AddComponent<Stage>();
 
     /*for (int i = 0; i < 10; i++)
     {
@@ -137,6 +142,7 @@ void TestScene::Initialize()
         }
     }
     stageCom->RegisterTriangles();
+    Engine::stageManager_->SetStage(stageCom);
 #endif // 0
     
 
@@ -174,9 +180,9 @@ void TestScene::Initialize()
 
 void TestScene::Update()
 {
-    Vector3 hit;
+    /*Vector3 hit;
     Vector3 hitn;
-    stageCom->RayCast(Vector3(0, 10, 0), Vector3(0, -10, 0), hit, hitn);
+    stageCom->RayCast(Vector3(0, 10, 0), Vector3(0, -10, 0), hit, hitn);*/
 }
 
 void TestScene::DrawImGui()

@@ -418,88 +418,103 @@ void Vitesse::ThrusterAllStop()
 
 void Vitesse::ColliderInitialize()
 {
-
     //喰らい判定コライダー設定
-    std::vector<std::shared_ptr<HitCollider>> hitColliders =
     {
-        //こいつはなくてよさげ
-        //AddHitCollider(Vector3::Zero, 3.0f, "HitCollider_UpChest", model_, "rig_J_upbody2");
-        AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_LowChest", model_, "rig_J_upbody01"),
+        std::vector<std::shared_ptr<HitCollider>> hitColliders =
+        {
+            //こいつはなくてよさげ
+            //AddHitCollider(Vector3::Zero, 3.0f, "HitCollider_UpChest", model_, "rig_J_upbody2");
+            AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_LowChest", model_, "rig_J_upbody01"),
 
-        AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_Head", model_, "rig_J_head"),
+            AddHitCollider(Vector3::Zero, 2.0f, "HitCollider_Head", model_, "rig_J_head"),
 
-        AddHitCollider(Vector3(-0.1f, 0, 0), 1.5f, "HitCollider_Uparm_R", model_, "rig_J_uparm_R"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_R", model_, "rig_J_lowarm_R"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_R", model_, "rig_J_hand_R"),
+            AddHitCollider(Vector3(-0.1f, 0, 0), 1.5f, "HitCollider_Uparm_R", model_, "rig_J_uparm_R"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_R", model_, "rig_J_lowarm_R"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_R", model_, "rig_J_hand_R"),
 
-        AddHitCollider(Vector3(0.1f, 0, 0), 1.5f, "HitCollider_Uparm_L", model_, "rig_J_uparm_L"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_L", model_, "rig_J_lowarm_L"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_L", model_, "rig_J_hand_L"),
+            AddHitCollider(Vector3(0.1f, 0, 0), 1.5f, "HitCollider_Uparm_L", model_, "rig_J_uparm_L"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowarm_L", model_, "rig_J_lowarm_L"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hand_L", model_, "rig_J_hand_L"),
 
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hip", model_, "rig_J_root"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Hip", model_, "rig_J_root"),
 
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_R", model_, "rig_J_upleg_R"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_R", model_, "rig_J_lowleg_R"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_R", model_, "rig_J_foot_R"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_R", model_, "rig_J_upleg_R"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_R", model_, "rig_J_lowleg_R"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_R", model_, "rig_J_foot_R"),
 
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_L", model_, "rig_J_upleg_L"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_L", model_, "rig_J_lowleg_L"),
-        AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_L", model_, "rig_J_foot_L"),
-    };
-    for (const auto& collider : hitColliders)
-    {
-        collider->ReplaceTag(Collider::Tag::Player);
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Upleg_L", model_, "rig_J_upleg_L"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Lowleg_L", model_, "rig_J_lowleg_L"),
+            AddHitCollider(Vector3::Zero, 1.0f, "HitCollider_Foot_L", model_, "rig_J_foot_L"),
+        };
+        for (const auto& collider : hitColliders)
+        {
+            collider->ReplaceTag(Collider::Tag::Player);
+        }
     }
 
     //攻撃判定コライダー設定
-    
-    //この方向に一定間隔でコライダーを設置していく
-    Vector3 shaftVecL = { 1.0f,0.4f,0.1f };
-    shaftVecL.Normalize();
-    Vector3 shaftVecR = shaftVecL * -1.0f;
-
-    //左武器
-    std::vector<std::shared_ptr<AttackCollider>> atkCollidersL =
     {
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_1", model_, "rig_J_hand_R"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_2", model_, "rig_J_hand_R"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_3", model_, "rig_J_hand_R"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_4", model_, "rig_J_hand_R"),
-    };
-    
-    
-    int i = 0;
-    for (const auto& collider : atkCollidersL)
-    {
-        collider->ReplaceTag(Collider::Tag::Player);
-        collider->GetTransform()->SetLocalPosition(shaftVecR * i);
+        //この方向に一定間隔でコライダーを設置していく
+        Vector3 shaftVecL = { 1.0f,0.4f,0.1f };
+        shaftVecL.Normalize();
+        Vector3 shaftVecR = shaftVecL * -1.0f;
 
-        //設定したコライダーを登録
-        lWeaponAtkColliderList_.emplace_back(collider);
+        //左武器
+        std::vector<std::shared_ptr<AttackCollider>> atkCollidersL =
+        {
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_1", model_, "rig_J_hand_R"),
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_2", model_, "rig_J_hand_R"),
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_3", model_, "rig_J_hand_R"),
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_R_4", model_, "rig_J_hand_R"),
+        };
 
-        ++i;
+
+        int i = 0;
+        for (const auto& collider : atkCollidersL)
+        {
+            collider->ReplaceTag(Collider::Tag::Player);
+            collider->GetTransform()->SetLocalPosition(shaftVecR * i);
+
+            //設定したコライダーを登録
+            lWeaponAtkColliderList_.emplace_back(collider);
+
+            ++i;
+        }
+
+        //右武器
+        std::vector<std::shared_ptr<AttackCollider>> atkCollidersR =
+        {
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_1", model_, "rig_J_hand_L"),
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_2", model_, "rig_J_hand_L"),
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_3", model_, "rig_J_hand_L"),
+            AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_4", model_, "rig_J_hand_L"),
+        };
+        //この方向に一定間隔でコライダーを設置していく
+        i = 0;
+        for (const auto& collider : atkCollidersR)
+        {
+            collider->ReplaceTag(Collider::Tag::Player);
+            collider->GetTransform()->SetLocalPosition(shaftVecL * i);
+
+            //設定したコライダーを登録
+            rWeaponAtkColliderList_.emplace_back(collider);
+            ++i;
+        }
     }
 
-    //右武器
-    std::vector<std::shared_ptr<AttackCollider>> atkCollidersR =
+    //押し出し判定設定
     {
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_1", model_, "rig_J_hand_L"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_2", model_, "rig_J_hand_L"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_3", model_, "rig_J_hand_L"),
-        AddAttackCollider(Vector3::Zero, 4.0f, "AtkCol_Weapon_L_4", model_, "rig_J_hand_L"),
-    };
-    //この方向に一定間隔でコライダーを設置していく
-    i = 0;
-    for (const auto& collider : atkCollidersR)
-    {
-        collider->ReplaceTag(Collider::Tag::Player);
-        collider->GetTransform()->SetLocalPosition(shaftVecL * i);
+        std::vector<std::shared_ptr<TerrainCollider>> terrainColliders =
+        {
+            AddTerrainCollider(Vector3(-0.4f,0,0), 7.68f, "TerrainCollider_Center", model_, "rig_J_upbody01")
 
-        //設定したコライダーを登録
-        rWeaponAtkColliderList_.emplace_back(collider);
-        ++i;
+        };
+
+        for (const auto& collider : terrainColliders)
+        {
+            collider->ReplaceTag(Collider::Tag::Player);
+        }
     }
-
 }
 
 void Vitesse::AttackerInitialize()

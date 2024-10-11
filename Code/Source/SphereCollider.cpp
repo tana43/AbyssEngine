@@ -57,10 +57,10 @@ void SphereCollider::DrawImGui()
     }
 }
 
-bool SphereCollider::IntersectVsSphere(const std::shared_ptr<SphereCollider>& collider,Collision::IntersectionResult* result)
+bool SphereCollider::IntersectVsSphere(const SphereCollider& collider,Collision::IntersectionResult* result)
 {
     Collision::IntersectSphereVsSphere(transform_->GetPosition(), radius_,
-        collider->transform_->GetPosition(), collider->radius_, result);
+        collider.transform_->GetPosition(), collider.radius_, result);
 
     if (result->penetration > 0)return true;
     return false;

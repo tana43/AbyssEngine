@@ -14,8 +14,8 @@ namespace AbyssEngine
 		void ExtractMeshes(const tinygltf::Model& transmissionModel);
 
 	public:
-		int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT4& color_ = { 1, 1, 1, 1 }, size_t sceneIndex = 0);
-		int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4& color_ = { 1, 1, 1, 1 }, size_t sceneIndex = 0);
+		//int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, size_t sceneIndex = 0);
+		int Draw(DrawPass pass, const DirectX::XMFLOAT4X4& transform, const std::vector<Node>& animatedNodes,size_t sceneIndex = 0);
 		int CastShadow(const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animatedNodes, size_t sceneIndex = 0);
 
 		//ブレンドアニメーション

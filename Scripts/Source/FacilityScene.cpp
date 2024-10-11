@@ -10,10 +10,12 @@
 #include "Engine.h"
 #include "BillboardRenderer.h"
 #include "GameUIAdmin.h"
+#include "Input.h"
+#include "SceneManager.h"
 
 using namespace AbyssEngine;
 
-std::shared_ptr<Stage> stageCom_F;
+//std::weak_ptr<Stage> stageCom_F;
 
 void FacilityScene::Initialize()
 {
@@ -22,6 +24,7 @@ void FacilityScene::Initialize()
     //ポストエフェクト設定
     Engine::renderManager_->GetBufferScene().data_.exposure_ = 3.58f;
     Engine::renderManager_->GetBufferEffects().data_.shadowFilterRadius_ = 4.614f;
+    Engine::renderManager_->GetBufferEffects().data_.shadowColor_ = 0.6f;
     Engine::renderManager_->SetCriticalDepthValue(300.0f);
 
     //カメラ
@@ -31,17 +34,17 @@ void FacilityScene::Initialize()
     //ステージ
     const auto& stageActor = InstanceActor("Facility_Stage");
     //const auto& stageCom = stageActor->AddComponent<Stage>();
-    stageCom_F = stageActor->AddComponent<Stage>();
-    StageManager::Instance().AddStage(stageActor);
+    const auto& stageCom = stageActor->AddComponent<Stage>();
+    Engine::stageManager_->SetStage(stageCom);
 
-    const auto& faci = stageCom_F->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.gltf");
+    const auto& faci = stageCom->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.gltf");
 
     //IBL強度設定
     faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.1f);
     faci->GetComponent<StaticMesh>()->SetEmissiveIntensity(120.0f);
 
     //判定ポリゴンを更新
-    stageCom_F->RegisterTriangles();
+    stageCom->RegisterTriangles();
 
     //enemy
     const auto& enemy = InstanceActor("Enemy_Facility_01");
@@ -63,12 +66,14 @@ void FacilityScene::Initialize()
 
 void FacilityScene::Update()
 {
+    if (Keyboard::GetKeyDown(DirectX::Keyboard::Enter))
+    {
+        Engine::sceneManager_->SetNextScene("Test");
+    }
+
 }
 
 void FacilityScene::DrawImGui()
 {
 }
 
-void FacilityScene::Finalize()
-{
-}
