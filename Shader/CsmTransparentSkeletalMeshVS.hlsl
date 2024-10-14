@@ -1,4 +1,10 @@
-float4 main( float4 pos : POSITION ) : SV_POSITION
+#include "CsmTransparent.hlsli"
+
+VS_OUT_CSM main(float4 pos : POSITION)
 {
-	return pos;
+    VS_OUT_CSM vout;
+    vout.position = pos;
+    vout.texcoord = float2(0, 0);
+    vout.slice = 0;
+	return vout;
 }

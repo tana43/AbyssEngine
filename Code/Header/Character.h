@@ -134,7 +134,7 @@ namespace AbyssEngine
 
         bool hitWall_ = false;//•Ç‚É“–‚½‚Á‚½‚©
 
-        Vector3 center_ = { 0,0.3f,0 };
+        Vector3 center_ = { 0,1.2f,0 };
 
         float health_ = 10.0f;//‘Ì—Í
         float Max_Health = 10.0f;//Å‘å‘Ì—Í

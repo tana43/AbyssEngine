@@ -14,6 +14,7 @@
 #include "EffectManager.h"
 #include "GameUIAdmin.h"
 #include "BossMech.h"
+#include "Input.h"
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
@@ -176,6 +177,8 @@ void TestScene::Initialize()
     //const auto& staticPlayer = InstanceActor("Player_Static");
     //staticPlayer->AddComponent<StaticMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb");
 
+    //コントローラー振動
+    //Input::GetGamePad().SetVibration(0.5f,0.5f);
 }
 
 void TestScene::Update()

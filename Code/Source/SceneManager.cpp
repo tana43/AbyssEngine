@@ -24,8 +24,8 @@ SceneManager::SceneManager()
     AddScene(new TestSceneSecond,"TestSceneSecond");
     //SetNextScene("TestSceneSecond");
     //SetNextScene("Title");
-    //SetNextScene("Test");
-    SetNextScene("Facility");
+    SetNextScene("Test");
+    //SetNextScene("Facility");
 }
 
 SceneManager::~SceneManager()
@@ -144,6 +144,9 @@ void SceneManager::ChangeScene()
 
         loadScene_ = nullptr;
     }
+
+    //経過時間をリセット
+    Time::deltaTime_ = 0.0f;
 
     nextSceneName_ = "";
 

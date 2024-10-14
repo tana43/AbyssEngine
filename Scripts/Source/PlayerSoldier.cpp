@@ -209,7 +209,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     muzzleOffsetPos_ = { 0.0f,0.16f,0.49f };
 
     //TODO:‰¼’u‚«‚Ì“–‚½‚è”»’è
-    const auto& collider = AddHitCollider(center_,0.5f);
+    const auto& collider = AddHitCollider(center_,0.2f);
     collider->ReplaceTag(Collider::Tag::Player);
 }
 

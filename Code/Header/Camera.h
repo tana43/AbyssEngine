@@ -207,6 +207,7 @@ namespace AbyssEngine
 
         //カメラ振動　今は重複はできず１つの振動をするだけ
         void CameraShake(CameraShakeParameters shakePram);
+        void CameraShake(std::string aseetName);
         void CameraShakeUpdate();
 
     private:
@@ -220,6 +221,13 @@ namespace AbyssEngine
 
         CameraShakeParameters shakeParam_;
         PerlinNoise shakePerlinNoise_;//カメラ振動用のノイズ
+
+        bool imguiButton_ = false;
+        private:
+            //カメラシェイクアセット化
+            void CameraShakeAssetCreation(CameraShakeParameters param,const std::string name);
+
+        
     };
 }
 

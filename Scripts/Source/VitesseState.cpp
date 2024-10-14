@@ -287,8 +287,8 @@ void VitesseState::HighSpeedFlight::Initialize()
 
     //ラジアルブラー設定
     auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
-    postEffect.radialBlurStrength_ = 0.3f;
-    postEffect.radialBlurSampleCount_ = 3;
+    postEffect.radialBlurStrength_ = 0.5f;
+    postEffect.radialBlurSampleCount_ = 5;
 
     //カメラのズームを変更
     auto& camera = owner_->GetCamera();
@@ -299,6 +299,19 @@ void VitesseState::HighSpeedFlight::Initialize()
     zoomParam.targetOffset_ = camera->GetTargetOffset();
     camera->Zoom(zoomParam);
     camera->SetCameraLagSpeed(cameraLagSpeed);
+
+    //カメラ振動
+    Camera::CameraShakeParameters shakeParam;
+    shakeParam.position_.amplitudeMultiplier_ = 0;
+    shakeParam.position_.frequencyMultiplier_ = 0;
+    shakeParam.rotation_.amplitudeMultiplier_ = 11.1f;
+    shakeParam.rotation_.frequencyMultiplier_ = 25.5f;
+    shakeParam.timing_.duration_ = 0.2f;
+    shakeParam.timing_.blendInTime_ = 0.0f;
+    shakeParam.timing_.blendOutTime_ = 0.1f;
+
+    //コントローラー振動
+    Input::GetGamePad().Vibration(0.3f,0.3f);
 
     timer_ = 0.0f;
 }
@@ -450,6 +463,9 @@ void VitesseState::MeleeAttackDash::Initialize()
     zoomParam.targetOffset_ = camera->GetTargetOffset();
     camera->Zoom(zoomParam);
     camera->SetCameraLagSpeed(cameraLagSpeed_);
+
+    //コントローラー振動
+    Input::GetGamePad().Vibration(0.3f, 0.3f);
 
     //ステップ数をリセット
     step_ = 0;

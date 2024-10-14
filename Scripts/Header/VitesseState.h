@@ -35,8 +35,8 @@ namespace VitesseState
         void Finalize() override;
     };
 
-    //Game:Vitesse 高速飛行ステート
-    //高速移動ステート
+    //Game:Vitesse 回避、高速飛行ステート
+    //回避、高速移動ステート
     class HighSpeedFlight : Inheritance
     {
     public:

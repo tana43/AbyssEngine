@@ -8,9 +8,14 @@
 #include "LineRenderer.h"
 #include "Easing.h"
 
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
 #include <algorithm>
 #include <Windows.h>
 
+using namespace std;
 using namespace AbyssEngine;
 using namespace DirectX;
 
@@ -50,43 +55,61 @@ void Camera::DrawImGui()
 
         if (ImGui::TreeNode("CameraShake"))
         {
-            static CameraShakeParameters shakeP;
+            static CameraShakeParameters debugShakeP;
 
             ImGui::DragFloat3("ShakePos", &shakePosition_.x, 0.1f);
             ImGui::DragFloat3("ShakeRot", &shakeRotation_.x, 0.01f);
 
             if (ImGui::Button("StartCameraShake"))
             {
-                CameraShake(shakeP);
+                CameraShake(debugShakeP);
             }
 
             if (ImGui::TreeNode("Position"))
             {
-                ImGui::DragFloat("PosAmplitudeMult", &shakeP.position_.amplitudeMultiplier_, 0.1f);
-                ImGui::DragFloat("PosFrequencMult", &shakeP.position_.frequencyMultiplier_, 0.1f);
+                ImGui::DragFloat("PosAmplitudeMult", &debugShakeP.position_.amplitudeMultiplier_, 0.1f);
+                ImGui::DragFloat("PosFrequencMult", &debugShakeP.position_.frequencyMultiplier_, 0.1f);
 
-                ImGui::DragFloat3("PosAmplitudeMult", &shakeP.position_.amplitude_.x, 0.1f);
-                ImGui::DragFloat3("PosFrequencMult", &shakeP.position_.frequency_.x, 0.1f);
+                ImGui::DragFloat3("PosAmplitudeMult", &debugShakeP.position_.amplitude_.x, 0.1f);
+                ImGui::DragFloat3("PosFrequencMult", &debugShakeP.position_.frequency_.x, 0.1f);
                 ImGui::TreePop();
             }
 
             if (ImGui::TreeNode("Rotation"))
             {
-                ImGui::DragFloat("RotAmplitudeMult", &shakeP.rotation_.amplitudeMultiplier_, 0.1f);
-                ImGui::DragFloat("RotFrequencMult", &shakeP.rotation_.frequencyMultiplier_, 0.1f);
+                ImGui::DragFloat("RotAmplitudeMult", &debugShakeP.rotation_.amplitudeMultiplier_, 0.1f);
+                ImGui::DragFloat("RotFrequencMult", &debugShakeP.rotation_.frequencyMultiplier_, 0.1f);
 
-                ImGui::DragFloat3("RotAmplitudeMult", &shakeP.rotation_.amplitude_.x, 0.1f);
-                ImGui::DragFloat3("RotFrequencMult", &shakeP.rotation_.frequency_.x, 0.1f);
+                ImGui::DragFloat3("RotAmplitudeMult", &debugShakeP.rotation_.amplitude_.x, 0.1f);
+                ImGui::DragFloat3("RotFrequencMult", &debugShakeP.rotation_.frequency_.x, 0.1f);
                 ImGui::TreePop();
             }
 
             if (ImGui::TreeNode("Timing"))
             {
-                ImGui::DragFloat("Duration", &shakeP.timing_.duration_, 0.1f);
-                ImGui::DragFloat("BlendInTime", &shakeP.timing_.blendInTime_, 0.05f);
-                ImGui::DragFloat("BlendOutTime", &shakeP.timing_.blendOutTime_, 0.05f);
+                ImGui::DragFloat("Duration", &debugShakeP.timing_.duration_, 0.1f);
+                ImGui::DragFloat("BlendInTime", &debugShakeP.timing_.blendInTime_, 0.05f);
+                ImGui::DragFloat("BlendOutTime", &debugShakeP.timing_.blendOutTime_, 0.05f);
 
                 ImGui::TreePop();
+            }
+
+            ImGui::Text("-------------- Asset Save ---------------");
+            static char filename[128] = "";
+            ImGui::InputText("Asset Name", filename, ARRAYSIZE(filename));
+            if (ImGui::ButtonDoubleChecking("Save",imguiButton_))
+            {
+                //アセット化
+                CameraShakeAssetCreation(debugShakeP,filename);
+
+                //文字列リセット
+                memset(filename, 0, sizeof(filename));
+            }
+
+            ImGui::Text("-------------- Asset Play ---------------");
+            if (ImGui::Button("Play"))
+            {
+                CameraShake(filename);
             }
 
             ImGui::TreePop();
@@ -557,6 +580,39 @@ void Camera::CameraShake(CameraShakeParameters shakeParam)
     activeCameraShake_ = true;
 }
 
+void Camera::CameraShake(std::string aseetName)
+{
+    std::string filepath = "./Assets/CameraShakeParameters/" + aseetName;
+    ifstream ifs(filepath);
+    nlohmann::json mJson;
+    if (ifs.good())
+    {
+        //ファイル読み込み
+        ifs >> mJson;
+    }
+    else
+    {
+        _ASSERT_EXPR(false, L"指定のカメラ振動のアセットが見つかりません、、、、、、大変お手数なのですが、修正のほどよろしくお願いいたします。");
+    }
+
+    //読み込み
+    CameraShakeParameters shakeParam;
+
+    shakeParam.position_.amplitudeMultiplier_ = mJson["Position"]["amplitudeMultiplier"];
+    shakeParam.position_.frequencyMultiplier_ = mJson["Position"]["frequencyMultiplier"];
+    shakeParam.position_.amplitude_           = { mJson["Position"]["amplitude"][0],mJson["Position"]["amplitude"][1],mJson["Position"]["amplitude"][2] };
+    shakeParam.position_.frequency_           = { mJson["Position"]["frequency"][0],mJson["Position"]["frequency"][1],mJson["Position"]["frequency"][2] };
+    shakeParam.rotation_.amplitudeMultiplier_ = mJson["Rotation"]["amplitudeMultiplier"];
+    shakeParam.rotation_.frequencyMultiplier_ = mJson["Rotation"]["frequencyMultiplier"];
+    shakeParam.rotation_.amplitude_           = { mJson["Rotation"]["amplitude"][0],mJson["Rotation"]["amplitude"][1],mJson["Rotation"]["amplitude"][2] };
+    shakeParam.rotation_.frequency_           = { mJson["Rotation"]["frequency"][0],mJson["Rotation"]["frequency"][1],mJson["Rotation"]["frequency"][2] };
+    shakeParam.timing_.duration_              = mJson["Timing"]["duration"];
+    shakeParam.timing_.blendInTime_           = mJson["Timing"]["blendInTime"];
+    shakeParam.timing_.blendOutTime_          = mJson["Timing"]["blendOutTime"];
+
+    CameraShake(shakeParam);
+}
+
 void Camera::CameraShakeUpdate()
 {
     if (!activeCameraShake_)return;
@@ -622,6 +678,36 @@ void Camera::CameraShakeUpdate()
         shakePosition_ = { 0,0,0 };
         shakeRotation_ = { 0,0,0 };
     }
+}
+
+void Camera::CameraShakeAssetCreation(CameraShakeParameters param, const std::string name)
+{
+    //Jsonファイル作成
+    nlohmann::json mJson;
+    
+    mJson["Position"] = {
+        {"amplitudeMultiplier",param.position_.amplitudeMultiplier_},
+        {"frequencyMultiplier",param.position_.frequencyMultiplier_},
+        {"amplitude",{param.position_.amplitude_.x,param.position_.amplitude_.y,param.position_.amplitude_.z}},
+        {"frequency",{param.position_.frequency_.x,param.position_.frequency_.y,param.position_.frequency_.z}},
+    };
+    mJson["Rotation"] = {
+        {"amplitudeMultiplier",param.rotation_.amplitudeMultiplier_},
+        {"frequencyMultiplier",param.rotation_.frequencyMultiplier_},
+        {"amplitude",{param.rotation_.amplitude_.x,param.rotation_.amplitude_.y,param.rotation_.amplitude_.z}},
+        {"frequency",{param.rotation_.frequency_.x,param.rotation_.frequency_.y,param.position_.frequency_.z}},
+    };
+    mJson["Timing"] = {
+        {"duration",param.timing_.duration_},
+        {"blendInTime",param.timing_.blendInTime_},
+        {"blendOutTime",param.timing_.blendOutTime_}
+    };
+
+    ofstream writingFile;
+    std::string filename = "./Assets/CameraShakeParameters/" + name;
+    writingFile.open(filename, ios::out);
+    writingFile << mJson.dump() << endl;
+    writingFile.close();
 }
 
 Camera::CameraShakeParameters Camera::CameraShakeParameters::operator=(const CameraShakeParameters& param)

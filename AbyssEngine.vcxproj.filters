@@ -408,6 +408,7 @@
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\AttackerSystem.h" />
+    <ClInclude Include="Scripts\Header\SceneTransitionCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -681,6 +682,7 @@
       <Filter>Code\Source\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\AttackerSystem.cpp" />
+    <ClCompile Include="Scripts\Source\SceneTransitionCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

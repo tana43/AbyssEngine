@@ -2,10 +2,16 @@
 #include <math.h>
 #include <Xinput.h>
 #include "GamePad.h"
+#include "Engine.h"
 
 #pragma comment (lib, "xinput.lib")
 
 using namespace AbyssEngine;
+
+GamePad::~GamePad()
+{
+	//XInputEnable(false); // BOOL enable
+}
 
 // XV
 void GamePad::Update()
@@ -188,4 +194,35 @@ void GamePad::Update()
 		buttonDown_ = ~buttonState_[1] & newButtonState;	// ‰Ÿ‚µ‚½uŠÔ
 		buttonUp_ = ~newButtonState & buttonState_[1];	// —£‚µ‚½uŠÔ
 	}
+
+	//U“®XV
+	UpdateVibration();
+}
+
+void GamePad::SetVibration(float leftMotor, float rightMotor)
+{
+	XINPUT_VIBRATION xvibration;
+	xvibration.wLeftMotorSpeed = WORD(leftMotor * 0xFFFF);
+	xvibration.wRightMotorSpeed = WORD(rightMotor * 0xFFFF);
+	const DWORD result = XInputSetState(DWORD(slot_), &xvibration);
+}
+
+void GamePad::Vibration(float power, float time)
+{
+	vibPower_ = power;
+	vibTime_ = time;
+	vibTimer_ = 0.0;
+}
+
+void GamePad::UpdateVibration()
+{
+	if (vibTimer_ > vibTime_)
+	{
+		SetVibration(0.0f, 0.0f);
+		return;
+	}
+
+	SetVibration(vibPower_,vibPower_);
+	
+	vibTimer_ += Time::deltaTime_;
 }

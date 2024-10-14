@@ -12,6 +12,7 @@
 #include "GameUIAdmin.h"
 #include "Input.h"
 #include "SceneManager.h"
+#include "SceneTransitionCollider.h"
 
 using namespace AbyssEngine;
 
@@ -40,7 +41,7 @@ void FacilityScene::Initialize()
     const auto& faci = stageCom->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.gltf");
 
     //IBL強度設定
-    faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.1f);
+    faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.03f);
     faci->GetComponent<StaticMesh>()->SetEmissiveIntensity(120.0f);
 
     //判定ポリゴンを更新
@@ -63,17 +64,25 @@ void FacilityScene::Initialize()
     const auto& uiCom = ui->AddComponent<GameUIAdmin>();
     uiCom->SetPlayer(pc);
 
-    //ロードするシーンを設定
-    Engine::sceneManager_->SetLoadScene("Test");
+    //ロードするシーンを設定 未完成
+    //Engine::sceneManager_->SetLoadScene("Test");
+
+    //当たったらシーン遷移する
+    const auto& sceneTransActor = InstanceActor("SceneTrans");
+    sceneTransActor->AddComponent<SceneTransitionCollider>();
 }
 
 void FacilityScene::Update()
 {
+#if _DEBUG
     if (Keyboard::GetKeyDown(DirectX::Keyboard::Enter))
     {
         //if()
         Engine::sceneManager_->SetNextScene("Test");
     }
+#endif // _DEBUG
+
+    
 
 }
 

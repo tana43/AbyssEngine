@@ -27,7 +27,7 @@ namespace AbyssEngine
 
 	public:
 		GamePad() {}
-		~GamePad() {}
+		~GamePad();
 
 		// 更新
 		void Update();
@@ -62,6 +62,14 @@ namespace AbyssEngine
 		// 右トリガー入力状態の取得
 		float GetTriggerR() const { return triggerR_; }
 
+		//振動設定
+		void SetVibration(float leftMotor,float rightMotor);//float 0~1
+
+		//振動させる　power:振動幅　time:時間
+		void Vibration(float power, float time);
+
+	private:
+		void UpdateVibration();
 	private:
 		GamePadButton		buttonState_[2] = { 0 };
 		GamePadButton		buttonDown_ = 0;
@@ -73,5 +81,9 @@ namespace AbyssEngine
 		float				triggerL_ = 0.0f;
 		float				triggerR_ = 0.0f;
 		int					slot_ = 0;
+
+		float vibTimer_ = 0.0f;
+		float vibTime_ = 0.0f;
+		float vibPower_ = 0.0f;
 	};
 }

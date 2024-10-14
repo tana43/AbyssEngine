@@ -112,6 +112,7 @@
     <ClInclude Include="Scripts\Header\PlayerSoldier.h" />
     <ClInclude Include="Scripts\Header\SceneGame.h" />
     <ClInclude Include="Scripts\Header\SceneTitle.h" />
+    <ClInclude Include="Scripts\Header\SceneTransitionCollider.h" />
     <ClInclude Include="Scripts\Header\Stage.h" />
     <ClInclude Include="Scripts\Header\StageManager.h" />
     <ClInclude Include="Scripts\Header\TestSceneSecond.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Scripts\Source\PlayerSoldier.cpp" />
     <ClCompile Include="Scripts\Source\SceneGame.cpp" />
     <ClCompile Include="Scripts\Source\SceneTitle.cpp" />
+    <ClCompile Include="Scripts\Source\SceneTransitionCollider.cpp" />
     <ClCompile Include="Scripts\Source\Stage.cpp" />
     <ClCompile Include="Scripts\Source\StageManager.cpp" />
     <ClCompile Include="Scripts\Source\TestSceneSecond.cpp" />
