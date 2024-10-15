@@ -36,7 +36,6 @@ public:
 
     const float& GetTerritoryRange() const { return territoryRange_; }
     void SetTerritoryRange(const float& range) { territoryRange_ = range; }
-
     
 protected:
     //–Ú•W’n“_

@@ -66,6 +66,12 @@ Engine::~Engine()
 
 void Engine::Update()
 {
+    //経過時間にロード時間を考慮させないためにシーン変更後、deltaTimeをリセットさせる
+    if (sceneManager_->GetIsChangeSceneFrame())
+    {
+        Time::deltaTime_ = 0.0f;
+    }
+
     ////ImGui更新
     IMGUI_CTRL_CLEAR_FRAME();
 

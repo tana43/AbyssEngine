@@ -1,6 +1,11 @@
 #pragma once
 #include "ScriptComponent.h"
 
+namespace AbyssEngine
+{
+    class SpriteRenderer;
+}
+
 
 class SceneTransitionCollider : public AbyssEngine::ScriptComponent
 {
@@ -14,5 +19,7 @@ public:
 private:
     //‘JˆÚæ‚ÌƒV[ƒ“–¼
     std::string transSceneName_ = "Test";
+
+    std::shared_ptr<AbyssEngine::SpriteRenderer> spriteRenderer_;
 };
 

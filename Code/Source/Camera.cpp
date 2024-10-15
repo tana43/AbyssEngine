@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "LineRenderer.h"
 #include "Easing.h"
+#include "StageManager.h"
 
 #include <iostream>
 #include <fstream>
@@ -50,6 +51,8 @@ void Camera::DrawImGui()
 
         ImGui::SliderFloat("Mouse Sensitivity Side ",&mouseSensitivity_.y, 0.5f, 5.0f);
         ImGui::SliderFloat("Mouse Sensitivity Vertical",&mouseSensitivity_.x, 0.5f, 5.0f);
+
+        ImGui::DragFloat("Excess Length", &excessLength_, 0.01f);
 
         ImGui::TreePop();
 
@@ -132,6 +135,11 @@ void Camera::Update()
     //ズーム更新
     ZoomUpdate();
 
+    //角度制限
+    float rotX = transform_->GetRotation().x;
+    rotX = std::clamp(rotX,limitAngleX_.x,limitAngleX_.y);
+    transform_->SetRotationX(rotX);
+
     //各方向ベクトルの更新
     const auto& worldMatrix = transform_->CalcWorldMatrix();
 
@@ -167,6 +175,41 @@ void Camera::Update()
 
     //カメラシェイクを反映
     eye_ += shakePosition_;
+
+    if (viewTarget_)
+    {
+        //ステージが存在するならレイキャスト、当たった地点に移動
+        if (const auto& sp = Engine::stageManager_->GetActiveStage().lock())
+        {
+            //補正が必要な位置（ビューターゲットよりも手前）にカメラがいてるかを調べる
+            //当たった座標からビューターゲットまでのベクトルとeye->focusのベクトルを内積
+            
+            Vector3 focusToEye = eye_ - focus_;
+            float originalLength = focusToEye.Length();
+            focusToEye.Normalize();
+
+            //レイの当たる場所にそのままカメラを設定すると壁が写りこむことがあるので過剰なレイの長さを設定し、
+            //壁が写りこまないように余裕をもたせる
+            float length = (originalLength + excessLength_);
+            Vector3 end = focus_ + focusToEye * length;
+            Vector3 hitPosition = {};
+            Vector3 hitNormal = {};
+            if (sp->RayCast(focus_, end, hitPosition, hitNormal))
+            {
+                Vector3 playerToHit = hitPosition - viewTarget_->GetTransform()->GetPosition();
+                playerToHit.Normalize();
+
+                //ビューターゲットよりも手前でヒットしたか
+                if (focusToEye.Dot(playerToHit) > 0)
+                {
+                    //カメラの位置を変更
+                    Vector3 focusToHit = hitPosition - focus_;
+                    float newLength = focusToHit.Length() - excessLength_;
+                    eye_ = focus_ + focusToEye * newLength;
+                }
+            }
+        }
+    }
 
     viewMatrix_ = XMMatrixLookAtLH(eye_, focus_, up);
     viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;

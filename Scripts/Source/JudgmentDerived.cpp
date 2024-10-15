@@ -4,6 +4,9 @@
 #include "Transform.h"
 #include "MathHelper.h"
 
+#include "BossMech.h"
+#include "Vitesse.h"
+
 using namespace AbyssEngine;
 
 #pragma region ボットエネミー
@@ -69,4 +72,33 @@ bool BotWanderJudgment::Judgment()
 }
 
 
+#pragma endregion
+
+#pragma region ボスメック
+
+bool MechBattleJudgment::Judgment()
+{
+	if (const auto& target = owner_->GetTargetVitesse().lock())
+	{
+		//距離判定
+		const Vector3 targetPos = target->GetTransform()->GetPosition();
+		const Vector3 pos = owner_->GetTransform()->GetPosition();
+
+		Vector3 toTarget = targetPos - pos;
+		float lengthSq = toTarget.LengthSquared();
+		if (lengthSq < attackRange_ * attackRange_)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool MechRunAttackJudgment::Judgment()
+{
+
+
+	return true;
+}
 #pragma endregion

@@ -326,7 +326,7 @@ void VitesseState::HighSpeedFlight::Update()
     //何も入力がないときは前方向へ動かす
     if (owner_->GetMoveVec().LengthSquared() < 0.1f)
     {
-        owner_->SetMoveVec(owner_->GetCamera()->ConvertTo3DVectorFromCamera(Vector2(0,1)));
+        owner_->SetMoveVec(owner_->GetTransform()->GetForward());
     }
 
     //ローリング回避終了判定

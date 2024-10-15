@@ -130,6 +130,8 @@ namespace AbyssEngine
         float cameraLagSpeed_ = 10.0f;//カメラの追従速度
         CONSTANT_FLOAT Camera_Lag_Max_Distance = 3.0f;//カメラが遅延することができる最大距離
 
+        Vector2 limitAngleX_ = { -80.0f,80.0f };//x:min y:max
+
         //フラスタムカリング用
         DirectX::BoundingFrustum frustum_;
 
@@ -148,6 +150,9 @@ namespace AbyssEngine
 
         //カメラの寄り引き
         std::unique_ptr<FadeSystem> zoomParams_;
+
+        //当たり判定にのみ使用する余分に判定を取るための値
+        float excessLength_ = 0.14f;
 
         //カメラシェイク
     public:

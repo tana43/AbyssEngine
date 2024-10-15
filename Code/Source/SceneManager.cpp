@@ -24,8 +24,8 @@ SceneManager::SceneManager()
     AddScene(new TestSceneSecond,"TestSceneSecond");
     //SetNextScene("TestSceneSecond");
     //SetNextScene("Title");
-    SetNextScene("Test");
-    //SetNextScene("Facility");
+    //SetNextScene("Test");
+    SetNextScene("Facility");
 }
 
 SceneManager::~SceneManager()
@@ -125,7 +125,15 @@ Scene& SceneManager::GetActiveScene()
 
 void SceneManager::ChangeScene()
 {
+    isChangeSceneFrame_ = false;
+
     if (nextSceneName_.empty())return;
+
+    if (!wait1frame_)
+    {
+        wait1frame_ = true;
+        return;
+    }
 
     if (activeScene_)activeScene_->Finalize();
 
@@ -148,7 +156,11 @@ void SceneManager::ChangeScene()
     //経過時間をリセット
     Time::deltaTime_ = 0.0f;
 
+    wait1frame_ = false;
+
     nextSceneName_ = "";
+
+    isChangeSceneFrame_ = true;
 
 }
 

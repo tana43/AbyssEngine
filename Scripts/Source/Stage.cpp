@@ -205,6 +205,7 @@ void Stage::RegisterTriangles()
     {
 		if (const auto& model = m.lock())
 		{
+			model->Transform();
 			for (const auto& tri : model->triangles_)
 			{
 				triangles_.emplace_back(tri);

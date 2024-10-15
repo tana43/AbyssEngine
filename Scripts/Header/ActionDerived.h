@@ -3,6 +3,7 @@
 
 class BaseEnemy;
 class BotEnemy;
+class BossMech;
 
 //BehaviorTreeは指定のクラスしか、登録できないので
 //基底クラスとかの共通で使用できるようなクラスは作成できない
@@ -61,5 +62,36 @@ public:
 	BotWonderActioin(BotEnemy* owner) : ActionBase(owner) {}
 	ActionBase::State Run(float elapsedTime)override;
 };
+
+#pragma endregion
+
+#pragma region ボスメック
+// 待機
+class MechIdleAction : public ActionBase<BossMech>
+{
+public:
+	MechIdleAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float elapsedTime)override;
+
+private:
+	float timer_ = 0.0f;
+	const float Time = 1.0f;
+};
+
+// 攻撃
+class MechRunAttackAction : public ActionBase<BossMech>
+{
+public:
+	MechRunAttackAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float elapsedTime)override;
+
+private:
+	float runTimer_;
+
+	//最大のダッシュ時間
+	const float Max_Run_Time = 4.0f;
+};
+
+//転倒とかは欲しいな
 
 #pragma endregion

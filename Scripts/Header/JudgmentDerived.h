@@ -3,8 +3,10 @@
 
 class BaseEnemy;
 class BotEnemy;
+class BossMech;
 
 #define Inheritance_Bot public JudgmentBase<BotEnemy>
+#define Inheritance_Mech public JudgmentBase<BossMech>
 
 //BehaviorTreeは指定のクラスしか、登録できないので
 //基底クラスとかの共通で使用できるようなクラスは作成できない
@@ -42,6 +44,28 @@ class DodgeJudgment : Inheritance_Bot
 {
 public:
 	DodgeJudgment(BotEnemy* owner) :JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+#pragma endregion
+
+#pragma region ボスメック
+// BattleNodeに遷移できるか判定
+class MechBattleJudgment : Inheritance_Mech
+{
+public:
+	MechBattleJudgment(BossMech* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+private:
+	float attackRange_ = 500.0f;
+};
+
+// AttackNodeに遷移できるか判定
+class MechRunAttackJudgment : Inheritance_Mech
+{
+public:
+	MechRunAttackJudgment(BossMech* owner) :JudgmentBase(owner) {}
 	// 判定
 	bool Judgment();
 };

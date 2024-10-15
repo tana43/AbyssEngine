@@ -27,6 +27,48 @@ void MeshCollider::Initialize(const std::shared_ptr<Actor>& actor)
 
     model_->Transform(transform_->CalcWorldMatrix());
 
+    //ƒ|ƒŠƒSƒ“î•ñ‚ð’Šo
+    RegisterTriangles();
+}
+
+void MeshCollider::Transform()
+{
+    model_->Transform(transform_->CalcWorldMatrix());
+
+    //ƒ|ƒŠƒSƒ“Ä“o˜^
+    triangles_.clear();
+    RegisterTriangles();
+}
+
+void MeshCollider::Transform(const DirectX::XMFLOAT4X4& worldTransform)
+{
+    model_->Transform(worldTransform);
+
+    //ƒ|ƒŠƒSƒ“Ä“o˜^
+    triangles_.clear();
+    RegisterTriangles();
+}
+
+void MeshCollider::DrawImGui()
+{
+}
+
+void MeshCollider::DrawDebug()
+{
+#if _DEBUG
+    //ƒfƒoƒbƒO•\Ž¦
+    /*const auto& priRenderer = Engine::renderManager_->primitiveRenderer_;
+    for (const auto& triangle : triangles_)
+    {
+        priRenderer->AddVertex(triangle.positions[0], DirectX::XMFLOAT4(1, 1, 1, 1));
+        priRenderer->AddVertex(triangle.positions[1], DirectX::XMFLOAT4(1, 1, 1, 1));
+        priRenderer->AddVertex(triangle.positions[2], DirectX::XMFLOAT4(1, 1, 1, 1));
+    }*/
+#endif // _DEBUG
+}
+
+void MeshCollider::RegisterTriangles()
+{
     for (auto& mesh : model_->meshes_)
     {
         for (auto& subset : mesh.subsets)
@@ -55,32 +97,4 @@ void MeshCollider::Initialize(const std::shared_ptr<Actor>& actor)
             }
         }
     }
-}
-
-void MeshCollider::Transform()
-{
-    model_->Transform(transform_->CalcWorldMatrix());
-}
-
-void MeshCollider::Transform(const DirectX::XMFLOAT4X4& worldTransform)
-{
-    model_->Transform(worldTransform);
-}
-
-void MeshCollider::DrawImGui()
-{
-}
-
-void MeshCollider::DrawDebug()
-{
-#if _DEBUG
-    //ƒfƒoƒbƒO•\Ž¦
-    /*const auto& priRenderer = Engine::renderManager_->primitiveRenderer_;
-    for (const auto& triangle : triangles_)
-    {
-        priRenderer->AddVertex(triangle.positions[0], DirectX::XMFLOAT4(1, 1, 1, 1));
-        priRenderer->AddVertex(triangle.positions[1], DirectX::XMFLOAT4(1, 1, 1, 1));
-        priRenderer->AddVertex(triangle.positions[2], DirectX::XMFLOAT4(1, 1, 1, 1));
-    }*/
-#endif // _DEBUG
 }

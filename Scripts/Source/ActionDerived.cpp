@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Animator.h"
 #include "Engine.h"
+#include "BossMech.h"
 
 using namespace AbyssEngine;
 
@@ -210,3 +211,74 @@ ActionBase<BotEnemy>::State BotWonderActioin::Run(float elapsedTime)
 
 #pragma endregion
 
+#pragma region ボスメック
+
+
+
+ActionBase<BossMech>::State MechIdleAction::Run(float elapsedTime)
+{
+	switch (step)
+	{
+	case 0://初期化
+		owner_->GetAnimator()->PlayAnimation("Idle");
+
+		timer_ = 0.0f;
+
+		step++;
+		break;
+
+	case 1:
+		//待機中
+		if (timer_ > Time)
+		{
+			step = 0;
+
+			//待機完了
+			return ActionBase::State::Complete;
+		}
+
+		timer_ += elapsedTime;
+		break;
+	}
+	return ActionBase::State::Run;
+}
+
+
+ActionBase<BossMech>::State MechRunAttackAction::Run(float elapsedTime)
+{
+	switch (step)
+	{
+	case 0://初期化
+		owner_->GetAnimator()->PlayAnimation("Crouching");
+
+		runTimer_ = 0.0f;
+
+		step++;
+		break;
+
+	case 1:
+		//走りの構えができたならモーション変更
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			owner_->GetAnimator()->PlayAnimation("Run", 0.5f);
+			step++;
+		}
+		break;
+	case 2:
+		//待機中
+		if (runTimer_ > Max_Run_Time)
+		{
+			step = 0;
+
+			//待機完了
+			return ActionBase::State::Complete;
+		}
+
+		runTimer_ += elapsedTime;
+		break;
+	}
+
+	return ActionBase::State::Run;
+}
+
+#pragma endregion

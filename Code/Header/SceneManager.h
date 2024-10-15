@@ -34,6 +34,7 @@ namespace AbyssEngine
         void SetLoadScene(std::string name);
 
         const bool& GetLoadComplete() const { return loadComplete_; }
+        const bool& GetIsChangeSceneFrame() const { return isChangeSceneFrame_; }
 
     private:
         void DrawImGui();//シーンのImGUi表示
@@ -56,6 +57,10 @@ namespace AbyssEngine
 
         std::string nextSceneName_; //次のシーン
 
+        //シーン切り替えを１フレーム遅らせるために使う
+        bool wait1frame_ = true;//最初のフレームはシーンが空なので遅らせない
+
+        bool isChangeSceneFrame_ = false;
 
         std::unique_ptr<std::thread> thread_;//スレッド
 

@@ -6,6 +6,7 @@
 #include "ScriptComponent.h"
 #include "JudgmentDerived.h"
 #include "ActionDerived.h"
+#include "Engine.h"
 #include <stack>
 #include <map>
 

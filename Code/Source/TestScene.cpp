@@ -125,7 +125,7 @@ void TestScene::Initialize()
         name_ += std::to_string(i);
         stageCom->AddStageModel(name_, "./Assets/Models/Stage/Office_001.glb");
     }*/
-    int gridSize = 12;
+    /*int gridSize = 12;
     for (int x = 0; x < gridSize; x++)
     {
         for (int z = 0; z < gridSize; z++)
@@ -141,7 +141,9 @@ void TestScene::Initialize()
             asp->GetTransform()->SetLocalPositionZ((-(gridSize / 2) * oneGrid) + z * oneGrid);
             asp->GetComponent<MeshCollider>()->Transform();
         }
-    }
+    }*/
+    const auto& asp = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Asphalt.glb");
+    asp->GetTransform()->SetLocalScaleFactor(2000.0f);
     stageCom->RegisterTriangles();
     Engine::stageManager_->SetStage(stageCom);
 #endif // 0

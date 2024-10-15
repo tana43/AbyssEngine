@@ -2,8 +2,15 @@
 #include "Actor.h"
 #include "SkeletalMesh.h"
 #include "GameCollider.h"
+#include "BehaviorTree.h"
+#include "ActionDerived.h"
+#include "Engine.h"
+#include "SceneManager.h"
+#include "Vitesse.h"
 
 using namespace AbyssEngine;
+
+#define Ai_SelectRule BehaviorTree<BossMech>::SelectRule
 
 void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
@@ -13,8 +20,7 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     health_ = 1000.0f;
     Max_Health = 1000.0f;
 
-
-    enableGravity_ = false;
+    //enableGravity_ = false;
 
     //model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.glb");
     model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.gltf");
@@ -34,6 +40,8 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         }
     );
 
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Crouching)]->SetLoopFlag(false);
+
     transform_->SetScaleFactor(35.0f);
 
    /* const auto& coll = AddHitCollider(Vector3::Zero, 10.0f, "Collider_Chest");
@@ -41,6 +49,16 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //コライダー設定
     ColliderInitialize();
+
+    //AI初期化
+    BehaviorTreeInitialize();
+
+    //ターゲットになるヴィテスを取得
+    const auto& vitesseActor = Engine::sceneManager_->GetActiveScene().Find("Vitesse");
+    if (const auto& a = vitesseActor.lock())
+    {
+        targetVitesse_ = a->GetComponent<Vitesse>();
+    }
 }
 
 void BossMech::ColliderInitialize()
@@ -160,4 +178,26 @@ void BossMech::ColliderInitialize()
         }
     }
 
+}
+
+void BossMech::BehaviorTreeInitialize()
+{
+    //ビヘイビアツリー
+    aiTree_ = actor_->AddComponent<BehaviorTree<BossMech>>();
+    aiTree_->SetOwner(std::static_pointer_cast<BossMech>(shared_from_this()));
+
+    //BehaviorTreeを構築
+    aiTree_->AddNode("", "Root", 0, Ai_SelectRule::Priority, nullptr, nullptr);
+
+    //戦闘
+    aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new MechBattleJudgment(this), nullptr);
+    //偵察
+    aiTree_->AddNode("Root", "Scout", 1, Ai_SelectRule::Sequence, nullptr, nullptr);
+
+    //戦闘ノード
+    aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
+    //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
+
+    //偵察ノード
+    aiTree_->AddNode("Scout", "Idle", 1, Ai_SelectRule::Non, nullptr, new MechIdleAction(this));
 }

@@ -22,6 +22,10 @@ namespace AbyssEngine
         void DrawImGui()override;
         void DrawDebug()override;
 
+    private:
+        //ƒ|ƒŠƒSƒ“‚ğ’Šo
+        void RegisterTriangles();
+
     public:
         std::vector<Collider::Triangle>	triangles_;
 
