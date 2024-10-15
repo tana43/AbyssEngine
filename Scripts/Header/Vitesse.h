@@ -128,9 +128,6 @@ public:
 
     const std::shared_ptr<AbyssEngine::StaticMesh>& GetRightWeaponModel() const { return rightWeaponModel_; }
 
-    const AbyssEngine::Vector3& GetMoveVec() const { return moveVec_; }
-    void SetMoveVec(const AbyssEngine::Vector3& vec) { moveVec_ = vec; }
-
     const AbyssEngine::Vector3& GetMoveDirection() const { return moveDirection_; }
     void SetMoveDirection(const AbyssEngine::Vector3& vec) { moveDirection_ = vec; }
 

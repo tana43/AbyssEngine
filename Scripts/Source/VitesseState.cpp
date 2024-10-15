@@ -119,6 +119,9 @@ void VitesseState::Landing::Initialize()
     //減速力をキャッシュ、調整
     cachedDeceleration_ = owner_->GetDeceleration();
     owner_->SetDeceleration(deceleration_);
+
+    //スラスターを全て止める
+    owner_->ThrusterAllStop();
 }
 
 void VitesseState::Landing::Update()

@@ -211,9 +211,9 @@ ActionBase<BotEnemy>::State BotWonderActioin::Run(float elapsedTime)
 
 #pragma endregion
 
+
+
 #pragma region ボスメック
-
-
 
 ActionBase<BossMech>::State MechIdleAction::Run(float elapsedTime)
 {
@@ -265,10 +265,14 @@ ActionBase<BossMech>::State MechRunAttackAction::Run(float elapsedTime)
 		}
 		break;
 	case 2:
-		//待機中
+
+		owner_->RushAttackUpdate();
+		
 		if (runTimer_ > Max_Run_Time)
 		{
 			step = 0;
+
+			owner_->SetMoveVec(Vector3::Zero);
 
 			//待機完了
 			return ActionBase::State::Complete;

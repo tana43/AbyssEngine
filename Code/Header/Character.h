@@ -82,7 +82,14 @@ namespace AbyssEngine
         const float& GetDeceleration()const { return deceleration_; }
         void SetDeceleration(const float& decel) { deceleration_ = decel; }
 
+        const AbyssEngine::Vector3& GetMoveVec() const { return moveVec_; }
+        void SetMoveVec(const AbyssEngine::Vector3& vec) { moveVec_ = vec; }
+
         Vector3 GetCenterPos();
+
+        const AbyssEngine::Vector3& GetExternalFactorsMove() const { return externalFactorsMove_; }
+        //void SetExternalFactorsMove(const AbyssEngine::Vector3& move) { externalFactorsMove_ = move; } //セットは禁止！！！
+        void AddExternalFactorsMove(const AbyssEngine::Vector3& move) { externalFactorsMove_ = externalFactorsMove_ + move; }
 
     protected:
 
@@ -141,7 +148,8 @@ namespace AbyssEngine
 
         bool invincible_ = false;//無敵
 
-
+        //外的要因による移動値 例えば地形判定による押し出しとか
+        Vector3 externalFactorsMove_ = {};
     };
 }
 

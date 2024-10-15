@@ -19,6 +19,14 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //パラメータの設定
     health_ = 1000.0f;
     Max_Health = 1000.0f;
+    Max_Horizontal_Speed = 100.0f;
+    Max_Vertical_Speed = 100.0f;
+    baseRotSpeed_ = 500.0f;
+    acceleration_ = 100.0f;
+    deceleration_ = 60.0f;
+    speedingDecel_ = 200.0f;
+    Gravity = -30.0f;
+
 
     //enableGravity_ = false;
 
@@ -59,6 +67,11 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     {
         targetVitesse_ = a->GetComponent<Vitesse>();
     }
+}
+
+void BossMech::RushAttackUpdate()
+{
+    moveVec_ = transform_->GetForward();
 }
 
 void BossMech::ColliderInitialize()
@@ -190,12 +203,12 @@ void BossMech::BehaviorTreeInitialize()
     aiTree_->AddNode("", "Root", 0, Ai_SelectRule::Priority, nullptr, nullptr);
 
     //戦闘
-    aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new MechBattleJudgment(this), nullptr);
+    //aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new MechBattleJudgment(this), nullptr);
     //偵察
     aiTree_->AddNode("Root", "Scout", 1, Ai_SelectRule::Sequence, nullptr, nullptr);
 
     //戦闘ノード
-    aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
+    //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
     //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
 
     //偵察ノード

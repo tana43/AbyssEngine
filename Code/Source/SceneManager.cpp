@@ -24,8 +24,8 @@ SceneManager::SceneManager()
     AddScene(new TestSceneSecond,"TestSceneSecond");
     //SetNextScene("TestSceneSecond");
     //SetNextScene("Title");
-    //SetNextScene("Test");
-    SetNextScene("Facility");
+    SetNextScene("Test");
+    //SetNextScene("Facility");
 }
 
 SceneManager::~SceneManager()

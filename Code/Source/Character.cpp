@@ -44,6 +44,9 @@ void Character::DrawImGui()
     ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
     ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
 
+    ImGui::DragFloat("Max_Health", &Max_Health, 0.1f);
+    ImGui::SliderFloat("Health", &health_, 0.0f,Max_Health);
+
     ImGui::DragFloat("Gravity", &Gravity,0.01f);
 }
 
@@ -339,7 +342,10 @@ void Character::UpdateHorizontalMove()
 
     const Vector3 moveVector = move;
 
-    Vector3 moved = pos + moveVector;//移動後の座標
+    //押し出し処理による移動値も反映させる
+    const Vector3 externalMove = { externalFactorsMove_.x,0,externalFactorsMove_.z };
+
+    Vector3 moved = pos + moveVector + externalMove;//移動後の座標
 
     //スフィアキャスト
     if (sphereCast_)
@@ -463,8 +469,8 @@ void Character::UpdateVerticalMove()
 
     }
 
-    //移動後の座標
-    Vector3 moved = {pos.x,pos.y + moveY,pos.z};
+    //移動後の座標 外的要因による移動値も計算する
+    Vector3 moved = {pos.x,pos.y + moveY + externalFactorsMove_.y,pos.z};
 
     //スフィアキャスト
     if (sphereCast_)
@@ -538,6 +544,8 @@ void Character::UpdateVerticalMove()
     }
 
     transform_->SetPosition(moved);
+
+    externalFactorsMove_ = Vector3::Zero;
 }
 
 void Character::Landing()

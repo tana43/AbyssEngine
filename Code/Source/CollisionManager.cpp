@@ -1,6 +1,8 @@
 #include "CollisionManager.h"
 #include "Actor.h"
 
+#include "Character.h"
+
 #include "SphereCollider.h"
 #include "ScriptComponentManager.h"
 
@@ -139,7 +141,19 @@ void CollisionManager::TerrainDetection()
 							const Vector3 newPos = reciActor->GetTransform()->GetPosition() + correctVec;
 
 							//位置を設定
-							reciActor->GetTransform()->SetPosition(newPos);
+							if (const auto& c = reciActor->GetComponent<Character>())
+							{
+								//キャラクターのコンポーネントを持っているなら地形判定も兼ねて動かす
+								c->AddExternalFactorsMove(correctVec);
+
+								//Vector3 m = c->GetExternalFactorsMove();
+								//m = m + correctVec;
+								//c->SetExternalFactorsMove(m);
+							}
+							else
+							{
+								reciActor->GetTransform()->SetPosition(newPos);
+							}
 						}
 						
 					}

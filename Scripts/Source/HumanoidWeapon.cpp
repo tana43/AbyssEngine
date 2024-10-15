@@ -17,6 +17,9 @@ HumanoidWeapon::HumanoidWeapon()
     deceleration_ = 60.0f;
     speedingDecel_ = 200.0f;
     Gravity = -30.0f;
+    terrainRadius_ = 3.77f;
+    terrainCenterOffset_ = 1.03f;
+    terrainStepOffset_ = 7.7f;
 }
 
 void HumanoidWeapon::Update()
