@@ -43,6 +43,13 @@ namespace AbyssEngine
     class Time
     {
     public:
+        static float GetDeltaTime() { return deltaTime_; }
+        static void SetDeltaTime(float t) { deltaTime_ = t; }
+        static float GetTimeScale() { return timeScale_; }
+
+        static void DrawImGui();
+
+    private:
         static float deltaTime_;
         static float timeScale_;
     };

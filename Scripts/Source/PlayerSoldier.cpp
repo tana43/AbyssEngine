@@ -280,7 +280,7 @@ void Soldier::CameraRollUpdate()
     Vector2 input = Input::GameSupport::GetCameraRollVector();
 
     auto r = camera_->GetTransform()->GetRotation();
-    const float rollSpeed = cameraRollSpeed_ * Time::deltaTime_;
+    const float rollSpeed = cameraRollSpeed_ * actor_->GetDeltaTime();
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);
@@ -345,7 +345,7 @@ void Soldier::InputMove()
             //スティックの入力の大きさに応じて加速度を変更
             acceleration_ = baseAcceleration_ * inputVec.Length();
 
-            velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
+            velocity_ = velocity_ + moveVec_ * (acceleration_ * actor_->GetDeltaTime());
 
         }
     }

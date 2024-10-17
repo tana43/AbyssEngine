@@ -49,7 +49,8 @@ void Animator::LatterInitialize(const std::shared_ptr<SkeletalMesh>& skeletalMes
 
 	//初期モーションをアニメーターに追加
 	//かならず０番目のモーションは待機と仮定
-	animations_.emplace_back(std::make_unique<Animation>(skeletalMesh.get(), "Idle", 0, true));
+	const auto& a = animations_.emplace_back(std::make_unique<Animation>(skeletalMesh.get(), "Idle", 0, true));
+	a->SetAnimator(this);
 }
 
 void Animator::AnimatorUpdate()
@@ -70,7 +71,7 @@ void Animator::AnimatorUpdate()
 	if (isTransitioningBlendAnim_)
 	{
 		//モーションの遷移中
-		transitionTimer_ -= Time::deltaTime_;
+		transitionTimer_ -= actor_->GetDeltaTime();
 		if (transitionTimer_ < 0)transitionTimer_ = 0;
 
 		animatedNodes_ = animations_[animationClip_]->UpdateAnimation(model);
@@ -192,7 +193,7 @@ void Animator::AnimatorUpdate()
 	}
 
 	//時間更新
-	timeStamp_ += Time::deltaTime_ * animationSpeed_;
+	timeStamp_ += actor_->GetDeltaTime() * animationSpeed_;
 	
 }
 

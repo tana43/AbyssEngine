@@ -42,6 +42,10 @@ namespace AbyssEngine
         void SetActive(const bool active) { active_ = active; }
         [[nodiscard]] bool GetActiveInHierarchy() const;            //親の状態を考慮してアクティブか
 
+        [[nodiscard]] float GetDeltaTime() { return deltaTime_; }
+        [[nodiscard]] float GetTimeScale() { return timeScale_; }
+        void SetTimeScale(const float scale) { timeScale_ = scale; }
+
         [[nodiscard]] std::shared_ptr<Transform>& GetTransform() {return transform_; }
         [[nodiscard]] std::vector<std::shared_ptr<Component>>& GetComponentList() { return componentList_; }
 
@@ -50,6 +54,7 @@ namespace AbyssEngine
         void Release();     //後始末
         void DrawImGui();
         void DrawDebug();
+        void TimeUpdate(); //経過時間更新
 
     private:
         std::shared_ptr<Transform> transform_;                  //アタッチされているTransform
@@ -63,6 +68,9 @@ namespace AbyssEngine
         std::vector<std::weak_ptr<Actor>> children_{};
 
         std::string jsonFilename_;
+
+        float deltaTime_;
+        float timeScale_ = 1.0f;
 
         friend class Scene;
     };

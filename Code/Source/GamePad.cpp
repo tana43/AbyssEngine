@@ -224,5 +224,5 @@ void GamePad::UpdateVibration()
 
 	SetVibration(vibPower_,vibPower_);
 	
-	vibTimer_ += Time::deltaTime_;
+	vibTimer_ += Time::GetDeltaTime();
 }

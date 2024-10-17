@@ -134,7 +134,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 
 	//エンジン作成
 	auto engine = std::make_unique<AbyssEngine::Engine>();
-	AbyssEngine::Time::timeScale_ = 1.0f;
 
 	//メインループ
 	MSG hmsg = { nullptr };
@@ -152,13 +151,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 		else
 		{
 			//Timeクラス更新
-			AbyssEngine::Time::deltaTime_ = static_cast<float>(GetTickCount64() - before) * 0.001f * AbyssEngine::Time::timeScale_;
+			float timeScale = AbyssEngine::Time::GetTimeScale();
+			AbyssEngine::Time::SetDeltaTime(static_cast<float>(GetTickCount64() - before) * 0.001f * timeScale);
 
 			//FPSを算出し表示
 			before = GetTickCount64();
 			const float mspf = 1000.0f / static_cast<float>(fps);
 
-			interval -= AbyssEngine::Time::deltaTime_;
+			interval -= AbyssEngine::Time::GetDeltaTime();
 			++fps;
 			if (interval < 0)
 			{

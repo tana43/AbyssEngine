@@ -155,6 +155,16 @@ void AbyssEngine::Scene::UpdateRemoveActors()
     destroyActorList_.clear();
 }
 
+void AbyssEngine::Scene::TimeUpdate()
+{
+    for (const auto& a : actorList_)
+    {
+        //親をもつアクターは自動で呼ばれるので処理しない
+        if (a->GetParent().lock())continue;
+        a->TimeUpdate();
+    }
+}
+
 void Scene::DrawDebug()
 {
     for (const auto& a : actorList_)

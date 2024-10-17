@@ -44,10 +44,10 @@ namespace AbyssEngine
 		virtual ~ParticleSystem() = default;
 
 		//XVˆ—
-		void Integrate();
+		void Integrate(float deltaTime);
 
 		//‰Šú‰»
-		void Initialize();
+		void Initialize(float deltaTime);
 
 		//•`‰æ
 		void Render();

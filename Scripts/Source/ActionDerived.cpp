@@ -5,13 +5,14 @@
 #include "Animator.h"
 #include "Engine.h"
 #include "BossMech.h"
+#include "AttackerSystem.h"
 
 using namespace AbyssEngine;
 
 #pragma region ボットエネミー
 
 // 攻撃行動
-ActionBase<BotEnemy>::State BotAttackAction::Run(float elapsedTime)
+ActionBase<BotEnemy>::State BotAttackAction::Run(float deltaTime)
 {
 	auto state = ActionBase::State::Run;
 
@@ -43,7 +44,7 @@ ActionBase<BotEnemy>::State BotAttackAction::Run(float elapsedTime)
 		}
 
 		//タイマー更新
-		timer_ += Time::deltaTime_;
+		timer_ += deltaTime;
 
 		break;
 	case static_cast<int>(Step::LockIdle):
@@ -58,7 +59,7 @@ ActionBase<BotEnemy>::State BotAttackAction::Run(float elapsedTime)
 		}
 
 		//タイマー更新
-		timer_ += Time::deltaTime_;
+		timer_ += deltaTime;
 		break;
 
 	case static_cast<int>(Step::Shot):
@@ -91,7 +92,7 @@ ActionBase<BotEnemy>::State BotAttackAction::Run(float elapsedTime)
 }
 
 
-ActionBase<BotEnemy>::State BotSideDodgeAction::Run(float elapsedTime)
+ActionBase<BotEnemy>::State BotSideDodgeAction::Run(float deltaTime)
 {
 	switch (step)
 	{
@@ -128,7 +129,7 @@ ActionBase<BotEnemy>::State BotSideDodgeAction::Run(float elapsedTime)
 			return ActionBase::State::Complete;
 		}
 
-		timer_ += Time::deltaTime_;
+		timer_ += deltaTime;
 
 		break;
 	}
@@ -137,7 +138,7 @@ ActionBase<BotEnemy>::State BotSideDodgeAction::Run(float elapsedTime)
 	return ActionBase::State::Run;
 }
 
-ActionBase<BotEnemy>::State BotIdleAction::Run(float elapsedTime)
+ActionBase<BotEnemy>::State BotIdleAction::Run(float deltaTime)
 {
 	switch (step)
 	{
@@ -165,7 +166,7 @@ ActionBase<BotEnemy>::State BotIdleAction::Run(float elapsedTime)
 		}
 
 		//タイマー更新
-		timer_ += Time::deltaTime_;
+		timer_ += deltaTime;
 		break;
 	}
 
@@ -173,7 +174,7 @@ ActionBase<BotEnemy>::State BotIdleAction::Run(float elapsedTime)
 }
 
 //徘徊行動
-ActionBase<BotEnemy>::State BotWonderActioin::Run(float elapsedTime)
+ActionBase<BotEnemy>::State BotWonderActioin::Run(float deltaTime)
 {
 	switch (step)
 	{
@@ -215,7 +216,7 @@ ActionBase<BotEnemy>::State BotWonderActioin::Run(float elapsedTime)
 
 #pragma region ボスメック
 
-ActionBase<BossMech>::State MechIdleAction::Run(float elapsedTime)
+ActionBase<BossMech>::State MechIdleAction::Run(float deltaTime)
 {
 	switch (step)
 	{
@@ -237,14 +238,14 @@ ActionBase<BossMech>::State MechIdleAction::Run(float elapsedTime)
 			return ActionBase::State::Complete;
 		}
 
-		timer_ += elapsedTime;
+		timer_ += deltaTime;
 		break;
 	}
 	return ActionBase::State::Run;
 }
 
 
-ActionBase<BossMech>::State MechRunAttackAction::Run(float elapsedTime)
+ActionBase<BossMech>::State MechRunAttackAction::Run(float deltaTime)
 {
 	switch (step)
 	{
@@ -260,7 +261,12 @@ ActionBase<BossMech>::State MechRunAttackAction::Run(float elapsedTime)
 		//走りの構えができたならモーション変更
 		if (owner_->GetAnimator()->GetAnimationFinished())
 		{
+			//アニメーション再生
 			owner_->GetAnimator()->PlayAnimation("Run", 0.5f);
+
+			//攻撃システム
+			owner_->GetAttackerSystem()->Attack("Rush");
+
 			step++;
 		}
 		break;
@@ -278,7 +284,7 @@ ActionBase<BossMech>::State MechRunAttackAction::Run(float elapsedTime)
 			return ActionBase::State::Complete;
 		}
 
-		runTimer_ += elapsedTime;
+		runTimer_ += deltaTime;
 		break;
 	}
 

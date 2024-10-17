@@ -12,6 +12,7 @@ namespace AbyssEngine
     struct AttackData
     {
         float power_ = 0;//攻撃力
+        float knockback_ = 0;//吹っ飛ばし力
         float duration_ = 1.0f;//持続時間
         float staggerValue_ = 0;//スタッグ値（ひるみ値のようなもの）
 

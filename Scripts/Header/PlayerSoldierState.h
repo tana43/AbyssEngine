@@ -16,7 +16,7 @@ namespace SoldierState
         ~Move() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
     };
 
@@ -27,7 +27,7 @@ namespace SoldierState
         ~Aim() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
 
     private:
@@ -50,7 +50,7 @@ namespace SoldierState
         ~Jump() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
 
     private:
@@ -73,7 +73,7 @@ namespace SoldierState
         ~Dodge() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
 
         //is•ûŒü‚©‚ç‰ñ”ğæ‚Ì‚S•ûŒü
@@ -105,7 +105,7 @@ namespace SoldierState
         ~Die() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
     };
 };

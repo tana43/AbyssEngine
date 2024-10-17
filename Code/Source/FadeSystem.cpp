@@ -54,7 +54,7 @@ bool FadeSystem::Fade(const float& time, const std::vector<float>& nextParams)
 	}
 
 	//タイマー更新
-	timer_ += Time::deltaTime_;
+	timer_ += Time::GetDeltaTime();
 
 	//タイマーが遷移に掛かる時間を越えていないか
 	if (timer_ > time)

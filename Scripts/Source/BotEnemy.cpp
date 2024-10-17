@@ -218,7 +218,7 @@ void BotEnemy::ReloadUpdate()
     //ƒŠƒ[ƒh‚µ‚Ä‚¢‚é‚©
     if (!reloadNow_)return;
 
-    reloadTimer_ += Time::deltaTime_;
+    reloadTimer_ += actor_->GetDeltaTime();
 
     if (reloadTimer_ > Atk_Reload_Time)
     {

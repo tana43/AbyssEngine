@@ -16,7 +16,7 @@ void SoldierState::Move::Initialize()
     owner_->SetCanJump(true);
 }
 
-void SoldierState::Move::Update()
+void SoldierState::Move::Update(float deltaTime)
 {
     //ダッシュ判定
     owner_->DashDecision();
@@ -74,10 +74,10 @@ void SoldierState::Aim::Initialize()
 
 }
 
-void SoldierState::Aim::Update()
+void SoldierState::Aim::Update(float deltaTime)
 {
     //時間更新
-    timer_ += Time::deltaTime_;
+    timer_ += deltaTime;
 
     //武器の位置を変更
     owner_->ChangeSocketTransformLinear(0.1f,
@@ -123,7 +123,7 @@ void SoldierState::Jump::Initialize()
     landTimer_ = 0.0f;
 }
 
-void SoldierState::Jump::Update()
+void SoldierState::Jump::Update(float deltaTime)
 {
     //移動
     owner_->InputMove();
@@ -144,7 +144,7 @@ void SoldierState::Jump::Update()
         }
 
         //タイマー更新
-        landTimer_ += Time::deltaTime_;
+        landTimer_ += deltaTime;
     }
 
     //着地して指定秒数経っているなら移動ステートに遷移
@@ -181,7 +181,7 @@ void SoldierState::Dodge::Initialize()
     secondDodge_ = false;
 }
 
-void SoldierState::Dodge::Update()
+void SoldierState::Dodge::Update(float deltaTime)
 {
     if (!secondDodge_)
     {
@@ -242,7 +242,7 @@ void SoldierState::Dodge::Update()
                     0,
                     forward.z * moveVec.z + right.z * moveVec.x };
 
-            owner_->TurnY(turnVec, 200.0f * Time::deltaTime_, true);
+            owner_->TurnY(turnVec, 200.0f * deltaTime, true);
         }
 
         //側転回避への遷移
@@ -311,7 +311,7 @@ void SoldierState::Dodge::Update()
     }
 
     //経過時間
-    timer_ += Time::deltaTime_;
+    timer_ += deltaTime;
 }
 
 void SoldierState::Dodge::Finalize()
@@ -382,7 +382,7 @@ void SoldierState::Die::Initialize()
 {
 }
 
-void SoldierState::Die::Update()
+void SoldierState::Die::Update(float deltaTime)
 {
 }
 

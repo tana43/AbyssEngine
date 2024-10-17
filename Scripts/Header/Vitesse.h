@@ -12,10 +12,10 @@ namespace AbyssEngine
 {
     class StaticMesh;
     class AttackerSystem;
-    class AttackCollidier;
+    class AttackCollider;
 }
 
-class Vitesse : public HumanoidWeapon 
+class Vitesse : public HumanoidWeapon
 {
 public:
     Vitesse();
@@ -29,10 +29,9 @@ public:
 
     //速度によって影響されるスラスター
     void ThrusterInfluenceVelocity();
+
     //スラスターをすべて停止
     void ThrusterAllStop();
-
-    
 
     //回避行動
     void Dodge(AbyssEngine::Vector3 direction/*回避行動*/);
@@ -98,6 +97,9 @@ public:
         Slash_N_3,
         Slash_N_3_End,
         Slash_R_1,
+
+        //ひるみ
+        Flinch,
 
         //ブレンドモーション
         Run_Move,
@@ -182,6 +184,9 @@ public:
 
     //ラジアルブラーをターゲットがいる所を中心として演出させる
     void RadialBlurFromTarget();
+
+    //ダメージを喰らう
+    bool ApplyDamage(const AttackParameter& param, DamageResult* damageResult = nullptr)override;
 
 private:
     void CameraRollUpdate();

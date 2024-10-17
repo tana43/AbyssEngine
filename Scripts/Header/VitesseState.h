@@ -18,7 +18,7 @@ namespace VitesseState
         ~GroundMove() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
     };
 
@@ -31,7 +31,7 @@ namespace VitesseState
         ~Flight() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
     };
 
@@ -44,7 +44,7 @@ namespace VitesseState
         ~HighSpeedFlight() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
 
     private:
@@ -66,7 +66,7 @@ namespace VitesseState
         ~TakeOff() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
 
         inline static float altitude_ = 20.0f;//ó£ó§Ç∑ÇÈç€ÇÃè„è∏çÇìx
@@ -85,7 +85,7 @@ namespace VitesseState
         ~Landing() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
 
     private:
@@ -104,7 +104,7 @@ namespace VitesseState
         ~Boarding() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
     private:
 
@@ -120,7 +120,7 @@ namespace VitesseState
         ~MeleeAttackDash() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
 
     private:
@@ -138,7 +138,7 @@ namespace VitesseState
         ~MeleeAttack() {}
 
         void Initialize() override;
-        void Update() override;
+        void Update(float deltaTime) override;
         void Finalize() override;
 
     };

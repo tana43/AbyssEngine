@@ -63,7 +63,7 @@ namespace AbyssEngine
 			if (activeNode_ != nullptr)
 			{
 				// ビヘイビアツリーからノードを実行。
-				activeNode_ = Run(activeNode_, behaviorData_, Time::deltaTime_);
+				activeNode_ = Run(activeNode_, behaviorData_, actor_->GetDeltaTime());
 			}
 			// 現在実行されているノードが無ければ
 			if (activeNode_ == nullptr)
@@ -95,7 +95,12 @@ namespace AbyssEngine
 		{
 			if (ImGui::TreeNode("BehaviorTree"))
 			{
-				ImGui::Text(activeNode_->GetName().c_str());
+				if (active_)
+				{
+					ImGui::Text(activeNode_->GetName().c_str());
+				}
+
+				ImGui::Checkbox("Active", &active_);
 
 				ImGui::TreePop();
 			}

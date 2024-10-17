@@ -18,7 +18,7 @@ void AttackerSystem::Update()
     hit_ = false;
 
     //ƒ^ƒCƒ}[XV
-    durationTimer_ += Time::deltaTime_;
+    durationTimer_ += actor_->GetDeltaTime();
 
     //UŒ‚‚ª—LŒø‚©‚ğ”»’è
     AttackEnabledUpdate();
@@ -49,6 +49,7 @@ void AbyssEngine::AttackerSystem::RegistAttackData(std::string atkName, const At
 void AbyssEngine::AttackerSystem::RegistCollider(const std::shared_ptr<AttackCollider>& collider)
 {
     attackColliderList_.emplace_back(collider);
+    collider->SetEnable(false);
 }
 
 void AbyssEngine::AttackerSystem::Attack(std::string atkName)
@@ -62,6 +63,7 @@ void AbyssEngine::AttackerSystem::Attack(std::string atkName)
     
     //UŒ‚‚Ìî•ñ‚ğİ’è
     currentAttack_.power_               = atkData->second.power_;
+    currentAttack_.knockback_           = atkData->second.knockback_;
     currentAttack_.duration_            = atkData->second.duration_;
     currentAttack_.staggerValue_        = atkData->second.staggerValue_;
     currentAttack_.maxHits_             = atkData->second.maxHits_;
@@ -98,7 +100,15 @@ void AbyssEngine::AttackerSystem::Attack(std::string atkName)
 void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& target)
 {
     Character::DamageResult result;
-    if (target->ApplyDamage(currentAttack_.power_, result))
+    Character::AttackParameter param;
+    param.power_ = currentAttack_.power_;
+    param.knockback_ = currentAttack_.knockback_;
+
+    //UŒ‚•ûŒü‚ğZo
+    const Vector3 vec = transform_->GetPosition() - target->GetTransform()->GetPosition();
+    vec.Normalize(param.vector_);
+
+    if (target->ApplyDamage(param, &result))
     {
         //UŒ‚‚ªƒqƒbƒg‚µ‚½
         hit_ = true;

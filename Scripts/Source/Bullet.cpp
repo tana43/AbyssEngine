@@ -28,7 +28,9 @@ void Bullet::OnCollision(const std::shared_ptr<Collider>& collision, Collision::
         if (const auto& chara = actor->GetComponent<Character>())
         {
             Character::DamageResult dmgResult;
-            chara->ApplyDamage(attackPoint_,dmgResult);
+            Character::AttackParameter param;
+            param.power_ = attackPoint_;
+            chara->ApplyDamage(param,&dmgResult);
 
             Actor::Destroy(actor_);
         }

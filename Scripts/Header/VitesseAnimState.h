@@ -17,7 +17,7 @@ namespace VitesseAnimState
         ~AnimDefault() {}
 
         void Initialize()override {}
-        void Update()override {}
+        void Update(float deltaTime)override {}
         void Finalize()override {}
     };
 
@@ -28,7 +28,7 @@ namespace VitesseAnimState
         ~AnimGroundMove() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
 
     private:
@@ -42,7 +42,7 @@ namespace VitesseAnimState
         ~AnimFlight() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
     };
 
@@ -53,7 +53,7 @@ namespace VitesseAnimState
         ~AnimHighSpeedFlight() {}
 
         void Initialize()override;
-        void Update()override;
+        void Update(float deltaTime)override;
         void Finalize()override;
     };
 }

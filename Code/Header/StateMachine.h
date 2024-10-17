@@ -46,7 +46,7 @@ namespace AbyssEngine
     template<class T>
     inline void StateMachine<T>::UpdateBefore()
     {
-        currentState_->Update();
+        currentState_->Update(actor_->GetDeltaTime());
     }
 
     //template<class T>

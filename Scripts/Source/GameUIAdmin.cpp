@@ -150,9 +150,9 @@ void GameUIAdmin::UiUpdateVitesse()
 
     //回転させる
     //float angle = GetUI(Usefulness::HUD_Reticle_Circle)->GetAngle();
-    //GetUI(Usefulness::HUD_Reticle_Circle)->SetAngle(angle + 15.0f * Time::deltaTime_);
+    //GetUI(Usefulness::HUD_Reticle_Circle)->SetAngle(angle + 15.0f * actor_->GetDeltaTime());
     float angle = GetUI(Usefulness::HUD_Reticle_Lockon_In)->GetAngle();
-    GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetAngle(angle + 15.0f * Time::deltaTime_);
+    GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetAngle(angle + 15.0f * actor_->GetDeltaTime());
 }
 
 void GameUIAdmin::LockonUiMove()
@@ -194,5 +194,5 @@ void GameUIAdmin::LockonUiMove()
     GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetOffsetPosition(screenPos);
 
     //タイマー更新
-    lockonMovetimer_ += Time::deltaTime_;
+    lockonMovetimer_ += actor_->GetDeltaTime();
 }

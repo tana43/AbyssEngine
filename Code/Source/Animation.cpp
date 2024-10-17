@@ -2,6 +2,7 @@
 #include "SkeletalMesh.h"
 #include "Engine.h"
 #include "Animator.h"
+#include "Actor.h"
 
 #include <algorithm>
 
@@ -74,7 +75,7 @@ void Animation::DrawImGui(Animator* animator)
 
 void Animation::UpdateTime()
 {
-    timeStamp_ += animSpeed_ * Time::deltaTime_;
+    timeStamp_ += animSpeed_ * animator_->GetActor()->GetDeltaTime();
 }
 
 AnimBlendSpace1D::AnimBlendSpace1D(SkeletalMesh* model, const std::string& name_, const int& index0, const int& index1)
@@ -104,7 +105,7 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace1D::UpdateAnimation(GltfSkel
     UpdateTime();
 
     //ブレンドの速度制限
-    const float blendMaxSpeed = 2.0f * Time::deltaTime_;
+    const float blendMaxSpeed = 2.0f * animator_->GetActor()->GetDeltaTime();
     const float blendSpeed = std::clamp(blendWeight_ - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
 
     //実際のブレンド値の計算
@@ -221,7 +222,7 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
     UpdateTime();
 
     //ブレンドの速度制限
-    const float blendMaxSpeed = 5.0f * Time::deltaTime_;
+    const float blendMaxSpeed = 5.0f * animator_->GetActor()->GetDeltaTime();
     const Vector2 blendSpeed = {
         std::clamp(blendWeight_.x - lastBlendWeight_.x, -blendMaxSpeed, blendMaxSpeed),
         std::clamp(blendWeight_.y - lastBlendWeight_.y, -blendMaxSpeed, blendMaxSpeed)
@@ -587,7 +588,7 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimBlendSpaceFlyMove::Update
     }
 
     //なめらかにブレンドするために補完
-    const float blendMaxSpeed = 2.0f * Time::deltaTime_;
+    const float blendMaxSpeed = 2.0f * animator_->GetActor()->GetDeltaTime();
     const float blendSpeed = std::clamp(weight - lastBlendWeight_, -blendMaxSpeed, blendMaxSpeed);
     const float nextBlendWeight = std::clamp(lastBlendWeight_ + blendSpeed, 0.0f, 1.0f);
     lastBlendWeight_ = nextBlendWeight;

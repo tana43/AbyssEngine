@@ -26,6 +26,7 @@ namespace AbyssEngine
         //シーンの追加
         void AddScene(Scene* scene,std::string name);
 
+
     public:
         //シーンの変更 ロード済のシーンがあるときは必ずそれを呼ぶこと
         void SetNextScene(std::string name = "");

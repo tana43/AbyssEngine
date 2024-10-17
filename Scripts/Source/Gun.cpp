@@ -53,7 +53,7 @@ void Gun::DrawDebug()
 void Gun::Update()
 {
     //発射レート更新
-    rateTimer_ -= Time::deltaTime_;
+    rateTimer_ -= actor_->GetDeltaTime();
 
     //マズルフラッシュエフェクトの更新
     UpdateFlashEffect();
@@ -119,6 +119,6 @@ void Gun::UpdateFlashEffect()
     }
     else
     {
-        flashLifespan_ += Time::deltaTime_;
+        flashLifespan_ += actor_->GetDeltaTime();
     }
 }

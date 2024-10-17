@@ -262,7 +262,7 @@ void SpriteRenderer::SetActive(const bool value)
 
 bool SpriteRenderer::FadeIn(float alpha, float changeSpeed)
 {
-	changeSpeed *= Time::deltaTime_;
+	changeSpeed *= actor_->GetDeltaTime();
 
 	if (color_.w + changeSpeed >= alpha)
 	{
@@ -276,7 +276,7 @@ bool SpriteRenderer::FadeIn(float alpha, float changeSpeed)
 
 bool SpriteRenderer::FadeOut(float alpha, float changeSpeed)
 {
-	changeSpeed *= Time::deltaTime_;
+	changeSpeed *= actor_->GetDeltaTime();
 
 	if (color_.w - changeSpeed <= alpha)
 	{

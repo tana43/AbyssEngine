@@ -32,6 +32,7 @@ namespace AbyssEngine
         virtual void Reset();       //シーンをリセット
         virtual void Finalize();    //後始末
         void UpdateRemoveActors();  //アクターを破棄する
+        void TimeUpdate();
 
         virtual void DrawDebug(); //デバッグ表示
         virtual void DrawImGui(); //ImGuiデバッグ表示

@@ -69,7 +69,7 @@ void Engine::Update()
     //経過時間にロード時間を考慮させないためにシーン変更後、deltaTimeをリセットさせる
     if (sceneManager_->GetIsChangeSceneFrame())
     {
-        Time::deltaTime_ = 0.0f;
+        Time::SetDeltaTime(0.0f);
     }
 
     ////ImGui更新
@@ -145,6 +145,11 @@ void Engine::DrawDebug()
             ImGui::EndMenu();
         }
 
+        Time::DrawImGui();
+
+        inputManager_->DrawImGui();
+
+
         ImGui::EndMainMenuBar();
     }
 #endif // _DEBUG
@@ -195,4 +200,16 @@ void Engine::MouseDragUnrelenting()
 }
 
 float Time::deltaTime_;
-float Time::timeScale_;
+float Time::timeScale_ = 1.0f;
+
+void AbyssEngine::Time::DrawImGui()
+{
+    if (ImGui::BeginMenu("Time"))
+    {
+        ImGui::InputFloat("Delta Time", &deltaTime_);
+
+        ImGui::SliderFloat("Time Scale", &timeScale_, 0.0f, 2.0f);
+
+        ImGui::EndMenu();
+    }
+}

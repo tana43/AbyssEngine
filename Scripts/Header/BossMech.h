@@ -1,11 +1,14 @@
 #pragma once
 #include "HumanoidWeapon.h"
+#include <vector>
 
 namespace AbyssEngine
 {
     class SkeletalMesh;
     template <class T>
     class BehaviorTree;
+    class AttackerSystem;
+    class AttackCollider;
 }
 
 class Vitesse;
@@ -37,8 +40,14 @@ private:
     //コライダー設定
     void ColliderInitialize();
 
-
+    //ビヘイビアツリー初期化
     void BehaviorTreeInitialize();
+
+    //アタッカーシステム初期化
+    void AttackerSystemInitialize();
+
+public:
+    const std::shared_ptr<AbyssEngine::AttackerSystem>& GetAttackerSystem() const { return attackerSystem_; }
 
 private:
     //std::shared_ptr<AbyssEngine::SkeletalMesh> model_;
@@ -48,6 +57,12 @@ private:
 
     //ビヘイビアツリー
     std::shared_ptr<AbyssEngine::BehaviorTree<BossMech>> aiTree_;
+
+    //アタッカーシステム
+    std::shared_ptr<AbyssEngine::AttackerSystem> attackerSystem_;
+
+    //攻撃判定用コライダー
+    std::vector<std::shared_ptr<AbyssEngine::AttackCollider>> attackColliders_;
 
     //突進攻撃の誘導の強さ　
     float rushHoming_ = 1.0f;

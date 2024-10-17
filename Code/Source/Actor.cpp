@@ -51,6 +51,9 @@ void Actor::Release()
 
 void Actor::DrawImGui()
 {
+	ImGui::InputFloat("Delta Time", &deltaTime_);
+	ImGui::SliderFloat("Time Scale", &timeScale_,0.0f,2.0f);
+
 	for (auto& c : componentList_)
 	{
 		//ImGui表示
@@ -88,6 +91,24 @@ void Actor::DrawDebug()
 	{
 		//デバッグ表示
 		c->DrawDebug();
+	}
+}
+
+void Actor::TimeUpdate()
+{
+	//経過時間を更新する
+	if (const auto& p = parent_.lock())
+	{
+		deltaTime_ = p->GetDeltaTime() * timeScale_;
+	}
+	else
+	{
+		deltaTime_ = Time::GetDeltaTime() * timeScale_;
+	}
+
+	for (const auto& child : children_)
+	{
+		child.lock()->TimeUpdate();
 	}
 }
 

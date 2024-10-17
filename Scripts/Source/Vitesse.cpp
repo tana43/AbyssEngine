@@ -193,7 +193,8 @@ void Vitesse::AnimationInitialize()
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_2_End.gltf",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_3.gltf",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_3_End.gltf",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_R_1.gltf"
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_R_1.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Flinch.gltf"
         },
         {
             "Run_F",
@@ -226,7 +227,8 @@ void Vitesse::AnimationInitialize()
             "Slash_N_2_End",
             "Slash_N_3",
             "Slash_N_3_End",
-            "Slash_R_1"
+            "Slash_R_1",
+            "Flinch"
         });
 
         //ループ再生しないように
@@ -777,13 +779,29 @@ void Vitesse::RadialBlurFromTarget()
     }
 }
 
+bool Vitesse::ApplyDamage(const AttackParameter& param, DamageResult* damageResult)
+{
+    bool hit = Character::ApplyDamage(param,damageResult);
+
+    //ノックバック処理
+    if (hit)
+    {
+        if (param.knockback_ > 0.001f)
+        {
+            
+        }
+    }
+
+    return hit;
+}
+
 void Vitesse::CameraRollUpdate()
 {
     //入力値取得
     Vector2 input = Input::GameSupport::GetCameraRollVector();
 
     auto r = camera_->GetTransform()->GetRotation();
-    const float rollSpeed = cameraRollSpeed_ * Time::deltaTime_;
+    const float rollSpeed = cameraRollSpeed_ * actor_->GetDeltaTime();
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);
@@ -816,6 +834,6 @@ void Vitesse::RiseInputUpdate()
 {
     if (flightMode_ && Input::GameSupport::GetRiseButton())
     {
-        Rise(riseSpeed_ * Time::deltaTime_);
+        Rise(riseSpeed_ * actor_->GetDeltaTime());
     }
 }

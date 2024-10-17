@@ -181,7 +181,7 @@ void ThrusterEffect::UpdateInjection()
         break;
     case ThrusterEffect::Sequence::Ignition://点火
 
-        power_ += ignitionSpeed_ * Time::deltaTime_;
+        power_ += ignitionSpeed_ * actor_->GetDeltaTime();
 
         if (power_ >= 1.5f)
         {
@@ -197,14 +197,14 @@ void ThrusterEffect::UpdateInjection()
         //Stop関数が呼ばれるまで再生し続ける
 
         //噴射出力を制御
-        const float ctrlPower = 5.0f * Time::deltaTime_;
+        const float ctrlPower = 5.0f * actor_->GetDeltaTime();
         power_ += power_ > normalPower_ ? -ctrlPower : ctrlPower;
 
         break;
     }
     case ThrusterEffect::Sequence::Extinguishing://鎮火
 
-        power_ -= extSpeed_ * Time::deltaTime_;
+        power_ -= extSpeed_ * actor_->GetDeltaTime();
 
         if (power_ <= 0.0f)
         {
@@ -221,7 +221,7 @@ void ThrusterEffect::UpdateInjection()
     case ThrusterEffect::Sequence::Boost:
 
         //0.1秒で元の出力に戻す
-        power_ -= 10.0f * boostPower_ *  Time::deltaTime_;
+        power_ -= 10.0f * boostPower_ *  actor_->GetDeltaTime();
 
         //出力が普通の状態に戻ったら噴射状態へ遷移
         if (power_ < normalPower_)

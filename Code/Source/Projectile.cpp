@@ -20,7 +20,7 @@ void Projectile::Update()
 {
     //”ò‚Ñ“¹‹ï‚ÌŽËo‹——£
     const Vector3& pos = transform_->GetPosition();
-    const Vector3& velo = direction_ * speed_ * Time::deltaTime_;
+    const Vector3& velo = direction_ * speed_ * actor_->GetDeltaTime();
     transform_->SetPosition(pos + velo);
 
 #if _DEBUG
@@ -28,7 +28,7 @@ void Projectile::Update()
 #endif // _DEBUG
 
     //Žõ–½ˆ—
-    flashLifespan_ -= Time::deltaTime_;
+    flashLifespan_ -= actor_->GetDeltaTime();
     if (flashLifespan_ <= 0)
     {
         actor_->Destroy(actor_);

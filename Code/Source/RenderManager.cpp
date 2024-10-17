@@ -325,7 +325,7 @@ void RenderManager::Render()
 	CheckRenderer();
 
 	//エフェクト更新処理
-	EffectManager::Instance().Update(Time::deltaTime_);
+	EffectManager::Instance().Update(Time::GetDeltaTime());
 
 	for (auto& c : cameraList_)
 	{
@@ -351,7 +351,7 @@ void RenderManager::Render()
 				bufferScene_->data_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
 				camera->projectionMatrix_.Invert(bufferScene_->data_.inverseProjection_);
 				camera->viewProjectionMatrix_.Invert(bufferScene_->data_.inverseViewProjection_);
-				bufferScene_->data_.time_ += Time::deltaTime_;
+				bufferScene_->data_.time_ += Time::GetDeltaTime();
 
 				//定数バッファ更新
 #if 0

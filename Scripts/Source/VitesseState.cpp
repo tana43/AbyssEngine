@@ -17,7 +17,7 @@ void VitesseState::GroundMove::Initialize()
     owner_->ChangeAnimationState(Vitesse::AnimationState::Ground_Move);
 }
 
-void VitesseState::GroundMove::Update()
+void VitesseState::GroundMove::Update(float deltaTime)
 {
     owner_->UpdateInputMove();
 
@@ -69,7 +69,7 @@ void VitesseState::Flight::Initialize()
     //空中移動
 }
 
-void VitesseState::Flight::Update()
+void VitesseState::Flight::Update(float deltaTime)
 {
     owner_->UpdateInputMove();
     owner_->ThrusterInfluenceVelocity();
@@ -124,7 +124,7 @@ void VitesseState::Landing::Initialize()
     owner_->ThrusterAllStop();
 }
 
-void VitesseState::Landing::Update()
+void VitesseState::Landing::Update(float deltaTime)
 {
     //アニメーションが終了次第GroundMoveへ
     if (owner_->GetAnimator()->GetAnimationFinished())
@@ -161,7 +161,7 @@ void VitesseState::TakeOff::Initialize()
     goalAltitude_ = startPosition_ + altitude_;
 }
 
-void VitesseState::TakeOff::Update()
+void VitesseState::TakeOff::Update(float deltaTime)
 {
     //アニメーションが遷移しきっており、ある程度の時間が経過しているなら空中移動モーションへ
     if (owner_->GetAnimator()->GetNextAnimClip() != static_cast<int>(Vitesse::AnimationIndex::Flight_Move)
@@ -177,7 +177,7 @@ void VitesseState::TakeOff::Update()
 
     owner_->GetTransform()->SetPositionY(positionY);
 
-    timer_ += Time::deltaTime_;
+    timer_ += deltaTime;
 
 
     //空中へステート遷移
@@ -205,7 +205,7 @@ void VitesseState::Boarding::Initialize()
     owner_->GetRightWeaponModel()->SetEnable(false);
 }
 
-void VitesseState::Boarding::Update()
+void VitesseState::Boarding::Update(float deltaTime)
 {
     //乗り込んでいないとき
     //アニメーションが終了しており、プレイヤーが乗り込んでいるなら移動ステートへ遷移
@@ -319,7 +319,7 @@ void VitesseState::HighSpeedFlight::Initialize()
     timer_ = 0.0f;
 }
 
-void VitesseState::HighSpeedFlight::Update()
+void VitesseState::HighSpeedFlight::Update(float deltaTime)
 {
     //スラスター噴射
     owner_->ThrusterInfluenceVelocity();
@@ -364,14 +364,14 @@ void VitesseState::HighSpeedFlight::Update()
     const float blurStrength = 0.07f;
     if (postEffect.radialBlurStrength_ > blurStrength)
     {
-        postEffect.radialBlurStrength_ -= Time::deltaTime_;
+        postEffect.radialBlurStrength_ -= deltaTime;
     }
     else
     {
         postEffect.radialBlurStrength_ = blurStrength;
     }
 
-    timer_ += Time::deltaTime_;
+    timer_ += deltaTime;
 
     //各ステートに遷移
 
@@ -391,6 +391,9 @@ void VitesseState::HighSpeedFlight::Update()
             owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
         }
     }
+
+    //コントローラー振動
+    Input::GetGamePad().SetVibration(0.03f, 0.03f);
 
     //着地しているなら着地ステートへ
     /*if (owner_->GetOnGround())
@@ -425,6 +428,8 @@ void VitesseState::HighSpeedFlight::Finalize()
         owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),0.0f);
     }
 
+    //コントローラー振動リセット
+    Input::GetGamePad().SetVibration(0.0f, 0.0f);
 }
 
 void VitesseState::MeleeAttackDash::Initialize()
@@ -474,7 +479,7 @@ void VitesseState::MeleeAttackDash::Initialize()
     step_ = 0;
 }
 
-void VitesseState::MeleeAttackDash::Update()
+void VitesseState::MeleeAttackDash::Update(float deltaTime)
 {
     switch (step_)
     {
@@ -554,7 +559,7 @@ void VitesseState::MeleeAttack::Initialize()
     owner_->GetAttackerSystem()->Attack("Slash_N_1");
 }
 
-void VitesseState::MeleeAttack::Update()
+void VitesseState::MeleeAttack::Update(float deltaTime)
 {
     //アニメーション終了時に通常飛行へ遷移
     if(owner_->GetAnimator()->GetAnimationFinished())

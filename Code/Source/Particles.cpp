@@ -58,15 +58,15 @@ UINT Align(UINT num, UINT alignment)
     return (num + (alignment - 1)) & ~(alignment - 1);
 }
 
-void ParticleSystem::Integrate()
+void ParticleSystem::Integrate(float deltaTime)
 {
     const auto& dc = DXSystem::GetDeviceContext();
 
     dc->CSSetUnorderedAccessViews(0, 1, particleBufferUav_.GetAddressOf(), NULL);
 
     //定数バッファ更新
-    particleSystemData_.time_ += Time::deltaTime_;
-    particleSystemData_.deltaTime_ = Time::deltaTime_;
+    particleSystemData_.time_ += deltaTime;
+    particleSystemData_.deltaTime_ = deltaTime;
     particleSystemData_.Max_Particle_Count = Max_Particle_Count;
     dc->UpdateSubresource(constantBuffer_.Get(), 0, 0, &particleSystemData_,0,0);
     dc->CSSetConstantBuffers(9, 1, constantBuffer_.GetAddressOf());
@@ -81,7 +81,7 @@ void ParticleSystem::Integrate()
     dc->CSSetUnorderedAccessViews(0, 1, &nullUnorderedAccessView, NULL);
 }
 
-void ParticleSystem::Initialize()
+void ParticleSystem::Initialize(float deltaTime)
 {
     //初期化処理
     const auto& dc = DXSystem::GetDeviceContext();
@@ -90,7 +90,7 @@ void ParticleSystem::Initialize()
 
     //定数バッファをリセット
     particleSystemData_.time_ = 0;
-    particleSystemData_.deltaTime_ = Time::deltaTime_;
+    particleSystemData_.deltaTime_ = deltaTime;
     particleSystemData_.Max_Particle_Count = Max_Particle_Count;
     dc->UpdateSubresource(constantBuffer_.Get(), 0, 0, &particleSystemData_, 0, 0);
     dc->CSSetConstantBuffers(9, 1, constantBuffer_.GetAddressOf());

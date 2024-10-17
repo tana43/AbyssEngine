@@ -1,5 +1,6 @@
 #include "Input.h"
 #include "Engine.h"
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 using namespace std;
@@ -34,6 +35,17 @@ void Input::Update()
         {
             useDevice_ = GAMEPAD;
         }
+    }
+}
+
+void Input::DrawImGui()
+{
+    if (ImGui::BeginMenu("Input"))
+    {
+        ImGui::Checkbox("reverse AxisR X", &reverseAxisRX_);
+        ImGui::Checkbox("reverse AxisR Y", &reverseAxisRY_);
+
+        ImGui::EndMenu();
     }
 }
 
@@ -127,6 +139,11 @@ const Vector2 Input::GameSupport::GetCameraRollVector()
     {
         input.Normalize();
     }
+    
+    //”½“]“ü—Í
+    if (i->reverseAxisRX_)input.x *= -1;
+    if (i->reverseAxisRY_)input.y *= -1;
+    
 
     return input;
 }

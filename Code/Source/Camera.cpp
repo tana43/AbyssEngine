@@ -446,7 +446,7 @@ void Camera::ZoomUpdate()
 {
     if (!isZooming_)return;
 
-    zoomTimer_ += Time::deltaTime_;
+    zoomTimer_ += actor_->GetDeltaTime();
 
     //補完しきっているか
     if (zoomTimer_ > nextZoomParam_.time_)
@@ -503,8 +503,8 @@ void Camera::DebugCameraController()
                 auto mouseVec = Vector2(960.0f, 540.0f) - Vector2(static_cast<float>(pos.x), static_cast<float>(pos.y));
                 if (mouseVec.x != 0 || mouseVec.y != 0)
                 {
-                    rot.y -= mouseVec.x * Time::deltaTime_ * mouseSensitivity_.x;
-                    rot.x -= mouseVec.y * Time::deltaTime_ * mouseSensitivity_.y;
+                    rot.y -= mouseVec.x * actor_->GetDeltaTime() * mouseSensitivity_.x;
+                    rot.x -= mouseVec.y * actor_->GetDeltaTime() * mouseSensitivity_.y;
                 }
             }
             else
@@ -536,8 +536,8 @@ void Camera::DebugCameraController()
             auto stick = Vector2(gamepad.GetAxisRX(), gamepad.GetAxisRY());
             if (stick.x != 0 || stick.y != 0)
             {
-                rot.y += stick.x * Time::deltaTime_;
-                rot.x -= stick.y * Time::deltaTime_;
+                rot.y += stick.x * actor_->GetDeltaTime();
+                rot.x -= stick.y * actor_->GetDeltaTime();
             }
         }
 
@@ -566,9 +566,9 @@ void Camera::DebugCameraController()
         if (input.Length() > 0 || mouseWheel != 0.0f)
         {
             Vector3 move = {
-                transform_->GetForward() * (input.y + mouseWheel * Time::deltaTime_) + transform_->GetRight() * input.x
+                transform_->GetForward() * (input.y + mouseWheel * actor_->GetDeltaTime()) + transform_->GetRight() * input.x
             };
-            move = move * Time::deltaTime_ * debCameraSpeed_;
+            move = move * actor_->GetDeltaTime() * debCameraSpeed_;
             auto pos = transform_->GetPosition();
             transform_->SetPosition(pos + move);
         }
@@ -590,7 +590,7 @@ void Camera::CameraLagUpdate()
     const auto& vec = target - cameraPos;
 
     //移動ベクトル計算
-    Vector3 moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_) * Time::deltaTime_ * 100.0f;// * 100.0f単純に値が小さすぎるから増やしてるだけ
+    Vector3 moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_) * actor_->GetDeltaTime() * 100.0f;// * 100.0f単純に値が小さすぎるから増やしてるだけ
     if (moveVec.LengthSquared() > vec.LengthSquared())
     {
         /*Vector3 vecNormal;
@@ -709,9 +709,9 @@ void Camera::CameraShakeUpdate()
 
 
     //タイマー更新
-    shakeTimer_ += Time::deltaTime_;
-    shakePosFreqTimer_ += (shakeParam_.position_.frequency_ * shakeParam_.position_.frequencyMultiplier_) * Time::deltaTime_;
-    shakeRotFreqTimer_ += (shakeParam_.rotation_.frequency_ * shakeParam_.rotation_.frequencyMultiplier_) * Time::deltaTime_;
+    shakeTimer_ += actor_->GetDeltaTime();
+    shakePosFreqTimer_ += (shakeParam_.position_.frequency_ * shakeParam_.position_.frequencyMultiplier_) * actor_->GetDeltaTime();
+    shakeRotFreqTimer_ += (shakeParam_.rotation_.frequency_ * shakeParam_.rotation_.frequencyMultiplier_) * actor_->GetDeltaTime();
 
     //振動終了
     if (shakeTimer_ > shakeParam_.timing_.duration_)

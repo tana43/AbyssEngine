@@ -28,6 +28,13 @@ namespace AbyssEngine
             FinalBlow   //とどめ
         };
 
+        struct AttackParameter
+        {
+            float power_ = 1.0f;
+            float knockback_ = 1.0f;
+            Vector3 vector_ = {};
+        };
+
         Tag GetTag() const { return tag_; }
         void ReplaceTag(Tag t) { tag_ = t; }
         void AddTag(Tag t)
@@ -52,7 +59,7 @@ namespace AbyssEngine
         void TurnY(Vector3 dir, const float& speed, bool smooth = true/*なめらかに回転するか*/);
 
         //ダメージを与える 攻撃が通ったならtrue
-        bool ApplyDamage(const float& damage,DamageResult& damageResult);
+        virtual bool ApplyDamage(const AttackParameter& param,DamageResult* damageResult = nullptr);
 
         //死亡
         void Die();
@@ -102,12 +109,14 @@ namespace AbyssEngine
 
         virtual void Landing();//着地
 
+        void UpdateImpactMove();//ノックバックなどによって動かされる処理の更新
+
         float Gravity = -9.8f;
 
     protected:
         Tag tag_ = Tag_Default;
 
-        float weight_ = 1.0f;//重さ（重力の計算に使う）
+        float weight_ = 1.0f;//重さ（重力、吹っ飛ばしの計算に使う）
 
         bool active_ = true;
         bool onGround_ = true;
@@ -150,6 +159,11 @@ namespace AbyssEngine
 
         //外的要因による移動値 例えば地形判定による押し出しとか
         Vector3 externalFactorsMove_ = {};
+
+        //衝撃などを受けて動く値
+        Vector3 impactMove_ = {};
+        //衝撃を受けた際の減速力
+        float inpactDeccel_ = 1.0f;
     };
 }
 

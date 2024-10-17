@@ -7,6 +7,7 @@
 #include "Engine.h"
 #include "SceneManager.h"
 #include "Vitesse.h"
+#include "AttackerSystem.h"
 
 using namespace AbyssEngine;
 
@@ -78,7 +79,7 @@ void BossMech::ColliderInitialize()
 {
     //喰らい判定設定
     {
-        const std::shared_ptr<HitCollider> collider[] =
+        const std::shared_ptr<HitCollider> colliders[] =
         {
             AddHitCollider(Vector3::Zero, 10.0f, "Collider_Chest",          model_, "spine_02"),
 
@@ -112,7 +113,7 @@ void BossMech::ColliderInitialize()
 
 
         //ロックオン可能なコライダーを設定
-        std::string lockonCollider[] = {
+        std::string lockonColliders[] = {
             "Collider_Chest",
             "Collider_Head",
             "Collider_Lowerarm_R",
@@ -123,12 +124,12 @@ void BossMech::ColliderInitialize()
         };
 
         //タグを設定
-        for (const auto& col : collider)
+        for (const auto& col : colliders)
         {
             col->ReplaceTag(Collider::Tag::Enemy);
 
             //ロックオン可能なコライダーを設定
-            for (const auto& lockon : lockonCollider)
+            for (const auto& lockon : lockonColliders)
             {
                 if (col->GetActor()->name_ == lockon)
                 {
@@ -137,6 +138,49 @@ void BossMech::ColliderInitialize()
             }
         }
     }
+
+    //攻撃判定設定
+    {
+        const std::shared_ptr<AttackCollider> colliders[] =
+        {
+            AddAttackCollider(Vector3::Zero, 11.0f, "Collider_Chest",          model_, "spine_02"),
+
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Head",           model_, "head"),
+
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Shoulder_R",     model_, "clavicle_r"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Upperarm_R",     model_, "upperarm_r"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Lowerarm_R",     model_, "lowerarm_r"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Hand_R",         model_, "hand_r"),
+
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Shoulder_L",     model_, "clavicle_l"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Upperarm_L",     model_, "upperarm_l"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Lowerarm_L",     model_, "lowerarm_l"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Hand_L",         model_, "hand_l"),
+
+            AddAttackCollider(Vector3::Zero, 7.0f, "Collider_Hip",            model_, "pelvis"),
+
+            //大腿
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Thigh_R",         model_, "thigh_r"),
+            AddAttackCollider(Vector3(0.2f,0,0),  7.0f, "Collider_Lowthing_R",          model_, "thigh_r"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Knee_R",          model_, "calf_r"),
+            AddAttackCollider(Vector3(0.3f,0,0),  7.0f, "Collider_Downknee_R",          model_, "calf_r"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Foot_R",          model_, "foot_r"),
+
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Thigh_L",         model_, "thigh_l"),
+            AddAttackCollider(Vector3(-0.2f,0,0),  7.0f, "Collider_Lowthing_L",          model_, "thigh_l"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Knee_L",          model_, "calf_l"),
+            AddAttackCollider(Vector3(-0.3f,0,0),  7.0f, "Collider_Downknee_L",          model_, "calf_l"),
+            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Foot_L",          model_, "foot_l")
+        };
+
+        //タグを設定
+        for (const auto& col : colliders)
+        {
+            col->ReplaceTag(Collider::Tag::Enemy);
+            attackColliders_.emplace_back(col);
+        }
+    }
+
 
     //押し出し判定設定
     {
@@ -172,25 +216,12 @@ void BossMech::ColliderInitialize()
             AddTerrainCollider(Vector3::Zero,  6.0f, "Collider_Foot_L",          model_, "foot_l")
         };
 
-
-        //ロックオン可能なコライダーを設定
-        std::string lockonCollider[] = {
-            "Collider_Chest",
-            "Collider_Head",
-            "Collider_Lowerarm_R",
-            "Collider_Lowerarm_L",
-            "Collider_Hip",
-            "Collider_Knee_R",
-            "Collider_Knee_L"
-        };
-
         //タグを設定
         for (const auto& col : collider)
         {
             col->ReplaceTag(Collider::Tag::Enemy);
         }
     }
-
 }
 
 void BossMech::BehaviorTreeInitialize()
@@ -203,14 +234,35 @@ void BossMech::BehaviorTreeInitialize()
     aiTree_->AddNode("", "Root", 0, Ai_SelectRule::Priority, nullptr, nullptr);
 
     //戦闘
-    //aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new MechBattleJudgment(this), nullptr);
+    aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new MechBattleJudgment(this), nullptr);
     //偵察
     aiTree_->AddNode("Root", "Scout", 1, Ai_SelectRule::Sequence, nullptr, nullptr);
 
     //戦闘ノード
-    //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
+    aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
     //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
 
     //偵察ノード
     aiTree_->AddNode("Scout", "Idle", 1, Ai_SelectRule::Non, nullptr, new MechIdleAction(this));
+
+#if 1
+    aiTree_->SetActive(false);
+#endif // 1
+}
+
+void BossMech::AttackerSystemInitialize()
+{
+    attackerSystem_ = actor_->AddComponent<AttackerSystem>();
+
+    AttackData atkData;
+    for (auto& collider : attackColliders_)
+    {
+        atkData.attackColliderList_.emplace_back(collider);
+    }
+    atkData.power_ = 10.0f;
+    atkData.duration_ = 3.0f;
+    atkData.maxHits_ = 1.0f;
+    atkData.staggerValue_ = 1.0f;
+
+    attackerSystem_->RegistAttackData("Rush", atkData);
 }

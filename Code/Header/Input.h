@@ -25,6 +25,8 @@ namespace AbyssEngine
     public:
         void Update();
 
+        void DrawImGui();
+
         static GamePad& GetGamePad();
 
     public:
@@ -56,6 +58,10 @@ namespace AbyssEngine
 
         //最後に入力されたデバイス（キーマウかコントローラー）
         Device useDevice_;
+
+        //右スティックの反転入力
+        bool reverseAxisRX_ = false;
+        bool reverseAxisRY_ = true;
     };
 }
 

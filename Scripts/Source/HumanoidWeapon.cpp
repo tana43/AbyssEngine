@@ -1,6 +1,7 @@
 #include "HumanoidWeapon.h"
 #include "Engine.h"
 #include "imgui/imgui.h"
+#include "Actor.h"
 
 #include <algorithm>
 
@@ -41,7 +42,7 @@ void HumanoidWeapon::UpdateVelocity()
             Vector3 moveVecXZ = { moveVec_.x,0.0f,moveVec_.z };
             if (moveVecXZ.LengthSquared() > 0.01f)
             {
-                velocity_ = velocity_ + moveVecXZ * (acceleration_ * Time::deltaTime_);
+                velocity_ = velocity_ + moveVecXZ * (acceleration_ * actor_->GetDeltaTime());
 
                 //速度制限
                 Vector2 velocityXZ = { velocity_.x,velocity_.z };
@@ -57,7 +58,7 @@ void HumanoidWeapon::UpdateVelocity()
                     else
                     {
                         //減速させる
-                        float newSpeed = spd - speedingDecel_ * Time::deltaTime_;
+                        float newSpeed = spd - speedingDecel_ * actor_->GetDeltaTime();
                         velocityXZ = velocityXZ * newSpeed;
                     }
 
@@ -71,7 +72,7 @@ void HumanoidWeapon::UpdateVelocity()
                 Vector3 veloXZNormal = {velocity_.x,0.0f,velocity_.z};
                 veloXZNormal.Normalize();
 
-                Vector3 deceVelocityXZ = velocity_ - (veloXZNormal * (deceleration_ * Time::deltaTime_));
+                Vector3 deceVelocityXZ = velocity_ - (veloXZNormal * (deceleration_ * actor_->GetDeltaTime()));
                 deceVelocityXZ.y = 0;
                 Vector3 deceVeloNormal;
                 deceVelocityXZ.Normalize(deceVeloNormal);
@@ -97,7 +98,7 @@ void HumanoidWeapon::UpdateVelocity()
             if (fabsf(moveVec_.y) > 0.01f)
             {
                 //加速
-                velocity_.y += moveVec_.y * (acceleration_ * Time::deltaTime_);
+                velocity_.y += moveVec_.y * (acceleration_ * actor_->GetDeltaTime());
 
                 //速度制限
                 velocity_.y = std::clamp(velocity_.y, -Max_Vertical_Speed, Max_Vertical_Speed);
@@ -108,7 +109,7 @@ void HumanoidWeapon::UpdateVelocity()
                 float direY = velocity_.y > 0.0f ? 1.0f : -1.0f;
 
                 //減速
-                velocity_.y -= (direY * deceleration_ * Time::deltaTime_);
+                velocity_.y -= (direY * deceleration_ * actor_->GetDeltaTime());
 
                 //減速制限
                  //反対方向のベクトルになってしまうか速度が遅すぎるなら、速度を完全に０にする

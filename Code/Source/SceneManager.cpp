@@ -49,6 +49,8 @@ void SceneManager::Update()
 
         if (activeScene_)
         {
+            activeScene_->TimeUpdate();
+
             activeScene_->Update();
 
             activeScene_->UpdateRemoveActors();
@@ -154,7 +156,7 @@ void SceneManager::ChangeScene()
     }
 
     //経過時間をリセット
-    Time::deltaTime_ = 0.0f;
+    Time::SetDeltaTime(0.0f);
 
     wait1frame_ = false;
 

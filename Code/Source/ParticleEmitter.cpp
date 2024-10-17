@@ -17,7 +17,7 @@ void ParticleEmitter::Initialize(const std::shared_ptr<Actor>& actor)
     Engine::renderManager_->Add(std::static_pointer_cast<ParticleEmitter>(shared_from_this()));
 
     particleSystem_ = std::make_unique<ParticleSystem>(1000);
-    particleSystem_->Initialize();
+    particleSystem_->Initialize(actor_->GetDeltaTime());
     Texture::LoadTextureFromFile("./Assets/Effects/Texture/Particle01.png", particleTexture_.GetAddressOf(), NULL);
     particleSystem_->particleSystemData_.spriteSheetGrid_ = { 1, 1 };
 
@@ -43,7 +43,7 @@ void AbyssEngine::ParticleEmitter::Render()
 void AbyssEngine::ParticleEmitter::RecalculateFrame()
 {
     DXSystem::GetDeviceContext()->CSSetShaderResources(1, 1, noise3d_.GetAddressOf());
-    particleSystem_->Integrate();
+    particleSystem_->Integrate(actor_->GetDeltaTime());
 }
 
 void AbyssEngine::ParticleEmitter::DrawImGui()

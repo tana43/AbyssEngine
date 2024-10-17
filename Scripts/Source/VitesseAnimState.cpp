@@ -12,7 +12,7 @@ void VitesseAnimState::AnimGroundMove::Initialize()
     isPlayFallAnim_ = false;
 }
 
-void VitesseAnimState::AnimGroundMove::Update()
+void VitesseAnimState::AnimGroundMove::Update(float deltaTime)
 {
     const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
 
@@ -90,7 +90,7 @@ void VitesseAnimState::AnimFlight::Initialize()
     owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Move),0.5f);
 }
 
-void VitesseAnimState::AnimFlight::Update()
+void VitesseAnimState::AnimFlight::Update(float deltaTime)
 {
     const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
     const auto& velo = vi->GetVelocity();
@@ -157,7 +157,7 @@ void VitesseAnimState::AnimHighSpeedFlight::Initialize()
     owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_Move));
 }
 
-void VitesseAnimState::AnimHighSpeedFlight::Update()
+void VitesseAnimState::AnimHighSpeedFlight::Update(float deltaTime)
 {
     const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
     const auto& velo = vi->GetVelocity();

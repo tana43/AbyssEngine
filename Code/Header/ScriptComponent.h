@@ -44,7 +44,7 @@ namespace AbyssEngine
         const bool& GetActive() const { return active_; }
         void SetActive(const bool& active) { active_ = active; }
 
-    private:
+    protected:
         bool active_ = true;
     };
 }

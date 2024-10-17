@@ -108,7 +108,7 @@ void Character::TurnY(Vector3 dir, bool smooth)
 
     if (smooth)
     {
-        rotY += rotSpeed * Time::deltaTime_;
+        rotY += rotSpeed * actor_->GetDeltaTime();
     }
     else
     {
@@ -143,7 +143,7 @@ void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
         //内積値を0~1の範囲に
         dot = dot + 1.0f;
 
-        rotSpeed = speed * rotAmount * Time::deltaTime_;
+        rotSpeed = speed * rotAmount * actor_->GetDeltaTime();
 
         if (rotSpeed > rotAmount)
         {
@@ -164,35 +164,35 @@ void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
     transform_->SetRotationY(rotY);
 }
 
-bool AbyssEngine::Character::ApplyDamage(const float& damage, DamageResult& damageResult)
+bool Character::ApplyDamage(const AttackParameter& param, DamageResult* damageResult)
 {
     //無敵か
     if (invincible_)
     {
-        damageResult = DamageResult::Failed;
+        if (damageResult)*damageResult = DamageResult::Failed;
         return false;
     }
 
     //既に死んでいるか
     if (health_ < 0)
     {
-        damageResult = DamageResult::Failed;
+        if (damageResult)*damageResult = DamageResult::Failed;
         return false;
     }
 
     //ダメージ処理
-    health_ -= damage;
+    health_ -= param.power_;
 
     //死亡処理
     if (health_ < 0)
     {
         health_ = 0;
         Die();
-        damageResult = DamageResult::FinalBlow;
+        if (damageResult)*damageResult = DamageResult::FinalBlow;
     }
     else
     {
-        damageResult = DamageResult::Success;
+        if (damageResult)*damageResult = DamageResult::Success;
     }
 
     return true;
@@ -218,12 +218,12 @@ void Character::UpdateVelocity()
         {
             if (onGround_)
             {
-                velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_);
+                velocity_ = velocity_ + moveVec_ * (acceleration_ * actor_->GetDeltaTime());
             }
             else
             {
                 //空中にいるときは制御しづらくする
-                velocity_ = velocity_ + moveVec_ * (acceleration_ * Time::deltaTime_) * airborneCoefficient_;
+                velocity_ = velocity_ + moveVec_ * (acceleration_ * actor_->GetDeltaTime()) * airborneCoefficient_;
             }
 
             //速度制限
@@ -241,7 +241,7 @@ void Character::UpdateVelocity()
                 else
                 {
                     //減速させる
-                    float newSpeed = spd - speedingDecel_ * Time::deltaTime_;
+                    float newSpeed = spd - speedingDecel_ * actor_->GetDeltaTime();
                     velocityXZ = velocityXZ * newSpeed;
                 }
 
@@ -258,11 +258,11 @@ void Character::UpdateVelocity()
 
             if (onGround_)
             {
-                velocityXZ = velocity_ - (veloXZNormal * (deceleration_ * Time::deltaTime_));
+                velocityXZ = velocity_ - (veloXZNormal * (deceleration_ * actor_->GetDeltaTime()));
             }
             else
             {
-                velocityXZ = velocity_ - (veloXZNormal * (airResistance_ * Time::deltaTime_));
+                velocityXZ = velocity_ - (veloXZNormal * (airResistance_ * actor_->GetDeltaTime()));
             }
             velocityXZ.y = 0;
 
@@ -287,7 +287,7 @@ void Character::UpdateVelocity()
         if (enableGravity_)
         {
             //重力による速力更新
-            velocity_.y += Gravity * weight_ * Time::deltaTime_;
+            velocity_.y += Gravity * weight_ * actor_->GetDeltaTime();
         }
 
         //速度制限
@@ -303,7 +303,7 @@ void Character::UpdateMove()
     UpdateVelocity();
 
     //動くことがない時は処理しない
-    //if (velocity_.LengthSquared() * Time::deltaTime_ < 0.01f)return;
+    //if (velocity_.LengthSquared() * actor_->GetDeltaTime() < 0.01f)return;
     
     UpdateHorizontalMove();
     UpdateVerticalMove();
@@ -326,9 +326,9 @@ void Character::UpdateHorizontalMove()
     const Vector3 pos = transform_->GetPosition();
     Vector3 move =
     {
-        velocity_.x * Time::deltaTime_,
+        velocity_.x * actor_->GetDeltaTime(),
         0,
-        velocity_.z * Time::deltaTime_
+        velocity_.z * actor_->GetDeltaTime()
     };
 
     //アニメーターを持っているならルートモーションによる移動値を加算
@@ -435,7 +435,7 @@ void Character::UpdateHorizontalMove()
 
             //移動距離に応じて速度を強制的に変更
             {
-                float moveDistance = Vector3(moved - pos).Length() / Time::deltaTime_;
+                float moveDistance = Vector3(moved - pos).Length() / actor_->GetDeltaTime();
                 velocity_.Normalize();
                 velocity_ = velocity_ * moveDistance;
             }
@@ -458,7 +458,7 @@ void Character::UpdateVerticalMove()
 {
     //速度から何の判定もしなかったときの移動後の座標を取得
     const Vector3 pos = transform_->GetPosition();
-    float moveY = velocity_.y * Time::deltaTime_;
+    float moveY = velocity_.y * actor_->GetDeltaTime();
 
     //アニメーターを持っているならルートモーションによる移動値を加算
     if (const auto& animator = actor_->GetComponent<Animator>())
@@ -552,4 +552,11 @@ void Character::Landing()
 {
     velocity_.y = 0.0f;
     onGround_ = true;
+}
+
+void Character::UpdateImpactMove()
+{
+    //現在の衝撃移動値を減らしていく
+    float deccel = (inpactDeccel_ * inpactDeccel_) * actor_->GetDeltaTime();
+    impactMove_ = impactMove_;
 }
