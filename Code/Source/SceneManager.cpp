@@ -49,11 +49,20 @@ void SceneManager::Update()
 
         if (activeScene_)
         {
-            activeScene_->TimeUpdate();
-
             activeScene_->Update();
 
             activeScene_->UpdateRemoveActors();
+        }
+    }
+}
+
+void SceneManager::TimeUpdate()
+{
+    if (run)
+    {
+        if (activeScene_)
+        {
+            activeScene_->TimeUpdate();
         }
     }
 }

@@ -543,7 +543,7 @@ void Vitesse::AttackerInitialize()
         atkData.duration_ = 1.0f;//持続時間
         //atkData.staggerValue_
         atkData.maxHits_ = 1;//攻撃最大ヒット回数
-        atkData.hitStop_ = 0.1f;//ヒットストップ時間
+        atkData.hitStopDuration_ = 0.1f;//ヒットストップ時間
 
         //アタッカーシステムに登録
         attackerSystem_->RegistAttackData("Slash_N_1", atkData);

@@ -19,12 +19,15 @@ namespace AbyssEngine
         int maxHits_ = 1;//攻撃が連続ヒットできる回数　最低でも１は必要
         float hitInterval_ = 0.2f;//攻撃が連続ヒットする際に何秒ごとに攻撃を
 
-        float hitStop_ = 0;//攻撃が当たった際にヒットストップする時間
+        float hitStopDuration_ = 0.2f;//攻撃が当たった際にヒットストップする時間
+        float hitStopOutTime_ = 0.05f;//ヒットストップのフェード開始時間
 
         //判定を出現させるコライダー
         std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;
 
         //Game:ヒット音とかも入れるといいかも
+
+        AttackData& operator=(const AttackData& data);
     };
 
     class AttackerSystem : public ScriptComponent

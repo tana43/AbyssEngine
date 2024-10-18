@@ -94,7 +94,7 @@ public:
     void SetCanJump(const bool& can) { canJump_ = can; }
 
 private:
-    void MoveUpdate();
+    void UpdateMove()override;
     void CameraRollUpdate();
 
     void SocketUpdate();

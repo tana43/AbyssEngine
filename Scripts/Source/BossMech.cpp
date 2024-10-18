@@ -62,6 +62,9 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //AI初期化
     BehaviorTreeInitialize();
 
+    //アタッカーシステム
+    AttackerSystemInitialize();
+
     //ターゲットになるヴィテスを取得
     const auto& vitesseActor = Engine::sceneManager_->GetActiveScene().Find("Vitesse");
     if (const auto& a = vitesseActor.lock())
@@ -263,6 +266,9 @@ void BossMech::AttackerSystemInitialize()
     atkData.duration_ = 3.0f;
     atkData.maxHits_ = 1.0f;
     atkData.staggerValue_ = 1.0f;
+    atkData.hitStopDuration_ = 1.0f;
+    atkData.hitStopOutTime_ = 0.0f;
+    atkData.knockback_ = 100.0f;
 
     attackerSystem_->RegistAttackData("Rush", atkData);
 }

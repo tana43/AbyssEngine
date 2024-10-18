@@ -228,7 +228,7 @@ void Soldier::Update()
         stateMachine_->SetActive(false);
     }
 
-    MoveUpdate();
+    Character::Update();
 
     CameraRollUpdate();
 
@@ -257,7 +257,7 @@ void Soldier::DrawImGui()
 
 }
 
-void Soldier::MoveUpdate()
+void Soldier::UpdateMove()
 {
    
     //Character::UpdateVelocity();

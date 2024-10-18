@@ -143,7 +143,8 @@ void TestScene::Initialize()
         }
     }*/
     const auto& asp = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Asphalt.glb");
-    asp->GetTransform()->SetLocalScaleFactor(2000.0f);
+    asp->GetTransform()->SetLocalScaleFactor(5000.0f);
+    asp->GetComponent<StaticMesh>()->SetIBLIntensity(0.05f);
     stageCom->RegisterTriangles();
     Engine::stageManager_->SetStage(stageCom);
 #endif // 0

@@ -63,6 +63,12 @@ namespace AbyssEngine
 
         //死亡
         void Die();
+        
+        //ヒットストップ　持続時間とフェード開始時間
+        void HitStop(float duration,float blendOutTime);
+
+        //吹っ飛ばし そのまま吹き飛ばすベクトルを入れる
+        void AddImpulse(Vector3 impulse);
 
     public:
         const bool& GetIsActive() const { return active_; }
@@ -109,9 +115,13 @@ namespace AbyssEngine
 
         virtual void Landing();//着地
 
+        float Gravity = -9.8f;
+
+    private:
         void UpdateImpactMove();//ノックバックなどによって動かされる処理の更新
 
-        float Gravity = -9.8f;
+        void UpdateHitStop();//ヒットストップ更新処理　
+
 
     protected:
         Tag tag_ = Tag_Default;
@@ -164,6 +174,12 @@ namespace AbyssEngine
         Vector3 impactMove_ = {};
         //衝撃を受けた際の減速力
         float inpactDeccel_ = 1.0f;
+
+        //ヒットストップ
+        float hitStopDuration_ = 0;//持続時間
+        float hitStopOutTime_ = 0;//いつからフェードアウトしていくか
+        float hitStopTimer_ = 100;//時間計測用
+        
     };
 }
 

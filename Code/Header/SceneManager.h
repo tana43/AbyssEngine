@@ -22,6 +22,7 @@ namespace AbyssEngine
     private:
         void Exit() const;
         void Update(); //更新
+        void TimeUpdate();
 
         //シーンの追加
         void AddScene(Scene* scene,std::string name);

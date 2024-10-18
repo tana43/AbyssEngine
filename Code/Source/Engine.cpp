@@ -72,6 +72,8 @@ void Engine::Update()
         Time::SetDeltaTime(0.0f);
     }
 
+    sceneManager_->TimeUpdate();
+
     ////ImGuiçXêV
     IMGUI_CTRL_CLEAR_FRAME();
 

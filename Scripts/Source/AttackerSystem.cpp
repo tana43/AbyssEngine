@@ -62,14 +62,7 @@ void AbyssEngine::AttackerSystem::Attack(std::string atkName)
     }
     
     //攻撃の情報を設定
-    currentAttack_.power_               = atkData->second.power_;
-    currentAttack_.knockback_           = atkData->second.knockback_;
-    currentAttack_.duration_            = atkData->second.duration_;
-    currentAttack_.staggerValue_        = atkData->second.staggerValue_;
-    currentAttack_.maxHits_             = atkData->second.maxHits_;
-    currentAttack_.hitInterval_         = atkData->second.hitInterval_;
-    currentAttack_.hitStop_             = atkData->second.hitStop_;
-    currentAttack_.attackColliderList_  = atkData->second.attackColliderList_;
+    currentAttack_= atkData->second;
 
     //各値をリセット
     hitCount_ = 0;
@@ -116,6 +109,10 @@ void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& 
 
         //ヒットインターバルをリセット
         hitIntervalTimer_ = 0;
+
+        //お互いにヒットストップ
+        target->HitStop(currentAttack_.hitStopDuration_,currentAttack_.hitStopOutTime_);
+        actor_->GetComponent<Character>()->HitStop(currentAttack_.hitStopDuration_, currentAttack_.hitStopOutTime_);
     }
 }
 
@@ -150,5 +147,16 @@ void AbyssEngine::AttackerSystem::AttackEnabledUpdate()
     }
 }
 
-
-
+AttackData& AbyssEngine::AttackData::operator=(const AttackData& data)
+{
+    power_              = data.power_;
+    knockback_          = data.knockback_;
+    duration_           = data.duration_;
+    staggerValue_       = data.staggerValue_;
+    maxHits_            = data.maxHits_;
+    hitInterval_        = data.hitInterval_;
+    hitStopDuration_    = data.hitStopDuration_;
+    hitStopOutTime_     = data.hitStopOutTime_;
+    attackColliderList_ = data.attackColliderList_;
+    return *this;
+}

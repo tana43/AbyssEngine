@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "imgui/imgui.h"
+#include "Easing.h"
 
 using namespace AbyssEngine;
 
@@ -16,8 +17,12 @@ void Character::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     ScriptComponent::Initialize(actor);
 }
 
-void AbyssEngine::Character::Update()
+void Character::Update()
 {
+    UpdateHitStop();
+
+    UpdateImpactMove();
+
     UpdateMove();
 }
 
@@ -48,6 +53,35 @@ void Character::DrawImGui()
     ImGui::SliderFloat("Health", &health_, 0.0f,Max_Health);
 
     ImGui::DragFloat("Gravity", &Gravity,0.01f);
+
+    static float hitStopDuration = 1.0f;
+    static float hitStopOutTime = 0.5f;
+    if (ImGui::TreeNode("HitStop"))
+    {
+        ImGui::DragFloat("HitStop Duration", &hitStopDuration,0.02f);
+        ImGui::SliderFloat("HitStop OutTime", &hitStopOutTime,0.0f,hitStopDuration);
+
+        if (ImGui::Button("Play HitStop"))
+        {
+            HitStop(hitStopDuration, hitStopOutTime);
+        }
+
+        ImGui::TreePop();
+    }
+
+    if (ImGui::TreeNode("Impulse"))
+    {
+        static Vector3 vec;
+        ImGui::DragFloat("Impact Deccel", &inpactDeccel_);
+        ImGui::DragFloat3("vector", &vec.x);
+
+        if (ImGui::Button("Add Impulse"))
+        {
+            AddImpulse(vec);
+        }
+
+        ImGui::TreePop();
+    }
 }
 
 bool Character::Jump(const float& jumpPower)
@@ -201,6 +235,18 @@ bool Character::ApplyDamage(const AttackParameter& param, DamageResult* damageRe
 void Character::Die()
 {
     actor_->Destroy(actor_);
+}
+
+void AbyssEngine::Character::HitStop(float duration, float blendOutTime)
+{
+    hitStopDuration_ = duration;
+    hitStopOutTime_ = blendOutTime;
+    hitStopTimer_ = 0;
+}
+
+void AbyssEngine::Character::AddImpulse(Vector3 impulse)
+{
+    impactMove_ = impactMove_ + impulse;
 }
 
 Vector3 Character::GetCenterPos()
@@ -557,6 +603,55 @@ void Character::Landing()
 void Character::UpdateImpactMove()
 {
     //現在の衝撃移動値を減らしていく
-    float deccel = (inpactDeccel_ * inpactDeccel_) * actor_->GetDeltaTime();
-    impactMove_ = impactMove_;
+    float length = impactMove_.Length();
+    if (length < 0.0001f) 
+    {
+        impactMove_ = Vector3::Zero;
+        return;
+    }
+
+    //速度が大きいほど減速するようにする
+    float deccel = length / inpactDeccel_;
+    deccel = deccel * deccel * actor_->GetDeltaTime();
+    float speed = length - deccel;
+    if (speed > 0)
+    {
+        impactMove_.Normalize();
+        impactMove_ = impactMove_ * speed;
+    }
+    else
+    {
+        impactMove_ = Vector3::Zero;
+    }
+
+    //移動値を加算する
+    AddExternalFactorsMove(impactMove_ * actor_->GetDeltaTime());
+}
+
+void Character::UpdateHitStop()
+{
+    if (hitStopTimer_ > hitStopDuration_)
+    {
+        actor_->SetTimeScale(1.0f);
+        return;
+    }
+
+    //ヒットストップ処理
+    //フェードが必要か
+    if (hitStopTimer_ > hitStopOutTime_)
+    {
+        float duration = hitStopDuration_ - hitStopOutTime_;
+        float time = hitStopTimer_ - hitStopOutTime_;
+        float weight = time / duration;
+
+        actor_->SetTimeScale(Easing::InCubic(weight, 1.0f, 1.0f, 0.0f));
+    }
+    else
+    {
+        //停止させる
+        actor_->SetTimeScale(0.0f);
+    }
+
+    //ワールドの経過時間で加算していく
+    hitStopTimer_ += Time::GetDeltaTime();
 }
