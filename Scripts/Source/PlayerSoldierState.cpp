@@ -359,19 +359,19 @@ void SoldierState::Dodge::PlayDodgeAnimation(Direction dir, bool second)
     switch (dir)
     {
     case SoldierState::Dodge::Direction::Back:
-        if(second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Back), transTime, startTime);
+        if(second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Back), &transTime, startTime);
         else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Back));
         break;
     case SoldierState::Dodge::Direction::Forward:
-        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Forward), transTime, startTime);
+        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Cartwheel_Forward), &transTime, startTime);
         else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Fwd));
         break;
     case SoldierState::Dodge::Direction::Right:
-        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Right), transTime, startTime);
+        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Right), &transTime, startTime);
         else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Right));
         break;
     case SoldierState::Dodge::Direction::Left:
-        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Left), transTime, startTime);
+        if (second)owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::NoHandSpin_Left), &transTime, startTime);
         else owner_->GetAnimator()->PlayAnimation(static_cast<int>(Soldier::AnimState::Dodge_Left));
         break;
     }

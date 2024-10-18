@@ -55,6 +55,7 @@ public:
         HighSpeedFlight,
         MeleeAtkDash,
         MeleeAtk,
+        Flinch,
     };
 
     //アニメーション
@@ -180,7 +181,7 @@ public:
     void TargetAcquisition();
 
     //アニメーション再生
-    void PlayAnimation(AnimationIndex index,float transTime = 0.1f,float startTime = 0.0f);
+    void PlayAnimation(AnimationIndex index,float* transTime = nullptr,float startTime = 0.0f);
 
     //ラジアルブラーをターゲットがいる所を中心として演出させる
     void RadialBlurFromTarget();
@@ -205,6 +206,9 @@ private:
 
     //アタッカー設定(コライダーを設定した後がいいかも)
     void AttackerInitialize();
+
+    //ひるむ
+    void Flinch(StaggrType type);
     
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;

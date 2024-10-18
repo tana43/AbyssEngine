@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "GameCollider.h"
 #include "Actor.h"
+#include "imgui/imgui.h"
 
 using namespace AbyssEngine;
 
@@ -25,7 +26,33 @@ void AttackerSystem::Update()
     
 }
 
-void AbyssEngine::AttackerSystem::OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result)
+void AttackerSystem::DrawImGui()
+{
+    if (ImGui::TreeNode("AttackerSystem"))
+    {
+        for (auto& data : attackDataMap_)
+        {
+            if (ImGui::BeginMenu(data.first.c_str()))
+            {
+                auto& atk = data.second;
+                ImGui::DragFloat("Power", &atk.power_, 0.1f);
+                ImGui::DragFloat("Duration", &atk.duration_, 0.01f);
+                ImGui::DragInt("Max Hit", &atk.maxHits_,1,0);
+                ImGui::DragFloat("Hit Interval", &atk.hitInterval_, 0.01f);
+                ImGui::DragFloat("Stagger Value", &atk.staggerValue_, 0.1f);
+                ImGui::DragFloat("Hitstop Duration", &atk.hitStopDuration_, 0.1f,0.0f);
+                ImGui::DragFloat("Hitstop OutTime", &atk.hitStopOutTime_, 0.1f,0.0f);
+                ImGui::DragFloat("Knockback", &atk.knockback_, 0.1f,0.0f);
+
+                ImGui::EndMenu();
+            }
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+void AttackerSystem::OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result)
 {
     //àÍìxçUåÇÇ™ÉqÉbÉgÇµÇΩÉtÉåÅ[ÉÄÇ©
     if (!attackEnabled_)return;
@@ -98,7 +125,8 @@ void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& 
     param.knockback_ = currentAttack_.knockback_;
 
     //çUåÇï˚å¸ÇéZèo
-    const Vector3 vec = transform_->GetPosition() - target->GetTransform()->GetPosition();
+    Vector3 vec = target->GetTransform()->GetPosition() - transform_->GetPosition();
+    vec.y *= 0.5f;//è„â∫Ç…ÇÕêÅÇ´îÚÇŒÇ≥ÇÍÇ…Ç≠Ç≠
     vec.Normalize(param.vector_);
 
     if (target->ApplyDamage(param, &result))
@@ -158,5 +186,6 @@ AttackData& AbyssEngine::AttackData::operator=(const AttackData& data)
     hitStopDuration_    = data.hitStopDuration_;
     hitStopOutTime_     = data.hitStopOutTime_;
     attackColliderList_ = data.attackColliderList_;
+    staggerType_        = data.staggerType_;
     return *this;
 }

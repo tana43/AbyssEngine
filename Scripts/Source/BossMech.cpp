@@ -73,9 +73,16 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     }
 }
 
+
 void BossMech::RushAttackUpdate()
 {
     moveVec_ = transform_->GetForward();
+    if (const auto& target = targetVitesse_.lock())
+    {
+        Vector3 toTarget = target->GetTransform()->GetPosition() - transform_->GetPosition();
+        toTarget.Normalize();
+        moveVec_ = toTarget;
+    }
 }
 
 void BossMech::ColliderInitialize()
@@ -266,9 +273,10 @@ void BossMech::AttackerSystemInitialize()
     atkData.duration_ = 3.0f;
     atkData.maxHits_ = 1.0f;
     atkData.staggerValue_ = 1.0f;
-    atkData.hitStopDuration_ = 1.0f;
+    atkData.hitStopDuration_ = 0.0f;
     atkData.hitStopOutTime_ = 0.0f;
-    atkData.knockback_ = 100.0f;
+    atkData.knockback_ = 400.0f;
+    atkData.staggerType_ = StaggrType::High;
 
     attackerSystem_->RegistAttackData("Rush", atkData);
 }

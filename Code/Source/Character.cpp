@@ -73,6 +73,7 @@ void Character::DrawImGui()
     {
         static Vector3 vec;
         ImGui::DragFloat("Impact Deccel", &inpactDeccel_);
+        ImGui::DragFloat("Impact Speed Max", &inpactSpeedMax_);
         ImGui::DragFloat3("vector", &vec.x);
 
         if (ImGui::Button("Add Impulse"))
@@ -234,7 +235,8 @@ bool Character::ApplyDamage(const AttackParameter& param, DamageResult* damageRe
 
 void Character::Die()
 {
-    actor_->Destroy(actor_);
+    //actor_->Destroy(actor_);
+    isDead = true;
 }
 
 void AbyssEngine::Character::HitStop(float duration, float blendOutTime)
@@ -611,9 +613,12 @@ void Character::UpdateImpactMove()
     }
 
     //‘¬“x‚ª‘å‚«‚¢‚Ù‚ÇŒ¸‘¬‚·‚é‚æ‚¤‚É‚·‚é
-    float deccel = length / inpactDeccel_;
-    deccel = deccel * deccel * actor_->GetDeltaTime();
-    float speed = length - deccel;
+    float decel = length / inpactDeccel_;
+    decel *= decel;
+    if (decel > inpactSpeedMax_)decel = inpactSpeedMax_;
+
+    decel = decel * actor_->GetDeltaTime();
+    float speed = length - decel;
     if (speed > 0)
     {
         impactMove_.Normalize();

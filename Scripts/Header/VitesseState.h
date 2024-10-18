@@ -142,5 +142,21 @@ namespace VitesseState
         void Finalize() override;
 
     };
+
+    //‚Ð‚é‚Ý
+    class Flinch : Inheritance
+    {
+    public:
+        Flinch(Vitesse* vitesse) : State(vitesse, "MeleeAttack") {}
+        ~Flinch() {}
+
+        void Initialize() override;
+        void Update(float deltaTime) override;
+        void Finalize() override;
+
+    private:
+        float cancelTime_ = 0.2f;
+
+    };
 }
 

@@ -197,20 +197,26 @@ void Animator::AnimatorUpdate()
 	
 }
 
-void Animator::PlayAnimation(const size_t& animIndex, float transTime, float startTime)
+void Animator::PlayAnimation(const size_t& animIndex, float* transTime, float startTime)
 {
 	_ASSERT_EXPR(animIndex < animations_.size(), u8"指定のアニメーションが見つかりません");
 
-	PlayAnimationCommon(animIndex,transTime,startTime);
+	float tTime;
+	if (transTime)tTime = *transTime;
+	else tTime = animationTransTime_;
+	PlayAnimationCommon(animIndex,tTime,startTime);
 }
 
-void Animator::PlayAnimation(const std::string& animName, float transTime, float startTime)
+void Animator::PlayAnimation(const std::string& animName, float* transTime, float startTime)
 {
 	for (size_t index = 0; index < animations_.size(); index++)
 	{
 		if (animations_[index]->name_ == animName)
 		{
-			PlayAnimationCommon(index,transTime,startTime);
+			float tTime;
+			if (transTime)tTime = *transTime;
+			else tTime = animationTransTime_;
+			PlayAnimationCommon(index, tTime,startTime);
 			return;
 		}
 	}

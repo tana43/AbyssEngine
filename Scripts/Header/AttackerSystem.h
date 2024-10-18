@@ -8,6 +8,11 @@ namespace AbyssEngine
     class Character;
     class AttackCollider;
 
+    enum class StaggrType
+    {
+        High,Middke,Low,None
+    };
+
     //攻撃データ
     struct AttackData
     {
@@ -15,12 +20,15 @@ namespace AbyssEngine
         float knockback_ = 0;//吹っ飛ばし力
         float duration_ = 1.0f;//持続時間
         float staggerValue_ = 0;//スタッグ値（ひるみ値のようなもの）
+        StaggrType staggerType_ = StaggrType::None;//どんな怯みをさせるか
 
         int maxHits_ = 1;//攻撃が連続ヒットできる回数　最低でも１は必要
         float hitInterval_ = 0.2f;//攻撃が連続ヒットする際に何秒ごとに攻撃を
 
         float hitStopDuration_ = 0.2f;//攻撃が当たった際にヒットストップする時間
         float hitStopOutTime_ = 0.05f;//ヒットストップのフェード開始時間
+
+        
 
         //判定を出現させるコライダー
         std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;
@@ -39,6 +47,7 @@ namespace AbyssEngine
         void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
 
         void Update()override;
+        void DrawImGui()override;
 
         //何かに当たっている
         virtual void OnCollision(const std::shared_ptr<Collider>& collision, Collision::IntersectionResult result)override;

@@ -508,8 +508,8 @@ void Vitesse::ColliderInitialize()
     {
         std::vector<std::shared_ptr<TerrainCollider>> terrainColliders =
         {
-            AddTerrainCollider(Vector3(-0.4f,0,0), 7.68f, "TerrainCollider_Center", model_, "rig_J_upbody01")
-
+            AddTerrainCollider(Vector3(0.0f,0,0), 3.0f, "TerrainCollider_Up", model_, "rig_J_upbody2"),
+            AddTerrainCollider(Vector3(-0.4f,0,0), 3.0f, "TerrainCollider_Low", model_, "rig_J_upbody01")
         };
 
         for (const auto& collider : terrainColliders)
@@ -549,6 +549,25 @@ void Vitesse::AttackerInitialize()
         attackerSystem_->RegistAttackData("Slash_N_1", atkData);
     }
     
+}
+
+void Vitesse::Flinch(StaggrType type)
+{
+    if (isDead)return;
+
+    switch (type)
+    {
+    case AbyssEngine::StaggrType::High:
+        break;
+    case AbyssEngine::StaggrType::Middke:
+        break;
+    case AbyssEngine::StaggrType::Low:
+        break;
+    case AbyssEngine::StaggrType::None:
+        break;
+    default:
+        break;
+    }
 }
 
 void Vitesse::Dodge(Vector3 direction)
@@ -756,7 +775,7 @@ void Vitesse::TargetAcquisition()
     }
 }
 
-void Vitesse::PlayAnimation(AnimationIndex index, float transTime,float startTime)
+void Vitesse::PlayAnimation(AnimationIndex index, float* transTime,float startTime)
 {
     model_->GetAnimator()->PlayAnimation(static_cast<int>(index), transTime, startTime);
 }
@@ -788,7 +807,10 @@ bool Vitesse::ApplyDamage(const AttackParameter& param, DamageResult* damageResu
     {
         if (param.knockback_ > 0.001f)
         {
-            
+            param.vector_.Normalize();
+            const Vector3 impulse = param.vector_ * param.knockback_;
+
+            AddImpulse(impulse);
         }
     }
 

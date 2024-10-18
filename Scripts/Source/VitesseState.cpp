@@ -58,6 +58,8 @@ void VitesseState::GroundMove::Update(float deltaTime)
 void VitesseState::GroundMove::Finalize()
 {
     owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
+
+    owner_->GetAnimator()->SetAnimationTransTime(0.1f);
 }
 
 void VitesseState::Flight::Initialize()
@@ -102,12 +104,15 @@ void VitesseState::Flight::Finalize()
 
     //スラスター全停止
     owner_->ThrusterAllStop();
+
+    owner_->GetAnimator()->SetAnimationTransTime(0.1f);
 }
 
 void VitesseState::Landing::Initialize()
 {
     //アニメーション設定
     //owner_->ChangeAnimationState(Vitesse::AnimationState::Fly_Move);
+    owner_->GetAnimator()->SetAnimationTransTime(0.1f);
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Landing));
 
     //陸上モードへ移行
@@ -144,6 +149,7 @@ void VitesseState::Landing::Finalize()
 void VitesseState::TakeOff::Initialize()
 {
     //アニメーション設定
+    owner_->GetAnimator()->SetAnimationTransTime(0.1f);
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Up));
     startPosition_ = owner_->GetTransform()->GetPosition().y;
     timer_ = 0;
@@ -194,6 +200,7 @@ void VitesseState::TakeOff::Finalize()
 void VitesseState::Boarding::Initialize()
 {
     //アニメーション設定
+    owner_->GetAnimator()->SetAnimationTransTime(0.1f);
     owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Board_Standby));
 
     //乗り込み可能な状態へ
@@ -263,6 +270,7 @@ void VitesseState::HighSpeedFlight::Initialize()
     if ((radius > rollingDodgeArea[0] && radius < rollingDodgeArea[1]) || 
         (radius > rollingDodgeAreaBack[0] && radius < rollingDodgeAreaBack[1]))
     {
+        owner_->GetAnimator()->SetAnimationTransTime(0.1f);
         if (inputVec.x > 0)
         {
             owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Dodge_FR));
@@ -341,7 +349,8 @@ void VitesseState::HighSpeedFlight::Update(float deltaTime)
 
             //通常回避移動へ
             //回転するモーションである都合上、一旦高速移動のモーションを挟む必要がある
-            owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),0.0f);
+            float transTime = 0.0f;
+            owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F), &transTime);
             owner_->ChangeAnimationState(Vitesse::AnimationState::HighSpeedFlight);
         }
     }
@@ -425,11 +434,14 @@ void VitesseState::HighSpeedFlight::Finalize()
     if (owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Dodge_FR) ||
         owner_->GetAnimator()->GetCurrentAnimClip() == static_cast<int>(Vitesse::AnimationIndex::Dodge_FL))
     {
-        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),0.0f);
+        float transTime = 0.0f;
+        owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::HighSpeedFlight_F),&transTime);
     }
 
     //コントローラー振動リセット
     Input::GetGamePad().SetVibration(0.0f, 0.0f);
+
+    owner_->GetAnimator()->SetAnimationTransTime(0.1f);
 }
 
 void VitesseState::MeleeAttackDash::Initialize()
@@ -574,4 +586,46 @@ void VitesseState::MeleeAttack::Finalize()
     //最大速度を元に戻す
     owner_->SetMaxHorizontalSpeed(owner_->GetDefaultMaxHorizontalSpeed());
     owner_->SetMaxVerticalSpeed(owner_->GetDefaultMaxVerticalSpeed());
+}
+
+void VitesseState::Flinch::Initialize()
+{
+    //飛行モードへ
+    owner_->ToFlightMode();
+
+    //ひるみモーション再生
+    owner_->PlayAnimation(Vitesse::AnimationIndex::Flinch);
+
+    timer_ = 0;
+}
+
+void VitesseState::Flinch::Update(float deltaTime)
+{
+    //何も操作がないままステートが終わると空中飛行ステートへ
+    if (owner_->GetAnimator()->GetAnimationFinished())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::FMove);
+    }
+
+    if (timer_ > cancelTime_)
+    {
+        //ダッシュボタンが押されているなら高速ステートへ
+        if (Input::GameSupport::GetDashButton())
+        {
+            owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
+        }
+
+        //何か操作があれば空中飛行ステートへ
+        if (Input::GameSupport::GetMoveVector().LengthSquared() > 0.001f)
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::FMove);
+        }
+    }
+
+    timer_ += owner_->GetActor()->GetDeltaTime();
+}
+
+void VitesseState::Flinch::Finalize()
+{
+    owner_->GetAnimator()->SetAnimationTransTime(0.3f);
 }

@@ -20,9 +20,9 @@ namespace AbyssEngine
 
         void AnimatorUpdate();
 
-        //アニメーション再生　モーションの遷移時間を指定
-        void PlayAnimation(const size_t& animIndex,float transTime = 0.1f,float startTime = 0.0f);//要素数から検索
-        void PlayAnimation(const std::string& animName,float transTime = 0.1f,float startTime = 0.0f);//名前から検索
+        //アニメーション再生　モーションの遷移時間を指定　無かった場合はメンバ変数の値が代入される
+        void PlayAnimation(const size_t& animIndex,float* transTime = nullptr,float startTime = 0.0f);//要素数から検索
+        void PlayAnimation(const std::string& animName,float* transTime = nullptr,float startTime = 0.0f);//名前から検索
     private:
         void PlayAnimationCommon(const size_t& animIndex,float transTime,float startTime = 0.0f);
 
@@ -59,6 +59,8 @@ namespace AbyssEngine
 
         const Vector3& GetRootMotionMove() const { return rootMotionMove_; }
         void SetRootMotionMove(const Vector3& move) { rootMotionMove_ = move; }
+
+        void SetAnimationTransTime(const float& time) { animationTransTime_ = time; }
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;
@@ -67,6 +69,8 @@ namespace AbyssEngine
 
         float timeStamp_ = 0.0f;//タイマー
         float animationSpeed_ = 1.0f;//アニメーション再生速度
+
+        float animationTransTime_ = 0.1f;//アニメーションの遷移時間
 
         size_t animationClip_ = 0;//再生中のアニメーション番号
         size_t nextAnimationClip_ = -1;//次に再生アニメーション番号

@@ -29,7 +29,6 @@ public:
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
 
-
     //“Ëi
     void RushAttackUpdate();
 

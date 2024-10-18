@@ -172,13 +172,17 @@ namespace AbyssEngine
 
         //衝撃などを受けて動く値
         Vector3 impactMove_ = {};
-        //衝撃を受けた際の減速力
-        float inpactDeccel_ = 1.0f;
+        //衝撃を受けた際の減速力 ※小さい程強い
+        float inpactDeccel_ = 3.0f;
+        //衝撃を受けた際に減速される速度の最大値
+        float inpactSpeedMax_ = 1000.0f;
 
         //ヒットストップ
         float hitStopDuration_ = 0;//持続時間
         float hitStopOutTime_ = 0;//いつからフェードアウトしていくか
         float hitStopTimer_ = 100;//時間計測用
+
+        bool isDead = false;
         
     };
 }
