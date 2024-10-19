@@ -8,9 +8,12 @@ namespace AbyssEngine
     class Character;
     class AttackCollider;
 
-    enum class StaggrType
+    enum class StaggerType
     {
-        High,Middke,Low,None
+        //High,
+        Middle,
+        //Low,
+        None
     };
 
     //攻撃データ
@@ -20,7 +23,7 @@ namespace AbyssEngine
         float knockback_ = 0;//吹っ飛ばし力
         float duration_ = 1.0f;//持続時間
         float staggerValue_ = 0;//スタッグ値（ひるみ値のようなもの）
-        StaggrType staggerType_ = StaggrType::None;//どんな怯みをさせるか
+        StaggerType staggerType_ = StaggerType::None;//どんな怯みをさせるか
 
         int maxHits_ = 1;//攻撃が連続ヒットできる回数　最低でも１は必要
         float hitInterval_ = 0.2f;//攻撃が連続ヒットする際に何秒ごとに攻撃を

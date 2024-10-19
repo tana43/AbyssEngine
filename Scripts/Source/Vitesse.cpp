@@ -75,6 +75,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::HighSpeedFlight(this));
     stateMachine_->RegisterState(new VitesseState::MeleeAttackDash(this));
     stateMachine_->RegisterState(new VitesseState::MeleeAttack(this));
+    stateMachine_->RegisterState(new VitesseState::Flinch(this));
 
     //初期ステート設定
     animStateMachine_->SetState(static_cast<int>(AnimationState::Ground_Move));
@@ -242,9 +243,12 @@ void Vitesse::AnimationInitialize()
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_Dash_Start))->SetLoopFlag(false);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_N_1))->SetLoopFlag(false);
 
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Flinch))->SetLoopFlag(false);
+
         //再生速度の調整
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FR))->SetAnimSpeed(0.5f);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FL))->SetLoopFlag(0.5f);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Flinch))->SetLoopFlag(0.64f);
 
 
         //地上移動
@@ -551,19 +555,18 @@ void Vitesse::AttackerInitialize()
     
 }
 
-void Vitesse::Flinch(StaggrType type)
+void Vitesse::Flinch(StaggerType type)
 {
-    if (isDead)return;
-
     switch (type)
     {
-    case AbyssEngine::StaggrType::High:
+    //case AbyssEngine::StaggerType::High:
+    //    break;
+    case AbyssEngine::StaggerType::Middle:
+        ChangeActionState(ActionState::Flinch);
         break;
-    case AbyssEngine::StaggrType::Middke:
-        break;
-    case AbyssEngine::StaggrType::Low:
-        break;
-    case AbyssEngine::StaggrType::None:
+    //case AbyssEngine::StaggerType::Low:
+    //    break;
+    case AbyssEngine::StaggerType::None:
         break;
     default:
         break;
@@ -802,17 +805,18 @@ bool Vitesse::ApplyDamage(const AttackParameter& param, DamageResult* damageResu
 {
     bool hit = Character::ApplyDamage(param,damageResult);
 
-    //ノックバック処理
-    if (hit)
-    {
-        if (param.knockback_ > 0.001f)
-        {
-            param.vector_.Normalize();
-            const Vector3 impulse = param.vector_ * param.knockback_;
+    ////ノックバック処理 AttackerSystemで処理している
+    //if (hit)
+    //{
+    //    if (param.knockback_ > 0.001f)
+    //    {
+    //        param.vector_.Normalize();
+    //        const Vector3 impulse = param.vector_ * param.knockback_;
 
-            AddImpulse(impulse);
-        }
-    }
+    //        AddImpulse(impulse);
+
+    //    }
+    //}
 
     return hit;
 }

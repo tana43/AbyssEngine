@@ -270,13 +270,13 @@ void BossMech::AttackerSystemInitialize()
         atkData.attackColliderList_.emplace_back(collider);
     }
     atkData.power_ = 10.0f;
-    atkData.duration_ = 3.0f;
+    atkData.duration_ = 7.0f;
     atkData.maxHits_ = 1.0f;
     atkData.staggerValue_ = 1.0f;
     atkData.hitStopDuration_ = 0.0f;
     atkData.hitStopOutTime_ = 0.0f;
     atkData.knockback_ = 400.0f;
-    atkData.staggerType_ = StaggrType::High;
+    atkData.staggerType_ = StaggerType::Middle;
 
     attackerSystem_->RegistAttackData("Rush", atkData);
 }

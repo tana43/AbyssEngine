@@ -71,7 +71,8 @@ void VitesseAnimState::AnimGroundMove::Update(float deltaTime)
         //空中にいるなら落下モーション再生
         if (!isPlayFallAnim_)
         {
-            owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Ground_Fall), 0.5f);
+            float transTime = 0.5f;
+            owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Ground_Fall), &transTime);
             isPlayFallAnim_ = true;
         }
     }
@@ -87,7 +88,8 @@ void VitesseAnimState::AnimGroundMove::Finalize()
 void VitesseAnimState::AnimFlight::Initialize()
 {
     //アニメーション設定
-    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Move),0.5f);
+    float transTime = 0.5f;
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Flight_Move),&transTime);
 }
 
 void VitesseAnimState::AnimFlight::Update(float deltaTime)

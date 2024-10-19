@@ -22,9 +22,9 @@ SceneManager::SceneManager()
     AddScene(new SceneTitle,"Title");
     AddScene(new FacilityScene,"Facility");
     AddScene(new TestSceneSecond,"TestSceneSecond");
-    //SetNextScene("TestSceneSecond");
+    SetNextScene("TestSceneSecond");
     //SetNextScene("Title");
-    SetNextScene("Test");
+    //SetNextScene("Test");
     //SetNextScene("Facility");
 }
 

@@ -236,7 +236,7 @@ bool Character::ApplyDamage(const AttackParameter& param, DamageResult* damageRe
 void Character::Die()
 {
     //actor_->Destroy(actor_);
-    isDead = true;
+    isDead_ = true;
 }
 
 void AbyssEngine::Character::HitStop(float duration, float blendOutTime)

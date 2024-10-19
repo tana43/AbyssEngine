@@ -262,7 +262,8 @@ ActionBase<BossMech>::State MechRunAttackAction::Run(float deltaTime)
 		if (owner_->GetAnimator()->GetAnimationFinished())
 		{
 			//アニメーション再生
-			owner_->GetAnimator()->PlayAnimation("Run", 0.5f);
+			float transTime_ = 0.5f;
+			owner_->GetAnimator()->PlayAnimation("Run", &transTime_);
 
 			//攻撃システム
 			owner_->GetAttackerSystem()->Attack("Rush");

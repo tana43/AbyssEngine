@@ -189,6 +189,9 @@ public:
     //ƒ_ƒ[ƒW‚ğ‹ò‚ç‚¤
     bool ApplyDamage(const AttackParameter& param, DamageResult* damageResult = nullptr)override;
 
+    //‹¯‚İ
+    void Flinch(AbyssEngine::StaggerType type)override;
+
 private:
     void CameraRollUpdate();
 
@@ -208,7 +211,6 @@ private:
     void AttackerInitialize();
 
     //‚Ğ‚é‚Ş
-    void Flinch(StaggrType type);
     
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;

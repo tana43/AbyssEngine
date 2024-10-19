@@ -140,7 +140,16 @@ void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& 
 
         //お互いにヒットストップ
         target->HitStop(currentAttack_.hitStopDuration_,currentAttack_.hitStopOutTime_);
-        actor_->GetComponent<Character>()->HitStop(currentAttack_.hitStopDuration_, currentAttack_.hitStopOutTime_);
+        const auto& chara = actor_->GetComponent<Character>();
+        chara->HitStop(currentAttack_.hitStopDuration_, currentAttack_.hitStopOutTime_);
+
+        //ノックバック
+        param.vector_.Normalize();
+        const Vector3 impulse = param.vector_ * param.knockback_;
+        target->AddImpulse(impulse);
+
+        //怯み
+        target->Flinch(currentAttack_.staggerType_);
     }
 }
 

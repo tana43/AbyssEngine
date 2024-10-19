@@ -9,6 +9,7 @@
 namespace AbyssEngine
 {
     class SphereCollider;
+    enum class StaggerType;
 
     class Character : public ScriptComponent
     {
@@ -69,6 +70,9 @@ namespace AbyssEngine
 
         //吹っ飛ばし そのまま吹き飛ばすベクトルを入れる
         void AddImpulse(Vector3 impulse);
+
+        //怯み
+        virtual void Flinch(StaggerType type) {}
 
     public:
         const bool& GetIsActive() const { return active_; }
@@ -182,7 +186,7 @@ namespace AbyssEngine
         float hitStopOutTime_ = 0;//いつからフェードアウトしていくか
         float hitStopTimer_ = 100;//時間計測用
 
-        bool isDead = false;
+        bool isDead_ = false;
         
     };
 }
