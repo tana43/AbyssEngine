@@ -2,7 +2,7 @@
 
 #include <d3d11.h>
 #include <wrl.h>
-#include <DirectXMath.h>
+#include "MathHelper.h"
 
 #include <vector>
 
@@ -21,16 +21,22 @@ namespace AbyssEngine
         //パーティクル生成用構造体
         struct EmitParticleData
         {
-            DirectX::XMFLOAT4	parameter_;						//	x : パーティクル処理タイプ, y : 生存時間, zw : 空き
+            Vector4	parameter_;						//	x : パーティクル処理タイプ, y : 生存時間, zw : 空き
 
-            DirectX::XMFLOAT4	position_ = { 0, 0, 0, 0 };		//	生成座標
-            DirectX::XMFLOAT4	rotation_ = { 0, 0, 0, 0 };		//	拡縮情報
-            DirectX::XMFLOAT4	scale_ = { 1, 1, 1, 0 };			//	回転情報
+            Vector4	position_          = { 0, 0, 0, 0 };//	生成座標
+            Vector4	rotation_          = { 0, 0, 0, 0 };//	拡縮情報
+            Vector4	scale_ = { 1, 1, 1, 0 };//	回転情報
 
-            DirectX::XMFLOAT4	velocity_ = { 0, 0, 0, 0 };		//	初速
-            DirectX::XMFLOAT4	acceleration_ = { 0, 0, 0, 0 };	//	加速度
+            Vector4	velocity_          = { 0, 0, 0, 0 };//	初速
+            Vector4	acceleration_      = { 0, 0, 0, 0 };//	加速度
 
-            DirectX::XMFLOAT4	color_ = { 1, 1, 1, 1 };			//	色情報
+            Vector4 rotationVelocity_    = { 0, 0, 0, 0 };//　回転初速
+            Vector4 rotationAcceleration_ = { 0, 0, 0, 0 };//　回転加速度
+
+            Vector4 scaleVelocity_       = { 0, 0, 0, 0 };//　スケール初速
+            Vector4 scaleAcceleration_    = { 0, 0, 0, 0 };//　スケール加速度
+
+            Vector4	color_             = { 1, 1, 1, 1 };//	色情報
         };
 
 
@@ -38,16 +44,23 @@ namespace AbyssEngine
         //	アプリケーション側では使用しないが、形式として必要なためここで宣言しておく
         struct ParticleData
         {
-            DirectX::XMFLOAT4	parameter_;		//	x : パーティクル処理タイプ, y : 生存時間, z : 生存フラグ, w : 空き
+            Vector4	parameter_;		//	x : パーティクル処理タイプ, y : 生存時間, z : 生存フラグ, w : 空き
 
-            DirectX::XMFLOAT4	position_;		//	生成座標
-            DirectX::XMFLOAT4	rotation_;		//	拡縮情報
-            DirectX::XMFLOAT4	scale_;			//	回転情報
+            Vector4	position_;		//	生成座標
+            Vector4	rotation_;		//	拡縮情報
+            Vector4	scale_;			//	回転情報
 
-            DirectX::XMFLOAT4	velocity_;		//	初速
-            DirectX::XMFLOAT4	acceleration_;	//	加速度
-            DirectX::XMFLOAT4	texcoord;		//	UV座標
-            DirectX::XMFLOAT4	color;			//	色情報
+            Vector4	velocity_;		//	初速
+            Vector4	acceleration_;	//	加速度
+
+            Vector4 rotationVelocity_; //　回転初速
+            Vector4 rotationAcceleration_ ;//　回転加速度
+
+            Vector4 scaleVelocity_; //　スケール初速
+            Vector4 scaleAcceleration_;//　スケール加速度
+
+            Vector4	texcoord;		//	UV座標
+            Vector4	color;			//	色情報
         };
 
         //汎用情報定義
@@ -83,6 +96,8 @@ namespace AbyssEngine
         void Emit(const EmitParticleData& data);
         void Update(ID3D11DeviceContext* deviceContext, float deltaTime);
         void Render(ID3D11DeviceContext* deviceContext);
+
+        const DirectX::XMUINT2& GetTextureSplitCount() const { return textureSplitCount_; }
 
     private:
         UINT numParticles_;

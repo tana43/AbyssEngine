@@ -16,6 +16,8 @@
 #include "BossMech.h"
 #include "Input.h"
 
+#include "ComputeParticleEmitter.h"
+
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
 
@@ -182,6 +184,10 @@ void TestScene::Initialize()
 
     //コントローラー振動
     //Input::GetGamePad().SetVibration(0.5f,0.5f);
+
+    const auto& effectEmitter = InstanceActor("Effect");
+    //effectEmitter->AddComponent<ParticleEmitter>();
+    effectEmitter->AddComponent<ComputeParticleEmitter>();
 }
 
 void TestScene::Update()

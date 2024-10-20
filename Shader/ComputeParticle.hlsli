@@ -15,6 +15,12 @@ struct EmitParticleData
     float4 velocity;
     float4 acceleration;
     
+    float4 rotationVeclocity;
+    float4 rotationAcceleration;
+    
+    float4 scaleVeclocity;
+    float4 scaleAcceleration;
+    
     float4 color;
 };
 
@@ -28,6 +34,12 @@ struct ParticleData
     
     float4 velocity;
     float4 acceleration;
+    
+    float4 rotationVeclocity;
+    float4 rotationAcceleration;
+    
+    float4 scaleVeclocity;
+    float4 scaleAcceleration;
     
     float4 texcoord;
     float4 color;

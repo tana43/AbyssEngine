@@ -549,6 +549,8 @@ void RenderManager::DrawImGui()
 		ImGui::DragFloat("Skybox Roughness", &buffer.skyboxRoughness_,0.01f,0.0f);
 		ImGui::DragFloat("Time", &buffer.time_);
 
+		ImGui::ColorPicker4("Sky Color", &buffer.skyColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+
 		ImGui::EndMenu();
 	}
 

@@ -17,7 +17,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     
 #if 1
     //return SampleSkybox(R.xyz, roughness) * sceneData.lightColor;
-    return SampleSkybox(R.xyz, roughness);
+    return SampleSkybox(R.xyz, roughness) * sceneData.skyColor;
 #else
 	return sample_diffuse_iem(R.xyz);
 #endif

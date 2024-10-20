@@ -17,10 +17,14 @@ void main(uint3 dispatchThreadId : SV_DispatchThreadID)
     particleDataBuffer[particleIndex].parameter.z = 1.0f;
     particleDataBuffer[particleIndex].parameter.w = 0.0f;
     
-    particleDataBuffer[particleIndex].position     = emitParticleBuffer[emitIndex].position;
-    particleDataBuffer[particleIndex].rotation     = emitParticleBuffer[emitIndex].rotation;
-    particleDataBuffer[particleIndex].scale        = emitParticleBuffer[emitIndex].scale;
-    particleDataBuffer[particleIndex].velocity     = emitParticleBuffer[emitIndex].velocity;
-    particleDataBuffer[particleIndex].acceleration = emitParticleBuffer[emitIndex].acceleration;
-    particleDataBuffer[particleIndex].color        = emitParticleBuffer[emitIndex].color;
+    particleDataBuffer[particleIndex].position             = emitParticleBuffer[emitIndex].position;
+    particleDataBuffer[particleIndex].rotation             = emitParticleBuffer[emitIndex].rotation;
+    particleDataBuffer[particleIndex].scale                = emitParticleBuffer[emitIndex].scale;
+    particleDataBuffer[particleIndex].velocity             = emitParticleBuffer[emitIndex].velocity;
+    particleDataBuffer[particleIndex].acceleration         = emitParticleBuffer[emitIndex].acceleration;
+    particleDataBuffer[particleIndex].rotationVeclocity    = emitParticleBuffer[emitIndex].rotationVeclocity;
+    particleDataBuffer[particleIndex].rotationAcceleration = emitParticleBuffer[emitIndex].rotationAcceleration;
+    particleDataBuffer[particleIndex].scaleVeclocity       = emitParticleBuffer[emitIndex].scaleVeclocity;
+    particleDataBuffer[particleIndex].scaleAcceleration    = emitParticleBuffer[emitIndex].scaleAcceleration;
+    particleDataBuffer[particleIndex].color                = emitParticleBuffer[emitIndex].color;
 }

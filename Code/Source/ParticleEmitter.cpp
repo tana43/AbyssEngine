@@ -56,7 +56,7 @@ void AbyssEngine::ParticleEmitter::DrawImGui()
         ImGui::DragFloat("Gravity", &data.gravity_, 0.01f);
 
         ImGui::DragFloat("Lifespan min", &data.flashLifespan_.x, 0.01f);
-        ImGui::DragFloat("Lifespan min", &data.flashLifespan_.y, 0.01f);
+        ImGui::DragFloat("Lifespan man", &data.flashLifespan_.y, 0.01f);
 
         ImGui::DragFloat("Spawn delay min", &data.spawnDelay_.x, 0.01f);
         ImGui::DragFloat("Spawn delay max", &data.spawnDelay_.y, 0.01f);

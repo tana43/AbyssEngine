@@ -33,6 +33,18 @@ void main(uint3 dispatchThreadId : SV_DispatchThreadID)
     //  位置更新
     particleDataBuffer[index].position.xyz += particleDataBuffer[index].velocity.xyz * deltaTime;
 
+    // 回転速度更新
+    particleDataBuffer[index].rotationVeclocity.xyz += particleDataBuffer[index].rotationAcceleration.xyz * deltaTime;
+    
+    //回転更新
+    particleDataBuffer[index].rotation.xyz += particleDataBuffer[index].rotationVeclocity.xyz * deltaTime;
+    
+    //スケール速度変更
+    particleDataBuffer[index].scaleVeclocity.xyz += particleDataBuffer[index].scaleAcceleration.xyz * deltaTime;
+    
+    //回転更新
+    particleDataBuffer[index].scale.xyz += particleDataBuffer[index].scaleVeclocity.xyz * deltaTime;
+    
     //  切り取り座標を算出
     uint type = (uint) (particleDataBuffer[index].parameter.x + 0.5f);
     

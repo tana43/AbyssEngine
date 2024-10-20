@@ -36,6 +36,7 @@
     <ClInclude Include="Code\Header\ComboSystem.h" />
     <ClInclude Include="Code\Header\ComputeParticleEmitter.h" />
     <ClInclude Include="Code\Header\ComputeParticleSystem.h" />
+    <ClInclude Include="Code\Header\EffectEditScene.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
     <ClInclude Include="Code\Header\GameCollider.h" />
     <ClInclude Include="Code\Header\ParticleEmitter.h" />
@@ -138,6 +139,7 @@
     <ClCompile Include="Code\Source\CollisionHelper.cpp" />
     <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp" />
     <ClCompile Include="Code\Source\ComputeParticleSystem.cpp" />
+    <ClCompile Include="Code\Source\EffectEditScene.cpp" />
     <ClCompile Include="Code\Source\FadeSystem.cpp" />
     <ClCompile Include="Code\Source\GameCollider.cpp" />
     <ClCompile Include="Code\Source\ParticleEmitter.cpp" />

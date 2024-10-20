@@ -420,6 +420,7 @@
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\ComputeParticleEmitter.h" />
+    <ClInclude Include="Code\Header\EffectEditScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -702,6 +703,7 @@
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp" />
+    <ClCompile Include="Code\Source\EffectEditScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

@@ -112,6 +112,7 @@ namespace AbyssEngine
             Vector4 lightColor_ = {1,1,1,1};
             Vector4 eyePosition_;
             Vector4 focusPosition_;
+            Vector4 skyColor_ = {1,1,1,1};
             float exposure_ = 1.0f;
             float pureWhite_ = 3.0f;
             float skyboxRoughness_ = 0.0f;

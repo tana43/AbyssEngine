@@ -7,6 +7,7 @@
 #include "SceneTitle.h"
 #include "FacilityScene.h"
 #include "TestSceneSecond.h"
+#include "EffectEditScene.h"
 
 #include "RenderManager.h"
 
@@ -22,10 +23,12 @@ SceneManager::SceneManager()
     AddScene(new SceneTitle,"Title");
     AddScene(new FacilityScene,"Facility");
     AddScene(new TestSceneSecond,"TestSceneSecond");
-    SetNextScene("TestSceneSecond");
+    AddScene(new EffectEditScene,"Effect");
+    //SetNextScene("TestSceneSecond");
     //SetNextScene("Title");
     //SetNextScene("Test");
     //SetNextScene("Facility");
+    SetNextScene("Effect");
 }
 
 SceneManager::~SceneManager()
