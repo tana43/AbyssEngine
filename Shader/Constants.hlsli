@@ -6,6 +6,7 @@ struct SceneConstants
     row_major float4x4 view;
     row_major float4x4 projection;
     row_major float4x4 viewProjection;
+    row_major float4x4 inverseView;
     row_major float4x4 inverseProjection;
     row_major float4x4 inverseViewProjection;
     float4 lightDirection;

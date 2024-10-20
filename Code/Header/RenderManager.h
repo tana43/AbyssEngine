@@ -29,6 +29,10 @@ namespace AbyssEngine
 
     class ParticleSystem;
     class ParticleEmitter;
+    class ComputeParticleEmitter;
+    class ComputeParticleSystem;
+
+    class Texture;
 
     class RenderManager
     {
@@ -51,6 +55,7 @@ namespace AbyssEngine
         //void Add(const std::shared_ptr<GltfSkeletalMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<StaticMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<ParticleEmitter>& mRend);
+        void Add(const std::shared_ptr<ComputeParticleEmitter>& mRend);
         void Add(const std::shared_ptr<Camera>& camera);//マネージャーにカメラを登録する
 
         void Render(); //描画実行
@@ -73,6 +78,8 @@ namespace AbyssEngine
         std::mutex& GetMutex() { return mutex_; }
 
         const std::vector<std::weak_ptr<Camera>>& GetCameraList() { return cameraList_; }
+
+        const std::unique_ptr<ComputeParticleSystem>& GetParticleSystem() const { return computeParticleSystem_; }
 
     private:
         struct Vertex
@@ -98,6 +105,7 @@ namespace AbyssEngine
             Matrix view_;
             Matrix projection_;
             Matrix viewProjectionMatrix_;
+            Matrix inverseView_;
             Matrix inverseProjection_;
             Matrix inverseViewProjection_;
             Vector4 lightDirection_ = {-0.5f,-0.5f,-0.5f,0};
@@ -186,6 +194,10 @@ namespace AbyssEngine
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> gBufferShaderResourceView_[GB_Max];
 
         std::mutex mutex_;
+
+        //パーティクルシステム
+        std::unique_ptr<ComputeParticleSystem> computeParticleSystem_;
+        std::shared_ptr<Texture> particleTexture_;
 
         public:
 #if _DEBUG

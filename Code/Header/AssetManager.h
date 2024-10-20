@@ -12,6 +12,7 @@ namespace AbyssEngine
     class GltfStaticMesh;
     class GltfCollisionMesh;
     class Effect;
+    class ComputeParticleSystem;
 
     //アセットを管理するクラス
     class AssetManager
@@ -26,7 +27,6 @@ namespace AbyssEngine
         std::unordered_map<std::string, std::shared_ptr<GltfStaticMesh>> cacheStaticMesh_{}; //スタティックメッシュのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<GltfCollisionMesh>> cacheCollisionMesh_{}; //コリジョンメッシュのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<Effect>> cacheEffect_{}; //エフェクシアエフェクトのキャッシュ
-
 
         void Exit();//後始末
 

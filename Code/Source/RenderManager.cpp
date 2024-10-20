@@ -11,6 +11,8 @@
 #include "SkeletalMesh.h"
 #include "StaticMesh.h"
 #include "ParticleEmitter.h"
+#include "ComputeParticleEmitter.h"
+#include "ComputeParticleSystem.h"
 
 #include "Bloom.h"
 #include "Skybox.h"
@@ -235,6 +237,14 @@ RenderManager::RenderManager()
 //#endif
 //	Texture::LoadTextureFromFile("./Assets/_noise_3d.dds", noise3d_.GetAddressOf(), NULL);
 //	Texture::LoadTextureFromFile("./Assets/color temper chart.png", colorTemperChart_.GetAddressOf(), NULL);
+
+	particleTexture_ = Texture::Load("./Assets/Effects/Texture/Particle_Sheet.png");
+	const int numParticle = 1000000;
+	computeParticleSystem_ = std::make_unique<ComputeParticleSystem>(
+		DXSystem::GetDevice().Get(),
+		numParticle,
+		particleTexture_->GetResource(),
+		DirectX::XMUINT2(4, 1));
 }
 
 RenderManager::~RenderManager()
@@ -287,6 +297,11 @@ void RenderManager::Add(const shared_ptr<BillboardRenderer>& mRend)
 }
 
 void RenderManager::Add(const shared_ptr<ParticleEmitter>& mRend)
+{
+	rendererEffectList_.emplace_back(mRend);
+}
+
+void RenderManager::Add(const shared_ptr<ComputeParticleEmitter>& mRend)
 {
 	rendererEffectList_.emplace_back(mRend);
 }
@@ -349,6 +364,7 @@ void RenderManager::Render()
 				bufferScene_->data_.view_ = camera->viewMatrix_;
 				bufferScene_->data_.projection_ = camera->projectionMatrix_;
 				bufferScene_->data_.viewProjectionMatrix_ = camera->viewProjectionMatrix_;
+				camera->viewMatrix_.Invert(bufferScene_->data_.inverseView_);
 				camera->projectionMatrix_.Invert(bufferScene_->data_.inverseProjection_);
 				camera->viewProjectionMatrix_.Invert(bufferScene_->data_.inverseViewProjection_);
 				bufferScene_->data_.time_ += Time::GetDeltaTime();
@@ -719,6 +735,15 @@ void RenderManager::RenderEffect() const
 			}
 		}
 	}
+
+	//コンピュートパーティクル描画
+	{
+		DXSystem::SetDepthStencilState(DS_State::LEqual_No_Write);
+		DXSystem::SetRasterizerState(RS_State::Cull_None);
+		DXSystem::SetBlendState(BS_State::Add);
+
+		computeParticleSystem_->Render(DXSystem::GetDeviceContext().Get());
+	}
 }
 
 void RenderManager::CheckRenderer()
@@ -786,6 +811,9 @@ void RenderManager::CheckRenderer()
 			const auto removeIt = remove_if(rendererEffectList_.begin(), rendererEffectList_.end(), [](weak_ptr<Renderer> r) { return r.expired(); });
 			rendererEffectList_.erase(removeIt, rendererEffectList_.end());
 		}
+		//更新
+		computeParticleSystem_->Update(DXSystem::GetDeviceContext().Get(), Time::GetDeltaTime());
+
 	}
 }
 

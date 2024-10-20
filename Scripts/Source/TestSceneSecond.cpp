@@ -4,6 +4,7 @@
 #include "BossMech.h"
 #include "Vitesse.h"
 #include "ParticleEmitter.h"
+#include "ComputeParticleEmitter.h"
 
 using namespace AbyssEngine;
 
@@ -18,6 +19,7 @@ void TestSceneSecond::Initialize()
     heli->AddComponent<Helicopter>();
 
     const auto& effectEmitter = InstanceActor("Effect");
-    effectEmitter->AddComponent<ParticleEmitter>();
+    //effectEmitter->AddComponent<ParticleEmitter>();
+    effectEmitter->AddComponent<ComputeParticleEmitter>();
     
 }

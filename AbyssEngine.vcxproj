@@ -34,6 +34,8 @@
     <ClInclude Include="Code\Header\CollisionHelper.h" />
     <ClInclude Include="Code\Header\ComboAttack.h" />
     <ClInclude Include="Code\Header\ComboSystem.h" />
+    <ClInclude Include="Code\Header\ComputeParticleEmitter.h" />
+    <ClInclude Include="Code\Header\ComputeParticleSystem.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
     <ClInclude Include="Code\Header\GameCollider.h" />
     <ClInclude Include="Code\Header\ParticleEmitter.h" />
@@ -134,6 +136,8 @@
     <ClCompile Include="Code\Source\CascadedShadowMap.cpp" />
     <ClCompile Include="Code\Source\Character.cpp" />
     <ClCompile Include="Code\Source\CollisionHelper.cpp" />
+    <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp" />
+    <ClCompile Include="Code\Source\ComputeParticleSystem.cpp" />
     <ClCompile Include="Code\Source\FadeSystem.cpp" />
     <ClCompile Include="Code\Source\GameCollider.cpp" />
     <ClCompile Include="Code\Source\ParticleEmitter.cpp" />
@@ -218,6 +222,38 @@
     <ClCompile Include="Scripts\Source\VitesseState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleEmitCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleEndFrameCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleInitCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleRenderGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleRenderPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleRenderVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleUpdateCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\CsmOpaqueGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
@@ -481,6 +517,7 @@
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli" />
     <None Include="Shader\Bloom.hlsli" />
     <None Include="Shader\Common.hlsli" />
+    <None Include="Shader\ComputeParticle.hlsli" />
     <None Include="Shader\Constants.hlsli" />
     <None Include="Shader\CsmOpaque.hlsli" />
     <None Include="Shader\CsmTransparent.hlsli" />

@@ -79,9 +79,6 @@
     <Filter Include="Shader\PostEffect">
       <UniqueIdentifier>{2b0072f5-045e-4d4d-b36f-fcb14e23b8b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader\Particle">
-      <UniqueIdentifier>{e599c1e0-7e58-4eb7-afb0-dc547eed1a48}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Script\Source\VItesse">
       <UniqueIdentifier>{7e2f51a4-e462-48df-aa29-68eda2f78ef4}</UniqueIdentifier>
     </Filter>
@@ -105,6 +102,12 @@
     </Filter>
     <Filter Include="Script\Header\Scene">
       <UniqueIdentifier>{47d89e32-5c86-42dd-98f3-f9106d5efac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\HukuiParticle">
+      <UniqueIdentifier>{e599c1e0-7e58-4eb7-afb0-dc547eed1a48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Particle">
+      <UniqueIdentifier>{2cdf9d05-5e54-4e44-a01d-46de7362d08d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -400,15 +403,23 @@
     <ClInclude Include="Code\Header\GameCollider.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\ParticleEmitter.h">
-      <Filter>Code\Header\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\ComboAttack.h" />
     <ClInclude Include="Code\Header\ComboSystem.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\AttackerSystem.h" />
-    <ClInclude Include="Scripts\Header\SceneTransitionCollider.h" />
+    <ClInclude Include="Code\Header\ComputeParticleSystem.h">
+      <Filter>Code\Header\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\AttackerSystem.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\SceneTransitionCollider.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ParticleEmitter.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ComputeParticleEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -681,8 +692,16 @@
     <ClCompile Include="Code\Source\ParticleEmitter.cpp">
       <Filter>Code\Source\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\AttackerSystem.cpp" />
-    <ClCompile Include="Scripts\Source\SceneTransitionCollider.cpp" />
+    <ClCompile Include="Code\Source\ComputeParticleSystem.cpp">
+      <Filter>Code\Source\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\AttackerSystem.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\SceneTransitionCollider.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -782,19 +801,19 @@
       <Filter>Shader\Debug</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ParticleGS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>Shader\HukuiParticle</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ParticlePS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>Shader\HukuiParticle</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ParticleVS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>Shader\HukuiParticle</Filter>
     </FxCompile>
     <FxCompile Include="Shader\InitializeParticleCS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>Shader\HukuiParticle</Filter>
     </FxCompile>
     <FxCompile Include="Shader\IntegrateParticleCS.hlsl">
-      <Filter>Shader\Particle</Filter>
+      <Filter>Shader\HukuiParticle</Filter>
     </FxCompile>
     <FxCompile Include="Shader\PlaneVS.hlsl">
       <Filter>Shader</Filter>
@@ -804,6 +823,30 @@
     </FxCompile>
     <FxCompile Include="Shader\RadialBlurPS.hlsl">
       <Filter>Shader\PostEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleRenderVS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleInitCS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleRenderPS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleEmitCS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleRenderGS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleEndFrameCS.hlsl">
+      <Filter>Shader\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ComputeParticleUpdateCS.hlsl">
+      <Filter>Shader\Particle</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -857,10 +900,13 @@
     </None>
     <None Include="cpp.hint" />
     <None Include="Shader\Particle.hlsli">
-      <Filter>Shader\Particle</Filter>
+      <Filter>Shader\HukuiParticle</Filter>
     </None>
     <None Include="Shader\PlaneBillboard.hlsli">
       <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\ComputeParticle.hlsli">
+      <Filter>Shader\Particle</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
