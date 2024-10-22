@@ -168,10 +168,10 @@ void TestScene::Initialize()
     //fighterJet->AddComponent<StaticMesh>("./Assets/Models/F-14A.glb");
 
     //ボス配置
-    const auto& boss = InstanceActor("Boss_Mech_Test");
-    boss->AddComponent<BossMech>();
+    //const auto& boss = InstanceActor("Boss_Mech_Test");
+    //boss->AddComponent<BossMech>();
 
-    swordEfe_ = std::make_unique<Effect>("./Assets/Effects/Thruster_01.efk");
+    //swordEfe_ = std::make_unique<Effect>("./Assets/Effects/Thruster_01.efk");
 
 
     //UI設定

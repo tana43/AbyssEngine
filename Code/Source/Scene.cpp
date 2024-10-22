@@ -178,6 +178,20 @@ void Scene::DrawImGui()
 
 }
 
+void AbyssEngine::Scene::DrawImGuiAlways()
+{
+    ImVec2 wSize = { 400.0f,1080.0f };
+    for (const auto& a : actorList_)
+    {
+        if (!a->imguiAlways_)continue;
+        ImGui::SetNextWindowPos(ImVec2(1920.0f - wSize.x, 24.0f), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(wSize, ImGuiCond_FirstUseEver);
+        ImGui::Begin(a->name_.c_str());
+        a->DrawImGui();
+        ImGui::End();
+    }
+}
+
 void Scene::ImGuiSaveAllActors()
 {
     if (ImGui::ButtonDoubleChecking("Save All Actors",imguiFrag_))

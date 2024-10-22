@@ -36,6 +36,7 @@ namespace AbyssEngine
 
         virtual void DrawDebug(); //デバッグ表示
         virtual void DrawImGui(); //ImGuiデバッグ表示
+        virtual void DrawImGuiAlways();//常に表示させるIMguiデバッグ表示
         void ImGuiSaveAllActors();//すべてのアクターのトランスフォーム情報を保存
 
     private:

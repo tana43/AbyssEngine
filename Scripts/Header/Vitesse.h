@@ -211,6 +211,9 @@ private:
     void AttackerInitialize();
 
     //‚Ð‚é‚Þ
+
+
+    void AimIKTest();
     
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;

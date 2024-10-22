@@ -598,3 +598,102 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimBlendSpaceFlyMove::Update
 
     return animatedNodes_;
 }
+
+AnimAimIK::AnimAimIK(SkeletalMesh* model, const std::string& name_) : Animation(model, name_, 0/*なんでもいい*/)
+{
+}
+
+std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
+{
+    //ベースのモーションを取得
+    model->Animate(baseAnimationIndex_, timeStamp_,animatedNodes_);
+
+    //各ノードを取得
+    GeometricSubstance::Node& rootNode = model->GetNode(animatedNodes_,shoulderNodeName_);
+    GeometricSubstance::Node& midNode  = model->GetNode(animatedNodes_,elbowNodeName_);
+    GeometricSubstance::Node& tipNode  = model->GetNode(animatedNodes_,handNodeName_);
+    rootNode.rotation_ = { 0,0,0,1 };
+    midNode.rotation_  = { 0,0,0,1 };
+    tipNode.rotation_  = { 0,0,0,1 };
+    model->NodeCumulateTransforms(animatedNodes_,rootNode);
+    
+    //{
+    //    Vector3 rootPos = DirectX::XMLoadFloat4x4(&rootNode.globalTransform_).r[3];
+    //    Vector3 midPos = DirectX::XMLoadFloat4x4(&midNode.globalTransform_).r[3];
+    //    Vector3 tipPos = DirectX::XMLoadFloat4x4(&tipNode.globalTransform_).r[3];
+    //    const Vector3 targetWorldPos = targetPosition_;
+    //    Vector3 rootToTarget = targetWorldPos - rootPos;
+    //    Vector3 rootToMid = midPos - rootPos;
+    //    Vector3 midToTarget = targetWorldPos - midPos;
+    //    Vector3 midToTip = tipPos - midPos;
+
+    //    Vector3 dirRootToMid = DirectX::XMVector3Normalize(rootToMid);
+    //    Vector3 dirRootToTarget = DirectX::XMVector3Normalize(rootToTarget);
+
+    //    //RotateBone(rootBone, dirRootToMid, dirRootToTarget);
+
+    //    //根元からターゲットまでの距離
+    //    float dist = rootToTarget.Length();
+
+    //    //根元から先端までの距離
+    //    const float lengthRootToTarget = rootToTarget.Length();
+    //    const float lengthRootToMid = rootToMid.Length();
+    //    const float lengthMidToTip = midToTip.Length();
+    //    const float armLength = lengthRootToMid + lengthMidToTip;
+
+    //    //ボーンの向きがまっすぐにならない
+    //    if (dist < armLength)
+    //    {
+    //        using namespace DirectX;
+
+    //        //三角形の面積を求める
+    //        float a = lengthRootToMid; //斜辺
+    //        float b = lengthRootToTarget; // 底辺
+    //        float c = lengthMidToTip;
+
+    //        float s = (a + b + c) / 2.0f;
+    //        float S = sqrtf(s * (s - a) * (s - b) * (s - c));
+
+
+    //        //三角形の高さを求める
+    //        float triHeight = S * 2.0f / a;
+
+    //        //直角三角形の斜辺と高さから角度を求める
+    //        float angle = asinf(triHeight / b);
+
+    //        if (angle != 0.0f)
+    //        {
+    //            const Vector3 palePos = { poleLocalTransform.m[3][0], poleLocalTransform.m[3][1], poleLocalTransform.m[3][2] };
+    //            Vector3 rootToPale = palePos - rootPos;
+    //            rootToPale.Normalize();
+
+    //            RotateBone(rootBone, dirRootToMid, rootToPale, angle);
+    //        }
+    //    }
+
+    //    rootBone.UpdateWorldTransforms();
+
+    //    //中間ボーンをターゲットの方へ向くように
+    //    {
+    //        rootPos = DirectX::XMLoadFloat4x4(&rootBone.worldTransform).r[3];
+    //        midPos = DirectX::XMLoadFloat4x4(&midBone.worldTransform).r[3];
+    //        tipPos = DirectX::XMLoadFloat4x4(&tipBone.worldTransform).r[3];
+    //        Vector3 midToTip = tipPos - midPos;
+    //        Vector3 midToTarget = targetWorldPos - midPos;
+
+    //        // 中央ボーンをターゲット方向に向ける
+    //        const Vector3 dirMidToTip = DirectX::XMVector3Normalize(midToTip);
+    //        const Vector3 dirMidToTarget = DirectX::XMVector3Normalize(targetWorldPos - midPos);
+    //        RotateBone(midBone, dirMidToTip, dirMidToTarget);
+
+    //        // 中央ボーン以下のワールド行列更新
+    //        midBone.UpdateWorldTransforms();
+    //    }
+
+    //    midBone.UpdateWorldTransforms();
+    //}
+
+
+
+    return animatedNodes_;
+}

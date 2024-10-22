@@ -103,6 +103,7 @@ namespace AbyssEngine
 			int model_ = -1;  // the index of mesh referenced by this node
 			int index_ = -1;
 
+			int parent_ = -1;
 			std::vector<int> children_;
 
 			// Local transforms
@@ -490,7 +491,7 @@ namespace AbyssEngine
 		void AppendAnimation(const std::string& filename);
 		void AppendAnimations(const std::vector<std::string>& filenames);
 
-		Node& GetNode(const std::string& boneName);
+		Node& GetNode(std::vector<Node>& nodes, const std::string& boneName);
 
 		struct PrimitiveConstants
 		{
@@ -505,6 +506,11 @@ namespace AbyssEngine
 		std::unique_ptr<ConstantBuffer<PrimitiveConstants>> primitiveConstants_;
 		const int Primitive_Slot = 0; // b0
 
+		void CumulateTransforms(std::vector<Node>& nodes, size_t sceneIndex);
+
+		//指定のノードとそれ以下をワールド行列更新
+		void NodeCumulateTransforms(std::vector<Node>& nodes, Node& node);
+
 	protected:
 		void ExtractAssets(const tinygltf::Model& transmissionModel);
 		void ExtractExtensions(const tinygltf::Model& transmissionModel);
@@ -513,8 +519,6 @@ namespace AbyssEngine
 		void ExtractMaterials(const tinygltf::Model& transmissionModel);
 		void ExtractTextures(const tinygltf::Model& transmissionModel);
 		void ExtractAnimations(const tinygltf::Model& transmissionModel);
-
-		void CumulateTransforms(std::vector<Node>& nodes, size_t sceneIndex);
 	};
 
 	template <typename T>

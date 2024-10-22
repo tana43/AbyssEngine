@@ -21,6 +21,8 @@ void Animator::DrawImGui()
 {
 	if (ImGui::TreeNode("Animator"))
 	{
+		ImGui::Checkbox("Upper Body Only",&upperBodyOnly_);
+
 		ImGui::InputFloat("Time Stamp", &timeStamp_);
 		ImGui::SliderFloat("Global Anim Speed", &animationSpeed_,0.0f,2.0f);
 		ImGui::Checkbox("Root Motion", &enableRootMotion_);
@@ -195,6 +197,37 @@ void Animator::AnimatorUpdate()
 	//時間更新
 	timeStamp_ += actor_->GetDeltaTime() * animationSpeed_;
 	
+	//仮で上半身分離処理
+	if (upperBodyOnly_)
+	{
+		auto& node = model->GetNode(animatedNodes_, upperBodyNodeName_);
+
+		std::vector<GeometricSubstance::Node> nodes = animatedNodes_;
+		model->Animate(0, timeStamp_, nodes);
+
+		//今はルートだけ手動でやる
+		//animatedNodes_[1].scale_ = nodes[1].scale_;
+		//animatedNodes_[1].rotation_ = nodes[1].rotation_;
+		//animatedNodes_[1].translation_ = nodes[1].translation_;
+
+		std::function<void(int,
+			std::vector<GeometricSubstance::Node>&,
+			std::vector<GeometricSubstance::Node>&)> updateNode = [&](
+				int nodeIndex,
+				std::vector<GeometricSubstance::Node>& aNodes,
+				std::vector<GeometricSubstance::Node>& bNodes) {
+					auto& node = aNodes[nodeIndex];
+					aNodes[nodeIndex].scale_       = bNodes[nodeIndex].scale_;
+					aNodes[nodeIndex].rotation_    = bNodes[nodeIndex].rotation_;
+					aNodes[nodeIndex].translation_ = bNodes[nodeIndex].translation_;
+					for (const int childIndex : node.children_)
+					{
+						updateNode(childIndex, aNodes, bNodes);
+					}
+			};
+		updateNode(node.index_, animatedNodes_, nodes);
+		model->CumulateTransforms(animatedNodes_, 0);
+	}
 }
 
 void Animator::PlayAnimation(const size_t& animIndex, float* transTime, float startTime)

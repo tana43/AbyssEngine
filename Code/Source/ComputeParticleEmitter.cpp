@@ -6,6 +6,8 @@
 #include "RenderManager.h"
 #include "AssetManager.h"
 
+#include "imgui/imgui_neo_sequencer.h"
+
 #include "Input.h"
 
 #include "imgui/imgui.h"
@@ -36,7 +38,11 @@ void ComputeParticleEmitter::DrawImGui()
 {
 	if (ImGui::TreeNode("GPU Particle"))
 	{
-		ImGui::Checkbox("'X' Key Emit", &canKeyXEmit_);
+		ImGui::Checkbox("Timeline", &enableTimeline_);
+		ImGui::Checkbox("Can Key Emit", &canInputEmit_);
+		ImGui::Text("X Key : One Emit");
+		ImGui::Text("Z Key : Always Emit");
+
 		if (ImGui::Button("Emit Particle"))
 		{
 			EmitParticle();
@@ -48,6 +54,7 @@ void ComputeParticleEmitter::DrawImGui()
 		ImGui::SliderInt("Texture Type", &texType_,0,spritCount.x * spritCount.y - 1);
 
 		ImGui::DragFloat("Lifespan", &lifespan_, 0.01f,0.0f);
+		ImGui::DragFloat("Lifespan Amplitude", &lifespanAmplitude_, 0.01f,0.0f);
 
 		ImGui::ColorEdit4("Color", &color_.x, ImGuiColorEditFlags_PickerHueWheel);
 		ImGui::DragFloat4("Color Amplitud", &colorAmplitud_.x,0.001f,0.0f);
@@ -89,13 +96,66 @@ void ComputeParticleEmitter::DrawImGui()
 
 		ImGui::TreePop();
 	}
+
+	if (enableTimeline_)
+	{
+		static int32_t currentFrame = 0;
+		static int32_t startFrame = -10;
+		static int32_t endFrame = 64;
+		static bool transformOpen = false;
+		std::vector<ImGui::FrameIndexType> keys = { 0, 10, 24 };
+		bool doDelete = false;
+
+		ImGui::Begin("Timeline");
+
+		if (ImGui::BeginNeoSequencer("Sequencer", &currentFrame, &startFrame, &endFrame, { 0, 0 },
+			ImGuiNeoSequencerFlags_EnableSelection |
+			ImGuiNeoSequencerFlags_Selection_EnableDragging |
+			ImGuiNeoSequencerFlags_Selection_EnableDeletion))
+		{
+			if (ImGui::BeginNeoGroup("Transform", &transformOpen))
+			{
+
+				if (ImGui::BeginNeoTimelineEx("Position"))
+				{
+					for (auto&& v : keys)
+					{
+						ImGui::NeoKeyframe(&v);
+						// Per keyframe code here
+					}
+
+
+					if (doDelete)
+					{
+						uint32_t count = ImGui::GetNeoKeyframeSelectionSize();
+
+						ImGui::FrameIndexType* toRemove = new ImGui::FrameIndexType[count];
+
+						ImGui::GetNeoKeyframeSelection(toRemove);
+
+						//Delete keyframes from your structure
+					}
+					ImGui::EndNeoTimeLine();
+				}
+				ImGui::EndNeoGroup();
+			}
+
+			ImGui::EndNeoSequencer();
+		}
+		ImGui::End();
+	}
 }
 
 void ComputeParticleEmitter::Update()
 {
-	if (canKeyXEmit_)
+	if (canInputEmit_)
 	{
 		if (Keyboard::GetKeyDown(DirectX::Keyboard::X)) 
+		{
+			EmitParticle();
+		}
+
+		if (Keyboard::GetKeyState().Z)
 		{
 			EmitParticle();
 		}
@@ -241,7 +301,11 @@ void ComputeParticleEmitter::EmitParticle()
 	const Vector3 rotVeloAmp = scaleVelocityAmplitude_ / 2.0f;
 	const Vector3 rotAccelAmp = scaleAccelerationAmplitud_ / 2.0f;
 
+	const float lifespanAmp = lifespanAmplitude_ / 2.0f;
+
 	const Vector4 colorAmp = colorAmplitud_ / 2.0f;
+
+	const float timeScale = actor_->GetDeltaTime() / Time::GetDeltaTime();
 
 	for (int i = 0; i < emitNum_; i++)
 	{
@@ -296,7 +360,10 @@ void ComputeParticleEmitter::EmitParticle()
 		ComputeParticleSystem::EmitParticleData data;
 		//更新タイプ
 		data.parameter_.x = texType_;
-		data.parameter_.y = lifespan_;
+		data.parameter_.y = lifespan_ + Math::RandomRange(-lifespanAmp, lifespanAmp);
+
+		//経過時間倍率
+		data.parameter_.z = timeScale;
 
 		//発生位置
 		data.position_.x = p.x;

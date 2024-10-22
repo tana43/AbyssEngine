@@ -49,6 +49,8 @@ namespace AbyssEngine
         [[nodiscard]] std::shared_ptr<Transform>& GetTransform() {return transform_; }
         [[nodiscard]] std::vector<std::shared_ptr<Component>>& GetComponentList() { return componentList_; }
 
+        //Imgui‚ğí‚É•\¦‚³‚¹‚é‚©
+        bool imguiAlways_ = false;
     private:
         void Initialize();  //‰Šú‰»
         void Release();     //Œãn––

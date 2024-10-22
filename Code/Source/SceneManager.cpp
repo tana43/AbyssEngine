@@ -26,9 +26,9 @@ SceneManager::SceneManager()
     AddScene(new EffectEditScene,"Effect");
     //SetNextScene("TestSceneSecond");
     //SetNextScene("Title");
-    //SetNextScene("Test");
+    SetNextScene("Test");
     //SetNextScene("Facility");
-    SetNextScene("Effect");
+    //SetNextScene("Effect");
 }
 
 SceneManager::~SceneManager()
@@ -119,6 +119,14 @@ void SceneManager::DrawImGui()
     {
         activeScene_->ImGuiSaveAllActors();
         activeScene_->DrawImGui();
+    }
+}
+
+void AbyssEngine::SceneManager::DrawImGuiAlways()
+{
+    if (activeScene_)
+    {
+        activeScene_->DrawImGuiAlways();
     }
 }
 

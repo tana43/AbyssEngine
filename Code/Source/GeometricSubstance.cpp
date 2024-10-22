@@ -41,13 +41,14 @@ void GeometricSubstance::ExtractNodes(const tinygltf::Model& transmissionModel)
 {
 	for (decltype(transmissionModel.nodes)::const_reference transmission_node : transmissionModel.nodes)
 	{
-		Node& node = nodes_.emplace_back();
-		node.index_ = nodes_.size() - 1;
-		node.name_ = transmission_node.name;
-		node.camera_ = transmission_node.camera;
-		node.skin_ = transmission_node.skin;
-		node.model_ = transmission_node.mesh;
+		Node& node     = nodes_.emplace_back();
+		node.index_    = nodes_.size() - 1;
+		node.name_     = transmission_node.name;
+		node.camera_   = transmission_node.camera;
+		node.skin_     = transmission_node.skin;
+		node.model_    = transmission_node.mesh;
 		node.children_ = transmission_node.children;
+		
 
 		if (!transmission_node.matrix.empty())
 		{
@@ -92,9 +93,32 @@ void GeometricSubstance::ExtractNodes(const tinygltf::Model& transmissionModel)
 		}
 		node.weights_ = transmission_node.weights;
 	}
-	for (size_t scene_index{}; scene_index < scenes_.size(); ++scene_index)
+
+	//親ノードの設定
+	std::function<void(int)> registParent = [&](int nodeIndex)
+		{
+			Node& node = nodes_.at(nodeIndex);
+
+			//子ノードに親として設定する
+			for (std::vector<int>::value_type childIndex : node.children_)
+			{
+				Node& child = nodes_.at(childIndex);
+				child.parent_ = nodeIndex;
+
+				int index = child.index_;
+				registParent(index);
+			}
+		};
+	for (size_t sceneIndex{}; sceneIndex < scenes_.size(); ++sceneIndex)
 	{
-		CumulateTransforms(nodes_, scene_index);
+		//親ノード設定
+		for (const int rootNode : scenes_[sceneIndex].nodes_)
+		{
+			registParent(rootNode);
+		}
+
+		//初期姿勢変換
+		CumulateTransforms(nodes_, sceneIndex);
 	}
 }
 void GeometricSubstance::ExtractExtensions(const tinygltf::Model& transmissionModel)
@@ -533,9 +557,9 @@ void GeometricSubstance::AppendAnimations(const std::vector<std::string>& filena
 	}
 }
 
-GeometricSubstance::Node& GeometricSubstance::GetNode(const std::string& boneName)
+GeometricSubstance::Node& GeometricSubstance::GetNode(std::vector<Node>& nodes, const std::string& boneName)
 {
-	for (auto& node : nodes_)
+	for (auto& node : nodes)
 	{
 		if (node.name_ == boneName)
 		{
@@ -778,24 +802,41 @@ bool GeometricSubstance::Animate(size_t animationIndex, float time, std::vector<
 
 	return animationFinished;
 }
-void GeometricSubstance::CumulateTransforms(std::vector<Node>& nodes_, size_t scene_index)
+void GeometricSubstance::CumulateTransforms(std::vector<Node>& nodes, size_t sceneIndex)
 {
-	std::function<void(int, int)> traverse = [&](int parent_index, int node_index)
+	std::function<void(int, int)> traverse = [&](int parentIndex, int nodeIndex)
 	{
-		Node& Node = nodes_.at(node_index);
-		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(Node.scale_.x, Node.scale_.y, Node.scale_.z);
-		DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(Node.rotation_.x, Node.rotation_.y, Node.rotation_.z, Node.rotation_.w));
-		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(Node.translation_.x, Node.translation_.y, Node.translation_.z);
-		DirectX::XMStoreFloat4x4(&Node.globalTransform_, S * R * T * (parent_index > -1 ? DirectX::XMLoadFloat4x4(&nodes_.at(parent_index).globalTransform_) : DirectX::XMMatrixIdentity()));
-		for (std::vector<int>::value_type child_index : Node.children_)
+		Node& node = nodes.at(nodeIndex);
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(node.scale_.x, node.scale_.y, node.scale_.z);
+		DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(node.rotation_.x, node.rotation_.y, node.rotation_.z, node.rotation_.w));
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(node.translation_.x, node.translation_.y, node.translation_.z);
+		DirectX::XMStoreFloat4x4(&node.globalTransform_, S * R * T * (parentIndex > -1 ? DirectX::XMLoadFloat4x4(&nodes.at(parentIndex).globalTransform_) : DirectX::XMMatrixIdentity()));
+		for (std::vector<int>::value_type childIndex : node.children_)
 		{
-			traverse(node_index, child_index);
+			traverse(nodeIndex, childIndex);
 		}
 	};
-	const Scene& Scene = scenes_.at(scene_index);
-	for (decltype(Scene.nodes_)::value_type root_node : Scene.nodes_)
+	const Scene& Scene = scenes_.at(sceneIndex);
+	for (decltype(Scene.nodes_)::value_type rootNode : Scene.nodes_)
 	{
-		traverse(-1, root_node);
+		traverse(-1, rootNode);
 	}
+}
+
+void GeometricSubstance::NodeCumulateTransforms(std::vector<Node>& nodes, Node& node)
+{
+	std::function<void(Node&, int)> traverse = [&](Node& node, int parentIndex)
+		{
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(node.scale_.x, node.scale_.y, node.scale_.z);
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(node.rotation_.x, node.rotation_.y, node.rotation_.z, node.rotation_.w));
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(node.translation_.x, node.translation_.y, node.translation_.z);
+			DirectX::XMStoreFloat4x4(&node.globalTransform_, S * R * T * (parentIndex > -1 ? DirectX::XMLoadFloat4x4(&nodes_[parentIndex].globalTransform_) : DirectX::XMMatrixIdentity()));
+			for (std::vector<int>::value_type childIndex : node.children_)
+			{
+				traverse(nodes[childIndex],node.index_);
+			}
+		};
+
+	traverse(node, node.parent_);
 }
 

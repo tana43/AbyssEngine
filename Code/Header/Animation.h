@@ -198,4 +198,28 @@ namespace AbyssEngine
 
         float lastBlendWeight_ = 0.0f;
     };
+
+    class AnimAimIK : public Animation
+    {
+    public:
+        AnimAimIK(SkeletalMesh* model, const std::string& name_);
+        ~AnimAimIK() {}
+
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr)override;
+
+        void SetShoulderNodeName(const std::string& str) { shoulderNodeName_ = str; }
+        void SetElbowNodeName(const std::string& str) { elbowNodeName_ = str; }
+        void SetHandNodeName(const std::string& str) { handNodeName_ = str; }
+
+    private:
+        Vector3 targetPosition_;
+
+        //各ノードの名前　すぐに設定する必要がある
+        std::string shoulderNodeName_ = "";
+        std::string elbowNodeName_ = "";
+        std::string handNodeName_ = "";
+
+        //腕以外のベースになるモーション
+        int baseAnimationIndex_ = 0;
+    };
 }

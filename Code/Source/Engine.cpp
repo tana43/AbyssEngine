@@ -147,6 +147,9 @@ void Engine::DrawDebug()
             ImGui::EndMenu();
         }
 
+        sceneManager_->DrawImGuiAlways();
+
+
         Time::DrawImGui();
 
         inputManager_->DrawImGui();

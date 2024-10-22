@@ -555,6 +555,16 @@ void Vitesse::AttackerInitialize()
     
 }
 
+void Vitesse::AimIKTest()
+{
+    const auto& model = model_->GetModel();
+
+ /*   for ()
+    {
+
+    }*/
+}
+
 void Vitesse::Flinch(StaggerType type)
 {
     switch (type)

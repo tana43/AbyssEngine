@@ -27,8 +27,19 @@ namespace AbyssEngine
         //　一度に生成されるパーティクルの数
         int emitNum_ = 100;
 
-        // パーティクル寿命
+        // 生存時間
         float lifespan_ = 1.0f;
+        //　生存時間振れ幅
+        float lifespanAmplitude_ = 0.0f;
+
+        //　生成時間
+        float emitTime = 1.0f;
+
+        //  生成開始時間
+        //float emitStartTime_ = 0.0f;
+
+
+
 
         //テクスチャのタイプ 
         int texType_ = 0;
@@ -79,11 +90,15 @@ namespace AbyssEngine
 
         //Xキーを押すことで生成可能にする
 #if _DEBUG
-        bool canKeyXEmit_ = true;
+        bool canInputEmit_ = true;
+        bool enableTimeline_ = true;
 #else
-        bool canKeyXEmit_ = false;
+        bool canInputEmit_ = false;
+        bool enableTimeline_ = false;
 #endif // _DEBUG
 
+        
+        
     };
 }
 

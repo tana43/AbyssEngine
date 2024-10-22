@@ -12,6 +12,8 @@ void main(uint3 dispatchThreadId : SV_DispatchThreadID)
 
     //  有効フラグが立っているものだけ処理
     if (particleDataBuffer[index].parameter.z < 0.0f)return;
+    
+    float delta = deltaTime * particleDataBuffer[index].parameter.w;
 
     //  経過時間分減少させる
     particleDataBuffer[index].parameter.y -= deltaTime;

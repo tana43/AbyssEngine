@@ -174,6 +174,31 @@ Matrix AbyssEngine::SkeletalMesh::FindSocket(const char* socketName)
 	_ASSERT_EXPR(false, L"同じ名前のソケットが見つかりませんでした");
 }
 
+GltfSkeletalMesh::Node& AbyssEngine::SkeletalMesh::FindNode(const char* socketName)
+{
+	auto& animNodes = GetAnimator()->GetAnimatedNodes();
+	std::vector<GeometricSubstance::Node>::iterator node;
+	for (auto it = animNodes.begin(); it != animNodes.end(); it++)
+	{
+		if (it->name_ == socketName)
+		{
+			node = it;
+			break;
+		}
+	}
+	if (node != animNodes.end())
+	{
+		return *node;
+	}
+
+	_ASSERT_EXPR(false, L"同じ名前のノードが見つかりませんでした");
+}
+
+void SkeletalMesh::NodeUpdateWorldTransforms(std::vector<GltfSkeletalMesh::Node>& nodes,GltfSkeletalMesh::Node& node)
+{
+	model_->NodeCumulateTransforms(nodes,node);
+}
+
 void SkeletalMesh::SetActive(const bool value)
 {
 	if (value)

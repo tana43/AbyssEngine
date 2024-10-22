@@ -15,7 +15,7 @@ void main(uint3 dispatchThreadId : SV_DispatchThreadID)
     particleDataBuffer[particleIndex].parameter.x = emitParticleBuffer[emitIndex].parameter.x;
     particleDataBuffer[particleIndex].parameter.y = emitParticleBuffer[emitIndex].parameter.y;
     particleDataBuffer[particleIndex].parameter.z = 1.0f;
-    particleDataBuffer[particleIndex].parameter.w = 0.0f;
+    particleDataBuffer[particleIndex].parameter.w = emitParticleBuffer[emitIndex].parameter.w;
     
     particleDataBuffer[particleIndex].position             = emitParticleBuffer[emitIndex].position;
     particleDataBuffer[particleIndex].rotation             = emitParticleBuffer[emitIndex].rotation;

@@ -21,7 +21,7 @@ namespace AbyssEngine
         //パーティクル生成用構造体
         struct EmitParticleData
         {
-            Vector4	parameter_;						//	x : パーティクル処理タイプ, y : 生存時間, zw : 空き
+            Vector4	parameter_;						//	x : パーティクル処理タイプ, y : 生存時間, z、w : 経過時間倍率
 
             Vector4	position_          = { 0, 0, 0, 0 };//	生成座標
             Vector4	rotation_          = { 0, 0, 0, 0 };//	拡縮情報
@@ -44,7 +44,7 @@ namespace AbyssEngine
         //	アプリケーション側では使用しないが、形式として必要なためここで宣言しておく
         struct ParticleData
         {
-            Vector4	parameter_;		//	x : パーティクル処理タイプ, y : 生存時間, z : 生存フラグ, w : 空き
+            Vector4	parameter_;		//	x : パーティクル処理タイプ, y : 生存時間, z : 生存フラグ, w : 経過時間倍率
 
             Vector4	position_;		//	生成座標
             Vector4	rotation_;		//	拡縮情報

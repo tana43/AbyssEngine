@@ -1,8 +1,8 @@
 #ifndef __COMMON_HLSL__
 #define __COMMON_HLSL__
 
-static const float gamma = 2.2;
-static const float invGamma = 1.0 / 2.2;
+static const float gamma = 1.8;
+static const float invGamma = 1.0 / 1.8;
 
 static const float PI = 3.141592653;
 static const float epsilon = 0.00001;

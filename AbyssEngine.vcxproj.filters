@@ -421,6 +421,12 @@
     </ClInclude>
     <ClInclude Include="Code\Header\ComputeParticleEmitter.h" />
     <ClInclude Include="Code\Header\EffectEditScene.h" />
+    <ClInclude Include="External\imgui\imgui_neo_internal.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui_neo_sequencer.h">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -704,6 +710,12 @@
     </ClCompile>
     <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp" />
     <ClCompile Include="Code\Source\EffectEditScene.cpp" />
+    <ClCompile Include="External\imgui\imgui_neo_internal.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui_neo_sequencer.cpp">
+      <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

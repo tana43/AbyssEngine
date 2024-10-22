@@ -94,6 +94,9 @@ namespace AbyssEngine
         //ルートモーションによって移動する値(別途リセットが必要)
         Vector3 rootMotionMove_;
 
+        bool upperBodyOnly_ = false;
+        std::string upperBodyNodeName_ = "rig_J_upbody01";
+
     };
 
 }

@@ -40,6 +40,7 @@ namespace AbyssEngine
 
     private:
         void DrawImGui();//シーンのImGUi表示
+        void DrawImGuiAlways();//常に出すImGUi表示
         void DrawDebug();//シーンのデバッグ表示
         void DrawWorldOutLinerImGui();//ワールド上に生成されるアクターのデバッグ表示
 

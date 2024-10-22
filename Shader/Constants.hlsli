@@ -31,6 +31,7 @@ struct EffectConstants
     float fogHeightFalloff;
     float groundLevel;
     float maxRayLength;
+    
     float mieG;
     float noiseScale;
     float timeScale;
@@ -47,6 +48,7 @@ struct EffectConstants
     float radialBlurStrength;
     uint radialBlurSampleCount;
     float2 radialBlurUvOffset;
+    
 };
 cbuffer effectConstants : register(b11)
 {

@@ -6,7 +6,7 @@ static const int Num_Particle_Thread = 1024;
 //生成パーティクル構造体
 struct EmitParticleData
 {
-    float4 parameter; //x : パーティクル処理タイプ,y : 生成時間,zw : 空き
+    float4 parameter; //x : パーティクル処理タイプ,y : 生成時間,z w : 経過時間の倍率
     
     float4 position;
     float4 rotation;
@@ -27,7 +27,7 @@ struct EmitParticleData
 //パーティクル構造体
 struct ParticleData
 {
-    float4 parameter;//x : パーティクル処理タイプ,y : 生存時間.z : 生存フラグ, w : 空き
+    float4 parameter;//x : パーティクル処理タイプ,y : 生存時間.z : 生存フラグ, w : 経過時間の倍率
     float4 position;
     float4 rotation;
     float4 scale;

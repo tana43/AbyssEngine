@@ -36,8 +36,14 @@ namespace AbyssEngine
         //ソケットにアタッチする　武器などを持たせることが出来る
         void SocketAttach(const std::shared_ptr<StaticMesh>& attachModel, const char* socketName);
 
-
+        //ソケットの行列を取得
         Matrix FindSocket(const char* socketName);
+
+        //ノードを名前検索
+        GltfSkeletalMesh::Node& FindNode(const char* socketName);
+
+        //指定のノードとそれ以下のワールド行列更新
+        void NodeUpdateWorldTransforms(std::vector<GltfSkeletalMesh::Node>& nodes, GltfSkeletalMesh::Node& node);
 
     public:
         GltfSkeletalMesh* GetModel() { return model_.get(); }
