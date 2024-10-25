@@ -26,6 +26,7 @@ namespace AbyssEngine
     class LineRenderer;
     class PrimitiveRenderer;
     class ShapeRenderer;
+    class TrailRenderer;
 
     class ParticleSystem;
     class ParticleEmitter;
@@ -56,6 +57,7 @@ namespace AbyssEngine
         void Add(const std::shared_ptr<StaticMesh>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<ParticleEmitter>& mRend);
         void Add(const std::shared_ptr<ComputeParticleEmitter>& mRend);
+        void Add(const std::shared_ptr<TrailRenderer>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<Camera>& camera);//マネージャーにカメラを登録する
 
         void Render(); //描画実行
@@ -78,6 +80,8 @@ namespace AbyssEngine
         std::mutex& GetMutex() { return mutex_; }
 
         const std::vector<std::weak_ptr<Camera>>& GetCameraList() { return cameraList_; }
+
+        const std::weak_ptr<Camera>& GetMainCamera();
 
         const std::unique_ptr<ComputeParticleSystem>& GetParticleSystem() const { return computeParticleSystem_; }
 
@@ -217,7 +221,7 @@ namespace AbyssEngine
 
         //3Dアクターのレンダリング
         void Render3D(const std::shared_ptr<Camera>& camera_);
-        RS_State rasterizerState3D = RS_State::Cull_None;
+        RS_State rasterizerState3D = RS_State::Cull_Back;
 
         //エフェクトアクターのレンダリング
         void RenderEffect()const;

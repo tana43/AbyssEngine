@@ -109,6 +109,9 @@
     <Filter Include="Shader\Particle">
       <UniqueIdentifier>{2cdf9d05-5e54-4e44-a01d-46de7362d08d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Trail">
+      <UniqueIdentifier>{607ff1f1-5227-4637-b41d-76b283c230f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Header\Camera.h">
@@ -419,13 +422,18 @@
     <ClInclude Include="Code\Header\ParticleEmitter.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\ComputeParticleEmitter.h" />
-    <ClInclude Include="Code\Header\EffectEditScene.h" />
     <ClInclude Include="External\imgui\imgui_neo_internal.h">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="External\imgui\imgui_neo_sequencer.h">
       <Filter>Code\Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\TrailRenderer.h" />
+    <ClInclude Include="Code\Header\EffectEditScene.h">
+      <Filter>Script\Header\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ComputeParticleEmitter.h">
+      <Filter>Code\Header\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -708,13 +716,18 @@
     <ClCompile Include="Scripts\Source\SceneTransitionCollider.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp" />
-    <ClCompile Include="Code\Source\EffectEditScene.cpp" />
     <ClCompile Include="External\imgui\imgui_neo_internal.cpp">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="External\imgui\imgui_neo_sequencer.cpp">
       <Filter>Code\Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\TrailRenderer.cpp" />
+    <ClCompile Include="Code\Source\EffectEditScene.cpp">
+      <Filter>Script\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp">
+      <Filter>Code\Source\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -862,6 +875,12 @@
     <FxCompile Include="Shader\ComputeParticleUpdateCS.hlsl">
       <Filter>Shader\Particle</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\TrailRendererVS.hlsl">
+      <Filter>Shader\Trail</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\TrailRendererPS.hlsl">
+      <Filter>Shader\Trail</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
@@ -921,6 +940,9 @@
     </None>
     <None Include="Shader\ComputeParticle.hlsli">
       <Filter>Shader\Particle</Filter>
+    </None>
+    <None Include="Shader\TrailRenderer.hlsli">
+      <Filter>Shader\Trail</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

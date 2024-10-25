@@ -55,7 +55,7 @@ namespace AbyssEngine
         //ルートモーションによる移動の速度倍率
         float rootMotionSpeed_ = 1.0f;
 
-        //モデルの持つノードへアクセスするためのポインタ
+        //それぞれのアニメーション情報を格納するボーン情報
         std::vector<GeometricSubstance::Node> animatedNodes_;
 
         Animator* animator_ = nullptr;
@@ -205,21 +205,44 @@ namespace AbyssEngine
         AnimAimIK(SkeletalMesh* model, const std::string& name_);
         ~AnimAimIK() {}
 
+        void DrawImGui(Animator* animator)override;
+
         std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr)override;
 
-        void SetShoulderNodeName(const std::string& str) { shoulderNodeName_ = str; }
-        void SetElbowNodeName(const std::string& str) { elbowNodeName_ = str; }
-        void SetHandNodeName(const std::string& str) { handNodeName_ = str; }
+        void SetRootNodeName(const std::string& str) { rootNodeName_ = str; }
+        void SetMidNodeName(const std::string& str) { midNodeName_ = str; }
+        void SetTipNodeName(const std::string& str) { tipNodeName_ = str; }
+        void SeIgnoreNodeName(const std::string& str) { tipNodeName_ = str; }
+
 
     private:
+        //根本、中間、先端ノードの親子関係は連続しているか判定し、続いていなければ間のボーンを登録する
+        //GeometricSubstance::Node* CheckDirectLineBones(GltfSkeletalMesh* model);
+
+    private:
+        //ターゲットの座標
         Vector3 targetPosition_;
 
+        //Vector3 targetDirection_;
+
+        //腕の伸ばし具合 0~1
+        float armExtension = 1.0f;
+
         //各ノードの名前　すぐに設定する必要がある
-        std::string shoulderNodeName_ = "";
-        std::string elbowNodeName_ = "";
-        std::string handNodeName_ = "";
+        std::string rootNodeName_ = "";
+        std::string midNodeName_ = "";
+        std::string tipNodeName_ = "";
+        
+        //　無視するノード名前　肩から手にかけて２つより多いボーンが存在するときに使う
+        std::string ignoreNodeName_;
+
+        //無視ノードを中間ノードから上にするか下にするか
+        bool isUpIgnoreNode_ = false;
 
         //腕以外のベースになるモーション
         int baseAnimationIndex_ = 0;
+
+        //逆間接防止用のポールターゲット座標
+        Vector3 polePosition_ = {0,-1.0f,0};
     };
 }

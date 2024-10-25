@@ -109,6 +109,8 @@ public:
         Flight_Move,
         HighSpeedFlight_Move2D,
         HighSpeedFlight_Move,
+
+        Aim_IK,
     };
     //アニメーションステートマシーンEnum
     enum class AnimationState
@@ -226,6 +228,8 @@ private:
     //AbyssEngine::AnimBlendSpace2D* flyMoveAnimation_;//空中移動
     AbyssEngine::AnimBlendSpaceFlyMove* flightAnimation_;//空中移動
     AbyssEngine::AnimBlendSpaceFlyMove* highSpeedFlightAnimation_;//高速空中移動
+
+    AbyssEngine::AnimAimIK* aimIKAnimation_;//エイムIK
 
     std::shared_ptr<AbyssEngine::StateMachine<State<Vitesse>>> stateMachine_;
     std::shared_ptr<AbyssEngine::StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;

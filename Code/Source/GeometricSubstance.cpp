@@ -837,6 +837,7 @@ void GeometricSubstance::NodeCumulateTransforms(std::vector<Node>& nodes, Node& 
 			}
 		};
 
-	traverse(node, node.parent_);
+	Node& parentNode = nodes[node.parent_];
+	traverse(parentNode, parentNode.parent_);
 }
 

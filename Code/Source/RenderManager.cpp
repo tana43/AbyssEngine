@@ -13,6 +13,7 @@
 #include "ParticleEmitter.h"
 #include "ComputeParticleEmitter.h"
 #include "ComputeParticleSystem.h"
+#include "TrailRenderer.h"
 
 #include "Bloom.h"
 #include "Skybox.h"
@@ -300,6 +301,12 @@ void RenderManager::Add(const shared_ptr<ParticleEmitter>& mRend)
 {
 	rendererEffectList_.emplace_back(mRend);
 }
+
+void RenderManager::Add(const shared_ptr<TrailRenderer>& mRend)
+{
+	rendererEffectList_.emplace_back(mRend);
+}
+
 
 void RenderManager::Add(const shared_ptr<ComputeParticleEmitter>& mRend)
 {
@@ -639,6 +646,23 @@ void RenderManager::SetShadowCullingArea(const Vector3& max, const Vector3& min)
 	shadowCullingArea_.Extents = MinToMax * 0.5f;
 }
 
+const std::weak_ptr<Camera>& AbyssEngine::RenderManager::GetMainCamera()
+{
+	for (auto& c : cameraList_)
+	{
+		if (const auto& camera = c.lock())
+		{
+			if (camera->actor_->GetActiveInHierarchy())
+			{
+				if (!camera->GetIsMainCamera())continue;
+				return camera;
+			}
+		}
+	}
+
+	// TODO: return ステートメントをここに挿入します
+}
+
 void RenderManager::Render2D() const
 {
 	if (!renderer2DList_.empty())
@@ -725,7 +749,8 @@ void RenderManager::Render3D(const shared_ptr<Camera>& camera_)
 void RenderManager::RenderEffect() const
 {
 	DXSystem::SetDepthStencilState(DS_State::LEqual_No_Write);
-
+	DXSystem::SetRasterizerState(RS_State::Cull_None);
+	DXSystem::SetBlendState(BS_State::Alpha);
 	for (auto& r : rendererEffectList_)
 	{
 		const auto& pRend = r.lock();

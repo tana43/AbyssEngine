@@ -197,6 +197,7 @@ void Animator::AnimatorUpdate()
 	//時間更新
 	timeStamp_ += actor_->GetDeltaTime() * animationSpeed_;
 	
+	//TODO：仮実装
 	//仮で上半身分離処理
 	if (upperBodyOnly_)
 	{
@@ -204,11 +205,6 @@ void Animator::AnimatorUpdate()
 
 		std::vector<GeometricSubstance::Node> nodes = animatedNodes_;
 		model->Animate(0, timeStamp_, nodes);
-
-		//今はルートだけ手動でやる
-		//animatedNodes_[1].scale_ = nodes[1].scale_;
-		//animatedNodes_[1].rotation_ = nodes[1].rotation_;
-		//animatedNodes_[1].translation_ = nodes[1].translation_;
 
 		std::function<void(int,
 			std::vector<GeometricSubstance::Node>&,
@@ -255,6 +251,44 @@ void Animator::PlayAnimation(const std::string& animName, float* transTime, floa
 	}
 	
 	_ASSERT_EXPR(false, u8"指定のアニメーションが見つかりません");
+}
+
+void Animator::RotateBone(std::vector<GeometricSubstance::Node>& nodes,GeometricSubstance::Node& node, const Vector3& direction1, const Vector3& direction2, float angle)
+{
+	// 回転角度算出
+	if (0.0f == angle) // 角度の引数が設定されていなければ計算する
+	{
+		angle = DirectX::XMVectorGetX(DirectX::XMVector3Dot(direction1, direction2));
+
+		// ※acosf関数は-1.0未満、+1.0超過の値を入れるとエラーの値(nan)を返すので修正しておく
+		angle = ::acosf(std::clamp(angle, -1.0f, +1.0f));
+	}
+
+	// 回転量がなければreturn
+	if (0.0f == angle) { return; }
+
+	// 回転軸算出
+	DirectX::XMVECTOR Axis = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(direction1, direction2));
+
+	// 軸が０ならreturn
+	if (true == DirectX::XMVector3Equal(Axis, DirectX::XMVectorSet(0, 0, 0, 0))) { return; }
+
+#if 1
+	// 回転軸をローカル空間変換
+	if (node.parent_ >= 0)
+	{
+		Matrix worldTransform = nodes[node.parent_].globalTransform_ * transform_->GetWorldMatrix();
+		Axis = DirectX::XMVector3TransformNormal(Axis, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&worldTransform)));
+	}
+#endif
+
+	// 回転クォータニオン算出
+	const DirectX::XMVECTOR Q = DirectX::XMQuaternionRotationNormal(Axis, angle);
+
+	// 回転
+	DirectX::XMVECTOR Rot = DirectX::XMLoadFloat4(&node.rotation_);
+	Rot = DirectX::XMQuaternionNormalize(DirectX::XMQuaternionMultiply(Rot, Q));
+	DirectX::XMStoreFloat4(&node.rotation_, Rot);
 }
 
 void Animator::PlayAnimationCommon(const size_t& animIndex,float transTime, float startTime)
@@ -373,6 +407,15 @@ AnimBlendSpaceFlyMove* AbyssEngine::Animator::AppendAnimation(AnimBlendSpaceFlyM
 	auto& animation = animations_.emplace_back(p);
 	animation->SetAnimator(this);
 	return p;
+}
+
+void AbyssEngine::Animator::AppendAnimation(AnimAimIK* anim)
+{
+	const auto& model = skeletalMesh_.lock();
+	if (!model)return;
+
+	auto& animation = animations_.emplace_back(anim);
+	animation->SetAnimator(this);
 }
 
 std::vector<Animation*> AbyssEngine::Animator::GetAnimations()

@@ -252,50 +252,72 @@ void Vitesse::AnimationInitialize()
 
 
         //地上移動
-        AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimationIndex::Stand), Vector2(0, 0));
-        //前、右、左、後の順に追加
-        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_F), Vector2(0, 1));
-        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_R), Vector2(1, 0));
-        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_L), Vector2(-1, 0));
-        rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_B), Vector2(0, -1));
-        groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
+        {
+            AnimBlendSpace2D rMoveAnim = AnimBlendSpace2D(model_.get(), "RunMove", static_cast<int>(AnimationIndex::Stand), Vector2(0, 0));
+            //前、右、左、後の順に追加
+            rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_F), Vector2(0, 1));
+            rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_R), Vector2(1, 0));
+            rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_L), Vector2(-1, 0));
+            rMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Run_B), Vector2(0, -1));
+            groundMoveAnimation_ = model_->GetAnimator()->AppendAnimation(rMoveAnim);
+        }
 
         //空中移動
+        {
 #if 0
-        AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimationIndex::Fly_Idle), Vector2(0, 0));
-        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_F), Vector2(0, 1));
-        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_R), Vector2(1, 0));
-        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_L), Vector2(-1, 0));
-        fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_B), Vector2(0, -1));
+            AnimBlendSpace2D fMoveAnim = AnimBlendSpace2D(model_.get(), "FlyMove", static_cast<int>(AnimationIndex::Fly_Idle), Vector2(0, 0));
+            fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_F), Vector2(0, 1));
+            fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_R), Vector2(1, 0));
+            fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_L), Vector2(-1, 0));
+            fMoveAnim.AddBlendAnimation(static_cast<int>(AnimationIndex::Fly_B), Vector2(0, -1));
 #else
-        //飛行のブレンドモーション登録
-        AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimationIndex::Flight_Idle), static_cast<int>(AnimationIndex::Flight_Up));
-        fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_Down), -1.0f);
-        auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
-        f1d->SetMinWeight(-1.0f);
+            //飛行のブレンドモーション登録
+            AnimBlendSpace1D fMoveAnim1D = AnimBlendSpace1D(model_.get(), "FlyMoveUpDown", static_cast<int>(AnimationIndex::Flight_Idle), static_cast<int>(AnimationIndex::Flight_Up));
+            fMoveAnim1D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_Down), -1.0f);
+            auto* f1d = model_->GetAnimator()->AppendAnimation(fMoveAnim1D);
+            f1d->SetMinWeight(-1.0f);
 
-        AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimationIndex::Flight_Idle), Vector2(0, 0));
-        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_F), Vector2(0, 1));
-        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_R), Vector2(1, 0));
-        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_L), Vector2(-1, 0));
-        fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_B), Vector2(0, -1));
-        auto* f2d = model_->GetAnimator()->AppendAnimation(fMoveAnim2D);
+            AnimBlendSpace2D fMoveAnim2D = AnimBlendSpace2D(model_.get(), "FlyMove2D", static_cast<int>(AnimationIndex::Flight_Idle), Vector2(0, 0));
+            fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_F), Vector2(0, 1));
+            fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_R), Vector2(1, 0));
+            fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_L), Vector2(-1, 0));
+            fMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::Flight_B), Vector2(0, -1));
+            auto* f2d = model_->GetAnimator()->AppendAnimation(fMoveAnim2D);
 
-        AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D", f2d, f1d);
-        flightAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
+            AnimBlendSpaceFlyMove fMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "FlyMove3D", f2d, f1d);
+            flightAnimation_ = model_->GetAnimator()->AppendAnimation(fMoveAnim);
 
 
-        //高速飛行のブレンドモーション登録
-        AnimBlendSpace2D highSpeedFMoveAnim2D = AnimBlendSpace2D(model_.get(), "HighSpeedFlyMove2D", static_cast<int>(AnimationIndex::Flight_Idle), Vector2(0, 0));
-        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_F), Vector2(0, 1));
-        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_R), Vector2(1, 0));
-        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_L), Vector2(-1, 0));
-        highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_B), Vector2(0, -1));
-        auto* hf2d = model_->GetAnimator()->AppendAnimation(highSpeedFMoveAnim2D);
+            //高速飛行のブレンドモーション登録
+            AnimBlendSpace2D highSpeedFMoveAnim2D = AnimBlendSpace2D(model_.get(), "HighSpeedFlyMove2D", static_cast<int>(AnimationIndex::Flight_Idle), Vector2(0, 0));
+            highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_F), Vector2(0, 1));
+            highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_R), Vector2(1, 0));
+            highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_L), Vector2(-1, 0));
+            highSpeedFMoveAnim2D.AddBlendAnimation(static_cast<int>(AnimationIndex::HighSpeedFlight_B), Vector2(0, -1));
+            auto* hf2d = model_->GetAnimator()->AppendAnimation(highSpeedFMoveAnim2D);
 
-        AnimBlendSpaceFlyMove hfMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "HighSpeedFlyMove3D", hf2d, f1d);
-        highSpeedFlightAnimation_ = model_->GetAnimator()->AppendAnimation(hfMoveAnim);
+            AnimBlendSpaceFlyMove hfMoveAnim = AnimBlendSpaceFlyMove(model_.get(), "HighSpeedFlyMove3D", hf2d, f1d);
+            highSpeedFlightAnimation_ = model_->GetAnimator()->AppendAnimation(hfMoveAnim);
 #endif // 0
+        }
+
+        //AimIk
+        {
+            aimIKAnimation_ = new AnimAimIK(model_.get(), "AimIK");
+            model_->GetAnimator()->AppendAnimation(aimIKAnimation_);
+
+            //根本ノード
+            aimIKAnimation_->SetRootNodeName("rig_J_uparm_L");
+
+            //中間ノード
+            aimIKAnimation_->SetMidNodeName("rig_J_midarm_L");
+
+            //先端ノード
+            aimIKAnimation_->SetTipNodeName("rig_J_hand_L");
+
+            //無視するノード
+            aimIKAnimation_->SetRootNodeName("rig_J_lowarm_L");
+        }
 
         model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimationIndex::Run_Move));
 

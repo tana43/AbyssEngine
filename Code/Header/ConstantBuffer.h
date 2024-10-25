@@ -90,7 +90,7 @@ namespace AbyssEngine
 		{
 			const auto& deviceContext = DXSystem::GetDeviceContext();
 
-				HRESULT hr = S_OK;
+			HRESULT hr = S_OK;
 #ifdef USAGE_DYNAMIC
 			D3D11_MAP map = D3D11_MAP_WRITE_DISCARD;
 			D3D11_MAPPED_SUBRESOURCE mappedBuffer;

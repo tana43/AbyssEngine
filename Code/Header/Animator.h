@@ -23,6 +23,15 @@ namespace AbyssEngine
         //アニメーション再生　モーションの遷移時間を指定　無かった場合はメンバ変数の値が代入される
         void PlayAnimation(const size_t& animIndex,float* transTime = nullptr,float startTime = 0.0f);//要素数から検索
         void PlayAnimation(const std::string& animName,float* transTime = nullptr,float startTime = 0.0f);//名前から検索
+
+        //任意の方向へボーンを回転
+        void RotateBone(
+            std::vector<GeometricSubstance::Node>& nodes
+            ,GeometricSubstance::Node& node
+            , const Vector3& direction1
+            , const Vector3& direction2
+            , float angle = 0.0f);
+
     private:
         void PlayAnimationCommon(const size_t& animIndex,float transTime,float startTime = 0.0f);
 
@@ -36,6 +45,7 @@ namespace AbyssEngine
         AnimBlendSpace1D* AppendAnimation(AnimBlendSpace1D anim);
         AnimBlendSpace2D* AppendAnimation(AnimBlendSpace2D anim);
         AnimBlendSpaceFlyMove* AppendAnimation(AnimBlendSpaceFlyMove anim);
+        void AppendAnimation(AnimAimIK* anim);
 
         std::vector<GeometricSubstance::Node>& GetAnimatedNodes() { return animatedNodes_; }
         void SetAnimatedNodes(const std::vector<GeometricSubstance::Node>& nodes) { animatedNodes_ = nodes; }
@@ -61,6 +71,9 @@ namespace AbyssEngine
         void SetRootMotionMove(const Vector3& move) { rootMotionMove_ = move; }
 
         void SetAnimationTransTime(const float& time) { animationTransTime_ = time; }
+
+        const std::weak_ptr<SkeletalMesh>& GetSkeletalMesh() const { return skeletalMesh_; }
+
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;

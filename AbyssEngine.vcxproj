@@ -89,6 +89,7 @@
     <ClInclude Include="Code\Header\TestScene.h" />
     <ClInclude Include="Code\Header\Texture.h" />
     <ClInclude Include="Code\Header\BillboardRenderer.h" />
+    <ClInclude Include="Code\Header\TrailRenderer.h" />
     <ClInclude Include="Code\Header\Transform.h" />
     <ClInclude Include="External\imgui\imconfig.h" />
     <ClInclude Include="External\imgui\imgui.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Code\Source\TestScene.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />
     <ClCompile Include="Code\Source\BillboardRenderer.cpp" />
+    <ClCompile Include="Code\Source\TrailRenderer.cpp" />
     <ClCompile Include="Code\Source\Transform.cpp" />
     <ClCompile Include="External\imgui\imgui.cpp" />
     <ClCompile Include="External\imgui\ImGuiCtrl.cpp" />
@@ -517,6 +519,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\TrailRendererPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\TrailRendererVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -539,6 +553,7 @@
     <None Include="Shader\PlaneBillboard.hlsli" />
     <None Include="Shader\PrimitiveRenderer.hlsli" />
     <None Include="Shader\ShapeRenderer.hlsli" />
+    <None Include="Shader\TrailRenderer.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbyssEngine.rc" />
