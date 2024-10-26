@@ -428,11 +428,13 @@
     <ClInclude Include="External\imgui\imgui_neo_sequencer.h">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\TrailRenderer.h" />
     <ClInclude Include="Code\Header\EffectEditScene.h">
       <Filter>Script\Header\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\ComputeParticleEmitter.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\TrailRenderer.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
   </ItemGroup>
@@ -722,11 +724,13 @@
     <ClCompile Include="External\imgui\imgui_neo_sequencer.cpp">
       <Filter>Code\Libraries\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\TrailRenderer.cpp" />
     <ClCompile Include="Code\Source\EffectEditScene.cpp">
       <Filter>Script\Source\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Code\Source\ComputeParticleEmitter.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\TrailRenderer.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
   </ItemGroup>

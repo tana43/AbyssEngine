@@ -43,8 +43,9 @@ void SkeletalMesh::Initialize(const std::shared_ptr<Actor>& actor)
 
 void SkeletalMesh::Render()
 {
-	model_->Draw(DrawPass::Opaque, worldMatrix_, animator_->GetAnimatedNodes());
-	model_->Draw(DrawPass::Transmission, worldMatrix_, animator_->GetAnimatedNodes());
+	Matrix C = DirectX::XMLoadFloat4x4(&Coordinate_System_Transforms[coodinateSystem_]);
+	model_->Draw(DrawPass::Opaque,C * worldMatrix_, animator_->GetAnimatedNodes());
+	model_->Draw(DrawPass::Transmission,C * worldMatrix_, animator_->GetAnimatedNodes());
 
 
 #if _DEBUG
@@ -60,7 +61,8 @@ void SkeletalMesh::Render()
 
 void SkeletalMesh::RenderShadow()
 {
-	model_->CastShadow(worldMatrix_, animator_->GetAnimatedNodes());
+	Matrix C = DirectX::XMLoadFloat4x4(&Coordinate_System_Transforms[coodinateSystem_]);
+	model_->CastShadow(C * worldMatrix_, animator_->GetAnimatedNodes());
 }
 
 //void SkeletalMesh::AppendAnimation(const std::string& filename)
@@ -126,6 +128,9 @@ void SkeletalMesh::DrawImGui()
 	if (ImGui::TreeNode("Skeletal Mesh"))
 	{
 		ImGui::Checkbox("Enabled",&enabled_);
+
+		ImGui::SliderInt("CoodinateSystem", &coodinateSystem_, 0, 3);
+
 
 		ImGui::DragFloat("Emissive Intensity", &model_->primitiveConstants_->data_.emissiveIntensity_, 0.01f, 0.0f);
 		ImGui::DragFloat("Image Based Lighting Intensity", &model_->primitiveConstants_->data_.imageBasedLightingIntensity_, 0.01f, 0.0f);

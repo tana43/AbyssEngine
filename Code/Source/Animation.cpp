@@ -716,6 +716,11 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
         const Vector3 direRootToTarget = DirectX::XMVector3Normalize(targetPosition_ - rootPos);
         const Vector3 targetWorldPos = rootPos + (direRootToTarget * (armExtension * armLength));
 
+#if _DEBUG
+        Engine::renderManager_->debugRenderer_->DrawSphere(targetWorldPos,1.0f,Vector4(0,1.0f,0.5f,1.0f));
+#endif // _DEBUG
+
+
         Vector3 rootToTarget = targetWorldPos - rootPos;
         Vector3 midToTarget = targetWorldPos - midPos;
         Vector3 dirRootToMid = DirectX::XMVector3Normalize(rootToMid);

@@ -43,6 +43,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     rightWeaponModel_->GetSocketData().location_ = Right_Weapon_Offset.pos;
     rightWeaponModel_->GetSocketData().rotation_ = Right_Weapon_Offset.rot;
 
+    leftWeaponModel_->coodinateSystem_ = static_cast<int>(StaticMesh::CoodinateSystem::RHS_Y_UP);
+    rightWeaponModel_->coodinateSystem_ = static_cast<int>(StaticMesh::CoodinateSystem::RHS_Y_UP);
+
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
     const auto& c = Engine::sceneManager_->GetActiveScene().InstanceActor("Vitesse Camera");

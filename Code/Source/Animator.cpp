@@ -268,7 +268,7 @@ void Animator::RotateBone(std::vector<GeometricSubstance::Node>& nodes,Geometric
 	if (0.0f == angle) { return; }
 
 	// âÒì]é≤éZèo
-	DirectX::XMVECTOR Axis = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(direction1, direction2));
+	Vector3 Axis = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(direction1, direction2));
 
 	// é≤Ç™ÇOÇ»ÇÁreturn
 	if (true == DirectX::XMVector3Equal(Axis, DirectX::XMVectorSet(0, 0, 0, 0))) { return; }
@@ -279,6 +279,7 @@ void Animator::RotateBone(std::vector<GeometricSubstance::Node>& nodes,Geometric
 	{
 		Matrix worldTransform = nodes[node.parent_].globalTransform_ * transform_->GetWorldMatrix();
 		Axis = DirectX::XMVector3TransformNormal(Axis, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&worldTransform)));
+		Axis.Normalize();
 	}
 #endif
 

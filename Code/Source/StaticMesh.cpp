@@ -55,6 +55,8 @@ void StaticMesh::DrawImGui()
     {
         ImGui::Checkbox("Enabled", &enabled_);
 
+        ImGui::SliderInt("CoodinateSystem", &coodinateSystem_, 0, 3);
+
         ImGui::DragFloat("Emissive Intensity", &model_->primitiveConstants_->data_.emissiveIntensity_, 0.01f, 0.0f);
         ImGui::DragFloat("Image Based Lighting Intensity", &model_->primitiveConstants_->data_.imageBasedLightingIntensity_, 0.01f, 0.0f);
         ImGui::ColorPicker4("Color", &model_->primitiveConstants_->data_.color_.x,ImGuiColorEditFlags_PickerHueWheel);
@@ -129,8 +131,9 @@ void StaticMesh::RecalculateFrame()
 void StaticMesh::Render()
 {
     //model_->Draw(DrawPass::Opaque,transform_->CalcWorldMatrix());
-    model_->Draw(DrawPass::Opaque,world_);
-    model_->Draw(DrawPass::Transmission,world_);
+    Matrix C = DirectX::XMLoadFloat4x4(&Coordinate_System_Transforms[coodinateSystem_]);
+    model_->Draw(DrawPass::Opaque,C * world_);
+    model_->Draw(DrawPass::Transmission,C * world_);
 
 #if _DEBUG
     //バウンディングボックス表示
@@ -146,7 +149,8 @@ void StaticMesh::Render()
 
 void StaticMesh::RenderShadow()
 {
-    model_->CastShadow(world_);
+    Matrix C = DirectX::XMLoadFloat4x4(&Coordinate_System_Transforms[coodinateSystem_]);
+    model_->CastShadow(C * world_);
 }
 
 bool StaticMesh::FrustumCulling(const DirectX::BoundingFrustum& frustum)

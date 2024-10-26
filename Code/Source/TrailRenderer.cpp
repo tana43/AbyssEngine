@@ -108,14 +108,21 @@ void TrailRenderer::Update()
 		//スプライン補間をしつつトレイル作成
 		static const int tMaxNum = 7;
 		const float t[tMaxNum] = { 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f };
+		
 
-		float amount = 1.0f / (ARRAYSIZE(trailDatas) - 1);
-		float u = 0;
-		CreatePolygon(trailDatas[0], u);
+		CreatePolygon(trailDatas[0], 0,width_);
 
 		for (int i = 0; i < MAX_POLYGON - 3; ++i)
 		{
-			CreatePolygon(trailDatas[i + 1], u);
+			float amount = 1.0f / (ARRAYSIZE(trailDatas) - 1);
+			float u = 0;
+
+			//幅を減らしていく
+			float weight = static_cast<float>(MAX_POLYGON - i) / static_cast<float>(MAX_POLYGON);
+			weight *= weight;
+			float width = width_ * weight;
+
+			CreatePolygon(trailDatas[i + 1],u, width);
 
 			for (int partitionIndex = 0; partitionIndex < tMaxNum; ++partitionIndex)
 			{
@@ -129,7 +136,7 @@ void TrailRenderer::Update()
 				TrailData t;
 				t.position_ = pos;
 				t.moveDirection_ = DirectX::XMVector3Normalize(trailDatas[i + 3].position_ - trailDatas[i].position_);
-				CreatePolygon(t, u);
+				CreatePolygon(t, u, width);
 
 				u += amount;
 			}

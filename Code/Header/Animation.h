@@ -212,7 +212,7 @@ namespace AbyssEngine
         void SetRootNodeName(const std::string& str) { rootNodeName_ = str; }
         void SetMidNodeName(const std::string& str) { midNodeName_ = str; }
         void SetTipNodeName(const std::string& str) { tipNodeName_ = str; }
-        void SeIgnoreNodeName(const std::string& str) { tipNodeName_ = str; }
+        void SeIgnoreNodeName(const std::string& str) { ignoreNodeName_ = str; }
 
 
     private:

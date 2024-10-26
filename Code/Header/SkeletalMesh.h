@@ -5,9 +5,9 @@
 
 namespace AbyssEngine
 {
-    class Actor;
     class Animator;
     class StaticMesh;
+    class Actor;
 
     class SkeletalMesh : public Renderer
     {
@@ -16,7 +16,7 @@ namespace AbyssEngine
         ~SkeletalMesh() = default;
 
         void Initialize(const std::shared_ptr<Actor>& actor)override;
-        
+
 
         //アニメーションアセットの追加
         //void AppendAnimation(const std::string& filename);
@@ -28,7 +28,7 @@ namespace AbyssEngine
         void DrawImGui()override;
 
         //アニメーションの再生
-        void PlayAnimation(int animIndex,bool loop = true);
+        void PlayAnimation(int animIndex, bool loop = true);
 
         //アニメーションの再生速度設定
         void SetAnimationSpeed(const float& speed) { animationSpeed_ = speed; }
@@ -71,7 +71,7 @@ namespace AbyssEngine
         //animatorコンポーネント
         std::shared_ptr<Animator> animator_;
 
-        Vector4 color_ = {1,1,1,1};
+        Vector4 color_ = { 1,1,1,1 };
 
         size_t animationClip_ = 0;//再生中のアニメーション番号
         float timeStamp_ = 0.0f;//合計経過時間
@@ -88,7 +88,25 @@ namespace AbyssEngine
         DirectX::BoundingBox boundingBox_;//AABB
 
         //オフセット回転値
-        Vector3 offsetRot_ = {0,0,0};
+        Vector3 offsetRot_ = { 0,0,0 };
+
+        const DirectX::XMFLOAT4X4 Coordinate_System_Transforms[4] =
+        {
+            { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, // 0:RHS Y-UP
+            { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, // 1:LHS Y-UP 
+            { -1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 }, // 2:RHS Z-UP
+            { 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 }, // 3:LHS Z-UP
+        };
+
+    public:
+        enum class CoodinateSystem
+        {
+            RHS_Y_UP,
+            LHS_Y_UP,
+            RHS_Z_UP,
+            LHS_Z_UP,
+        };
+        int coodinateSystem_ = static_cast<int>(CoodinateSystem::LHS_Y_UP);
     };
 }
 

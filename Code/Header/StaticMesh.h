@@ -65,6 +65,24 @@ namespace AbyssEngine
         //ê∂ê¨êîÅiimguiÇ™îÌÇÁÇÒÇÊÇ§Ç…ÉSÉäâüÇµÅj
         static int instanceNum_;
         int myNum_;
+
+        const DirectX::XMFLOAT4X4 Coordinate_System_Transforms[4] =
+        {
+            { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, // 0:RHS Y-UP
+            { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }, // 1:LHS Y-UP 
+            { -1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 }, // 2:RHS Z-UP
+            { 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 }, // 3:LHS Z-UP
+        };
+
+    public:
+        enum class CoodinateSystem
+        {
+            RHS_Y_UP,
+            LHS_Y_UP,
+            RHS_Z_UP,
+            LHS_Z_UP,
+        };
+        int coodinateSystem_ = static_cast<int>(CoodinateSystem::LHS_Y_UP);
     };
 }
 
