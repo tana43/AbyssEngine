@@ -620,8 +620,11 @@ void AbyssEngine::AnimAimIK::DrawImGui(Animator* animator)
         ImGui::SliderFloat("Anim Speed", &animSpeed_, 0.0f, 2.0f);
 
         ImGui::DragFloat3("Target Position", &targetPosition_.x, 0.05f);
-        ImGui::SliderFloat("Arm Extension", &armExtension, 0.0f, 1.0f);
-        ImGui::DragFloat3("Pole Local Position", &polePosition_.x, 0.01f);
+        ImGui::SliderFloat("Arm Extension", &armExtension, 0.0f, 3.0f);
+        ImGui::DragFloat3("Pole Local Position", &poleLocalPosition_.x, 0.01f);
+
+        //無視するノードが中間ノードより上にいているか
+        ImGui::Checkbox("IgnoreNode is Mid Up",&isUpIgnoreNode_);
 
         ImGui::Text(std::to_string(static_cast<long double>(animIndex_)).c_str());
 
@@ -645,8 +648,13 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
     GeometricSubstance::Node& tipNode  = model->GetNode(animatedNodes_,tipNodeName_);
 
     //ポールターゲット更新
-    Matrix poleLocalTransform = DirectX::XMMatrixTranslation(polePosition_.x, polePosition_.y, polePosition_.z);
+    Matrix poleLocalTransform = DirectX::XMMatrixTranslation(poleLocalPosition_.x, poleLocalPosition_.y, poleLocalPosition_.z);
     Matrix poleWorldTransform = poleLocalTransform * (midNode.globalTransform_ * worldMatrix);
+    Engine::renderManager_->debugRenderer_->DrawSphere(DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3], 1.0f, Vector4(0.2f, 1.0f, 0.0f, 1.0f));
+    /*Matrix poleWorldTransform = (midNode.globalTransform_ * worldMatrix);
+    Vector3 polePosition = DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3];
+    polePosition = polePosition + poleLocalPosition_;
+    Engine::renderManager_->debugRenderer_->DrawSphere(polePosition, 1.0f, Vector4(0.2f, 1.0f, 0.0f, 1.0f));*/
 
     //無視する必要のあるノードを取得
     GeometricSubstance::Node* ignoreNode = nullptr;
@@ -659,7 +667,10 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
     midNode.rotation_  = { 0,0,0,1 };
     tipNode.rotation_  = { 0,0,0,1 };
     if(ignoreNode)ignoreNode->rotation_ = {0,0,0,1};
-    model->NodeCumulateTransforms(animatedNodes_,rootNode);
+
+    animatedNodes_[tipNode.children_[0]].rotation_ = { 0,0,0,1 };
+    //model->NodeCumulateTransforms(animatedNodes_,rootNode);
+    model->CumulateTransforms(animatedNodes_,0);
     
     //AimIK
     {

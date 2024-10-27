@@ -268,23 +268,23 @@ void Animator::RotateBone(std::vector<GeometricSubstance::Node>& nodes,Geometric
 	if (0.0f == angle) { return; }
 
 	// âÒì]é≤éZèo
-	Vector3 Axis = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(direction1, direction2));
+	Vector3 axis = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(direction1, direction2));
 
 	// é≤Ç™ÇOÇ»ÇÁreturn
-	if (true == DirectX::XMVector3Equal(Axis, DirectX::XMVectorSet(0, 0, 0, 0))) { return; }
+	if (true == DirectX::XMVector3Equal(axis, DirectX::XMVectorSet(0, 0, 0, 0))) { return; }
 
 #if 1
 	// âÒì]é≤ÇÉçÅ[ÉJÉããÛä‘ïœä∑
 	if (node.parent_ >= 0)
 	{
 		Matrix worldTransform = nodes[node.parent_].globalTransform_ * transform_->GetWorldMatrix();
-		Axis = DirectX::XMVector3TransformNormal(Axis, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&worldTransform)));
-		Axis.Normalize();
+		axis = DirectX::XMVector3TransformNormal(axis, DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&worldTransform)));
+		axis.Normalize();
 	}
 #endif
 
 	// âÒì]ÉNÉHÅ[É^ÉjÉIÉìéZèo
-	const DirectX::XMVECTOR Q = DirectX::XMQuaternionRotationNormal(Axis, angle);
+	const DirectX::XMVECTOR Q = DirectX::XMQuaternionRotationNormal(axis, angle);
 
 	// âÒì]
 	DirectX::XMVECTOR Rot = DirectX::XMLoadFloat4(&node.rotation_);

@@ -3,7 +3,7 @@
 #include <vector>
 #include <wrl.h>
 #include <d3d11.h>
-#include <DirectXMath.h>
+#include "MathHelper.h"
 
 namespace AbyssEngine
 {
@@ -20,10 +20,10 @@ namespace AbyssEngine
 		void Render(ID3D11DeviceContext* context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);
 
 		// ‹…•`‰æ
-		void DrawSphere(const DirectX::XMFLOAT3& center_, float radius_, const DirectX::XMFLOAT4& color_);
+		void DrawSphere(const Vector3& center_, float radius_, const DirectX::XMFLOAT4& color_);
 
 		// ‰~’Œ•`‰æ
-		void DrawCylinder(const DirectX::XMFLOAT3& position_, float radius_, float height_, const DirectX::XMFLOAT4& color_);
+		void DrawCylinder(const Vector3& position_, float radius_, float height_, const DirectX::XMFLOAT4& color_);
 
 		void Clear();
 	private:

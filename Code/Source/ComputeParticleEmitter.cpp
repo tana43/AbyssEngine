@@ -12,6 +12,10 @@
 
 #include "imgui/imgui.h"
 
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
 using namespace AbyssEngine;
 
 void ComputeParticleEmitter::Initialize(const std::shared_ptr<Actor>& actor)
@@ -20,8 +24,6 @@ void ComputeParticleEmitter::Initialize(const std::shared_ptr<Actor>& actor)
     transform_ = actor->GetTransform();
 
 	Engine::renderManager_->Add(std::static_pointer_cast<ComputeParticleEmitter>(shared_from_this()));
-
-	texture_ = Texture::Load("./Assets/Effects/Texture/Particle04_bokashistrong_soft.png");
 }
 
 void ComputeParticleEmitter::Render()
@@ -36,6 +38,7 @@ void ComputeParticleEmitter::RecalculateFrame()
 
 void ComputeParticleEmitter::DrawImGui()
 {
+#if _DEBUG
 	if (ImGui::TreeNode("GPU Particle"))
 	{
 		ImGui::Checkbox("Timeline", &enableTimeline_);
@@ -45,53 +48,67 @@ void ComputeParticleEmitter::DrawImGui()
 
 		if (ImGui::Button("Emit Particle"))
 		{
-			EmitParticle();
+			EmitParticle(debugParam);
 		}
 		
-		ImGui::DragInt("Emit Num", &emitNum_);
+		ImGui::DragInt("Emit Num", &debugParam.emitNum_);
 
 		auto spritCount = Engine::renderManager_->GetParticleSystem()->GetTextureSplitCount();
-		ImGui::SliderInt("Texture Type", &texType_,0,spritCount.x * spritCount.y - 1);
+		ImGui::SliderInt("Texture Type", &debugParam.texType_,0,spritCount.x * spritCount.y - 1);
 
-		ImGui::DragFloat("Lifespan", &lifespan_, 0.01f,0.0f);
-		ImGui::DragFloat("Lifespan Amplitude", &lifespanAmplitude_, 0.01f,0.0f);
+		ImGui::DragFloat("Lifespan", &debugParam.lifespan_, 0.01f,0.0f);
+		ImGui::DragFloat("Lifespan Amplitude", &debugParam.lifespanAmplitude_, 0.01f,0.0f);
 
-		ImGui::ColorEdit4("Color", &color_.x, ImGuiColorEditFlags_PickerHueWheel);
-		ImGui::DragFloat4("Color Amplitud", &colorAmplitud_.x,0.001f,0.0f);
+		ImGui::ColorEdit4("Color", &debugParam.color_.x, ImGuiColorEditFlags_PickerHueWheel);
+		ImGui::DragFloat4("Color Amplitud", &debugParam.colorAmplitud_.x,0.001f,0.0f);
 
-		ImGui::DragFloat("Brightness", &brightness_, 0.01f);
+		ImGui::DragFloat("Brightness", &debugParam.brightness_, 0.01f);
 
 		if (ImGui::TreeNode("Emit Position"))
 		{
-			ImGui::DragFloat3("Amplitude", &positionAmplitude_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Velo Init", &velocity_.x,0.1f);
-			ImGui::DragFloat3("Velo Amplitude", &velocityAmplitude_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Accel", &acceleration_.x,0.1f);
-			ImGui::DragFloat3("Accel Amplitude", &accelerationAmplitud_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Amplitude", &debugParam.positionAmplitude_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Velo Init", &debugParam.velocity_.x,0.1f);
+			ImGui::DragFloat3("Velo Amplitude", &debugParam.velocityAmplitude_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Accel", &debugParam.acceleration_.x,0.1f);
+			ImGui::DragFloat3("Accel Amplitude", &debugParam.accelerationAmplitud_.x,0.1f, 0.0f);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Emit Scale"))
 		{
-			ImGui::DragFloat2("Amplitude", &scaleAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat2("Velo Init", &scaleVelocity_.x, 0.1f);
-			ImGui::DragFloat2("Velo Amplitude", &scaleVelocityAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat2("Accel", &scaleAcceleration_.x,0.1f, 0.0f);
-			ImGui::DragFloat2("Accel Amplitude", &scaleAccelerationAmplitud_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Amplitude", &debugParam.scaleAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Velo Init", &debugParam.scaleVelocity_.x, 0.1f);
+			ImGui::DragFloat2("Velo Amplitude", &debugParam.scaleVelocityAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Accel", &debugParam.scaleAcceleration_.x,0.1f, 0.0f);
+			ImGui::DragFloat2("Accel Amplitude", &debugParam.scaleAccelerationAmplitud_.x, 0.1f, 0.0f);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Emit Rotation"))
 		{
-			ImGui::DragFloat3("Amplitude", &rotationAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat3("Velo Init", &rotationVelocity_.x, 0.1f);
-			ImGui::DragFloat3("Velo Amplitude", &rotationVelocityAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat3("Accel", &rotationAcceleration_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Accel Amplitude", &rotationAccelerationAmplitud_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Amplitude", &debugParam.rotationAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Velo Init", &debugParam.rotationVelocity_.x, 0.1f);
+			ImGui::DragFloat3("Velo Amplitude", &debugParam.rotationVelocityAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Accel", &debugParam.rotationAcceleration_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Accel Amplitude", &debugParam.rotationAccelerationAmplitud_.x, 0.1f, 0.0f);
 
 			ImGui::TreePop();
+		}
+
+		static std::string name;
+
+		ImGui::Text("-------------- Asset Save ---------------");
+		static char filename[128] = "";
+		ImGui::InputText("Asset Name", filename, ARRAYSIZE(filename));
+		if (ImGui::ButtonDoubleChecking("Save", imguiButton_))
+		{
+			//アセット化
+			AssetCreation(filename);
+
+			//文字列リセット
+			memset(filename, 0, sizeof(filename));
 		}
 
 		ImGui::TreePop();
@@ -144,22 +161,30 @@ void ComputeParticleEmitter::DrawImGui()
 		}
 		ImGui::End();
 	}
+#endif // _DEBUG
 }
 
-void ComputeParticleEmitter::Update()
+void AbyssEngine::ComputeParticleEmitter::DrawDebug()
 {
+#if _DEBUG
 	if (canInputEmit_)
 	{
-		if (Keyboard::GetKeyDown(DirectX::Keyboard::X)) 
+		if (Keyboard::GetKeyDown(DirectX::Keyboard::X))
 		{
-			EmitParticle();
+			EmitParticle(debugParam);
 		}
 
 		if (Keyboard::GetKeyState().Z)
 		{
-			EmitParticle();
+			EmitParticle(debugParam);
 		}
 	}
+#endif // _DEBUG
+}
+
+void ComputeParticleEmitter::Update()
+{
+	
 
 	//授業課題の動作
 #if 0
@@ -279,7 +304,7 @@ void ComputeParticleEmitter::Update()
 #endif // 0
 }
 
-void ComputeParticleEmitter::EmitParticle()
+void ComputeParticleEmitter::EmitParticle(const EmitParameter& param)
 {
 	//通常の動作
 
@@ -289,25 +314,25 @@ void ComputeParticleEmitter::EmitParticle()
 	Vector3 pos = transform_->GetPosition();
 
 	//各要素の振れ幅を算出
-	const Vector3 posAmp = positionAmplitude_ / 2.0f;
-	const Vector3 veloAmp = velocityAmplitude_ / 2.0f;
-	const Vector3 accelAmp = accelerationAmplitud_ / 2.0f;
+	const Vector3 posAmp = param.positionAmplitude_ / 2.0f;
+	const Vector3 veloAmp = param.velocityAmplitude_ / 2.0f;
+	const Vector3 accelAmp = param.accelerationAmplitud_ / 2.0f;
 
-	const Vector2 scaleAmp = scaleAmplitude_ / 2.0f;
-	const Vector2 scaleVeloAmp = scaleVelocityAmplitude_ / 2.0f;
-	const Vector2 scaleAccelAmp = scaleAccelerationAmplitud_ / 2.0f;
+	const Vector2 scaleAmp = param.scaleAmplitude_ / 2.0f;
+	const Vector2 scaleVeloAmp = param.scaleVelocityAmplitude_ / 2.0f;
+	const Vector2 scaleAccelAmp = param.scaleAccelerationAmplitud_ / 2.0f;
 
-	const Vector3 rotAmp = scaleAmplitude_ / 2.0f;
-	const Vector3 rotVeloAmp = scaleVelocityAmplitude_ / 2.0f;
-	const Vector3 rotAccelAmp = scaleAccelerationAmplitud_ / 2.0f;
+	const Vector3 rotAmp = param.scaleAmplitude_ / 2.0f;
+	const Vector3 rotVeloAmp = param.scaleVelocityAmplitude_ / 2.0f;
+	const Vector3 rotAccelAmp = param.scaleAccelerationAmplitud_ / 2.0f;
 
-	const float lifespanAmp = lifespanAmplitude_ / 2.0f;
+	const float lifespanAmp = param.lifespanAmplitude_ / 2.0f;
 
-	const Vector4 colorAmp = colorAmplitud_ / 2.0f;
+	const Vector4 colorAmp = param.colorAmplitud_ / 2.0f;
 
 	const float timeScale = actor_->GetDeltaTime() / Time::GetDeltaTime();
 
-	for (int i = 0; i < emitNum_; i++)
+	for (int i = 0; i < param.emitNum_; i++)
 	{
 		//	発生位置
 		Vector3 p = { 0,0,0 };
@@ -316,12 +341,12 @@ void ComputeParticleEmitter::EmitParticle()
 		p.z = pos.z + Math::RandomRange(-posAmp.z, posAmp.z);
 
 		//	発生方向
-		Vector3 v = velocity_;
+		Vector3 v = param.velocity_;
 		v.x += Math::RandomRange(-veloAmp.x, veloAmp.x);
 		v.y += Math::RandomRange(-veloAmp.y, veloAmp.y);
 		v.z += Math::RandomRange(-veloAmp.z, veloAmp.z);
 		//	加速度
-		Vector3 a = acceleration_;
+		Vector3 a = param.acceleration_;
 		a.x += Math::RandomRange(-accelAmp.x, accelAmp.x);
 		a.y += Math::RandomRange(-accelAmp.y, accelAmp.y);
 		a.z += Math::RandomRange(-accelAmp.z, accelAmp.z);
@@ -332,11 +357,11 @@ void ComputeParticleEmitter::EmitParticle()
 		s.x += Math::RandomRange(-scaleAmp.x, scaleAmp.x);
 		s.y += Math::RandomRange(-scaleAmp.y, scaleAmp.y);
 		//　スケール速度
-		Vector2 sv = scaleVelocity_;
+		Vector2 sv = param.scaleVelocity_;
 		sv.x += Math::RandomRange(-scaleVeloAmp.x, scaleVeloAmp.x);
 		sv.y += Math::RandomRange(-scaleVeloAmp.y, scaleVeloAmp.y);
 		//　スケール加速度
-		Vector2 sa = scaleAcceleration_;
+		Vector2 sa = param.scaleAcceleration_;
 		sa.x += Math::RandomRange(-scaleAccelAmp.x, scaleAccelAmp.x);
 		sa.y += Math::RandomRange(-scaleAccelAmp.y, scaleAccelAmp.y);
 
@@ -347,20 +372,20 @@ void ComputeParticleEmitter::EmitParticle()
 		r.y += Math::RandomRange(-rotAmp.y, rotAmp.y);
 		r.z += Math::RandomRange(-rotAmp.z, rotAmp.z);
 		//　回転速度
-		Vector3 rv = rotationVelocity_;
+		Vector3 rv = param.rotationVelocity_;
 		rv.x += Math::RandomRange(-rotVeloAmp.x, rotVeloAmp.x);
 		rv.y += Math::RandomRange(-rotVeloAmp.y, rotVeloAmp.y);
 		rv.z += Math::RandomRange(-rotVeloAmp.z, rotVeloAmp.z);
 		//　回転加速度
-		Vector3 ra = rotationAcceleration_;
+		Vector3 ra = param.rotationAcceleration_;
 		ra.x += Math::RandomRange(-rotAccelAmp.x, rotAccelAmp.x);
 		ra.y += Math::RandomRange(-rotAccelAmp.y, rotAccelAmp.y);
 		ra.y += Math::RandomRange(-rotAccelAmp.z, rotAccelAmp.z);
 
 		ComputeParticleSystem::EmitParticleData data;
 		//更新タイプ
-		data.parameter_.x = texType_;
-		data.parameter_.y = lifespan_ + Math::RandomRange(-lifespanAmp, lifespanAmp);
+		data.parameter_.x = param.texType_;
+		data.parameter_.y = param.lifespan_ + Math::RandomRange(-lifespanAmp, lifespanAmp);
 
 		//経過時間倍率
 		data.parameter_.z = timeScale;
@@ -411,12 +436,51 @@ void ComputeParticleEmitter::EmitParticle()
 		data.rotationAcceleration_.z = ra.z;
 
 		//　色
-		data.color_.x = color_.x + Math::RandomRange(-colorAmp.x,colorAmp.x);
-		data.color_.y = color_.y + Math::RandomRange(-colorAmp.y,colorAmp.y);
-		data.color_.z = color_.z + Math::RandomRange(-colorAmp.z,colorAmp.z);
-		data.color_.w = color_.w + Math::RandomRange(-colorAmp.w,colorAmp.w);
+		data.color_.x = param.color_.x + Math::RandomRange(-colorAmp.x,colorAmp.x);
+		data.color_.y = param.color_.y + Math::RandomRange(-colorAmp.y,colorAmp.y);
+		data.color_.z = param.color_.z + Math::RandomRange(-colorAmp.z,colorAmp.z);
+		data.color_.w = param.color_.w + Math::RandomRange(-colorAmp.w,colorAmp.w);
 
-		data.color_ = data.color_ * brightness_;
+		data.color_ = data.color_ * param.brightness_;
 		Engine::renderManager_->GetParticleSystem()->Emit(data);
 	}
+}
+
+void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& param, const std::string& filename)
+{
+	//Jsonファイル作成
+	nlohmann::json mJson;
+
+	mJson["Position"] = {
+		{"amplitudeMultiplier",}
+	};
+}
+
+ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::EmitParameter::operator=(const EmitParameter& param)
+{
+	emitNum_                      = param.emitNum_;
+	lifespan_                     = param.lifespan_;
+	lifespanAmplitude_            = param.lifespanAmplitude_;
+	emitTime                      = param.emitTime;
+	texType_                      = param.texType_;
+	positionAmplitude_            = param.positionAmplitude_;
+	velocity_                     = param.velocity_;
+	velocityAmplitude_            = param.velocityAmplitude_;
+	acceleration_                 = param.acceleration_;
+	accelerationAmplitud_         = param.accelerationAmplitud_;
+	scaleAmplitude_               = param.scaleAmplitude_;
+	scaleVelocity_                = param.scaleVelocity_;
+	scaleVelocityAmplitude_       = param.scaleVelocityAmplitude_;
+	scaleAcceleration_            = param.scaleAcceleration_;
+	scaleAccelerationAmplitud_    = param.scaleAccelerationAmplitud_;
+	rotationAmplitude_            = param.rotationAmplitude_;
+	rotationVelocity_             = param.rotationVelocity_;
+	rotationVelocityAmplitude_    = param.rotationVelocityAmplitude_;
+	rotationAcceleration_         = param.rotationAcceleration_;
+	rotationAccelerationAmplitud_ = param.rotationAccelerationAmplitud_;
+	brightness_                   = param.brightness_;//colorの乗数
+	color_                        = param.color_;
+	colorAmplitud_                = param.colorAmplitud_;
+
+	return *this;
 }

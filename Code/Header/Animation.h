@@ -212,8 +212,7 @@ namespace AbyssEngine
         void SetRootNodeName(const std::string& str) { rootNodeName_ = str; }
         void SetMidNodeName(const std::string& str) { midNodeName_ = str; }
         void SetTipNodeName(const std::string& str) { tipNodeName_ = str; }
-        void SeIgnoreNodeName(const std::string& str) { ignoreNodeName_ = str; }
-
+        void SetIgnoreNodeName(const std::string& str) { ignoreNodeName_ = str; }
 
     private:
         //根本、中間、先端ノードの親子関係は連続しているか判定し、続いていなければ間のボーンを登録する
@@ -237,12 +236,12 @@ namespace AbyssEngine
         std::string ignoreNodeName_;
 
         //無視ノードを中間ノードから上にするか下にするか
-        bool isUpIgnoreNode_ = false;
+        bool isUpIgnoreNode_ = true;
 
         //腕以外のベースになるモーション
         int baseAnimationIndex_ = 0;
 
         //逆間接防止用のポールターゲット座標
-        Vector3 polePosition_ = {0,-1.0f,0};
+        Vector3 poleLocalPosition_ = {0,-1.0f,0};
     };
 }

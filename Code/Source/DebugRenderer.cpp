@@ -211,7 +211,7 @@ void DebugRenderer::Render(ID3D11DeviceContext* context, const DirectX::XMFLOAT4
 }
 
 // ‹…•`‰æ
-void DebugRenderer::DrawSphere(const DirectX::XMFLOAT3& center_, float radius_, const DirectX::XMFLOAT4& color_)
+void DebugRenderer::DrawSphere(const Vector3& center_, float radius_, const DirectX::XMFLOAT4& color_)
 {
 	Sphere sphere;
 	sphere.center_ = center_;
@@ -221,7 +221,7 @@ void DebugRenderer::DrawSphere(const DirectX::XMFLOAT3& center_, float radius_, 
 }
 
 // ‰~’Œ•`‰æ
-void DebugRenderer::DrawCylinder(const DirectX::XMFLOAT3& position_, float radius_, float height_, const DirectX::XMFLOAT4& color_)
+void DebugRenderer::DrawCylinder(const Vector3& position_, float radius_, float height_, const DirectX::XMFLOAT4& color_)
 {
 	Cylinder cylinder;
 	cylinder.position_ = position_;

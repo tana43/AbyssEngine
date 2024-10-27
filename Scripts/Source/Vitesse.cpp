@@ -313,13 +313,13 @@ void Vitesse::AnimationInitialize()
             aimIKAnimation_->SetRootNodeName("rig_J_uparm_L");
 
             //中間ノード
-            aimIKAnimation_->SetMidNodeName("rig_J_midarm_L");
+            aimIKAnimation_->SetMidNodeName("rig_J_lowarm_L");
 
             //先端ノード
             aimIKAnimation_->SetTipNodeName("rig_J_hand_L");
 
-            //無視するノード
-            aimIKAnimation_->SetRootNodeName("rig_J_lowarm_L");
+            //無視するノードrig_J_lowarm_L
+            aimIKAnimation_->SetIgnoreNodeName("rig_J_midarm_L");
         }
 
         model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimationIndex::Run_Move));
