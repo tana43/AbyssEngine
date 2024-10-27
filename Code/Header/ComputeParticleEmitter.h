@@ -21,7 +21,7 @@ namespace AbyssEngine
             float lifespanAmplitude_ = 0.0f;
 
             //@¶¬ŠÔ
-            float emitTime = 1.0f;
+            float emitTime_ = 1.0f;
 
             //  ¶¬ŠJnŠÔ
             //float emitStartTime_ = 0.0f;

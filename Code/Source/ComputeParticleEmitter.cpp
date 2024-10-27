@@ -105,7 +105,7 @@ void ComputeParticleEmitter::DrawImGui()
 		if (ImGui::ButtonDoubleChecking("Save", imguiButton_))
 		{
 			//アセット化
-			AssetCreation(filename);
+			AssetCreation(debugParam,filename);
 
 			//文字列リセット
 			memset(filename, 0, sizeof(filename));
@@ -451,9 +451,45 @@ void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& par
 	//Jsonファイル作成
 	nlohmann::json mJson;
 
-	mJson["Position"] = {
-		{"amplitudeMultiplier",}
+	mJson["emitNum"]           = param.emitNum_;
+	mJson["lifespan"]          = param.lifespan_;
+	mJson["lifespanAmplitude"] = param.lifespanAmplitude_;
+	mJson["emitTime"]          = param.emitTime_;
+	mJson["texType_"]          = param.texType_;
+	mJson["Position"] = 
+	{
+		{"ampilitude",			 {param.positionAmplitude_.x,param.positionAmplitude_.y,param.positionAmplitude_.z}},
+		{"velocity",			 {param.velocity_.x,param.velocity_.y,param.velocity_.z}},
+		{"vellocityAmpilitude",  {param.velocityAmplitude_.x,param.velocityAmplitude_.y,param.velocityAmplitude_.z}},
+		{"acceleration",		 {param.acceleration_.x,param.acceleration_.y,param.acceleration_.z}},
+		{"accelerationAmplitude",{param.accelerationAmplitud_.x,param.accelerationAmplitud_.y,param.accelerationAmplitud_.z}}
 	};
+	mJson["Scale"] =
+	{
+		{"ampilitude",			 {param.scaleAmplitude_.x,param.scaleAmplitude_.y}},
+		{"velocity",			 {param.scaleVelocity_.x,param.scaleVelocity_.y}},
+		{"vellocityAmpilitude",  {param.scaleVelocityAmplitude_.x,param.scaleVelocityAmplitude_.y}},
+		{"acceleration",		 {param.scaleAcceleration_.x,param.scaleAcceleration_.y}},
+		{"accelerationAmplitude",{param.scaleAccelerationAmplitud_.x,param.scaleAccelerationAmplitud_.y}}
+	};
+	mJson["Rotation"] =
+	{
+		{"ampilitude",			 {param.rotationAmplitude_.x,param.rotationAmplitude_.y,param.rotationAmplitude_.z}},
+		{"velocity",			 {param.rotationVelocity_.x,param.rotationVelocity_.y,param.rotationVelocity_.z}},
+		{"vellocityAmpilitude",  {param.rotationVelocityAmplitude_.x,param.rotationVelocityAmplitude_.y,param.rotationVelocityAmplitude_.z}},
+		{"acceleration",		 {param.rotationAcceleration_.x,param.rotationAcceleration_.y,param.rotationAcceleration_.z}},
+		{"accelerationAmplitude",{param.rotationAccelerationAmplitud_.x,param.rotationAccelerationAmplitud_.y,param.rotationAccelerationAmplitud_.z}}
+	};
+	mJson["brightness"]     = param.brightness_;
+	mJson["color"]		    = { param.color_.x,param.color_.y,param.color_.z,param.color_.w };
+	mJson["colorAmplitude"] = { param.colorAmplitud_.x,param.colorAmplitud_.y,param.colorAmplitud_.z,param.colorAmplitud_.w};
+
+	using namespace std;
+	ofstream writingFile;
+	string filepath = "./Assets/ParticleEmitParameters/" + filename;
+	writingFile.open(filepath, ios::out);
+	writingFile << mJson.dump() << endl;
+	writingFile.close();
 }
 
 ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::EmitParameter::operator=(const EmitParameter& param)
@@ -461,7 +497,7 @@ ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::EmitP
 	emitNum_                      = param.emitNum_;
 	lifespan_                     = param.lifespan_;
 	lifespanAmplitude_            = param.lifespanAmplitude_;
-	emitTime                      = param.emitTime;
+	emitTime_                      = param.emitTime_;
 	texType_                      = param.texType_;
 	positionAmplitude_            = param.positionAmplitude_;
 	velocity_                     = param.velocity_;
