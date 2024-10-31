@@ -24,5 +24,5 @@ void TestSceneSecond::Initialize()
     effectEmitter->AddComponent<ComputeParticleEmitter>();
     
     const auto& trail = InstanceActor("Trail");
-    trail->AddComponent<TrailRenderer>("./Assets/Effects/TrailTexture/test.png");
+    trail->AddComponent<TrailRenderer>("./Assets/Effects/TrailTexture/Beam.png");
 }

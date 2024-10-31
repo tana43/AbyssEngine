@@ -1,0 +1,44 @@
+#pragma once
+#include "Projectile.h"
+
+namespace AbyssEngine
+{
+    class SphereCollider;
+    class AttackCollider;
+    class BillboardRenderer;
+    class TrailRenderer;
+    class ComputeParticleEmitter;
+}
+
+class Beam : public AbyssEngine::Projectile
+{
+public:
+    void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
+    void Update()override;
+
+    void OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, AbyssEngine::Collision::IntersectionResult result)override;
+
+public:
+    const float& GetAttackPoint() const { return attackPoint_; }
+    void SetAttackPoint(const float& atk) { attackPoint_ = atk; }
+
+    void SetBeamColor(const AbyssEngine::Vector4& color);
+
+    const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
+
+private:
+    //攻撃力
+    float attackPoint_ = 1.0f;
+
+    //球攻撃判定
+    std::shared_ptr<AbyssEngine::AttackCollider> attackCollider_;
+
+    //ビルボードポリゴン
+    std::shared_ptr<AbyssEngine::BillboardRenderer> billboardRenderer_;
+
+    //トレイルレンダラー
+    std::shared_ptr<AbyssEngine::TrailRenderer> trailRenderer_;
+
+    //パーティクル
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> particleEmitter_;
+};

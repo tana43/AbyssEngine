@@ -54,14 +54,14 @@ void GameUIAdmin::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetPivot({ 0.5f,0.5f });
     GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetScale({ 0.7f,0.7f });
     //GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetColorAlpha(0.7f);
-    GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetColor(Vector4(1,0.6f,0,0.4f));
+    GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetBeamColor(Vector4(1,0.6f,0,0.4f));
 
     spriteList_.emplace_back(actor->AddComponent<SpriteRenderer>("./Assets/Images/UI/Vitesse/Lockon_In.png"));
     GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetOffsetPosition(screenCenter_);
     GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetPivot({ 0.5f,0.5f });
     GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetScale({ 0.5f,0.5f });
     //GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetColorAlpha(0.7f);
-    GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetColor(Vector4(1,0,0,0.9f));
+    GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetBeamColor(Vector4(1,0,0,0.9f));
 }
 
 void GameUIAdmin::UpdateAfter()

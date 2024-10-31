@@ -12,6 +12,15 @@ namespace AbyssEngine
 class Gun : public AbyssEngine::ScriptComponent
 {
 public:
+    //発射する弾の種類
+    enum class BulletType
+    {
+        Bullet,
+        Beam,
+        Max,
+    };
+   
+
     Gun() {}
     ~Gun() = default;
 
@@ -45,6 +54,8 @@ public:
     const std::shared_ptr<AbyssEngine::BillboardRenderer>& GetMuzzleFlashComponent() const { return muzzleFlashComponent_; }
 
     void SetColliderTag(AbyssEngine::Collider::Tag tag) { colliderTag_ = static_cast<unsigned int>(tag); }
+
+    void SetBulletType(BulletType type) { bulletType_ = type; }
 
 private:
     //ADS(スコープを覗いているか)
@@ -84,5 +95,8 @@ private:
 
     //弾丸の判定につけるタグ
     unsigned int colliderTag_ = 0;
+
+    //発射する弾の種類
+    BulletType bulletType_ = BulletType::Bullet;
 };
 

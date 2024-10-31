@@ -11,8 +11,6 @@ void Bullet::Initialize(const std::shared_ptr<Actor>& actor)
 
     actor->AddComponent<StaticMesh>("./Assets/Models/Cube.glb");
     transform_->SetScaleFactor(0.03f);
-
-    
 }
 
 void Bullet::Update()

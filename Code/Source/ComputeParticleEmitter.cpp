@@ -48,68 +48,68 @@ void ComputeParticleEmitter::DrawImGui()
 
 		if (ImGui::Button("Emit Particle"))
 		{
-			EmitParticle(debugParam);
+			EmitParticle(debugParam_);
 		}
 		
-		ImGui::DragInt("Emit Num", &debugParam.emitNum_);
+		ImGui::DragInt("Emit Num", &debugParam_.emitNum_);
 
 		auto spritCount = Engine::renderManager_->GetParticleSystem()->GetTextureSplitCount();
-		ImGui::SliderInt("Texture Type", &debugParam.texType_,0,spritCount.x * spritCount.y - 1);
+		ImGui::SliderInt("Texture Type", &debugParam_.texType_,0,spritCount.x * spritCount.y - 1);
 
-		ImGui::DragFloat("Lifespan", &debugParam.lifespan_, 0.01f,0.0f);
-		ImGui::DragFloat("Lifespan Amplitude", &debugParam.lifespanAmplitude_, 0.01f,0.0f);
+		ImGui::DragFloat("Lifespan", &debugParam_.lifespan_, 0.01f,0.0f);
+		ImGui::DragFloat("Lifespan Amplitude", &debugParam_.lifespanAmplitude_, 0.01f,0.0f);
 
-		ImGui::ColorEdit4("Color", &debugParam.color_.x, ImGuiColorEditFlags_PickerHueWheel);
-		ImGui::DragFloat4("Color Amplitud", &debugParam.colorAmplitud_.x,0.001f,0.0f);
+		ImGui::ColorEdit4("Color", &debugParam_.color_.x, ImGuiColorEditFlags_PickerHueWheel);
+		ImGui::DragFloat4("Color Amplitud", &debugParam_.colorAmplitud_.x,0.001f,0.0f);
 
-		ImGui::DragFloat("Brightness", &debugParam.brightness_, 0.01f);
+		ImGui::DragFloat("Brightness", &debugParam_.brightness_, 0.01f);
 
 		if (ImGui::TreeNode("Emit Position"))
 		{
-			ImGui::DragFloat3("Amplitude", &debugParam.positionAmplitude_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Velo Init", &debugParam.velocity_.x,0.1f);
-			ImGui::DragFloat3("Velo Amplitude", &debugParam.velocityAmplitude_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Accel", &debugParam.acceleration_.x,0.1f);
-			ImGui::DragFloat3("Accel Amplitude", &debugParam.accelerationAmplitud_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Amplitude", &debugParam_.positionAmplitude_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Velo Init", &debugParam_.velocity_.x,0.1f);
+			ImGui::DragFloat3("Velo Amplitude", &debugParam_.velocityAmplitude_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Accel", &debugParam_.acceleration_.x,0.1f);
+			ImGui::DragFloat3("Accel Amplitude", &debugParam_.accelerationAmplitud_.x,0.1f, 0.0f);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Emit Scale"))
 		{
-			ImGui::DragFloat2("Amplitude", &debugParam.scaleAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat2("Velo Init", &debugParam.scaleVelocity_.x, 0.1f);
-			ImGui::DragFloat2("Velo Amplitude", &debugParam.scaleVelocityAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat2("Accel", &debugParam.scaleAcceleration_.x,0.1f, 0.0f);
-			ImGui::DragFloat2("Accel Amplitude", &debugParam.scaleAccelerationAmplitud_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Amplitude", &debugParam_.scaleAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Velo Init", &debugParam_.scaleVelocity_.x, 0.1f);
+			ImGui::DragFloat2("Velo Amplitude", &debugParam_.scaleVelocityAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Accel", &debugParam_.scaleAcceleration_.x,0.1f, 0.0f);
+			ImGui::DragFloat2("Accel Amplitude", &debugParam_.scaleAccelerationAmplitud_.x, 0.1f, 0.0f);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Emit Rotation"))
 		{
-			ImGui::DragFloat3("Amplitude", &debugParam.rotationAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat3("Velo Init", &debugParam.rotationVelocity_.x, 0.1f);
-			ImGui::DragFloat3("Velo Amplitude", &debugParam.rotationVelocityAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat3("Accel", &debugParam.rotationAcceleration_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Accel Amplitude", &debugParam.rotationAccelerationAmplitud_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Amplitude", &debugParam_.rotationAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Velo Init", &debugParam_.rotationVelocity_.x, 0.1f);
+			ImGui::DragFloat3("Velo Amplitude", &debugParam_.rotationVelocityAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Accel", &debugParam_.rotationAcceleration_.x,0.1f, 0.0f);
+			ImGui::DragFloat3("Accel Amplitude", &debugParam_.rotationAccelerationAmplitud_.x, 0.1f, 0.0f);
 
 			ImGui::TreePop();
 		}
 
-		static std::string name;
+		//static std::string name;
 
-		ImGui::Text("-------------- Asset Save ---------------");
-		static char filename[128] = "";
-		ImGui::InputText("Asset Name", filename, ARRAYSIZE(filename));
-		if (ImGui::ButtonDoubleChecking("Save", imguiButton_))
-		{
-			//アセット化
-			AssetCreation(debugParam,filename);
+		//ImGui::Text("-------------- Asset Save ---------------");
+		//static char filename[128] = "";
+		//ImGui::InputText("Asset Name", filename, ARRAYSIZE(filename));
+		//if (ImGui::ButtonDoubleChecking("Save", imguiButton_))
+		//{
+		//	//アセット化
+		//	AssetCreation(debugParam_,filename);
 
-			//文字列リセット
-			memset(filename, 0, sizeof(filename));
-		}
+		//	//文字列リセット
+		//	memset(filename, 0, sizeof(filename));
+		//}
 
 		ImGui::TreePop();
 	}
@@ -171,12 +171,12 @@ void AbyssEngine::ComputeParticleEmitter::DrawDebug()
 	{
 		if (Keyboard::GetKeyDown(DirectX::Keyboard::X))
 		{
-			EmitParticle(debugParam);
+			EmitParticle(debugParam_);
 		}
 
 		if (Keyboard::GetKeyState().Z)
 		{
-			EmitParticle(debugParam);
+			EmitParticle(debugParam_);
 		}
 	}
 #endif // _DEBUG
@@ -446,6 +446,53 @@ void ComputeParticleEmitter::EmitParticle(const EmitParameter& param)
 	}
 }
 
+void ComputeParticleEmitter::SetEmitParamater(std::string filename)
+{
+	using namespace std;
+	string filepath = "./Assets/ParticleEmitParameters/" + filename;
+	ifstream ifs(filepath);
+	nlohmann::json mJson;
+	if (ifs.good())
+	{
+		//ファイル読み込み
+		ifs >> mJson;
+	}
+	else
+	{
+		_ASSERT_EXPR(false, L"指定のパーティクルアセットが見つかりません、、、、、、大変お手数なのですが、修正のほどよろしくお願いいたします。");
+	}
+
+	//読み込み
+	EmitParameter emitParam;
+	emitParam.emitNum_           = mJson["emitNum"];
+	emitParam.lifespan_          = mJson["lifespan"];
+	emitParam.lifespanAmplitude_ = mJson["lifespanAmplitude"];
+	emitParam.emitTime_          = mJson["emitTime"];
+	emitParam.texType_           = mJson["texType"];
+
+	emitParam.positionAmplitude_         = { mJson["Position"]["amplitude"][0],mJson["Position"]["amplitude"][1],mJson["Position"]["amplitude"][2] };
+	emitParam.velocity_                  = { mJson["Position"]["velocity"][0],mJson["Position"]["velocity"][1],mJson["Position"]["velocity"][2] };
+	emitParam.velocityAmplitude_         = { mJson["Position"]["vellocityAmplitude"][0],mJson["Position"]["vellocityAmplitude"][1],mJson["Position"]["vellocityAmplitude"][2] };
+	emitParam.acceleration_              = { mJson["Position"]["acceleration"][0],mJson["Position"]["acceleration"][1],mJson["Position"]["acceleration"][2] };
+	emitParam.accelerationAmplitud_      = { mJson["Position"]["accelerationAmplitude"][0],mJson["Position"]["accelerationAmplitude"][1],mJson["Position"]["accelerationAmplitude"][2] };
+	
+	emitParam.scaleAmplitude_            = { mJson["Scale"]["amplitude"][0],mJson["Scale"]["amplitude"][1] };
+	emitParam.scaleVelocity_             = { mJson["Scale"]["velocity"][0],mJson["Scale"]["velocity"][1] };
+	emitParam.scaleVelocityAmplitude_    = { mJson["Scale"]["vellocityAmplitude"][0],mJson["Scale"]["vellocityAmplitude"][1] };
+	emitParam.scaleAcceleration_         = { mJson["Scale"]["acceleration"][0],mJson["Scale"]["acceleration"][1] };
+	emitParam.scaleAccelerationAmplitud_ = { mJson["Scale"]["accelerationAmplitude"][0],mJson["Scale"]["accelerationAmplitude"][1] };
+
+	emitParam.rotationAmplitude_            = { mJson["Rotation"]["amplitude"][0],mJson["Rotation"]["amplitude"][1],mJson["Rotation"]["amplitude"][2] };
+	emitParam.rotationVelocity_             = { mJson["Rotation"]["velocity"][0],mJson["Rotation"]["velocity"][1],mJson["Rotation"]["velocity"][2] };
+	emitParam.rotationVelocityAmplitude_    = { mJson["Rotation"]["vellocityAmplitude"][0],mJson["Rotation"]["vellocityAmplitude"][1],mJson["Rotation"]["vellocityAmplitude"][2] };
+	emitParam.rotationAcceleration_         = { mJson["Rotation"]["acceleration"][0],mJson["Rotation"]["acceleration"][1],mJson["Rotation"]["acceleration"][2] };
+	emitParam.rotationAccelerationAmplitud_ = { mJson["Rotation"]["accelerationAmplitude"][0],mJson["Rotation"]["accelerationAmplitude"][1],mJson["Rotation"]["accelerationAmplitude"][2] };
+
+	emitParam.brightness_	 = mJson["brightness"];
+	emitParam.color_		 = { mJson["color"][0],mJson["color"][1],mJson["color"][2],mJson["color"][3] };
+	emitParam.colorAmplitud_ = { mJson["colorAmplitude"][0],mJson["colorAmplitude"][1],mJson["colorAmplitude"][2],mJson["colorAmplitude"][3] };
+}
+
 void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& param, const std::string& filename)
 {
 	//Jsonファイル作成
@@ -455,28 +502,28 @@ void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& par
 	mJson["lifespan"]          = param.lifespan_;
 	mJson["lifespanAmplitude"] = param.lifespanAmplitude_;
 	mJson["emitTime"]          = param.emitTime_;
-	mJson["texType_"]          = param.texType_;
+	mJson["texType"]          = param.texType_;
 	mJson["Position"] = 
 	{
-		{"ampilitude",			 {param.positionAmplitude_.x,param.positionAmplitude_.y,param.positionAmplitude_.z}},
+		{"amplitude",			 {param.positionAmplitude_.x,param.positionAmplitude_.y,param.positionAmplitude_.z}},
 		{"velocity",			 {param.velocity_.x,param.velocity_.y,param.velocity_.z}},
-		{"vellocityAmpilitude",  {param.velocityAmplitude_.x,param.velocityAmplitude_.y,param.velocityAmplitude_.z}},
+		{"vellocityAmplitude",  {param.velocityAmplitude_.x,param.velocityAmplitude_.y,param.velocityAmplitude_.z}},
 		{"acceleration",		 {param.acceleration_.x,param.acceleration_.y,param.acceleration_.z}},
 		{"accelerationAmplitude",{param.accelerationAmplitud_.x,param.accelerationAmplitud_.y,param.accelerationAmplitud_.z}}
 	};
 	mJson["Scale"] =
 	{
-		{"ampilitude",			 {param.scaleAmplitude_.x,param.scaleAmplitude_.y}},
+		{"amplitude",			 {param.scaleAmplitude_.x,param.scaleAmplitude_.y}},
 		{"velocity",			 {param.scaleVelocity_.x,param.scaleVelocity_.y}},
-		{"vellocityAmpilitude",  {param.scaleVelocityAmplitude_.x,param.scaleVelocityAmplitude_.y}},
+		{"vellocityAmplitude",  {param.scaleVelocityAmplitude_.x,param.scaleVelocityAmplitude_.y}},
 		{"acceleration",		 {param.scaleAcceleration_.x,param.scaleAcceleration_.y}},
 		{"accelerationAmplitude",{param.scaleAccelerationAmplitud_.x,param.scaleAccelerationAmplitud_.y}}
 	};
 	mJson["Rotation"] =
 	{
-		{"ampilitude",			 {param.rotationAmplitude_.x,param.rotationAmplitude_.y,param.rotationAmplitude_.z}},
+		{"amplitude",			 {param.rotationAmplitude_.x,param.rotationAmplitude_.y,param.rotationAmplitude_.z}},
 		{"velocity",			 {param.rotationVelocity_.x,param.rotationVelocity_.y,param.rotationVelocity_.z}},
-		{"vellocityAmpilitude",  {param.rotationVelocityAmplitude_.x,param.rotationVelocityAmplitude_.y,param.rotationVelocityAmplitude_.z}},
+		{"vellocityAmplitude",  {param.rotationVelocityAmplitude_.x,param.rotationVelocityAmplitude_.y,param.rotationVelocityAmplitude_.z}},
 		{"acceleration",		 {param.rotationAcceleration_.x,param.rotationAcceleration_.y,param.rotationAcceleration_.z}},
 		{"accelerationAmplitude",{param.rotationAccelerationAmplitud_.x,param.rotationAccelerationAmplitud_.y,param.rotationAccelerationAmplitud_.z}}
 	};

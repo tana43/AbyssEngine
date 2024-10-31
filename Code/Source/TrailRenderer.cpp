@@ -58,6 +58,15 @@ void TrailRenderer::Initialize(const std::shared_ptr<Actor>& actor)
 
 void TrailRenderer::Update()
 {
+
+	if (!isInitPosition_)
+	{
+		//前回の座標を最初だけ更新する
+		previousPosition_ = transform_->GetPosition();
+
+		isInitPosition_ = true;
+	}
+
 	//　保存していた頂点バッファを１フレーム分ずらす
 	{
 		for (int x = MAX_POLYGON - 1; x > -1; --x)

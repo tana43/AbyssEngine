@@ -18,6 +18,14 @@ namespace AbyssEngine
         void RecalculateFrame()override;
         void DrawImGui()override;
 
+    public:
+        struct Constant
+        {
+            DirectX::XMFLOAT4 color_ = { 1,1,1,1 };
+            //DirectX::XMFLOAT2 uvScrollSpeed_;
+        };
+        const std::unique_ptr<ConstantBuffer<Constant>>& GetConstantBuffer() { return constantBuffer_; }
+
     private:
         static constexpr UINT VertexCapacity = 1024;
         static constexpr int MAX_POLYGON = 64;
@@ -30,11 +38,8 @@ namespace AbyssEngine
         };
         std::vector<Vertex>		vertices_;
 
-        struct Constant
-        {
-            DirectX::XMFLOAT4 color_ = {1,1,1,1};
-            //DirectX::XMFLOAT2 uvScrollSpeed_;
-        };
+        //初期位置の初期化フラグ
+        bool isInitPosition_ = false;
 
         //生成されるトレイルの幅
         float width_ = 0.1f;
@@ -64,6 +69,7 @@ namespace AbyssEngine
         std::unique_ptr<ConstantBuffer<Constant>>        constantBuffer_;
         std::shared_ptr<Texture> texture_;
 
+    
     private:
         void AddVertex(const Vector3& position, const Vector2& uv,const Vector4& color);
 

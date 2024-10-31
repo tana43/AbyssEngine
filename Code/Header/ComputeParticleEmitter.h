@@ -88,17 +88,21 @@ namespace AbyssEngine
         //パーティクル生成
         void EmitParticle(const EmitParameter& param);
 
+        //アセット化したパラメーターをセットする
+        void SetEmitParamater(std::string filename);
+
     private:
         //std::shared_ptr<ComputeParticleSystem> particleSystem_;
         //std::shared_ptr<Texture> texture_;
 
+        EmitParameter mainParam_;
         
 
         //Xキーを押すことで生成可能にする
 #if _DEBUG
         bool canInputEmit_ = true;
         bool enableTimeline_ = true;
-        EmitParameter debugParam;
+        EmitParameter debugParam_;
 #else
         bool canInputEmit_ = false;
         bool enableTimeline_ = false;

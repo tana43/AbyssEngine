@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "Engine.h"
 #include "Bullet.h"
+#include "Beam.h"
 #include "BillboardRenderer.h"
 
 #include "imgui/imgui.h"
@@ -35,6 +36,12 @@ void Gun::DrawImGui()
             Shot(transform_->GetForward());
         }
 
+        static int bulletType = 0;
+        ImGui::SliderInt("Bullet Type", &bulletType, 0, static_cast<int>(BulletType::Max) - 1);
+        if (ImGui::Button("Set Bullet Type"))
+        {
+            bulletType_ = static_cast<BulletType>(bulletType);
+        }
         ImGui::SliderFloat("Rate Timer", &rateTimer_, 0.0f, rateOfFire_);
         ImGui::SliderFloat("RateOfFire", &rateOfFire_, 0.0f, 0.3f);
         ImGui::SliderFloat("Precision", &precision_, 0.0f, 0.3f);
@@ -64,14 +71,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
     //Œ‚‚Â‚±‚Æ‚ª‰Â”\‚©
     if (rateTimer_ < 0)
     {
-        //’eŠÛ¶¬
-        const auto& bullet = Engine::sceneManager_->GetActiveScene().InstanceActor("Bullet");
-        const auto& proj = bullet->AddComponent<Bullet>();
-        bullet->GetTransform()->SetPosition(muzzlePos_);
-
-        //’eŠÛ‚ÌÝ’è
-        proj->SetRadius(bulletRadius_);
-        proj->GetAtkCollider()->ReplaceTag(colliderTag_);
+        
 
         //e‚Ì¸“x‚ð”½‰f
         if (precision_ > 0)
@@ -85,7 +85,32 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             shootingDirection.Normalize();
         }
 
-        proj->SetDirection(shootingDirection);
+        //’eŠÛ¶¬
+        const auto& bullet = Engine::sceneManager_->GetActiveScene().InstanceActor("Bullet");
+        switch (bulletType_)
+        {
+        case Gun::BulletType::Bullet:
+        {
+            const auto& proj = bullet->AddComponent<Bullet>();
+            //’eŠÛ‚ÌÝ’è
+            bullet->GetTransform()->SetPosition(muzzlePos_);
+            proj->SetRadius(bulletRadius_);
+            proj->GetAtkCollider()->ReplaceTag(colliderTag_);
+            proj->SetDirection(shootingDirection);
+            break;
+        }
+        case Gun::BulletType::Beam:
+        {
+            const auto& proj = bullet->AddComponent<Beam>();
+            //’eŠÛ‚ÌÝ’è
+            bullet->GetTransform()->SetPosition(muzzlePos_);
+            proj->SetRadius(bulletRadius_);
+            proj->GetAtkCollider()->ReplaceTag(colliderTag_);
+            proj->SetDirection(shootingDirection);
+            break;
+        }
+        }
+       
 
         rateTimer_ = rateOfFire_;
 
