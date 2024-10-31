@@ -159,6 +159,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     model_->SocketAttach(weaponModel_, "middle_metacarpal_l");
     weaponModel_->GetSocketData().location_ = Weapon_Offset_Move.pos;
     weaponModel_->GetSocketData().rotation_ = Weapon_Offset_Move.rot;
+    weaponModel_->coodinateSystem_ = 0;
 
     gunComponent_ = actor_->AddComponent<Gun>();
     gunComponent_->SetColliderTag(Collider::Tag::Player);

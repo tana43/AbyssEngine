@@ -46,6 +46,10 @@ void Gun::DrawImGui()
         ImGui::SliderFloat("RateOfFire", &rateOfFire_, 0.0f, 0.3f);
         ImGui::SliderFloat("Precision", &precision_, 0.0f, 0.3f);
 
+        ImGui::DragFloat("Beam Width", &beamWidth_, 0.1f, 0.0f);
+        ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
+        ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+
         ImGui::TreePop();
     }
 }
@@ -107,6 +111,9 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetRadius(bulletRadius_);
             proj->GetAtkCollider()->ReplaceTag(colliderTag_);
             proj->SetDirection(shootingDirection);
+            proj->SetColor(beamColor_);
+            proj->SetWidth(beamWidth_);
+            proj->GetTransform()->SetScaleFactor(beamScale_);
             break;
         }
         }

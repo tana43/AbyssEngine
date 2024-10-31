@@ -12,6 +12,8 @@
 #include "CollisionManager.h"
 #include "GameCollider.h"
 #include "AttackerSystem.h"
+#include "Gun.h"
+#include "StageManager.h"
 
 #include "ThrusterEffect.h"
 
@@ -111,6 +113,11 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //アタッカーコンポーネント設定
     AttackerInitialize();
+
+    //銃
+    gunComponent_ = actor->AddComponent<Gun>();
+    gunComponent_->SetBulletType(Gun::BulletType::Beam);
+
 }
 
 void Vitesse::Update()
@@ -133,11 +140,25 @@ void Vitesse::Update()
     transform_->CalcWorldMatrix();
 
     ThrusterUpdate();
+
+    UpdateGunMuzzlePos();
+
+    if (Input::GameSupport::GetShotButton())
+    {
+        BeamShot();
+    }
 }
 
 void Vitesse::DrawImGui()
 {
     HumanoidWeapon::DrawImGui();
+
+    if (ImGui::TreeNode("Vitesse"))
+    {
+        ImGui::DragFloat3("Muzzle Offset",&muzzleOffsetPos_.x, 0.05f);
+
+        ImGui::TreePop();
+    }
 
     if (ImGui::TreeNode("Thruster Manager"))
     {
@@ -588,6 +609,85 @@ void Vitesse::AimIKTest()
     {
 
     }*/
+}
+
+void Vitesse::UpdateGunMuzzlePos()
+{
+    //オフセット行列
+    const Matrix Offset = Matrix::CreateTranslation(muzzleOffsetPos_);
+
+    //ワールド行列算出
+    const Matrix M = Offset * leftWeaponModel_->GetWorldMatrix();
+
+    //移動成分を抽出
+    const Vector3 pos = M.Translation();
+
+    gunComponent_->SetMuzzlePos(pos);
+}
+
+void Vitesse::BeamShot()
+{
+    //ターゲットがいるならそこへ、いないならカメラの正面へ射撃
+    //画面中央にレイを飛ばし、当たった場所に向かって弾が飛ぶようにする
+    Vector3 eyeToFocus = camera_->GetFocus() - camera_->GetEye();
+    eyeToFocus.Normalize();
+    const float range = 1000000.0f;
+
+    if (const auto& target = lockonTarget_.lock())
+    {
+        const Vector3 t = target->GetTransform()->GetPosition();
+        const Vector3 toTarget = t - gunComponent_->GetMuzzlePos();
+        toTarget.Normalize();
+        const Vector3 shootDirection = toTarget;
+
+        if (gunComponent_->Shot(shootDirection))
+        {
+            //画面振動
+            Camera::CameraShakeParameters param;
+            param.position_.amplitudeMultiplier_ = 0.03f;
+            param.position_.frequencyMultiplier_ = 5.0f;
+            param.rotation_.amplitudeMultiplier_ = 0.0f;
+            param.timing_.duration_ = 0.05f;
+            param.timing_.blendOutTime_ = 0.05f;
+            camera_->CameraShake(param);
+        }
+    }
+    else
+    {
+        const Vector3 start = camera_->GetEye();
+        const Vector3 end = start + eyeToFocus * range;
+        Vector3 hitPos, hitNormal, shootDirection;
+        const auto& stage = Engine::stageManager_->GetActiveStage().lock();
+        if (stage->RayCast(
+            start, end, hitPos, hitNormal
+        ))
+        {
+            //当たった位置に飛ばす
+            Vector3 toTarget = hitPos - gunComponent_->GetMuzzlePos();
+            toTarget.Normalize();
+            shootDirection = toTarget;
+        }
+        else
+        {
+            //当たらないなら、カメラの向きへ
+            const Vector3 target = start + eyeToFocus * 50.0f;
+            Vector3 toTarget = target - gunComponent_->GetMuzzlePos();
+            toTarget.Normalize();
+            shootDirection = toTarget;
+        }
+
+        if (gunComponent_->Shot(shootDirection))
+        {
+            //画面振動
+            Camera::CameraShakeParameters param;
+            param.position_.amplitudeMultiplier_ = 0.03f;
+            param.position_.frequencyMultiplier_ = 5.0f;
+            param.rotation_.amplitudeMultiplier_ = 0.0f;
+            param.timing_.duration_ = 0.05f;
+            param.timing_.blendOutTime_ = 0.05f;
+            camera_->CameraShake(param);
+        }
+    }
 }
 
 void Vitesse::Flinch(StaggerType type)

@@ -26,8 +26,8 @@ SceneManager::SceneManager()
     AddScene(new EffectEditScene,"Effect");
     //SetNextScene("TestSceneSecond");
     //SetNextScene("Title");
-    //SetNextScene("Test");
-    SetNextScene("Facility");
+    SetNextScene("Test");
+    //SetNextScene("Facility");
     //SetNextScene("Effect");
 }
 

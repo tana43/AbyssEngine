@@ -7,6 +7,7 @@
 
 class ThrusterEffect;
 class Soldier;
+class Gun;
 
 namespace AbyssEngine
 {
@@ -216,7 +217,13 @@ private:
 
 
     void AimIKTest();
+
+    //射撃攻撃を仮更新
+    void UpdateGunMuzzlePos();
     
+    //ビーム攻撃
+    void BeamShot();
+
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
 
@@ -312,5 +319,10 @@ private:
     //アタックコライダー
     std::vector<std::shared_ptr<AbyssEngine::AttackCollider>> lWeaponAtkColliderList_;
     std::vector<std::shared_ptr<AbyssEngine::AttackCollider>> rWeaponAtkColliderList_;
+
+    //銃コンポーネント
+    std::shared_ptr<Gun> gunComponent_;
+    //銃口のローカル座標
+    AbyssEngine::Vector3 muzzleOffsetPos_ = {0.0f,0.05f,0.7f};
 };
 

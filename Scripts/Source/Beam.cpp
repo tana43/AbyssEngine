@@ -43,8 +43,13 @@ void Beam::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, 
     }
 }
 
-void Beam::SetBeamColor(const Vector4& color)
+void Beam::SetColor(const Vector4& color)
 {
     billboardRenderer_->GetConstantBuffer()->data_.color_ = color;
     trailRenderer_->GetConstantBuffer()->data_.color_ = color;
+}
+
+void Beam::SetWidth(const float& width)
+{
+    trailRenderer_->SetWidth(width);
 }

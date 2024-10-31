@@ -34,7 +34,7 @@ namespace AbyssEngine
         void DrawImGui()override;
 
     public:
-        void SetBeamColor(const Vector4& color) { color_ = color; }
+        void SetColor(const Vector4& color) { color_ = color; }
         const Vector4& GetColor() const { return color_; }
 
         void SetColorAlpha(const float alpha) { color_.w = alpha; }

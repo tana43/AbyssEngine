@@ -19,6 +19,9 @@ namespace AbyssEngine
         void DrawImGui()override;
 
     public:
+        void SetWidth(float width) { width_ = width; }
+
+    public:
         struct Constant
         {
             DirectX::XMFLOAT4 color_ = { 1,1,1,1 };

@@ -98,5 +98,12 @@ private:
 
     //発射する弾の種類
     BulletType bulletType_ = BulletType::Bullet;
+
+    //ビームの幅
+    float beamWidth_ = 1.0f;
+    //ビームのカラー
+    AbyssEngine::Vector4 beamColor_ = {1,1,1,1};
+    //ビームのビルボードエフェクトの大きさ
+    float beamScale_ = 1.0f;
 };
 

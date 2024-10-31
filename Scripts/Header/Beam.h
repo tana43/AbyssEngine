@@ -22,7 +22,8 @@ public:
     const float& GetAttackPoint() const { return attackPoint_; }
     void SetAttackPoint(const float& atk) { attackPoint_ = atk; }
 
-    void SetBeamColor(const AbyssEngine::Vector4& color);
+    void SetColor(const AbyssEngine::Vector4& color);
+    void SetWidth(const float& width);
 
     const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
 
