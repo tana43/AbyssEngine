@@ -37,6 +37,21 @@ namespace AbyssEngine
 
         void SetSpeed(const float& speed) { speed_ = speed; }
 
+        void SetTargetTag(const unsigned int& actorTag) { targetTag_ = actorTag; }
+
+        void SetHomingStrength(const float& strength) { homingStrength_ = strength; }
+
+        void SetIsHoming(const bool& active) { isHoming_ = active; }
+
+    private:
+        void LifeTimeUpdate();
+
+        //直進移動更新
+        void MoveUpdate();
+
+        //ホーミング移動更新
+        void HomingUpdate();
+
     protected:
         //進行方向
         Vector3 direction_;
@@ -52,6 +67,15 @@ namespace AbyssEngine
 
         //球判定
         std::shared_ptr<AttackCollider> atkCollider_;
+
+        //敵へホーミングするか
+        bool isHoming_ = false;
+
+        //ホーミングするターゲットのタグ
+        unsigned int targetTag_ = 0;
+
+        //ホーミング強度
+        float homingStrength_ = 1.0f;
     };
 }
 

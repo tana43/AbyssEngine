@@ -67,6 +67,12 @@ public:
 
     void SetBeamWidth(const float& width) { beamWidth_ = width; }
 
+    void SetHomingStrength(const float& str) { homingStrength_ = str; }
+
+    void SetIsHoming(const bool& active) { isHoming_ = active; }
+
+    void SetTargetTag(const unsigned int& tag) { targetTag_ = tag; }
+
 private:
     //ADS(スコープを覗いているか)
     bool ADS_ = false;
@@ -127,5 +133,11 @@ private:
     float flashParticleLifespan_ = 0.1f;
     //AbyssEngine::Vector3 muzzleFlashDirection_;//マズルフラッシュを発生させるベクトル
 
+    bool isHoming_ = false;
+    float homingStrength_ = 1.0f;
+
+
+    //目標に設定するアクターのタグ
+    unsigned int targetTag_;
 };
 

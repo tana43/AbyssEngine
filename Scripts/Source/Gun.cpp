@@ -57,17 +57,35 @@ void Gun::DrawImGui()
         {
             bulletType_ = static_cast<BulletType>(bulletType);
         }
-        ImGui::SliderFloat("Rate Timer", &rateTimer_, 0.0f, rateOfFire_);
-        ImGui::SliderFloat("RateOfFire", &rateOfFire_, 0.0f, 0.3f);
-        ImGui::SliderFloat("Precision", &precision_, 0.0f, 0.3f);
-        ImGui::DragFloat("Bullet Speed", &bulletSpeed_,0.1f);
 
-        ImGui::DragFloat("Beam Width", &beamWidth_, 0.1f, 0.0f);
-        ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
-        ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::DragFloat3("MuzzlePos", &muzzlePos_.x, 0.1f);
 
-        ImGui::DragFloat("Particle Speed", &particleSpeed_,0.01f);
-        ImGui::DragFloat("Particle Amplitude Speed", &particleAmplitudeSpeed_,0.01f);
+        {
+            ImGui::SliderFloat("Rate Timer", &rateTimer_, 0.0f, rateOfFire_);
+            ImGui::SliderFloat("RateOfFire", &rateOfFire_, 0.0f, 0.3f);
+            ImGui::SliderFloat("Precision", &precision_, 0.0f, 0.3f);
+            ImGui::DragFloat("Bullet Speed", &bulletSpeed_, 0.1f);
+
+        }
+
+
+        if (ImGui::TreeNode("Beam"))
+        {
+            ImGui::DragFloat("Beam Width", &beamWidth_, 0.1f, 0.0f);
+            ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
+            ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+
+            ImGui::DragFloat("Particle Speed", &particleSpeed_, 0.01f);
+            ImGui::DragFloat("Particle Amplitude Speed", &particleAmplitudeSpeed_, 0.01f);
+
+            ImGui::Checkbox("Homing", &isHoming_);
+
+            ImGui::DragFloat("Homing Strength",&homingStrength_,0.01f);
+
+            ImGui::TreePop();
+        }
+
+        
 
         ImGui::TreePop();
     }
@@ -142,6 +160,9 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetWidth(beamWidth_);
             proj->GetTransform()->SetScaleFactor(beamScale_);
             proj->SetSpeed(bulletSpeed_);
+            proj->SetHomingStrength(homingStrength_);
+            proj->SetIsHoming(isHoming_);
+            proj->SetTargetTag(targetTag_);
 
             //エフェクト設定
             beamMuzzleFlashComponent_->SetVisibility(true);

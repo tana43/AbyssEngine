@@ -440,9 +440,6 @@
     <ClInclude Include="Scripts\Header\Beam.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\BeamRifle.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -740,9 +737,6 @@
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\Beam.cpp">
-      <Filter>Script\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\Source\BeamRifle.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
   </ItemGroup>

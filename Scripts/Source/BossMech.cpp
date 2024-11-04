@@ -8,6 +8,7 @@
 #include "SceneManager.h"
 #include "Vitesse.h"
 #include "AttackerSystem.h"
+#include "Gun.h"
 
 using namespace AbyssEngine;
 
@@ -71,7 +72,30 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     {
         targetVitesse_ = a->GetComponent<Vitesse>();
     }
+
+
+    gunCom_ = actor->AddComponent<Gun>();
+    gunCom_->SetIsHoming(true);
+    gunCom_->SetTargetTag(Actor::Tag_Player);
 }
+
+void BossMech::Update()
+{
+    HumanoidWeapon::Update();
+
+    float sin = sinf(shotDireTimer_);
+    Vector3 forward = transform_->GetForward();
+    //‰¼‚Åƒr[ƒ€UŒ‚
+    Vector3 dire = {
+        sin * forward.x,
+        cosf(shotDireTimer_),
+        sin * forward.z
+    };
+    dire.Normalize();
+    gunCom_->Shot(dire);
+    shotDireTimer_ += Time::GetDeltaTime();
+}
+
 
 
 void BossMech::RushAttackUpdate()

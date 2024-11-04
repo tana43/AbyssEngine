@@ -24,6 +24,19 @@ weak_ptr<Actor> Scene::Find(const std::string& name_)
     return a;
 }
 
+std::weak_ptr<Actor> AbyssEngine::Scene::FindByTag(const unsigned int& tag)
+{
+    for (auto& a : actorList_)
+    {
+        if (a->GetTag() & tag)
+        {
+            return a;
+        }
+    }
+    weak_ptr<Actor> a;
+    return a;
+}
+
 shared_ptr<Actor> Scene::InstanceActor(const std::string& name)
 {
     //オブジェクトを生成して登録する

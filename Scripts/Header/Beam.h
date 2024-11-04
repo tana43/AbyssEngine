@@ -30,6 +30,7 @@ public:
 
     const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
 
+
 private:
     //攻撃力
     float attackPoint_ = 1.0f;
@@ -49,4 +50,6 @@ private:
     AbyssEngine::ComputeParticleEmitter::EmitParameter particleEmitPrameter_;
     float particleSpeed_ = 20.0f;
     float particleAmplitude_ = 9.0f;//パーティクルの散らばり
+
+    
 };

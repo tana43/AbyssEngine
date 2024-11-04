@@ -125,6 +125,8 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     gunComponent_->SetBeamScale(1.7f);
     gunComponent_->SetBeamColor(Vector4(0.0f,1.0f,1.0f,1.0f));
     gunComponent_->SetPrecision(0.0f);
+
+    actor->ReplaceTag(Actor::Tag_Player);
 }
 
 void Vitesse::Update()

@@ -11,6 +11,8 @@ namespace AbyssEngine
     class AttackCollider;
 }
 
+class Gun;
+
 class Vitesse;
 
 class BossMech : public HumanoidWeapon
@@ -28,6 +30,8 @@ public:
 
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
+
+    void Update()override;
 
     //突進
     void RushAttackUpdate();
@@ -65,5 +69,12 @@ private:
 
     //突進攻撃の誘導の強さ　
     float rushHoming_ = 1.0f;
+
+    //ガンコンポーネント
+    std::shared_ptr<Gun> gunCom_;
+
+
+    //射撃方向を計算するようのタイマー
+    float shotDireTimer_;
 };
 

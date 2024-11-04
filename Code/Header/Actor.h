@@ -12,6 +12,22 @@ namespace AbyssEngine
     class Actor final : public std::enable_shared_from_this<Actor>
     {
     public:
+        using Tag = unsigned int;
+
+        //タグの設定
+        //敵味方の判別を行う
+        static constexpr Tag Tag_Default = 0x01;
+        static constexpr Tag Tag_Player  = 0x01 << 1;
+        static constexpr Tag Tag_Enemy   = 0x01 << 2;
+        static constexpr Tag Tag_End     = 0x01 << 3;
+
+        Tag GetTag() const { return tag_; }
+        void ReplaceTag(Tag t) { tag_ = t; }
+        void AddTag(Tag t)
+        {
+            tag_ |= t;
+        }
+
         std::string name_;
 
         template<class T>
@@ -59,6 +75,9 @@ namespace AbyssEngine
         void TimeUpdate(); //経過時間更新
 
     private:
+        //タグ
+        Tag tag_ = Tag_Default;
+
         std::shared_ptr<Transform> transform_;                  //アタッチされているTransform
         std::vector<std::shared_ptr<Component>> componentList_; //アタッチされているコンポーネントのリスト
 

@@ -14,6 +14,7 @@ namespace AbyssEngine
         ~Scene() = default;
 
         std::weak_ptr<Actor> Find(const std::string& name_);  //指定した名前のアクターを返す
+        std::weak_ptr<Actor> FindByTag(const unsigned int& tag);  //指定した名前のアクターを返す
 
         std::string name_;   //シーン名
 
@@ -23,6 +24,8 @@ namespace AbyssEngine
         void DestroyActor(const std::shared_ptr<Actor>& actor);             //アクターを削除する
         void DestroyComponent(const std::shared_ptr<Component>& component); //コンポーネントを削除する
         void DrawWorldOutLinerImGui(); //ImGuiデバッグ表示
+
+
 
         std::string GenerateUniqueName(const std::string& baseName);
 

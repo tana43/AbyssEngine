@@ -14,13 +14,6 @@ namespace AbyssEngine
     class Character : public ScriptComponent
     {
     public:
-        using Tag = unsigned int;
-
-        //タグの設定
-        //敵味方の判別を行う
-        static constexpr Tag Tag_Default    = 0x01;
-        static constexpr Tag Tag_Player     = 0x01 << 1;
-        static constexpr Tag Tag_Enemy      = 0x01 << 2;
 
         enum class DamageResult
         {
@@ -35,13 +28,6 @@ namespace AbyssEngine
             float knockback_ = 1.0f;
             Vector3 vector_ = {};
         };
-
-        Tag GetTag() const { return tag_; }
-        void ReplaceTag(Tag t) { tag_ = t; }
-        void AddTag(Tag t)
-        {
-            tag_ |= t;
-        }
 
     public:
         virtual void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
@@ -129,7 +115,6 @@ namespace AbyssEngine
 
 
     protected:
-        Tag tag_ = Tag_Default;
 
         float weight_ = 1.0f;//重さ（重力、吹っ飛ばしの計算に使う）
 
