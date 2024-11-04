@@ -442,6 +442,14 @@ Vector3 AbyssEngine::Camera::WorldToViewportPosition(Vector3 worldPosition)
     return viewportPosition;
 }
 
+Vector3 AbyssEngine::Camera::GetForward()
+{
+    Vector3 eyeToFocus = focus_ - eye_;
+    eyeToFocus.Normalize();
+
+    return eyeToFocus;
+}
+
 void Camera::ZoomUpdate()
 {
     if (!isZooming_)return;
@@ -636,6 +644,7 @@ void Camera::CameraShake(std::string aseetName)
     else
     {
         _ASSERT_EXPR(false, L"指定のカメラ振動のアセットが見つかりません、、、、、、大変お手数なのですが、修正のほどよろしくお願いいたします。");
+        return;
     }
 
     //読み込み

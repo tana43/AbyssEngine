@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "StaticMesh.h"
 #include "Character.h"
-#include "ComputeParticleEmitter.h"
+//#include "ComputeParticleEmitter.h"
 #include "TrailRenderer.h"
 #include "BillboardRenderer.h"
 
@@ -19,11 +19,25 @@ void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     particleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
 
     transform_->SetScaleFactor(0.03f);
+
+    //パーティクルエミッター設定
+    particleEmitPrameter_.lifespan_ = 0.5f;
+    particleEmitPrameter_.texType_ = 3;
+    particleEmitPrameter_.emitNum_ = 12;
+    particleEmitPrameter_.color_ = { 0,0.25f,1.0f,1.0f };
+    particleEmitPrameter_.brightness_ = 3.0f;
+    particleEmitPrameter_.colorAmplitud_ = { 0,0.1f,1.0f,0 };
+    particleEmitPrameter_.positionAmplitude_ = {2.0f,2.0f,2.0f};
+    particleEmitPrameter_.scaleInit_ = { 0.4f,0.4f };
+    particleEmitPrameter_.rotationAmplitude_ = { 0,0,180.0f };
+    //particleEmitter_->SetEmitParamater(particleEmitPrameter_);
 }
 
 void Beam::Update()
 {
     Projectile::Update();
+
+    ParticleUpdate();
 }
 
 void Beam::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, AbyssEngine::Collision::IntersectionResult result)
@@ -41,6 +55,20 @@ void Beam::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, 
             Actor::Destroy(actor_);
         }
     }
+}
+
+void Beam::ParticleUpdate()
+{
+    //パーティクルの動きを設定
+    particleEmitPrameter_.velocity_ = -direction_ * particleSpeed_;
+
+    //右方向ベクトルと上方向ベクトルからパーティクルの散らばりを算出
+    const Vector3 right = direction_.Cross(Vector3::Up);
+    const Vector3 up = right.Cross(direction_);
+    particleEmitPrameter_.velocityAmplitude_ = right * particleAmplitude_ + up * particleAmplitude_;
+
+    //パーティクル生成
+    particleEmitter_->EmitParticle(particleEmitPrameter_);
 }
 
 void Beam::SetColor(const Vector4& color)

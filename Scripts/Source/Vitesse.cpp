@@ -81,6 +81,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::MeleeAttackDash(this));
     stateMachine_->RegisterState(new VitesseState::MeleeAttack(this));
     stateMachine_->RegisterState(new VitesseState::Flinch(this));
+    stateMachine_->RegisterState(new VitesseState::Aiming(this));
 
     //初期ステート設定
     animStateMachine_->SetState(static_cast<int>(AnimationState::Ground_Move));
@@ -117,7 +118,13 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //銃
     gunComponent_ = actor->AddComponent<Gun>();
     gunComponent_->SetBulletType(Gun::BulletType::Beam);
-
+    //gunComponent_->SetRateOfFire(1.0f);
+    gunComponent_->SetRateOfFire(0.3f);
+    gunComponent_->SetBulletSpeed(500.0f);
+    gunComponent_->SetBeamWidth(2.7f);
+    gunComponent_->SetBeamScale(1.7f);
+    gunComponent_->SetBeamColor(Vector4(0.0f,1.0f,1.0f,1.0f));
+    gunComponent_->SetPrecision(0.0f);
 }
 
 void Vitesse::Update()
@@ -143,7 +150,12 @@ void Vitesse::Update()
 
     UpdateGunMuzzlePos();
 
-    if (Input::GameSupport::GetShotButton())
+    //RotateToFront();
+
+    if (
+        //Input::GameSupport::GetOneShotButton()
+        Input::GameSupport::GetShotButton()
+        )
     {
         BeamShot();
     }
@@ -219,7 +231,8 @@ void Vitesse::AnimationInitialize()
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_3.gltf",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_3_End.gltf",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_R_1.gltf",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Flinch.gltf"
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Flinch.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Shot_Pose.gltf"
         },
         {
             "Run_F",
@@ -253,7 +266,8 @@ void Vitesse::AnimationInitialize()
             "Slash_N_3",
             "Slash_N_3_End",
             "Slash_R_1",
-            "Flinch"
+            "Flinch",
+            "ShotPose",
         });
 
         //ループ再生しないように
@@ -329,10 +343,12 @@ void Vitesse::AnimationInitialize()
         {
             aimIKAnimation_ = new AnimAimIK(model_.get(), "AimIK");
             model_->GetAnimator()->AppendAnimation(aimIKAnimation_);
+            aimIKAnimation_->SetBaseAnimation(static_cast<int>(AnimationIndex::Shot_Pose));
 
             //根本ノード
+            //aimIKAnimation_->SetRootNodeName("rig_J_shoulder_L");
             aimIKAnimation_->SetRootNodeName("rig_J_uparm_L");
-
+            
             //中間ノード
             aimIKAnimation_->SetMidNodeName("rig_J_lowarm_L");
 
@@ -341,6 +357,9 @@ void Vitesse::AnimationInitialize()
 
             //無視するノードrig_J_lowarm_L
             aimIKAnimation_->SetIgnoreNodeName("rig_J_midarm_L");
+
+            //無視するノード（肩下）
+            //aimIKAnimation_->SetIgnoreNodeName("rig_J_uparm_L");
         }
 
         model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimationIndex::Run_Move));
@@ -631,32 +650,21 @@ void Vitesse::BeamShot()
     //画面中央にレイを飛ばし、当たった場所に向かって弾が飛ぶようにする
     Vector3 eyeToFocus = camera_->GetFocus() - camera_->GetEye();
     eyeToFocus.Normalize();
-    const float range = 1000000.0f;
+    const float range = 100000.0f;
+    Vector3 shootDirection;
 
     if (const auto& target = lockonTarget_.lock())
     {
         const Vector3 t = target->GetTransform()->GetPosition();
-        const Vector3 toTarget = t - gunComponent_->GetMuzzlePos();
+        Vector3 toTarget = t - gunComponent_->GetMuzzlePos();
         toTarget.Normalize();
-        const Vector3 shootDirection = toTarget;
-
-        if (gunComponent_->Shot(shootDirection))
-        {
-            //画面振動
-            Camera::CameraShakeParameters param;
-            param.position_.amplitudeMultiplier_ = 0.03f;
-            param.position_.frequencyMultiplier_ = 5.0f;
-            param.rotation_.amplitudeMultiplier_ = 0.0f;
-            param.timing_.duration_ = 0.05f;
-            param.timing_.blendOutTime_ = 0.05f;
-            camera_->CameraShake(param);
-        }
+        shootDirection = toTarget;
     }
     else
     {
         const Vector3 start = camera_->GetEye();
         const Vector3 end = start + eyeToFocus * range;
-        Vector3 hitPos, hitNormal, shootDirection;
+        Vector3 hitPos, hitNormal;
         const auto& stage = Engine::stageManager_->GetActiveStage().lock();
         if (stage->RayCast(
             start, end, hitPos, hitNormal
@@ -670,23 +678,24 @@ void Vitesse::BeamShot()
         else
         {
             //当たらないなら、カメラの向きへ
-            const Vector3 target = start + eyeToFocus * 50.0f;
+            const Vector3 target = start + eyeToFocus * range;
             Vector3 toTarget = target - gunComponent_->GetMuzzlePos();
             toTarget.Normalize();
             shootDirection = toTarget;
         }
+    }
 
-        if (gunComponent_->Shot(shootDirection))
-        {
-            //画面振動
-            Camera::CameraShakeParameters param;
-            param.position_.amplitudeMultiplier_ = 0.03f;
-            param.position_.frequencyMultiplier_ = 5.0f;
-            param.rotation_.amplitudeMultiplier_ = 0.0f;
-            param.timing_.duration_ = 0.05f;
-            param.timing_.blendOutTime_ = 0.05f;
-            camera_->CameraShake(param);
-        }
+    if (gunComponent_->Shot(shootDirection))
+    {
+        //画面振動
+        /*Camera::CameraShakeParameters param;
+        param.position_.amplitudeMultiplier_ = 0.03f;
+        param.position_.frequencyMultiplier_ = 5.0f;
+        param.rotation_.amplitudeMultiplier_ = 0.0f;
+        param.timing_.duration_ = 0.05f;
+        param.timing_.blendOutTime_ = 0.05f;
+        camera_->CameraShake(param);*/
+        camera_->CameraShake("BeamShot");
     }
 }
 
@@ -706,6 +715,13 @@ void Vitesse::Flinch(StaggerType type)
     default:
         break;
     }
+}
+
+void Vitesse::RotateToFront()
+{
+    //カメラが向いている向きに回転させる
+    Vector3 cameraForward = camera_->GetForward();
+    TurnY(cameraForward);
 }
 
 void Vitesse::Dodge(Vector3 direction)

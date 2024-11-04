@@ -1,5 +1,6 @@
 #pragma once
 #include "Projectile.h"
+#include "ComputeParticleEmitter.h"
 
 namespace AbyssEngine
 {
@@ -7,7 +8,7 @@ namespace AbyssEngine
     class AttackCollider;
     class BillboardRenderer;
     class TrailRenderer;
-    class ComputeParticleEmitter;
+    //class ComputeParticleEmitter;
 }
 
 class Beam : public AbyssEngine::Projectile
@@ -17,6 +18,8 @@ public:
     void Update()override;
 
     void OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, AbyssEngine::Collision::IntersectionResult result)override;
+
+    void ParticleUpdate();
 
 public:
     const float& GetAttackPoint() const { return attackPoint_; }
@@ -42,4 +45,8 @@ private:
 
     //パーティクル
     std::shared_ptr<AbyssEngine::ComputeParticleEmitter> particleEmitter_;
+
+    AbyssEngine::ComputeParticleEmitter::EmitParameter particleEmitPrameter_;
+    float particleSpeed_ = 20.0f;
+    float particleAmplitude_ = 9.0f;//パーティクルの散らばり
 };

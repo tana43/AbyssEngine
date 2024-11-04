@@ -51,51 +51,7 @@ void ComputeParticleEmitter::DrawImGui()
 			EmitParticle(debugParam_);
 		}
 		
-		ImGui::DragInt("Emit Num", &debugParam_.emitNum_);
-
-		auto spritCount = Engine::renderManager_->GetParticleSystem()->GetTextureSplitCount();
-		ImGui::SliderInt("Texture Type", &debugParam_.texType_,0,spritCount.x * spritCount.y - 1);
-
-		ImGui::DragFloat("Lifespan", &debugParam_.lifespan_, 0.01f,0.0f);
-		ImGui::DragFloat("Lifespan Amplitude", &debugParam_.lifespanAmplitude_, 0.01f,0.0f);
-
-		ImGui::ColorEdit4("Color", &debugParam_.color_.x, ImGuiColorEditFlags_PickerHueWheel);
-		ImGui::DragFloat4("Color Amplitud", &debugParam_.colorAmplitud_.x,0.001f,0.0f);
-
-		ImGui::DragFloat("Brightness", &debugParam_.brightness_, 0.01f);
-
-		if (ImGui::TreeNode("Emit Position"))
-		{
-			ImGui::DragFloat3("Amplitude", &debugParam_.positionAmplitude_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Velo Init", &debugParam_.velocity_.x,0.1f);
-			ImGui::DragFloat3("Velo Amplitude", &debugParam_.velocityAmplitude_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Accel", &debugParam_.acceleration_.x,0.1f);
-			ImGui::DragFloat3("Accel Amplitude", &debugParam_.accelerationAmplitud_.x,0.1f, 0.0f);
-
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Emit Scale"))
-		{
-			ImGui::DragFloat2("Amplitude", &debugParam_.scaleAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat2("Velo Init", &debugParam_.scaleVelocity_.x, 0.1f);
-			ImGui::DragFloat2("Velo Amplitude", &debugParam_.scaleVelocityAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat2("Accel", &debugParam_.scaleAcceleration_.x,0.1f, 0.0f);
-			ImGui::DragFloat2("Accel Amplitude", &debugParam_.scaleAccelerationAmplitud_.x, 0.1f, 0.0f);
-
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Emit Rotation"))
-		{
-			ImGui::DragFloat3("Amplitude", &debugParam_.rotationAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat3("Velo Init", &debugParam_.rotationVelocity_.x, 0.1f);
-			ImGui::DragFloat3("Velo Amplitude", &debugParam_.rotationVelocityAmplitude_.x, 0.1f, 0.0f);
-			ImGui::DragFloat3("Accel", &debugParam_.rotationAcceleration_.x,0.1f, 0.0f);
-			ImGui::DragFloat3("Accel Amplitude", &debugParam_.rotationAccelerationAmplitud_.x, 0.1f, 0.0f);
-
-			ImGui::TreePop();
-		}
+		debugParam_.DrawImGui();
 
 		//static std::string name;
 
@@ -311,7 +267,15 @@ void ComputeParticleEmitter::EmitParticle(const EmitParameter& param)
 	//トランスフォーム更新
 	const Matrix worldMatrix = transform_->CalcWorldMatrix();
 
-	Vector3 pos = transform_->GetPosition();
+	Vector3 pos;
+	if (useTransform_)
+	{
+		pos = transform_->GetPosition();
+	}
+	else
+	{
+		pos = emitPositionNotUseTransform_;
+	}
 
 	//各要素の振れ幅を算出
 	const Vector3 posAmp = param.positionAmplitude_ / 2.0f;
@@ -352,7 +316,7 @@ void ComputeParticleEmitter::EmitParticle(const EmitParameter& param)
 		a.z += Math::RandomRange(-accelAmp.z, accelAmp.z);
 
 		//　スケール
-		Vector3 s = transform_->GetScale();
+		Vector3 s = transform_->GetScale() * param.scaleInit_;
 		s = s * transform_->GetScaleFactor();
 		s.x += Math::RandomRange(-scaleAmp.x, scaleAmp.x);
 		s.y += Math::RandomRange(-scaleAmp.y, scaleAmp.y);
@@ -444,6 +408,11 @@ void ComputeParticleEmitter::EmitParticle(const EmitParameter& param)
 		data.color_ = data.color_ * param.brightness_;
 		Engine::renderManager_->GetParticleSystem()->Emit(data);
 	}
+}
+
+void AbyssEngine::ComputeParticleEmitter::EmitParticle()
+{
+	EmitParticle(mainParam_);
 }
 
 void ComputeParticleEmitter::SetEmitParamater(std::string filename)
@@ -551,6 +520,7 @@ ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::EmitP
 	velocityAmplitude_            = param.velocityAmplitude_;
 	acceleration_                 = param.acceleration_;
 	accelerationAmplitud_         = param.accelerationAmplitud_;
+	scaleInit_					  = param.scaleInit_;
 	scaleAmplitude_               = param.scaleAmplitude_;
 	scaleVelocity_                = param.scaleVelocity_;
 	scaleVelocityAmplitude_       = param.scaleVelocityAmplitude_;
@@ -566,4 +536,59 @@ ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::EmitP
 	colorAmplitud_                = param.colorAmplitud_;
 
 	return *this;
+}
+
+void AbyssEngine::ComputeParticleEmitter::EmitParameter::DrawImGui()
+{
+	if (ImGui::TreeNode("EmitParamter"))
+	{
+		ImGui::DragInt("Emit Num", &emitNum_);
+
+		auto spritCount = Engine::renderManager_->GetParticleSystem()->GetTextureSplitCount();
+		ImGui::SliderInt("Texture Type", &texType_, 0, spritCount.x * spritCount.y - 1);
+
+		ImGui::DragFloat("Lifespan", &lifespan_, 0.01f, 0.0f);
+		ImGui::DragFloat("Lifespan Amplitude", &lifespanAmplitude_, 0.01f, 0.0f);
+
+		ImGui::ColorEdit4("Color", &color_.x, ImGuiColorEditFlags_PickerHueWheel);
+		ImGui::DragFloat4("Color Amplitud", &colorAmplitud_.x, 0.001f, 0.0f);
+
+		ImGui::DragFloat("Brightness", &brightness_, 0.01f);
+
+		if (ImGui::TreeNode("Emit Position"))
+		{
+			ImGui::DragFloat3("Amplitude", &positionAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Velo Init", &velocity_.x, 0.1f);
+			ImGui::DragFloat3("Velo Amplitude", &velocityAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Accel", &acceleration_.x, 0.1f);
+			ImGui::DragFloat3("Accel Amplitude", &accelerationAmplitud_.x, 0.1f, 0.0f);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Emit Scale"))
+		{
+			ImGui::DragFloat3("Init", &scaleInit_.x, 0.01f, 0.0f);
+			ImGui::DragFloat2("Amplitude", &scaleAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Velo Init", &scaleVelocity_.x, 0.1f);
+			ImGui::DragFloat2("Velo Amplitude", &scaleVelocityAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Accel", &scaleAcceleration_.x, 0.1f, 0.0f);
+			ImGui::DragFloat2("Accel Amplitude", &scaleAccelerationAmplitud_.x, 0.1f, 0.0f);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Emit Rotation"))
+		{
+			ImGui::DragFloat3("Amplitude", &rotationAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Velo Init", &rotationVelocity_.x, 0.1f);
+			ImGui::DragFloat3("Velo Amplitude", &rotationVelocityAmplitude_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Accel", &rotationAcceleration_.x, 0.1f, 0.0f);
+			ImGui::DragFloat3("Accel Amplitude", &rotationAccelerationAmplitud_.x, 0.1f, 0.0f);
+
+			ImGui::TreePop();
+		}
+
+		ImGui::TreePop();
+	}
 }

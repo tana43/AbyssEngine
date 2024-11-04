@@ -35,6 +35,8 @@ namespace AbyssEngine
 
         void SetRadius(const float& radius);
 
+        void SetSpeed(const float& speed) { speed_ = speed; }
+
     protected:
         //is•ûŒü
         Vector3 direction_;

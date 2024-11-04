@@ -28,59 +28,66 @@ void Character::Update()
 
 void Character::DrawImGui()
 {
-    ImGui::DragFloat3("Velocity", &velocity_.x);
-
-    float speed = velocity_.Length();
-    ImGui::SliderFloat("Speed",&speed,0.0f,Max_Horizontal_Speed);
-
-    ImGui::DragFloat("Max Horizontal Speed", &Max_Horizontal_Speed,0.1f,0.1f);
-    ImGui::DragFloat("Max Vertical Speed", &Max_Vertical_Speed,0.1f,0.1f);
-
-    ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 100.0f);
-    ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 100.0f);
-
-    ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
-    ImGui::SliderFloat("Max Rot Speed", &Max_Rot_Speed,0.0f,1000.0f);
-    ImGui::SliderFloat("Min Rot Speed", &Min_Rot_Speed,0.0f,1000.0f);
-
-    ImGui::DragFloat3("Move Vec", &moveVec_.x, 0.05f, -1.0f, 1.0f);
-
-    ImGui::DragFloat("Terrain Radius", &terrainRadius_, 0.01f, 0.0f);
-    ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
-    ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
-
-    ImGui::DragFloat("Max_Health", &Max_Health, 0.1f);
-    ImGui::SliderFloat("Health", &health_, 0.0f,Max_Health);
-
-    ImGui::DragFloat("Gravity", &Gravity,0.01f);
-
-    static float hitStopDuration = 1.0f;
-    static float hitStopOutTime = 0.5f;
-    if (ImGui::TreeNode("HitStop"))
+    if (ImGui::TreeNode("Character"))
     {
-        ImGui::DragFloat("HitStop Duration", &hitStopDuration,0.02f);
-        ImGui::SliderFloat("HitStop OutTime", &hitStopOutTime,0.0f,hitStopDuration);
 
-        if (ImGui::Button("Play HitStop"))
+        ImGui::DragFloat3("Velocity", &velocity_.x);
+
+        float speed = velocity_.Length();
+        ImGui::SliderFloat("Speed", &speed, 0.0f, Max_Horizontal_Speed);
+
+        ImGui::DragFloat("Max Horizontal Speed", &Max_Horizontal_Speed, 0.1f, 0.1f);
+        ImGui::DragFloat("Max Vertical Speed", &Max_Vertical_Speed, 0.1f, 0.1f);
+
+        ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 100.0f);
+        ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 100.0f);
+
+        ImGui::Checkbox("Enable Auto Turn", &enableAutoTurn_);
+
+        ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
+        ImGui::SliderFloat("Max Rot Speed", &Max_Rot_Speed, 0.0f, 1000.0f);
+        ImGui::SliderFloat("Min Rot Speed", &Min_Rot_Speed, 0.0f, 1000.0f);
+
+        ImGui::DragFloat3("Move Vec", &moveVec_.x, 0.05f, -1.0f, 1.0f);
+
+        ImGui::DragFloat("Terrain Radius", &terrainRadius_, 0.01f, 0.0f);
+        ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
+        ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
+
+        ImGui::DragFloat("Max_Health", &Max_Health, 0.1f);
+        ImGui::SliderFloat("Health", &health_, 0.0f, Max_Health);
+
+        ImGui::DragFloat("Gravity", &Gravity, 0.01f);
+
+        static float hitStopDuration = 1.0f;
+        static float hitStopOutTime = 0.5f;
+        if (ImGui::TreeNode("HitStop"))
         {
-            HitStop(hitStopDuration, hitStopOutTime);
+            ImGui::DragFloat("HitStop Duration", &hitStopDuration, 0.02f);
+            ImGui::SliderFloat("HitStop OutTime", &hitStopOutTime, 0.0f, hitStopDuration);
+
+            if (ImGui::Button("Play HitStop"))
+            {
+                HitStop(hitStopDuration, hitStopOutTime);
+            }
+
+            ImGui::TreePop();
         }
 
-        ImGui::TreePop();
-    }
-
-    if (ImGui::TreeNode("Impulse"))
-    {
-        static Vector3 vec;
-        ImGui::DragFloat("Impact Deccel", &inpactDeccel_);
-        ImGui::DragFloat("Impact Speed Max", &inpactSpeedMax_);
-        ImGui::DragFloat3("vector", &vec.x);
-
-        if (ImGui::Button("Add Impulse"))
+        if (ImGui::TreeNode("Impulse"))
         {
-            AddImpulse(vec);
-        }
+            static Vector3 vec;
+            ImGui::DragFloat("Impact Deccel", &inpactDeccel_);
+            ImGui::DragFloat("Impact Speed Max", &inpactSpeedMax_);
+            ImGui::DragFloat3("vector", &vec.x);
 
+            if (ImGui::Button("Add Impulse"))
+            {
+                AddImpulse(vec);
+            }
+
+            ImGui::TreePop();
+        }
         ImGui::TreePop();
     }
 }

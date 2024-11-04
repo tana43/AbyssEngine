@@ -7,6 +7,7 @@ namespace AbyssEngine
 {
     class Projectile;
     class BillboardRenderer;
+    class ComputeParticleEmitter;
 }
 
 class Gun : public AbyssEngine::ScriptComponent
@@ -38,6 +39,7 @@ public:
 
     //マズルフラッシュのエフェクトの座標更新
     void UpdateFlashEffect();
+    void UpdateFlashParticleEffect();
 
 public:
     const AbyssEngine::Vector3& GetMuzzlePos() const { return muzzlePos_; }
@@ -56,6 +58,14 @@ public:
     void SetColliderTag(AbyssEngine::Collider::Tag tag) { colliderTag_ = static_cast<unsigned int>(tag); }
 
     void SetBulletType(BulletType type) { bulletType_ = type; }
+
+    void SetBulletSpeed(const float& speed) { bulletSpeed_ = speed; }
+
+    void SetBeamColor(const AbyssEngine::Vector4& color) { beamColor_ = color; }
+
+    void SetBeamScale(const float& scale) { beamScale_ = scale; }
+
+    void SetBeamWidth(const float& width) { beamWidth_ = width; }
 
 private:
     //ADS(スコープを覗いているか)
@@ -85,6 +95,7 @@ private:
 
     //マズルフラッシュ用の画像
     std::shared_ptr<AbyssEngine::BillboardRenderer> muzzleFlashComponent_;
+    std::shared_ptr<AbyssEngine::BillboardRenderer> beamMuzzleFlashComponent_;
     
     //エフェクト寿命
     float flashLifespan_ = 0.0f;
@@ -105,5 +116,16 @@ private:
     AbyssEngine::Vector4 beamColor_ = {1,1,1,1};
     //ビームのビルボードエフェクトの大きさ
     float beamScale_ = 1.0f;
+
+    //発砲する弾丸の速度
+    float bulletSpeed_ = 50.0f;
+
+    //発砲時に出現させるパーティクルエフェクト
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> particleEmitter_;
+    float particleAmplitudeSpeed_ = 70.0f;//パーティクルが周りに散らばる速度
+    float particleSpeed_ = 200.0f;//攻撃方向へ向かう速度
+    float flashParticleLifespan_ = 0.1f;
+    //AbyssEngine::Vector3 muzzleFlashDirection_;//マズルフラッシュを発生させるベクトル
+
 };
 

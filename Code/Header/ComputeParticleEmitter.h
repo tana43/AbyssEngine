@@ -44,6 +44,9 @@ namespace AbyssEngine
             //　生成加速度の振れ幅
             Vector3 accelerationAmplitud_ = {};
 
+            // 初期スケール
+            Vector3 scaleInit_ = {1.0f,1.0f,1.0f};
+
             //　生成スケールの振れ幅
             Vector2 scaleAmplitude_ = {};
             //　初期スケール速度
@@ -74,6 +77,8 @@ namespace AbyssEngine
             Vector4 colorAmplitud_ = { 0,0,0,0 };
 
             EmitParameter operator=(const EmitParameter& param);
+
+            void DrawImGui();
         };
 
     public:
@@ -87,10 +92,16 @@ namespace AbyssEngine
 
         //パーティクル生成
         void EmitParticle(const EmitParameter& param);
+        void EmitParticle();
 
         //アセット化したパラメーターをセットする
         void SetEmitParamater(std::string filename);
+        void SetEmitParamater(const EmitParameter& param) { mainParam_ = param; };
 
+        void SetUseTransform(const bool& flag) { useTransform_ = flag; }
+        void SetEmitPositionNotUseTransform(const Vector3& pos) { emitPositionNotUseTransform_ = pos; }
+
+        EmitParameter GetEmitParamter() { return mainParam_; }
     private:
         //std::shared_ptr<ComputeParticleSystem> particleSystem_;
         //std::shared_ptr<Texture> texture_;
@@ -108,6 +119,11 @@ namespace AbyssEngine
         bool enableTimeline_ = false;
 #endif // _DEBUG
         bool imguiButton_;
+
+        //トランスフォームコンポーネントに位置を依存するか
+        bool useTransform_ = true;
+        //トランスフォームに依存しない場合に参照される生成位置
+        Vector3 emitPositionNotUseTransform_ = {0,0,0};
         
     private:
         void AssetCreation(const EmitParameter& param,const std::string& filename);

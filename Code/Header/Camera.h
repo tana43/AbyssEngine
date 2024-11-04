@@ -55,6 +55,9 @@ namespace AbyssEngine
         Vector2 WorldToScreenPosition(Vector3 worldPosition); //ワールド座標からスクリーン座標へ
         Vector3 WorldToViewportPosition(Vector3 worldPosition); //ワールド座標からビューポート座標へ
 
+        //前方向取得
+        Vector3 GetForward();
+
     private:
         void ZoomUpdate();
 

@@ -53,6 +53,12 @@ void VitesseState::GroundMove::Update(float deltaTime)
     {
         owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
     }
+
+    //射撃ボタンが押されているならエイムステートへ
+    if (Input::GameSupport::GetShotButton())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::Aiming);
+    }
 }
 
 void VitesseState::GroundMove::Finalize()
@@ -94,6 +100,12 @@ void VitesseState::Flight::Update(float deltaTime)
     if (Input::GameSupport::GetMeleeAttackButton())
     {
         owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
+    }
+
+    //射撃ボタンが押されているならエイムステートへ
+    if (Input::GameSupport::GetShotButton())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::Aiming);
     }
 }
 
@@ -628,4 +640,40 @@ void VitesseState::Flinch::Update(float deltaTime)
 void VitesseState::Flinch::Finalize()
 {
     owner_->GetAnimator()->SetAnimationTransTime(0.3f);
+}
+
+void VitesseState::Aiming::Initialize()
+{
+    //自動回転を切る
+    owner_->SetEnableAutoTurn(false);
+
+    //飛行モードへ
+    owner_->ToFlightMode();
+}
+
+void VitesseState::Aiming::Update(float deltaTime)
+{
+    //前方向を向かせる
+    owner_->RotateToFront();
+
+    //普通に移動してもらう
+    owner_->UpdateInputMove();
+
+    owner_->ThrusterInfluenceVelocity();
+
+    //別ステートへ
+    if (!Input::GameSupport::GetShotButton())
+    {
+        //空中飛行ステート
+        owner_->ChangeActionState(Vitesse::ActionState::FMove);
+    }
+}
+
+void VitesseState::Aiming::Finalize()
+{
+    //ロックオンをしていないなら自動回転をオンに
+    if (owner_->GetLockonTarget().lock())
+    {
+        owner_->SetEnableAutoTurn(true);
+    }
 }

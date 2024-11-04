@@ -158,5 +158,16 @@ namespace VitesseState
         float cancelTime_ = 0.2f;
 
     };
+
+    class Aiming : Inheritance
+    {
+    public:
+        Aiming(Vitesse* vitesse) : State(vitesse, "Aiming") {}
+        ~Aiming() {}
+
+        void Initialize() override;
+        void Update(float deltaTime) override;
+        void Finalize() override;
+    };
 }
 

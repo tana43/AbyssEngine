@@ -196,6 +196,18 @@ const bool AbyssEngine::Input::GameSupport::GetShotButton()
     return false;
 }
 
+const bool AbyssEngine::Input::GameSupport::GetOneShotButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->mouse_->GetButtonDown(Mouse::BTN_LEFT) ||
+        i->gamePad_.GetButtonDown() & GamePad::BTN_RIGHT_SHOULDER)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 const bool AbyssEngine::Input::GameSupport::GetMeleeAttackButton()
 {
     auto& i = Engine::inputManager_;

@@ -57,6 +57,7 @@ public:
         MeleeAtkDash,
         MeleeAtk,
         Flinch,
+        Aiming,
     };
 
     //アニメーション
@@ -102,6 +103,10 @@ public:
 
         //ひるみ
         Flinch,
+
+        Shot_Pose,
+
+        //追加のアセットモーションはここより上で----------------------------------------------------------------------------
 
         //ブレンドモーション
         Run_Move,
@@ -194,6 +199,9 @@ public:
 
     //怯み
     void Flinch(AbyssEngine::StaggerType type)override;
+
+    //カメラの正面を向くようにキャラを回転させる
+    void RotateToFront();
 
 private:
     void CameraRollUpdate();

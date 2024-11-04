@@ -23,8 +23,23 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     muzzleFlashComponent_ = actor->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Explosion_02.png");
     muzzleFlashComponent_->SetVisibility(false);
     muzzleFlashComponent_->SetScale(0.5f);
+    beamMuzzleFlashComponent_ = actor->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/ElectricalDischarge.png");
+    beamMuzzleFlashComponent_->SetVisibility(false);
+    beamMuzzleFlashComponent_->SetScale(0.87f);
 
-
+    //マズルフラッシュ(ParticleEmitter)
+    particleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
+    ComputeParticleEmitter::EmitParameter param;
+    param.emitNum_ = 190;
+    param.texType_ = 3;
+    param.lifespan_ = 0.15;
+    param.lifespanAmplitude_ = 0.07f;
+    param.rotationVelocityAmplitude_ = { 0.0f,0.0f,360.0f };
+    param.color_ = {0,0.5f,0.7f,1.0f};
+    param.colorAmplitud_ = {0,0,1.0f,0};
+    param.scaleInit_ = { 0.2f,0.2f,0.2f };
+    particleEmitter_->SetEmitParamater(param);
+    particleEmitter_->SetUseTransform(false);
 }
 
 void Gun::DrawImGui()
@@ -45,10 +60,14 @@ void Gun::DrawImGui()
         ImGui::SliderFloat("Rate Timer", &rateTimer_, 0.0f, rateOfFire_);
         ImGui::SliderFloat("RateOfFire", &rateOfFire_, 0.0f, 0.3f);
         ImGui::SliderFloat("Precision", &precision_, 0.0f, 0.3f);
+        ImGui::DragFloat("Bullet Speed", &bulletSpeed_,0.1f);
 
         ImGui::DragFloat("Beam Width", &beamWidth_, 0.1f, 0.0f);
         ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
         ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+
+        ImGui::DragFloat("Particle Speed", &particleSpeed_,0.01f);
+        ImGui::DragFloat("Particle Amplitude Speed", &particleAmplitudeSpeed_,0.01f);
 
         ImGui::TreePop();
     }
@@ -68,6 +87,9 @@ void Gun::Update()
 
     //マズルフラッシュエフェクトの更新
     UpdateFlashEffect();
+    UpdateFlashParticleEffect();
+
+    flashLifespan_ += actor_->GetDeltaTime();
 }
 
 bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
@@ -75,8 +97,6 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
     //撃つことが可能か
     if (rateTimer_ < 0)
     {
-        
-
         //銃の精度を反映
         if (precision_ > 0)
         {
@@ -101,6 +121,13 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetRadius(bulletRadius_);
             proj->GetAtkCollider()->ReplaceTag(colliderTag_);
             proj->SetDirection(shootingDirection);
+            proj->SetSpeed(bulletSpeed_);
+
+            //エフェクト設定
+            muzzleFlashComponent_->SetVisibility(true);
+            flashLifespan_ = 0.0f;
+            muzzleFlashComponent_->SetRotationZ(Math::RandomRange(0.0f, 360.0f));
+
             break;
         }
         case Gun::BulletType::Beam:
@@ -114,6 +141,22 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetColor(beamColor_);
             proj->SetWidth(beamWidth_);
             proj->GetTransform()->SetScaleFactor(beamScale_);
+            proj->SetSpeed(bulletSpeed_);
+
+            //エフェクト設定
+            beamMuzzleFlashComponent_->SetVisibility(true);
+            flashLifespan_ = 0.0f;
+            beamMuzzleFlashComponent_->SetRotationZ(Math::RandomRange(0.0f, 360.0f));
+
+            //パーティクル設定
+            auto emitParam = particleEmitter_->GetEmitParamter();
+            emitParam.velocity_ = shootingDirection * particleSpeed_;
+
+            //射撃方向から見た右ベクトルと上ベクトルを算出し、拡散方向を指定する
+            const Vector3 right = shootingDirection.Cross(Vector3::Up);
+            const Vector3 up = shootingDirection.Cross(right);
+            emitParam.velocityAmplitude_ = right * particleAmplitudeSpeed_ + up * particleAmplitudeSpeed_ + shootingDirection * particleAmplitudeSpeed_;
+            particleEmitter_->SetEmitParamater(emitParam);
             break;
         }
         }
@@ -121,10 +164,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
 
         rateTimer_ = rateOfFire_;
 
-        //エフェクト設定
-        muzzleFlashComponent_->SetVisibility(true);
-        flashLifespan_ = 0.0f;
-        muzzleFlashComponent_->SetRotationZ(Math::RandomRange(0.0f, 360.0f));
+        
     }
     else return false;
     
@@ -137,20 +177,41 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
 void Gun::UpdateFlashEffect()
 {
     //エフェクトが非表示なら処理しない
-    if (!muzzleFlashComponent_->GetVisibilty())return;
+    if (!muzzleFlashComponent_->GetVisibilty() && !beamMuzzleFlashComponent_->GetVisibilty())return;
 
     //マズル位置とアクター座標からエフェクトが出るべき座標のオフセット値を算出
     const Vector3 pos = transform_->GetPosition();
     const Vector3 offset = muzzlePos_ - pos;
-    muzzleFlashComponent_->SetOffsetPos(offset);
 
-    //エフェクト寿命計算
-    if (flashLifespan_ > Max_Flash_Lifespan)
+    switch (bulletType_)
     {
-        muzzleFlashComponent_->SetVisibility(false);
+    case Gun::BulletType::Bullet:
+        muzzleFlashComponent_->SetOffsetPos(offset);
+        //エフェクト寿命計算
+        if (flashLifespan_ > Max_Flash_Lifespan)
+        {
+            muzzleFlashComponent_->SetVisibility(false);
+        }
+        break;
+    case Gun::BulletType::Beam:
+        beamMuzzleFlashComponent_->SetOffsetPos(offset);
+        //エフェクト寿命計算
+        if (flashLifespan_ > Max_Flash_Lifespan)
+        {
+            beamMuzzleFlashComponent_->SetVisibility(false);
+        }
+        break;
     }
-    else
+
+    
+}
+
+void Gun::UpdateFlashParticleEffect()
+{
+    if (flashLifespan_ < flashParticleLifespan_)
     {
-        flashLifespan_ += actor_->GetDeltaTime();
+        //マズルフラッシュエフェクト再生
+        particleEmitter_->SetEmitPositionNotUseTransform(muzzlePos_);
+        particleEmitter_->EmitParticle();
     }
 }

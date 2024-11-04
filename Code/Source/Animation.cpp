@@ -662,11 +662,17 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
     {
         ignoreNode = &model->GetNode(animatedNodes_, ignoreNodeName_);
     }
+    GeometricSubstance::Node* ignoreNodeSecond = nullptr;
+    if (!ignoreNodeNameSecond_.empty())
+    {
+        ignoreNodeSecond = &model->GetNode(animatedNodes_, ignoreNodeNameSecond_);
+    }
 
     rootNode.rotation_ = { 0,0,0,1 };
     midNode.rotation_  = { 0,0,0,1 };
     tipNode.rotation_  = { 0,0,0,1 };
     if(ignoreNode)ignoreNode->rotation_ = {0,0,0,1};
+    if(ignoreNodeSecond)ignoreNodeSecond->rotation_ = {0,0,0,1};
 
     animatedNodes_[tipNode.children_[0]].rotation_ = { 0,0,0,1 };
     //model->NodeCumulateTransforms(animatedNodes_,rootNode);
@@ -691,7 +697,35 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
         float lengthMidToTip;
 
         //間に回転を考慮しないノードが存在している場合は、そのノードの長さを考慮しておく
-        if (ignoreNode)
+        if (ignoreNodeSecond)
+        {
+            const DirectX::XMMATRIX IgnoreWorldTransform = ignoreNode->globalTransform_ * worldMatrix;
+            const Vector3 ignorePos = IgnoreWorldTransform.r[3];
+            const Vector3 ignoreToMid = midPos - ignorePos;
+            const DirectX::XMMATRIX IgnoreSecWorldTransform = ignoreNodeSecond->globalTransform_ * worldMatrix;
+            const Vector3 ignoreSecPos = IgnoreSecWorldTransform.r[3];
+            const Vector3 rootToIgnoreSec = ignoreSecPos - rootPos;
+
+            //無視するノードが中間ノードよりも上か下か
+            if (isUpIgnoreNode_)
+            {
+                //ルート->無視ノード２->無視ノード->中間->先端
+                const Vector3 ignoreToIgnoreSec = ignoreSecPos - ignorePos;
+                lengthRootToMid = rootToIgnoreSec.Length() + ignoreToIgnoreSec.Length() + ignoreToMid.Length();
+                lengthMidToTip = midToTip.Length();
+            }
+            else
+            {
+                //ルート->無視ノード2->中間->無視ノード->先端
+                const Vector3 ignoreSecToMid = midPos - ignoreSecPos;
+                const Vector3 ignoreToTip = midPos - ignorePos;
+                //lengthRootToMid = rootToMid.Length();
+                lengthRootToMid = rootToIgnoreSec.Length() + ignoreSecToMid.Length();
+                lengthMidToTip = ignoreToTip.Length() + ignoreToMid.Length();
+            }
+            
+        }
+        else if (ignoreNode)
         {
             const DirectX::XMMATRIX IgnoreWorldTransform = ignoreNode->globalTransform_ * worldMatrix;
             const Vector3 ignorePos = IgnoreWorldTransform.r[3];
@@ -701,7 +735,7 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
             if (isUpIgnoreNode_)
             {
                 //ルート->無視ノード->中間->先端
-                const Vector3 ignoreToRoot = midPos - ignorePos;
+                const Vector3 ignoreToRoot = rootPos - ignorePos;
                 lengthRootToMid = ignoreToRoot.Length() + ignoreToMid.Length();
                 lengthMidToTip = midToTip.Length();
             }
@@ -712,7 +746,6 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
                 lengthRootToMid = rootToMid.Length();
                 lengthMidToTip = ignoreToTip.Length() + ignoreToMid.Length();
             }
-            
         }
         else
         {
@@ -740,6 +773,10 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
         lengthRootToTarget = rootToTarget.Length();
 
         //ターゲットの方へボーンを回転
+        const Vector3 palePos = DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3];
+        Vector3 rootToPale = rootPos - palePos;
+        Vector3 dirRootToPale;
+        rootToPale.Normalize(dirRootToPale);
         animator_->RotateBone(animatedNodes_, rootNode, dirRootToMid, dirRootToTarget);
         model->CumulateTransforms(animatedNodes_, 0);
         return animatedNodes_;

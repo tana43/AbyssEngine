@@ -209,10 +209,13 @@ namespace AbyssEngine
 
         std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr)override;
 
+        void SetBaseAnimation(const int& index) { baseAnimationIndex_ = index; }
+
         void SetRootNodeName(const std::string& str) { rootNodeName_ = str; }
         void SetMidNodeName(const std::string& str) { midNodeName_ = str; }
         void SetTipNodeName(const std::string& str) { tipNodeName_ = str; }
         void SetIgnoreNodeName(const std::string& str) { ignoreNodeName_ = str; }
+        void SetIgnoreNodeNameSecond(const std::string& str) { ignoreNodeNameSecond_ = str; }
 
     private:
         //根本、中間、先端ノードの親子関係は連続しているか判定し、続いていなければ間のボーンを登録する
@@ -234,6 +237,7 @@ namespace AbyssEngine
         
         //　無視するノード名前　肩から手にかけて２つより多いボーンが存在するときに使う
         std::string ignoreNodeName_;
+        std::string ignoreNodeNameSecond_;
 
         //無視ノードを中間ノードから上にするか下にするか
         bool isUpIgnoreNode_ = true;

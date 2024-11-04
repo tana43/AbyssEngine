@@ -22,10 +22,14 @@ void Animator::DrawImGui()
 	if (ImGui::TreeNode("Animator"))
 	{
 		ImGui::Checkbox("Upper Body Only",&upperBodyOnly_);
+		static int uAnimclip = upperBodyAnimationClip_;
+		ImGui::SliderInt("Upper Anim Clip", &uAnimclip, 0, skeletalMesh_.lock()->GetModel()->animations_.size() - 1);
+		upperBodyAnimationClip_ = uAnimclip;
 
 		ImGui::InputFloat("Time Stamp", &timeStamp_);
 		ImGui::SliderFloat("Global Anim Speed", &animationSpeed_,0.0f,2.0f);
 		ImGui::Checkbox("Root Motion", &enableRootMotion_);
+		
 
 		ImGui::Text("----------Current Anim-----------");
 		animations_[animationClip_]->DrawImGui(this);
@@ -204,7 +208,7 @@ void Animator::AnimatorUpdate()
 		auto& node = model->GetNode(animatedNodes_, upperBodyNodeName_);
 
 		std::vector<GeometricSubstance::Node> nodes = animatedNodes_;
-		model->Animate(0, timeStamp_, nodes);
+		model->Animate(upperBodyAnimationClip_, timeStamp_, nodes);
 
 		std::function<void(int,
 			std::vector<GeometricSubstance::Node>&,

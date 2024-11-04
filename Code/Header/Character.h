@@ -108,6 +108,7 @@ namespace AbyssEngine
         //void SetExternalFactorsMove(const AbyssEngine::Vector3& move) { externalFactorsMove_ = move; } //セットは禁止！！！
         void AddExternalFactorsMove(const AbyssEngine::Vector3& move) { externalFactorsMove_ = externalFactorsMove_ + move; }
 
+
     protected:
 
         virtual void UpdateVelocity();//速力更新

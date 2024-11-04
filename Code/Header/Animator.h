@@ -74,6 +74,9 @@ namespace AbyssEngine
 
         const std::weak_ptr<SkeletalMesh>& GetSkeletalMesh() const { return skeletalMesh_; }
 
+        void SetUpperBodyAnimationClip(const int clip) { upperBodyAnimationClip_ = clip; }
+
+
     private:
         //すべてのアニメーション
         std::vector<std::unique_ptr<Animation>> animations_;
@@ -109,6 +112,7 @@ namespace AbyssEngine
 
         bool upperBodyOnly_ = false;
         std::string upperBodyNodeName_ = "rig_J_upbody01";
+        size_t upperBodyAnimationClip_ = 0; //上半身のみのアニメーションクリップ
 
     };
 

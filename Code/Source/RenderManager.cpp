@@ -245,7 +245,7 @@ RenderManager::RenderManager()
 		DXSystem::GetDevice().Get(),
 		numParticle,
 		particleTexture_->GetResource(),
-		DirectX::XMUINT2(4, 1));
+		DirectX::XMUINT2(5, 1));
 }
 
 RenderManager::~RenderManager()
