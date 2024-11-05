@@ -20,6 +20,8 @@ namespace AbyssEngine
 
     public:
         void SetWidth(float width) { width_ = width; }
+        void SetColor(Vector4 col) { color_ = col; }
+        void SetBrightness(float bright) { brightness_ = bright; }
 
     public:
         struct Constant
@@ -31,7 +33,7 @@ namespace AbyssEngine
 
     private:
         static constexpr UINT VertexCapacity = 1024;
-        static constexpr int MAX_POLYGON = 64;
+        static constexpr int MAX_POLYGON = 32;
 
         struct Vertex
         {
@@ -50,6 +52,8 @@ namespace AbyssEngine
         //頂点を登録する更新間隔
         float updateFrequency_ = 0.03f;
 
+        Vector4 color_ = {1,1,1,1};
+
         //トレイルする座標配列
         struct TrailData
         {
@@ -63,6 +67,9 @@ namespace AbyssEngine
 
         //前回の座標
         Vector3 previousPosition_;
+
+        //明るさ
+        float brightness_ = 1.0f;
 
 
         Microsoft::WRL::ComPtr<ID3D11VertexShader>	     vertexShader_;

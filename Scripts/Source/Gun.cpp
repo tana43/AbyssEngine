@@ -65,6 +65,7 @@ void Gun::DrawImGui()
             ImGui::SliderFloat("RateOfFire", &rateOfFire_, 0.0f, 0.3f);
             ImGui::SliderFloat("Precision", &precision_, 0.0f, 0.3f);
             ImGui::DragFloat("Bullet Speed", &bulletSpeed_, 0.1f);
+            ImGui::DragFloat("Lifespan", &bulletLifespan_,0.01f);
 
         }
 
@@ -74,10 +75,13 @@ void Gun::DrawImGui()
             ImGui::DragFloat("Beam Width", &beamWidth_, 0.1f, 0.0f);
             ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
             ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+            ImGui::ColorEdit4("Beam Particle Color", &beamParticleColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+            ImGui::DragFloat("Brightness", &beamBrightness_, 0.01f);
 
             ImGui::DragFloat("Particle Speed", &particleSpeed_, 0.01f);
             ImGui::DragFloat("Particle Amplitude Speed", &particleAmplitudeSpeed_, 0.01f);
 
+            ImGui::Checkbox("MuzzleFlash Effect", &enableMuzzleFlashParticleEffect_);
             ImGui::Checkbox("Homing", &isHoming_);
 
             ImGui::DragFloat("Homing Strength",&homingStrength_,0.01f);
@@ -113,7 +117,7 @@ void Gun::Update()
 bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
 {
     //撃つことが可能か
-    if (rateTimer_ < 0)
+    if (!activeRateOfFire_ || rateTimer_ < 0)
     {
         //銃の精度を反映
         if (precision_ > 0)
@@ -140,6 +144,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->GetAtkCollider()->ReplaceTag(colliderTag_);
             proj->SetDirection(shootingDirection);
             proj->SetSpeed(bulletSpeed_);
+            proj->SetLifespan(bulletLifespan_);
 
             //エフェクト設定
             muzzleFlashComponent_->SetVisibility(true);
@@ -163,6 +168,9 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetHomingStrength(homingStrength_);
             proj->SetIsHoming(isHoming_);
             proj->SetTargetTag(targetTag_);
+            proj->SetBrightness(beamBrightness_);
+            proj->GetParticleEmitParameter().color_ = beamParticleColor_;
+            proj->SetLifespan(bulletLifespan_);
 
             //エフェクト設定
             beamMuzzleFlashComponent_->SetVisibility(true);
@@ -229,6 +237,9 @@ void Gun::UpdateFlashEffect()
 
 void Gun::UpdateFlashParticleEffect()
 {
+    //フラグ判定
+    if (!enableMuzzleFlashParticleEffect_)return;
+
     if (flashLifespan_ < flashParticleLifespan_)
     {
         //マズルフラッシュエフェクト再生

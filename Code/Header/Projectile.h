@@ -43,6 +43,8 @@ namespace AbyssEngine
 
         void SetIsHoming(const bool& active) { isHoming_ = active; }
 
+        void SetLifespan(const float& lifespan) { lifespan_ = lifespan; }
+
     private:
         void LifeTimeUpdate();
 
@@ -63,7 +65,7 @@ namespace AbyssEngine
         float radius_ = 0.1f;
 
         //Žõ–½
-        float flashLifespan_ = 2.0f;
+        float lifespan_ = 2.0f;
 
         //‹…”»’è
         std::shared_ptr<AttackCollider> atkCollider_;

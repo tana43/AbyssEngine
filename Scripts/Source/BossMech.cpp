@@ -9,6 +9,7 @@
 #include "Vitesse.h"
 #include "AttackerSystem.h"
 #include "Gun.h"
+#include "Input.h"
 
 using namespace AbyssEngine;
 
@@ -28,6 +29,7 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     deceleration_ = 60.0f;
     speedingDecel_ = 200.0f;
     Gravity = -30.0f;
+    center_ = { 0,100,0 };
 
 
     //enableGravity_ = false;
@@ -77,23 +79,34 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     gunCom_ = actor->AddComponent<Gun>();
     gunCom_->SetIsHoming(true);
     gunCom_->SetTargetTag(Actor::Tag_Player);
+    gunCom_->SetBulletType(Gun::BulletType::Beam);
+    gunCom_->SetBeamColor(Vector4(0.37f, 0.0f, 0.0f, 1.0f));
+    gunCom_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    gunCom_->SetBeamBrightness(1.5f);
+    gunCom_->SetEnableMuzzleFlashParticleEffect(false);
+    gunCom_->SetBulletSpeed(200.0f);
+    gunCom_->SetHomingStrength(2.0f);
+    gunCom_->SetColliderTag(Collider::Tag::Enemy);
+    gunCom_->SetActiveRateOfFire(false);
+    gunCom_->SetBulletLifespan(5.0f);
+
+    actor->ReplaceTag(Actor::Tag_Enemy);
+
+
 }
 
 void BossMech::Update()
 {
     HumanoidWeapon::Update();
 
-    float sin = sinf(shotDireTimer_);
-    Vector3 forward = transform_->GetForward();
-    //‰¼‚Åƒr[ƒ€UŒ‚
-    Vector3 dire = {
-        sin * forward.x,
-        cosf(shotDireTimer_),
-        sin * forward.z
-    };
-    dire.Normalize();
-    gunCom_->Shot(dire);
-    shotDireTimer_ += Time::GetDeltaTime();
+    Vector3 muzzlePos = transform_->GetPosition() + center_;
+    muzzlePos = muzzlePos + transform_->GetForward() * 100.0f;
+    gunCom_->SetMuzzlePos(muzzlePos);
+
+    if (Keyboard::instance_->GetKeyDown(DirectX::Keyboard::X))
+    {
+        ShotHomingBeam();
+    }
 }
 
 
@@ -106,6 +119,29 @@ void BossMech::RushAttackUpdate()
         Vector3 toTarget = target->GetTransform()->GetPosition() - transform_->GetPosition();
         toTarget.Normalize();
         moveVec_ = toTarget;
+    }
+}
+
+void BossMech::ShotHomingBeam()
+{
+    float interval = DirectX::XM_2PI / static_cast<float>(shotHomingBeamCount_);
+    for (int i = 0; i < shotHomingBeamCount_; i++)
+    {
+        //float sin = sinf(shotDireTimer_);
+        float x = interval * i;
+        float sin = sinf(x);
+        Vector3 forward = transform_->GetForward();
+        Vector3 right = transform_->GetRight();
+        //‰¼‚Åƒr[ƒ€UŒ‚
+        Vector3 dire = {
+            sin * forward.x + sin * right.x,
+            cosf(x),
+            sin * forward.z + sin * right.z
+        };
+        dire.Normalize();
+        gunCom_->Shot(dire);
+        //shotDireTimer_ += Time::GetDeltaTime() * 5.0f;
+
     }
 }
 

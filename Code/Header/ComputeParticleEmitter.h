@@ -111,7 +111,7 @@ namespace AbyssEngine
 
         //XƒL[‚ğ‰Ÿ‚·‚±‚Æ‚Å¶¬‰Â”\‚É‚·‚é
 #if _DEBUG
-        bool canInputEmit_ = true;
+        bool canInputEmit_ = false;
         bool enableTimeline_ = true;
         EmitParameter debugParam_;
 #else

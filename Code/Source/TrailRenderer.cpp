@@ -58,6 +58,8 @@ void TrailRenderer::Initialize(const std::shared_ptr<Actor>& actor)
 
 void TrailRenderer::Update()
 {
+	//カラー更新
+	constantBuffer_->data_.color_ = color_ * brightness_;
 
 	if (!isInitPosition_)
 	{

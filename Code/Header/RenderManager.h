@@ -162,6 +162,8 @@ namespace AbyssEngine
 
         void SetCriticalDepthValue(const float& value) { criticalDepthValue_ = value; }
 
+        std::unique_ptr<Bloom>& GetBloom() { return bloom_; }
+
     private:
         //Microsoft::WRL::ComPtr<ID3D11Buffer> constantBufferScene_;
 

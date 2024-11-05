@@ -27,9 +27,11 @@ public:
 
     void SetColor(const AbyssEngine::Vector4& color);
     void SetWidth(const float& width);
+    void SetBrightness(const float& bright);
 
     const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
 
+    AbyssEngine::ComputeParticleEmitter::EmitParameter& GetParticleEmitParameter() { return particleEmitPrameter_; }
 
 private:
     //UŒ‚—Í

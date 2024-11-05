@@ -111,6 +111,8 @@ void HumanoidWeapon::UpdateVelocity()
                 //減速
                 velocity_.y -= (direY * deceleration_ * actor_->GetDeltaTime());
 
+                //velocity_.y += Gravity * Time::GetDeltaTime();
+
                 //減速制限
                  //反対方向のベクトルになってしまうか速度が遅すぎるなら、速度を完全に０にする
                 if (direY * velocity_.y < 0.0f || fabsf(velocity_.y) < 0.1f)

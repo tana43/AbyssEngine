@@ -30,7 +30,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //モデル読み込み
     //model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.gltf");
-    
+    model_->GetModel()->primitiveConstants_->data_.imageBasedLightingIntensity_ = 0.47f;
+    model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_ = 15.25f;
+
     //アニメーション初期化
     AnimationInitialize();
 

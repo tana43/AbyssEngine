@@ -53,19 +53,25 @@ void ComputeParticleEmitter::DrawImGui()
 		
 		debugParam_.DrawImGui();
 
-		//static std::string name;
+		static std::string name;
 
-		//ImGui::Text("-------------- Asset Save ---------------");
-		//static char filename[128] = "";
-		//ImGui::InputText("Asset Name", filename, ARRAYSIZE(filename));
-		//if (ImGui::ButtonDoubleChecking("Save", imguiButton_))
-		//{
-		//	//アセット化
-		//	AssetCreation(debugParam_,filename);
+		ImGui::Text("-------------- Asset Save ---------------");
+		static char filename[128] = "";
+		ImGui::InputText("Asset Name", filename, ARRAYSIZE(filename));
+		if (ImGui::ButtonDoubleChecking("Save", imguiButton_))
+		{
+			//アセット化
+			AssetCreation(debugParam_,filename);
 
-		//	//文字列リセット
-		//	memset(filename, 0, sizeof(filename));
-		//}
+			//文字列リセット
+			memset(filename, 0, sizeof(filename));
+		}
+
+		if (ImGui::Button("Test Set Parameter"))
+		{
+			SetEmitParamater(filename);
+			debugParam_ = mainParam_;
+		}
 
 		ImGui::TreePop();
 	}

@@ -45,8 +45,8 @@ void AbyssEngine::Projectile::SetRadius(const float& radius)
 void AbyssEngine::Projectile::LifeTimeUpdate()
 {
     //Žõ–½ˆ—
-    flashLifespan_ -= actor_->GetDeltaTime();
-    if (flashLifespan_ <= 0)
+    lifespan_ -= actor_->GetDeltaTime();
+    if (lifespan_ <= 0)
     {
         actor_->Destroy(actor_);
     }

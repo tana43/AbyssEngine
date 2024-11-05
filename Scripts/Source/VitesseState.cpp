@@ -672,7 +672,7 @@ void VitesseState::Aiming::Update(float deltaTime)
 void VitesseState::Aiming::Finalize()
 {
     //ロックオンをしていないなら自動回転をオンに
-    if (owner_->GetLockonTarget().lock())
+    if (!owner_->GetActiveLockon())
     {
         owner_->SetEnableAutoTurn(true);
     }

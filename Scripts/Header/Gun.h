@@ -2,6 +2,7 @@
 #include "ScriptComponent.h"
 #include "MathHelper.h"
 #include "Collider.h"
+//#include "ComputeParticleEmitter.h"
 
 namespace AbyssEngine
 {
@@ -73,12 +74,25 @@ public:
 
     void SetTargetTag(const unsigned int& tag) { targetTag_ = tag; }
 
+    void SetEnableMuzzleFlashParticleEffect(const bool& enable) { enableMuzzleFlashParticleEffect_ = enable; }
+
+    void SetBeamBrightness(const float& bright) { beamBrightness_ = bright; }
+
+    void SetBeamParticleColor(const AbyssEngine::Vector4& col) { beamParticleColor_ = col; }
+
+    void SetActiveRateOfFire(const bool& active) { activeRateOfFire_ = active; }
+
+    void SetBulletLifespan(const float& lifespan) { bulletLifespan_ = lifespan; }
+
 private:
     //ADS(スコープを覗いているか)
     bool ADS_ = false;
 
     //銃口（弾の生成位置）
     AbyssEngine::Vector3 muzzlePos_;
+
+    //連続撃ちに感覚を設けるか
+    bool activeRateOfFire_ = true;
 
     //発射感覚
     float rateOfFire_ = 0.05f;
@@ -110,6 +124,9 @@ private:
     //弾丸の大きさ
     float bulletRadius_ = 0.1f;
 
+    //弾丸の寿命
+    float bulletLifespan_ = 2.0f;
+
     //弾丸の判定につけるタグ
     unsigned int colliderTag_ = 0;
 
@@ -136,8 +153,15 @@ private:
     bool isHoming_ = false;
     float homingStrength_ = 1.0f;
 
+    //ビームの明るさ
+    float beamBrightness_ = 1.0f;
+
+    //マズルフラッシュ用のパーティクルエフェクトを再生するか
+    bool enableMuzzleFlashParticleEffect_ = true;
 
     //目標に設定するアクターのタグ
     unsigned int targetTag_;
+
+    AbyssEngine::Vector4 beamParticleColor_ = { 0,0.25f,1.0f,1.0f };
 };
 

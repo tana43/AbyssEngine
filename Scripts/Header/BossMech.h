@@ -28,13 +28,15 @@ public:
         Crouching,//クラウチング
     };
 
-
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
 
     void Update()override;
 
     //突進
     void RushAttackUpdate();
+
+    //誘導するビームを生成
+    void ShotHomingBeam();
 
 public:
     const std::weak_ptr<Vitesse>& GetTargetVitesse() const { return targetVitesse_; }
@@ -75,6 +77,12 @@ private:
 
 
     //射撃方向を計算するようのタイマー
-    float shotDireTimer_;
+    //float shotDireTimer_;
+
+    //一度に撃つビームの数
+    int shotHomingBeamCount_ = 50;
+
+
+    float beamShotTimer_;
 };
 

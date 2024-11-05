@@ -74,10 +74,16 @@ void Beam::ParticleUpdate()
 void Beam::SetColor(const Vector4& color)
 {
     billboardRenderer_->GetConstantBuffer()->data_.color_ = color;
-    trailRenderer_->GetConstantBuffer()->data_.color_ = color;
+    trailRenderer_->SetColor(color);
 }
 
 void Beam::SetWidth(const float& width)
 {
     trailRenderer_->SetWidth(width);
+}
+
+void Beam::SetBrightness(const float& bright)
+{
+    trailRenderer_->SetBrightness(bright);
+    particleEmitPrameter_.brightness_ = bright;
 }
