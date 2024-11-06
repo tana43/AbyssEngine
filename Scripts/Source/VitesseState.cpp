@@ -644,6 +644,9 @@ void VitesseState::Flinch::Finalize()
 
 void VitesseState::Aiming::Initialize()
 {
+    //アニメーション設定
+    owner_->ChangeAnimationState(Vitesse::AnimationState::Aim_Move);
+
     //自動回転を切る
     owner_->SetEnableAutoTurn(false);
 

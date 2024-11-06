@@ -496,8 +496,8 @@ void Camera::DebugCameraController()
 
     //マウス、キーボードによるカメラ操作
     {
-        auto rot = transform_->GetRotation();
         //マウス操作
+        auto rot = transform_->GetRotation();
 
         static POINT startMousePos = {};
 

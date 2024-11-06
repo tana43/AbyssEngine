@@ -637,7 +637,7 @@ void AbyssEngine::AnimAimIK::DrawImGui(Animator* animator)
 std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
 {
     //ベースのモーションを取得
-    model->Animate(baseAnimationIndex_, timeStamp_,animatedNodes_);
+    //model->Animate(baseAnimationIndex_, timeStamp_,animatedNodes_);
 
     const auto& skeletalMesh = animator_->GetSkeletalMesh().lock();
     const Matrix& worldMatrix = animator_->GetTransform()->GetWorldMatrix();
@@ -647,14 +647,6 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
     GeometricSubstance::Node& midNode  = model->GetNode(animatedNodes_,midNodeName_);
     GeometricSubstance::Node& tipNode  = model->GetNode(animatedNodes_,tipNodeName_);
 
-    //ポールターゲット更新
-    Matrix poleLocalTransform = DirectX::XMMatrixTranslation(poleLocalPosition_.x, poleLocalPosition_.y, poleLocalPosition_.z);
-    Matrix poleWorldTransform = poleLocalTransform * (midNode.globalTransform_ * worldMatrix);
-    Engine::renderManager_->debugRenderer_->DrawSphere(DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3], 1.0f, Vector4(0.2f, 1.0f, 0.0f, 1.0f));
-    /*Matrix poleWorldTransform = (midNode.globalTransform_ * worldMatrix);
-    Vector3 polePosition = DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3];
-    polePosition = polePosition + poleLocalPosition_;
-    Engine::renderManager_->debugRenderer_->DrawSphere(polePosition, 1.0f, Vector4(0.2f, 1.0f, 0.0f, 1.0f));*/
 
     //無視する必要のあるノードを取得
     GeometricSubstance::Node* ignoreNode = nullptr;
@@ -667,16 +659,26 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
     {
         ignoreNodeSecond = &model->GetNode(animatedNodes_, ignoreNodeNameSecond_);
     }
-
     rootNode.rotation_ = { 0,0,0,1 };
-    midNode.rotation_  = { 0,0,0,1 };
-    tipNode.rotation_  = { 0,0,0,1 };
-    if(ignoreNode)ignoreNode->rotation_ = {0,0,0,1};
-    if(ignoreNodeSecond)ignoreNodeSecond->rotation_ = {0,0,0,1};
+    midNode.rotation_ = { 0,0,0,1 };
+    tipNode.rotation_ = { 0,0,0,1 };
+    if (ignoreNode)ignoreNode->rotation_ = { 0,0,0,1 };
+    if (ignoreNodeSecond)ignoreNodeSecond->rotation_ = { 0,0,0,1 };
 
     animatedNodes_[tipNode.children_[0]].rotation_ = { 0,0,0,1 };
     //model->NodeCumulateTransforms(animatedNodes_,rootNode);
-    model->CumulateTransforms(animatedNodes_,0);
+    model->CumulateTransforms(animatedNodes_, 0);
+
+    //ポールターゲット更新
+    Matrix poleLocalTransform = DirectX::XMMatrixTranslation(poleLocalPosition_.x, poleLocalPosition_.y, poleLocalPosition_.z);
+    //Matrix poleWorldTransform = poleLocalTransform * (midNode.globalTransform_ * worldMatrix);
+    Matrix poleWorldTransform = poleLocalTransform * (rootNode.globalTransform_ * worldMatrix);
+    Engine::renderManager_->debugRenderer_->DrawSphere(DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3], 1.0f, Vector4(0.2f, 1.0f, 0.0f, 1.0f));
+    /*Matrix poleWorldTransform = (midNode.globalTransform_ * worldMatrix);
+    Vector3 polePosition = DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3];
+    polePosition = polePosition + poleLocalPosition_;
+    Engine::renderManager_->debugRenderer_->DrawSphere(polePosition, 1.0f, Vector4(0.2f, 1.0f, 0.0f, 1.0f));*/
+
     
     //AimIK
     {
@@ -777,9 +779,14 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
         Vector3 rootToPale = rootPos - palePos;
         Vector3 dirRootToPale;
         rootToPale.Normalize(dirRootToPale);
+
+        float angle = DirectX::XMVectorGetX(DirectX::XMVector3Dot(dirRootToMid, dirRootToTarget));
+        // ※acosf関数は-1.0未満、+1.0超過の値を入れるとエラーの値(nan)を返すので修正しておく
+        angle = ::acosf(std::clamp(angle, -1.0f, +1.0f));
         animator_->RotateBone(animatedNodes_, rootNode, dirRootToMid, dirRootToTarget);
-        model->CumulateTransforms(animatedNodes_, 0);
-        return animatedNodes_;
+        //animator_->RotateBone(animatedNodes_, rootNode, dirRootToPale, dirRootToTarget,angle);
+        //model->CumulateTransforms(animatedNodes_, 0);
+        //return animatedNodes_;
         //根元からターゲットまでの距離
         float dist = rootToTarget.Length();
 
@@ -815,7 +822,8 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
         }
 
         //根本ノード以下のワールド行列を更新
-        model->NodeCumulateTransforms(animatedNodes_, rootNode);
+        //model->NodeCumulateTransforms(animatedNodes_, rootNode);
+        model->CumulateTransforms(animatedNodes_, 0);
 
         //中間ボーンをターゲットの方へ向くように
         {
@@ -832,7 +840,8 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
             animator_->RotateBone(animatedNodes_, midNode, dirMidToTip, dirMidToTarget);
 
             // 中央ボーン以下のワールド行列更新
-            model->NodeCumulateTransforms(animatedNodes_, midNode);
+            //model->NodeCumulateTransforms(animatedNodes_, midNode);
+            model->CumulateTransforms(animatedNodes_, 0);
         }
 
     }
@@ -860,3 +869,25 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
 //
 //    // TODO: return ステートメントをここに挿入します
 //}
+
+AbyssEngine::AnimAiming::AnimAiming(SkeletalMesh* model, const std::string& name_, const std::shared_ptr<AnimBlendSpace2D>& blendSpace2D, const std::shared_ptr<AnimAimIK>& rightHand, const std::shared_ptr<AnimAimIK>& leftHand)
+    : Animation(model, name_, 0/*なんでもいい*/),
+    blendSpace2d_(blendSpace2D),aimIkRight_(rightHand),aimIkLeft_(leftHand)
+{
+
+}
+
+
+std::vector<GeometricSubstance::Node> AbyssEngine::AnimAiming::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
+{
+    //各モーションを計算
+    auto nodes = blendSpace2d_->UpdateAnimation(model);
+    aimIkRight_->animatedNodes_ = nodes;
+    nodes = aimIkRight_->UpdateAnimation(model);
+    aimIkLeft_->animatedNodes_ = nodes;
+    nodes = aimIkLeft_->UpdateAnimation(model);
+
+    //ステートマシンでターゲットや移動方向、速度の設定
+
+    return nodes;
+}

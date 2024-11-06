@@ -46,6 +46,7 @@ namespace AbyssEngine
         AnimBlendSpace2D* AppendAnimation(AnimBlendSpace2D anim);
         AnimBlendSpaceFlyMove* AppendAnimation(AnimBlendSpaceFlyMove anim);
         void AppendAnimation(AnimAimIK* anim);
+        void AppendAnimation(AnimAiming* anim);
 
         std::vector<GeometricSubstance::Node>& GetAnimatedNodes() { return animatedNodes_; }
         void SetAnimatedNodes(const std::vector<GeometricSubstance::Node>& nodes) { animatedNodes_ = nodes; }

@@ -423,6 +423,15 @@ void AbyssEngine::Animator::AppendAnimation(AnimAimIK* anim)
 	animation->SetAnimator(this);
 }
 
+void AbyssEngine::Animator::AppendAnimation(AnimAiming* anim)
+{
+	const auto& model = skeletalMesh_.lock();
+	if (!model)return;
+
+	auto& animation = animations_.emplace_back(anim);
+	animation->SetAnimator(this);
+}
+
 std::vector<Animation*> AbyssEngine::Animator::GetAnimations()
 {
 	std::vector<Animation*> anims;

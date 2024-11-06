@@ -56,5 +56,19 @@ namespace VitesseAnimState
         void Update(float deltaTime)override;
         void Finalize()override;
     };
+
+    class AnimAimMove : Inheritance
+    {
+    public:
+        AnimAimMove(AbyssEngine::Animator* animator) : State(animator, "AimMove") {}
+        ~AnimAimMove() {}
+
+        void Initialize()override;
+        void Update(float deltaTime)override;
+        void Finalize();
+
+    private:
+        AbyssEngine::Vector3 previousTargetPos_ = {0,0,0};
+    };
 }
 

@@ -214,11 +214,76 @@ void VitesseAnimState::AnimHighSpeedFlight::Update(float deltaTime)
     {
         vi->GetHighSpeedFlightAnimation()->GetBlendSpace1D()->SetBlendWeight(0.0f);
     }
-
-    
 }
 
 void VitesseAnimState::AnimHighSpeedFlight::Finalize()
 {
 
+}
+
+void VitesseAnimState::AnimAimMove::Initialize()
+{
+    //アニメーション設定
+    owner_->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Aim_Move));
+}
+
+void VitesseAnimState::AnimAimMove::Update(float deltaTime)
+{
+    const auto& vi = owner_->GetActor()->GetComponent<Vitesse>();
+
+
+    //BlendSpace2dの設定
+    {
+        const auto velo = vi->GetVelocity();
+        Vector3 velocityXZ = { velo.x,0,velo.z };
+        if (fabsf(velocityXZ.LengthSquared()) < 0.01f)
+        {
+            vi->GetAimingAnimation()->GetBlendSpace2D()->SetBlendWeight(Vector2(0, 0));
+        }
+        else
+        {
+            //前方向と進行方向の差のベクトルを算出
+            const auto& forward = owner_->GetTransform()->GetForward();
+            Vector3 moveDirection;
+            velocityXZ.Normalize(moveDirection);
+
+            Vector2 result;
+
+            //内積による計算
+            float dot = forward.Dot(moveDirection);
+            dot = std::clamp(dot, -1.0f, 1.0f);
+            float radian = acosf(dot);
+            float crossY = forward.z * moveDirection.x - forward.x * moveDirection.z;
+
+            //左右判定
+            //内積値が１のときにそのまま正負をひっくり返してしまうと大きく角度が変わってしまうので、それも考慮して計算する
+            if (crossY < 0)radian = DirectX::XM_2PI - radian;
+            result = { sinf(radian),cosf(radian) };
+
+            //max速度の８割を満たした速度ならブレンド値を１に
+            float weight = fminf(velocityXZ.Length() / (vi->GetMaxHorizontalSpeed() * 0.8f), 1.0f);
+            result = result * weight;
+
+            vi->GetAimingAnimation()->GetBlendSpace2D()->SetBlendWeight(result);
+
+            //移動方向に代入
+            moveDirection = { result.x,0,result.y };
+        }
+
+    }
+
+    //AimIkの設定
+    {
+        //ターゲットの位置を設定
+        const Vector3 curTargetPos = vi->GetAimTargetPosition();
+        Vector3 pos = Vector3::Lerp(previousTargetPos_,curTargetPos,0.5f);
+        vi->GetAimingAnimation()->GetAimIkRight()->SetTargetPosition(pos);
+        vi->GetAimingAnimation()->GetAimIkLeft()->SetTargetPosition(pos);
+
+        previousTargetPos_ = pos;
+    }
+}
+
+void VitesseAnimState::AnimAimMove::Finalize()
+{
 }

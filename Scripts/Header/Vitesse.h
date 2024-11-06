@@ -106,6 +106,11 @@ public:
 
         Shot_Pose,
 
+        Shot_Move_F,
+        Shot_Move_R,
+        Shot_Move_L,
+        Shot_Move_B,
+
         //追加のアセットモーションはここより上で----------------------------------------------------------------------------
 
         //ブレンドモーション
@@ -116,7 +121,8 @@ public:
         HighSpeedFlight_Move2D,
         HighSpeedFlight_Move,
 
-        Aim_IK,
+        //Aim_IK,
+        Aim_Move,
     };
     //アニメーションステートマシーンEnum
     enum class AnimationState
@@ -125,6 +131,7 @@ public:
         Ground_Move,
         Flight_Move,
         HighSpeedFlight,
+        Aim_Move,
     };
 
 public:
@@ -133,6 +140,7 @@ public:
     //AbyssEngine::AnimBlendSpace2D* GetFlyMoveAnimation() { return flyMoveAnimation_; }
     AbyssEngine::AnimBlendSpaceFlyMove* GetFlightAnimation() { return flightAnimation_; }
     AbyssEngine::AnimBlendSpaceFlyMove* GetHighSpeedFlightAnimation() { return highSpeedFlightAnimation_; }
+    AbyssEngine::AnimAiming* GetAimingAnimation() { return aimingAnimation_; }
     
     const std::weak_ptr<Soldier>& GetPilot() { return pilot_; }
     void SetPilot(const std::shared_ptr<Soldier>& p) { pilot_ = p; }
@@ -168,6 +176,8 @@ public:
 
     const std::shared_ptr<AbyssEngine::AttackerSystem>& GetAttackerSystem() const { return attackerSystem_; }
 
+    const AbyssEngine::Vector3& GetAimTargetPosition() const { return aimTargetPos_; }
+
     //ターゲットまでのベクトルを算出
     //ターゲットがいない場合は見ている方向を返す
     AbyssEngine::Vector3 ToTarget();
@@ -202,6 +212,9 @@ public:
 
     //カメラの正面を向くようにキャラを回転させる
     void RotateToFront();
+
+    //カメラやロックオンの状況から狙っている位置を算出、更新する
+    void UpdateShotTarget();
 
 private:
     void CameraRollUpdate();
@@ -244,7 +257,8 @@ private:
     AbyssEngine::AnimBlendSpaceFlyMove* flightAnimation_;//空中移動
     AbyssEngine::AnimBlendSpaceFlyMove* highSpeedFlightAnimation_;//高速空中移動
 
-    AbyssEngine::AnimAimIK* aimIKAnimation_;//エイムIK
+    //AbyssEngine::AnimAimIK* aimIKAnimation_;//エイムIK
+    AbyssEngine::AnimAiming* aimingAnimation_;//移動付きのエイムモーション
 
     std::shared_ptr<AbyssEngine::StateMachine<State<Vitesse>>> stateMachine_;
     std::shared_ptr<AbyssEngine::StateMachine<State<AbyssEngine::Animator>>> animStateMachine_;
@@ -332,5 +346,8 @@ private:
     std::shared_ptr<Gun> gunComponent_;
     //銃口のローカル座標
     AbyssEngine::Vector3 muzzleOffsetPos_ = {0.0f,0.05f,0.7f};
+
+    //カメラの位置やロックオンの状況から狙っている位置を持たせておく
+    AbyssEngine::Vector3 aimTargetPos_;
 };
 

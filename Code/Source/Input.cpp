@@ -186,6 +186,8 @@ const bool AbyssEngine::Input::GameSupport::GetAimButton()
 
 const bool AbyssEngine::Input::GameSupport::GetShotButton()
 {
+    //return false;
+
     auto& i = Engine::inputManager_;
     if (i->mouse_->GetButtonState().leftButton ||
         i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER)

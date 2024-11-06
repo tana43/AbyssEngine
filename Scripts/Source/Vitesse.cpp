@@ -133,6 +133,9 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
 void Vitesse::Update()
 {
+    //ワールド行列更新
+    transform_->CalcWorldMatrix();
+
     //パイロットが搭乗しているか
     PilotUpdate();
 
@@ -146,13 +149,17 @@ void Vitesse::Update()
 
     animStateMachine_->Update();
 
+    //カメラをコントローラーで回転
     CameraRollUpdate();
 
-    transform_->CalcWorldMatrix();
-
+    //スラスター更新
     ThrusterUpdate();
 
+    //銃口の位置更新
     UpdateGunMuzzlePos();
+
+    //射撃位置更新
+    UpdateShotTarget();
 
     //RotateToFront();
 
@@ -236,7 +243,11 @@ void Vitesse::AnimationInitialize()
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_N_3_End.gltf",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Slash_R_1.gltf",
                 "./Assets/Models/Vitesse/Vitesse_UE_01_Flinch.gltf",
-                "./Assets/Models/Vitesse/Vitesse_UE_01_Shot_Pose.gltf"
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Shot_Pose.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Shot_Move_F.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Shot_Move_R.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Shot_Move_L.gltf",
+                "./Assets/Models/Vitesse/Vitesse_UE_01_Shot_Move_B.gltf",
         },
         {
             "Run_F",
@@ -271,7 +282,11 @@ void Vitesse::AnimationInitialize()
             "Slash_N_3_End",
             "Slash_R_1",
             "Flinch",
-            "ShotPose",
+            "Shot_Pose",
+            "Shot_Move_F",
+            "Shot_Move_R",
+            "Shot_Move_L",
+            "Shot_Move_B",
         });
 
         //ループ再生しないように
@@ -344,26 +359,84 @@ void Vitesse::AnimationInitialize()
         }
 
         //AimIk
+        //{
+        //    aimAnimation_ = new AnimAimIK(model_.get(), "AimIK");
+        //    model_->GetAnimator()->AppendAnimation(aimIKAnimation_);
+        //    aimIKAnimation_->SetBaseAnimation(static_cast<int>(AnimationIndex::Shot_Pose));
+        //
+        //    //根本ノード
+        //    //aimIKAnimation_->SetRootNodeName("rig_J_shoulder_L");
+        //    aimIKAnimation_->SetRootNodeName("rig_J_uparm_L");
+        //    
+        //    //中間ノード
+        //    aimIKAnimation_->SetMidNodeName("rig_J_lowarm_L");
+        //
+        //    //先端ノード
+        //    aimIKAnimation_->SetTipNodeName("rig_J_hand_L");
+        //
+        //    //無視するノードrig_J_lowarm_L
+        //    aimIKAnimation_->SetIgnoreNodeName("rig_J_midarm_L");
+        //
+        //    //無視するノード（肩下）
+        //    //aimIKAnimation_->SetIgnoreNodeName("rig_J_uparm_L");
+        //}
+
+        //Aimingモーション設定
         {
-            aimIKAnimation_ = new AnimAimIK(model_.get(), "AimIK");
-            model_->GetAnimator()->AppendAnimation(aimIKAnimation_);
-            aimIKAnimation_->SetBaseAnimation(static_cast<int>(AnimationIndex::Shot_Pose));
+            //ブレンドスペース２ｄ
+            std::shared_ptr<AnimBlendSpace2D> bs2d = std::make_shared<AnimBlendSpace2D>(model_.get(), "FlyMove2D", static_cast<int>(AnimationIndex::Shot_Pose), Vector2(0, 0));
+            {
+                bs2d->AddBlendAnimation(static_cast<int>(AnimationIndex::Shot_Move_F), Vector2(0, 1));
+                bs2d->AddBlendAnimation(static_cast<int>(AnimationIndex::Shot_Move_R), Vector2(1, 0));
+                bs2d->AddBlendAnimation(static_cast<int>(AnimationIndex::Shot_Move_L), Vector2(-1, 0));
+                bs2d->AddBlendAnimation(static_cast<int>(AnimationIndex::Shot_Move_B), Vector2(0, -1));
+                bs2d->SetAnimator(GetAnimator().get());
+            }
 
-            //根本ノード
-            //aimIKAnimation_->SetRootNodeName("rig_J_shoulder_L");
-            aimIKAnimation_->SetRootNodeName("rig_J_uparm_L");
-            
-            //中間ノード
-            aimIKAnimation_->SetMidNodeName("rig_J_lowarm_L");
+            //Aim IK 右
+            std::shared_ptr<AnimAimIK> ikR = std::make_shared<AnimAimIK>(model_.get(), "AimIK_R");
+            {
+                //根本ノード
+                    //aimIKAnimation_->SetRootNodeName("rig_J_shoulder_R");
+                ikR->SetRootNodeName("rig_J_uparm_R");
 
-            //先端ノード
-            aimIKAnimation_->SetTipNodeName("rig_J_hand_L");
+                //中間ノード
+                ikR->SetMidNodeName("rig_J_lowarm_R");
 
-            //無視するノードrig_J_lowarm_L
-            aimIKAnimation_->SetIgnoreNodeName("rig_J_midarm_L");
+                //先端ノード
+                ikR->SetTipNodeName("rig_J_hand_R");
 
-            //無視するノード（肩下）
-            //aimIKAnimation_->SetIgnoreNodeName("rig_J_uparm_L");
+                //無視するノードrig_J_lowarm_R
+                ikR->SetIgnoreNodeName("rig_J_midarm_R");
+
+                //無視するノード（肩下）
+                //aimIKAnimation_->SetIgnoreNodeName("rig_J_uparm_R");
+                ikR->SetAnimator(GetAnimator().get());
+            }
+
+            //Aim IK 左
+            std::shared_ptr<AnimAimIK> ikL = std::make_shared<AnimAimIK>(model_.get(), "AimIK_L");
+            {
+                //根本ノード
+                    //aimIKAnimation_->SetRootNodeName("rig_J_shoulder_L");
+                ikL->SetRootNodeName("rig_J_uparm_L");
+
+                //中間ノード
+                ikL->SetMidNodeName("rig_J_lowarm_L");
+
+                //先端ノード
+                ikL->SetTipNodeName("rig_J_hand_L");
+
+                //無視するノードrig_J_lowarm_L
+                ikL->SetIgnoreNodeName("rig_J_midarm_L");
+
+                //無視するノード（肩下）
+                //ikL->SetIgnoreNodeName("rig_J_uparm_L");
+                ikL->SetAnimator(GetAnimator().get());
+            }
+
+            aimingAnimation_ = new AnimAiming(model_.get(),"AimMove", bs2d, ikR, ikL);
+            model_->GetAnimator()->AppendAnimation(aimingAnimation_);
         }
 
         model_->GetAnimator()->PlayAnimation(static_cast<int>(AnimationIndex::Run_Move));
@@ -374,6 +447,7 @@ void Vitesse::AnimationInitialize()
         animStateMachine_->RegisterState(new VitesseAnimState::AnimGroundMove(model_->GetAnimator().get()));
         animStateMachine_->RegisterState(new VitesseAnimState::AnimFlight(model_->GetAnimator().get()));
         animStateMachine_->RegisterState(new VitesseAnimState::AnimHighSpeedFlight(model_->GetAnimator().get()));
+        animStateMachine_->RegisterState(new VitesseAnimState::AnimAimMove(model_->GetAnimator().get()));
 }
 
 void Vitesse::ThrusterInfluenceVelocity()
@@ -654,7 +728,7 @@ void Vitesse::BeamShot()
     //画面中央にレイを飛ばし、当たった場所に向かって弾が飛ぶようにする
     Vector3 eyeToFocus = camera_->GetFocus() - camera_->GetEye();
     eyeToFocus.Normalize();
-    const float range = 100000.0f;
+    const float range = 10000.0f;
     Vector3 shootDirection;
 
     if (const auto& target = lockonTarget_.lock())
@@ -726,6 +800,40 @@ void Vitesse::RotateToFront()
     //カメラが向いている向きに回転させる
     Vector3 cameraForward = camera_->GetForward();
     TurnY(cameraForward);
+}
+
+void Vitesse::UpdateShotTarget()
+{
+    //ターゲットがいるならそこへ、いないならカメラの正面に設定
+    //画面中央にレイを飛ばし、当たった場所を設定する
+    Vector3 eyeToFocus = camera_->GetFocus() - camera_->GetEye();
+    eyeToFocus.Normalize();
+    const float range = 10000.0f;
+
+    if (const auto& target = lockonTarget_.lock())
+    {
+        const Vector3 t = target->GetTransform()->GetPosition();
+        aimTargetPos_ = t;
+    }
+    else
+    {
+        const Vector3 start = camera_->GetEye();
+        const Vector3 end = start + eyeToFocus * range;
+        Vector3 hitPos, hitNormal;
+        const auto& stage = Engine::stageManager_->GetActiveStage().lock();
+        if (stage->RayCast(
+            start, end, hitPos, hitNormal
+        ))
+        {
+            aimTargetPos_ = hitPos;
+        }
+        else
+        {
+            //当たらないなら、カメラの向きへ
+            const Vector3 target = start + eyeToFocus * range;
+            aimTargetPos_ = target;
+        }
+    }
 }
 
 void Vitesse::Dodge(Vector3 direction)

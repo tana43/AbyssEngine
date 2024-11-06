@@ -42,6 +42,11 @@ namespace AbyssEngine
 
         std::string name_;
         int animIndex_;//モデル本体が持っているこのモーションの要素数
+
+
+        //それぞれのアニメーション情報を格納するボーン情報
+        std::vector<GeometricSubstance::Node> animatedNodes_;
+
     protected: 
         void UpdateTime();
 
@@ -55,8 +60,6 @@ namespace AbyssEngine
         //ルートモーションによる移動の速度倍率
         float rootMotionSpeed_ = 1.0f;
 
-        //それぞれのアニメーション情報を格納するボーン情報
-        std::vector<GeometricSubstance::Node> animatedNodes_;
 
         Animator* animator_ = nullptr;
     };
@@ -217,6 +220,8 @@ namespace AbyssEngine
         void SetIgnoreNodeName(const std::string& str) { ignoreNodeName_ = str; }
         void SetIgnoreNodeNameSecond(const std::string& str) { ignoreNodeNameSecond_ = str; }
 
+        void SetTargetPosition(const Vector3& pos) { targetPosition_ = pos; }
+
     private:
         //根本、中間、先端ノードの親子関係は連続しているか判定し、続いていなければ間のボーンを登録する
         //GeometricSubstance::Node* CheckDirectLineBones(GltfSkeletalMesh* model);
@@ -227,8 +232,8 @@ namespace AbyssEngine
 
         //Vector3 targetDirection_;
 
-        //腕の伸ばし具合 0~1
-        float armExtension = 1.0f;
+        //腕の伸ばし具合 0~1 ※1.5にして伸ばしすぎぐらいに
+        float armExtension = 1.5f;
 
         //各ノードの名前　すぐに設定する必要がある
         std::string rootNodeName_ = "";
@@ -247,5 +252,27 @@ namespace AbyssEngine
 
         //逆間接防止用のポールターゲット座標
         Vector3 poleLocalPosition_ = {0,-1.0f,0};
+    };
+
+    //エイムモーション
+    class AnimAiming : public Animation
+    {
+    public:
+        AnimAiming(SkeletalMesh* model, const std::string& name_, 
+            const std::shared_ptr<AnimBlendSpace2D>& blendSpace2D,
+            const std::shared_ptr<AnimAimIK>& rightHand,
+            const std::shared_ptr<AnimAimIK>& leftHand);
+        ~AnimAiming() {}
+
+        std::vector<GeometricSubstance::Node> UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished = nullptr)override;
+
+        std::shared_ptr<AnimBlendSpace2D>& GetBlendSpace2D() { return blendSpace2d_; }
+        std::shared_ptr<AnimAimIK>& GetAimIkRight() { return aimIkRight_; }
+        std::shared_ptr<AnimAimIK>& GetAimIkLeft() { return aimIkLeft_; }
+
+    private:
+        std::shared_ptr<AnimBlendSpace2D> blendSpace2d_;
+        std::shared_ptr<AnimAimIK> aimIkRight_;
+        std::shared_ptr<AnimAimIK> aimIkLeft_;
     };
 }
