@@ -60,8 +60,8 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     canAttack_ = true;
 
     //銃
-    gunComponent_ = actor->AddComponent<Gun>();
-    gunComponent_->SetColliderTag(Collider::Tag::Enemy);
+    gunComponentR_ = actor->AddComponent<Gun>();
+    gunComponentR_->SetColliderTag(Collider::Tag::Enemy);
 
     //ビヘイビアツリー初期化
     BehaviorTreeInitialize();
@@ -199,12 +199,12 @@ void BotEnemy::LockOn()
 void BotEnemy::Shot()
 {
     //銃口位置を設定
-    gunComponent_->SetMuzzlePos(transform_->GetPosition() + Vector3(0, 0.3f, 0));
+    gunComponentR_->SetMuzzlePos(transform_->GetPosition() + Vector3(0, 0.3f, 0));
 
     const Vector3 pos = transform_->GetPosition();
     Vector3 toAimPos = aimPosition_ - pos;
     toAimPos.Normalize();
-    gunComponent_->Shot(toAimPos);
+    gunComponentR_->Shot(toAimPos);
 
     //攻撃を不可に
     canAttack_ = false;

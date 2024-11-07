@@ -891,3 +891,12 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAiming::UpdateAnimation(G
 
     return nodes;
 }
+
+void AbyssEngine::AnimAiming::DrawImGui(Animator* animator)
+{
+    if (ImGui::BeginMenu(name_.c_str()))
+    {
+        aimIkLeft_->DrawImGui(animator);
+        aimIkRight_->DrawImGui(animator);
+    }
+}

@@ -161,8 +161,8 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     weaponModel_->GetSocketData().rotation_ = Weapon_Offset_Move.rot;
     weaponModel_->coodinateSystem_ = 0;
 
-    gunComponent_ = actor_->AddComponent<Gun>();
-    gunComponent_->SetColliderTag(Collider::Tag::Player);
+    gunComponentR_ = actor_->AddComponent<Gun>();
+    gunComponentR_->SetColliderTag(Collider::Tag::Player);
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -303,7 +303,7 @@ void Soldier::MuzzlePosUpdate()
     //移動成分を抽出
     const Vector3 pos = M.Translation();
 
-    gunComponent_->SetMuzzlePos(pos);
+    gunComponentR_->SetMuzzlePos(pos);
 }
 
 void Soldier::BoardingDistanceJudge(const float& range)
@@ -401,7 +401,7 @@ void Soldier::GunShot()
     ))
     {
         //当たった位置に飛ばす
-        Vector3 toTarget = hitPos - gunComponent_->GetMuzzlePos();
+        Vector3 toTarget = hitPos - gunComponentR_->GetMuzzlePos();
         toTarget.Normalize();
         shootDirection = toTarget;
     }
@@ -409,12 +409,12 @@ void Soldier::GunShot()
     {
         //当たらないなら、カメラの向きへ
         const Vector3 target = start + eyeToFocus * 50.0f;
-        Vector3 toTarget = target - gunComponent_->GetMuzzlePos();
+        Vector3 toTarget = target - gunComponentR_->GetMuzzlePos();
         toTarget.Normalize();
         shootDirection = toTarget;
     }
 
-    if (gunComponent_->Shot(shootDirection))
+    if (gunComponentR_->Shot(shootDirection))
     {
         //画面振動
         Camera::CameraShakeParameters param;

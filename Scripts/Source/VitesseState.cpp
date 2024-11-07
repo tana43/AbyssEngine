@@ -656,13 +656,32 @@ void VitesseState::Aiming::Initialize()
 
 void VitesseState::Aiming::Update(float deltaTime)
 {
-    //前方向を向かせる
-    owner_->RotateToFront();
+    if (const auto& target = owner_->GetLockonTarget().lock())
+    {
+        //ターゲットがいるならそちらへ向かせる
+        Vector3 dirOwnerToTarget = target->GetTransform()->GetPosition() - owner_->GetTransform()->GetPosition();
+        dirOwnerToTarget.Normalize();
+        owner_->TurnY(dirOwnerToTarget);
+    }
+    else
+    {
+        //ターゲットがいないなら
+        //前方向を向かせる
+        owner_->RotateToFront();
+    }
 
     //普通に移動してもらう
     owner_->UpdateInputMove();
 
     owner_->ThrusterInfluenceVelocity();
+
+    if (
+        //Input::GameSupport::GetOneShotButton() 単発撃ち
+        Input::GameSupport::GetShotButton()
+        )
+    {
+        owner_->BeamShot();
+    }
 
     //別ステートへ
     if (!Input::GameSupport::GetShotButton())
@@ -679,4 +698,6 @@ void VitesseState::Aiming::Finalize()
     {
         owner_->SetEnableAutoTurn(true);
     }
+
+    owner_->GetAnimator()->SetAnimationTransTime(0.03f);
 }

@@ -83,7 +83,7 @@ private:
     AbyssEngine::Vector3 aimPosition_;
 
     //銃コンポーネント
-    std::shared_ptr<Gun> gunComponent_;
+    std::shared_ptr<Gun> gunComponentR_;
 
     //ロックオン中の時間
     float LockOn_Time = 4.0f;

@@ -117,16 +117,12 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //アタッカーコンポーネント設定
     AttackerInitialize();
 
-    //銃
-    gunComponent_ = actor->AddComponent<Gun>();
-    gunComponent_->SetBulletType(Gun::BulletType::Beam);
-    //gunComponent_->SetRateOfFire(1.0f);
-    gunComponent_->SetRateOfFire(0.3f);
-    gunComponent_->SetBulletSpeed(500.0f);
-    gunComponent_->SetBeamWidth(2.7f);
-    gunComponent_->SetBeamScale(1.7f);
-    gunComponent_->SetBeamColor(Vector4(0.0f,1.0f,1.0f,1.0f));
-    gunComponent_->SetPrecision(0.0f);
+
+    //銃初期化
+    gunComponentR_ = actor_->AddComponent<Gun>();
+    gunComponentL_ = actor_->AddComponent<Gun>();
+    GunInitialize(*gunComponentR_.get());
+    GunInitialize(*gunComponentL_.get());
 
     actor->ReplaceTag(Actor::Tag_Player);
 }
@@ -163,13 +159,13 @@ void Vitesse::Update()
 
     //RotateToFront();
 
-    if (
-        //Input::GameSupport::GetOneShotButton()
-        Input::GameSupport::GetShotButton()
-        )
-    {
-        BeamShot();
-    }
+    //if (
+    //    Input::GameSupport::GetOneShotButton()
+    //    //Input::GameSupport::GetShotButton()
+    //    )
+    //{
+    //    BeamShot();
+    //}
 }
 
 void Vitesse::DrawImGui()
@@ -178,7 +174,8 @@ void Vitesse::DrawImGui()
 
     if (ImGui::TreeNode("Vitesse"))
     {
-        ImGui::DragFloat3("Muzzle Offset",&muzzleOffsetPos_.x, 0.05f);
+        ImGui::DragFloat3("Muzzle Offset R",&muzzleOffsetPosR_.x, 0.05f);
+        ImGui::DragFloat3("Muzzle Offset L",&muzzleOffsetPosL_.x, 0.05f);
 
         ImGui::TreePop();
     }
@@ -711,15 +708,26 @@ void Vitesse::AimIKTest()
 void Vitesse::UpdateGunMuzzlePos()
 {
     //オフセット行列
-    const Matrix Offset = Matrix::CreateTranslation(muzzleOffsetPos_);
+    const Matrix OffsetR = Matrix::CreateTranslation(muzzleOffsetPosR_);
 
     //ワールド行列算出
-    const Matrix M = Offset * leftWeaponModel_->GetWorldMatrix();
+    const Matrix MR = OffsetR * rightWeaponModel_->GetWorldMatrix();
 
     //移動成分を抽出
-    const Vector3 pos = M.Translation();
+    const Vector3 posR = MR.Translation();
 
-    gunComponent_->SetMuzzlePos(pos);
+    gunComponentR_->SetMuzzlePos(posR);
+
+    //オフセット行列
+    const Matrix OffsetL = Matrix::CreateTranslation(muzzleOffsetPosL_);
+
+    //ワールド行列算出
+    const Matrix ML = OffsetL * leftWeaponModel_->GetWorldMatrix();
+
+    //移動成分を抽出
+    const Vector3 posL = ML.Translation();
+
+    gunComponentL_->SetMuzzlePos(posL);
 }
 
 void Vitesse::BeamShot()
@@ -731,12 +739,12 @@ void Vitesse::BeamShot()
     const float range = 10000.0f;
     Vector3 shootDirection;
 
+    //標的の座標
+    Vector3 targetPosition;
+
     if (const auto& target = lockonTarget_.lock())
     {
-        const Vector3 t = target->GetTransform()->GetPosition();
-        Vector3 toTarget = t - gunComponent_->GetMuzzlePos();
-        toTarget.Normalize();
-        shootDirection = toTarget;
+        targetPosition = target->GetTransform()->GetPosition();
     }
     else
     {
@@ -749,32 +757,52 @@ void Vitesse::BeamShot()
         ))
         {
             //当たった位置に飛ばす
-            Vector3 toTarget = hitPos - gunComponent_->GetMuzzlePos();
-            toTarget.Normalize();
-            shootDirection = toTarget;
+            targetPosition = hitPos;
         }
         else
         {
             //当たらないなら、カメラの向きへ
-            const Vector3 target = start + eyeToFocus * range;
-            Vector3 toTarget = target - gunComponent_->GetMuzzlePos();
-            toTarget.Normalize();
-            shootDirection = toTarget;
+            targetPosition = start + eyeToFocus * range;
         }
     }
 
-    if (gunComponent_->Shot(shootDirection))
+    //if (BeamShotByComponent(*gunComponentR_.get(), targetPosition)) {}
+    //else BeamShotByComponent(*gunComponentL_.get(), targetPosition);
+    BeamShotByComponent(*gunComponentR_.get(), targetPosition);
+    BeamShotByComponent(*gunComponentL_.get(), targetPosition);
+}
+
+bool Vitesse::BeamShotByComponent(Gun& gun, Vector3 targetPosition)
+{
+    Vector3 shootDirection;
+
+    const Vector3 t = targetPosition;
+    Vector3 toTarget = t - gun.GetMuzzlePos();
+    toTarget.Normalize();
+    shootDirection = toTarget;
+
+    if (gun.Shot(shootDirection))
     {
         //画面振動
-        /*Camera::CameraShakeParameters param;
-        param.position_.amplitudeMultiplier_ = 0.03f;
-        param.position_.frequencyMultiplier_ = 5.0f;
-        param.rotation_.amplitudeMultiplier_ = 0.0f;
-        param.timing_.duration_ = 0.05f;
-        param.timing_.blendOutTime_ = 0.05f;
-        camera_->CameraShake(param);*/
         camera_->CameraShake("BeamShot");
+
+        return true;
     }
+
+    return false;
+}
+
+void Vitesse::GunInitialize(Gun& gun)
+{
+    //銃
+    gun.SetBulletType(Gun::BulletType::Beam);
+    //g.>SetRateOfFire(1.0f);
+    gun.SetRateOfFire(0.3f);
+    gun.SetBulletSpeed(500.0f);
+    gun.SetBeamWidth(2.7f);
+    gun.SetBeamScale(1.7f);
+    gun.SetBeamColor(Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+    gun.SetPrecision(0.0f);
 }
 
 void Vitesse::Flinch(StaggerType type)
@@ -1094,6 +1122,7 @@ void Vitesse::CameraRollUpdate()
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);
+
 }
 
 void Vitesse::ThrusterUpdate()

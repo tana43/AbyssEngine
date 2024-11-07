@@ -270,6 +270,8 @@ namespace AbyssEngine
         std::shared_ptr<AnimAimIK>& GetAimIkRight() { return aimIkRight_; }
         std::shared_ptr<AnimAimIK>& GetAimIkLeft() { return aimIkLeft_; }
 
+        void DrawImGui(Animator* animator)override;
+
     private:
         std::shared_ptr<AnimBlendSpace2D> blendSpace2d_;
         std::shared_ptr<AnimAimIK> aimIkRight_;

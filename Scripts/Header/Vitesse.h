@@ -216,6 +216,9 @@ public:
     //カメラやロックオンの状況から狙っている位置を算出、更新する
     void UpdateShotTarget();
 
+    //ビーム攻撃
+    void BeamShot();
+
 private:
     void CameraRollUpdate();
 
@@ -234,16 +237,15 @@ private:
     //アタッカー設定(コライダーを設定した後がいいかも)
     void AttackerInitialize();
 
-    //ひるむ
-
-
     void AimIKTest();
 
     //射撃攻撃を仮更新
     void UpdateGunMuzzlePos();
     
     //ビーム攻撃
-    void BeamShot();
+    bool BeamShotByComponent(Gun& gun,AbyssEngine::Vector3 targetPosition);
+
+    void GunInitialize(Gun& gun);
 
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
@@ -343,9 +345,11 @@ private:
     std::vector<std::shared_ptr<AbyssEngine::AttackCollider>> rWeaponAtkColliderList_;
 
     //銃コンポーネント
-    std::shared_ptr<Gun> gunComponent_;
+    std::shared_ptr<Gun> gunComponentR_;
+    std::shared_ptr<Gun> gunComponentL_;
     //銃口のローカル座標
-    AbyssEngine::Vector3 muzzleOffsetPos_ = {0.0f,0.05f,0.7f};
+    AbyssEngine::Vector3 muzzleOffsetPosR_ = {0.0f,-0.05f,0.7f};
+    AbyssEngine::Vector3 muzzleOffsetPosL_ = {0.0f,0.05f,0.7f};
 
     //カメラの位置やロックオンの状況から狙っている位置を持たせておく
     AbyssEngine::Vector3 aimTargetPos_;
