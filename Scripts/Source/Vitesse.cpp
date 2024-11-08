@@ -1125,6 +1125,8 @@ void Vitesse::CameraRollUpdate()
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);*/
 
+    if (!camera_->GetIsMainCamera())return;
+
     //ƒJƒƒ‰‰ñ“]
     camera_->CameraRollController();
 

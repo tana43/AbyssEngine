@@ -15,6 +15,7 @@
 #include "GameUIAdmin.h"
 #include "BossMech.h"
 #include "Input.h"
+#include "SceneManager.h"
 
 #include "ComputeParticleEmitter.h"
 #include "Bloom.h"
@@ -198,6 +199,12 @@ void TestScene::Update()
     /*Vector3 hit;
     Vector3 hitn;
     stageCom->RayCast(Vector3(0, 10, 0), Vector3(0, -10, 0), hit, hitn);*/
+
+    //‰¼‚ÅƒV[ƒ“‘JˆÚ
+    if (Keyboard::GetKeyDown(DirectX::Keyboard::D1))
+    {
+        Engine::sceneManager_->SetNextScene("Facility");
+    }
 }
 
 void TestScene::DrawImGui()

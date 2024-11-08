@@ -72,6 +72,8 @@ void FacilityScene::Initialize()
     //“–‚½‚Á‚½‚çƒV[ƒ“‘JˆÚ‚·‚é
     const auto& sceneTransActor = InstanceActor("SceneTrans");
     sceneTransActor->AddComponent<SceneTransitionCollider>();
+
+    
 }
 
 void FacilityScene::Update()
@@ -84,7 +86,11 @@ void FacilityScene::Update()
     }
 #endif // _DEBUG
 
-    
+    //‰¼‚ÅƒV[ƒ“‘JˆÚ
+    if (Keyboard::GetKeyDown(DirectX::Keyboard::D1))
+    {
+        Engine::sceneManager_->SetNextScene("Test");
+    }
 
 }
 

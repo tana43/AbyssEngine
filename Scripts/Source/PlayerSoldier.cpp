@@ -286,6 +286,7 @@ void Soldier::CameraRollUpdate()
     r.y = r.y + input.x * rollSpeed;
     camera_->GetTransform()->SetRotation(r);*/
 
+    if (!camera_->GetIsMainCamera())return;
     camera_->CameraRollController();
 }
 
