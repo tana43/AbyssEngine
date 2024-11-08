@@ -8,6 +8,7 @@
 #include "RenderManager.h"
 #include "StaticMesh.h"
 #include "AttackerSystem.h"
+#include "PlayerSoldier.h"
 
 using namespace AbyssEngine;
 
@@ -28,7 +29,7 @@ void VitesseState::GroundMove::Update(float deltaTime)
     }
 
     //誰も乗っていないなら乗り込みステートへ
-    if (!owner_->GetPilot().lock())
+    if (!owner_->GetPilot().lock()->GetVitesseOnBoard())
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::Boarding));
     }

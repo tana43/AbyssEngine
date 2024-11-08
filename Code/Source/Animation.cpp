@@ -903,5 +903,7 @@ void AbyssEngine::AnimAiming::DrawImGui(Animator* animator)
     {
         aimIkLeft_->DrawImGui(animator);
         aimIkRight_->DrawImGui(animator);
+
+        ImGui::EndMenu();
     }
 }

@@ -87,7 +87,7 @@ void FacilityScene::Update()
 #endif // _DEBUG
 
     //‰¼‚ÅƒV[ƒ“‘JˆÚ
-    if (Keyboard::GetKeyDown(DirectX::Keyboard::D1))
+    if (Keyboard::GetKeyDown(DirectX::Keyboard::F1))
     {
         Engine::sceneManager_->SetNextScene("Test");
     }

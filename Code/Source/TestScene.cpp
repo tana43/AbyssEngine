@@ -148,9 +148,15 @@ void TestScene::Initialize()
             asp->GetComponent<MeshCollider>()->Transform();
         }
     }*/
-    const auto& asp = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Asphalt.glb");
+    /*const auto& asp = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Asphalt.glb");
     asp->GetTransform()->SetLocalScaleFactor(5000.0f);
     asp->GetComponent<StaticMesh>()->SetIBLIntensity(0.05f);
+    stageCom->RegisterTriangles();
+    Engine::stageManager_->SetStage(stageCom);*/
+
+    const auto& lunar = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Lunar/LunarSurface.gltf");
+    lunar->GetTransform()->SetLocalScaleFactor(10.0f);
+    lunar->GetComponent<StaticMesh>()->SetIBLIntensity(0.05f);
     stageCom->RegisterTriangles();
     Engine::stageManager_->SetStage(stageCom);
 #endif // 0
@@ -166,6 +172,8 @@ void TestScene::Initialize()
     const auto& pc = player->AddComponent<Soldier>();
     //プレイヤーにヴィテスを設定
     pc->SetMyVitesse(vc);
+    //ヴィテスにプレイヤーを設定
+    vc->SetPilot(pc);
 
     //F-14
     //const auto& fighterJet = InstanceActor("F-14A");
@@ -201,7 +209,7 @@ void TestScene::Update()
     stageCom->RayCast(Vector3(0, 10, 0), Vector3(0, -10, 0), hit, hitn);*/
 
     //仮でシーン遷移
-    if (Keyboard::GetKeyDown(DirectX::Keyboard::D1))
+    if (Keyboard::GetKeyDown(DirectX::Keyboard::F1))
     {
         Engine::sceneManager_->SetNextScene("Facility");
     }

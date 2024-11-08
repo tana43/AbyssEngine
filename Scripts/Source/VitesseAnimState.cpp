@@ -77,7 +77,12 @@ void VitesseAnimState::AnimGroundMove::Update(float deltaTime)
         }
     }
 
-    
+    ////現在のアニメーションが違うものに変わっているならデフォルトに
+    //if (owner_->GetCurrentAnimClip() != static_cast<int>(Vitesse::AnimationIndex::Run_Move) &&
+    //    owner_->GetCurrentAnimClip() != static_cast<int>(Vitesse::AnimationIndex::Ground_Fall))
+    //{
+    //    vi->ChangeAnimationState(Vitesse::AnimationState::Default);
+    //}
 }
 
 void VitesseAnimState::AnimGroundMove::Finalize()

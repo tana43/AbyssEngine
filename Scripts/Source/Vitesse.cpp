@@ -89,7 +89,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     animStateMachine_->SetState(static_cast<int>(AnimationState::Ground_Move));
     stateMachine_->SetState(static_cast<int>(ActionState::Boarding));
 
-    stateMachine_->SetActive(false);
+    stateMachine_->SetActive(true);
 
     //エフェクト追加
     const int unitSize = static_cast<int>(VitesseConstants::Thruster::Location::Installed_Units);
