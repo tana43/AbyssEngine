@@ -48,6 +48,15 @@ bool DXSystem::Initialize(HWND hWnd)
     CreateRasterizerState();
     CreateBlendState();
 
+#if _DEBUG
+#else
+    //フルスクリーンに
+    HRESULT hr = S_OK;
+    Microsoft::WRL::ComPtr<IDXGIOutput> output;
+    hr = instance->swapChain_->SetFullscreenState(TRUE,output.Get());
+    _ASSERT_EXPR(SUCCEEDED(hr), HrTrace(hr));
+#endif
+
     return true;
 }
 

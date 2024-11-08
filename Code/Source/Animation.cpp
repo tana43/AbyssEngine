@@ -631,7 +631,9 @@ void AbyssEngine::AnimAimIK::DrawImGui(Animator* animator)
         ImGui::EndMenu();
     }
 
+#if _DEBUG
     Engine::renderManager_->debugRenderer_->DrawSphere(targetPosition_, 1.0f, Vector4(0, 1, 0, 1));
+#endif
 }
 
 std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
@@ -673,7 +675,10 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
     Matrix poleLocalTransform = DirectX::XMMatrixTranslation(poleLocalPosition_.x, poleLocalPosition_.y, poleLocalPosition_.z);
     //Matrix poleWorldTransform = poleLocalTransform * (midNode.globalTransform_ * worldMatrix);
     Matrix poleWorldTransform = poleLocalTransform * (rootNode.globalTransform_ * worldMatrix);
+
+#if _DEBUG
     Engine::renderManager_->debugRenderer_->DrawSphere(DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3], 1.0f, Vector4(0.2f, 1.0f, 0.0f, 1.0f));
+#endif
     /*Matrix poleWorldTransform = (midNode.globalTransform_ * worldMatrix);
     Vector3 polePosition = DirectX::XMLoadFloat4x4(&poleWorldTransform).r[3];
     polePosition = polePosition + poleLocalPosition_;

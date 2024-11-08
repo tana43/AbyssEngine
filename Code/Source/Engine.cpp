@@ -43,8 +43,10 @@ Engine::Engine()
     inputManager_       = make_unique<Input>();
     stageManager_       = make_unique<StageManager>();
 
+#if _DEBUG
     //ImGuièâä˙âª
     IMGUI_CTRL_INITIALIZE(DXSystem::hwnd_, DXSystem::GetDevice().Get(), DXSystem::GetDeviceContext().Get());
+#endif
 }
 
 Engine::~Engine()
@@ -209,6 +211,7 @@ float Time::timeScale_ = 1.0f;
 
 void AbyssEngine::Time::DrawImGui()
 {
+#if _DEBUG
     if (ImGui::BeginMenu("Time"))
     {
         ImGui::InputFloat("Delta Time", &deltaTime_);
@@ -217,4 +220,5 @@ void AbyssEngine::Time::DrawImGui()
 
         ImGui::EndMenu();
     }
+#endif
 }

@@ -3,8 +3,8 @@
 
 namespace AbyssEngine
 {
-    SphereCollider;
-    AttackCollider;
+    class SphereCollider;
+    class AttackCollider;
 }
 
 class Bullet : public AbyssEngine::Projectile
