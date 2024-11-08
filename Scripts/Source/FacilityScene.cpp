@@ -13,6 +13,7 @@
 #include "Input.h"
 #include "SceneManager.h"
 #include "SceneTransitionCollider.h"
+#include "Bloom.h"
 
 using namespace AbyssEngine;
 
@@ -26,6 +27,7 @@ void FacilityScene::Initialize()
     Engine::renderManager_->GetBufferScene().data_.exposure_ = 3.58f;
     Engine::renderManager_->GetBufferEffects().data_.shadowFilterRadius_ = 4.614f;
     Engine::renderManager_->GetBufferEffects().data_.shadowColor_ = 0.6f;
+    Engine::renderManager_->GetBloom()->bloomIntensity_ = 0.05f;
     Engine::renderManager_->SetCriticalDepthValue(300.0f);
 
     //カメラ
@@ -41,7 +43,7 @@ void FacilityScene::Initialize()
     const auto& faci = stageCom->AddStageModel("Floor_01", "./Assets/Models/Stage/Facility/Facility.gltf");
 
     //IBL強度設定
-    faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.03f);
+    faci->GetComponent<StaticMesh>()->SetIBLIntensity(0.07f);
     faci->GetComponent<StaticMesh>()->SetEmissiveIntensity(120.0f);
 
     //判定ポリゴンを更新

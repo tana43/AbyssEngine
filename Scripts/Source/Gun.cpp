@@ -240,6 +240,8 @@ void Gun::UpdateFlashParticleEffect()
     //フラグ判定
     if (!enableMuzzleFlashParticleEffect_)return;
 
+    if (bulletType_ != BulletType::Beam)return;
+
     if (flashLifespan_ < flashParticleLifespan_)
     {
         //マズルフラッシュエフェクト再生

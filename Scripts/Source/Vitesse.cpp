@@ -157,6 +157,8 @@ void Vitesse::Update()
     //射撃位置更新
     UpdateShotTarget();
 
+    
+
     //RotateToFront();
 
     //if (
@@ -1115,13 +1117,16 @@ bool Vitesse::ApplyDamage(const AttackParameter& param, DamageResult* damageResu
 void Vitesse::CameraRollUpdate()
 {
     //入力値取得
-    Vector2 input = Input::GameSupport::GetCameraRollVector();
+    /*Vector2 input = Input::GameSupport::GetCameraRollVector();
 
     auto r = camera_->GetTransform()->GetRotation();
     const float rollSpeed = cameraRollSpeed_ * actor_->GetDeltaTime();
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
-    camera_->GetTransform()->SetRotation(r);
+    camera_->GetTransform()->SetRotation(r);*/
+
+    //カメラ回転
+    camera_->CameraRollController();
 
 }
 

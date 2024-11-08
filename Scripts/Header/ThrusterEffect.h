@@ -25,7 +25,7 @@ private:
 public:
     static int instanceCount_;
     ThrusterEffect();
-    ~ThrusterEffect() {}
+    ~ThrusterEffect();
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
 

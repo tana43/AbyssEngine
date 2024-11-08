@@ -83,6 +83,8 @@ namespace AbyssEngine
         void CameraLagUpdate();
 
     public:
+        void CameraRollController();
+
         const Matrix& GetViewMatrix() const { return viewMatrix_; }
         const Matrix& GetProjectionMatrix() const { return projectionMatrix_; }
         const Matrix& GetViewProjectionMatrix() const { return viewProjectionMatrix_; }

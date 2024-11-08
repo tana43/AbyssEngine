@@ -18,6 +18,15 @@ ThrusterEffect::ThrusterEffect()
     instanceCount_++;
 }
 
+ThrusterEffect::~ThrusterEffect()
+{
+    Stop();
+    EffectManager::Instance().GetEffekseerManager()->StopEffect(effekseerHandle_);
+
+    //¶¬”ƒŠƒZƒbƒg
+    instanceCount_ = 0;
+}
+
 void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
     //‰Šú‰»
