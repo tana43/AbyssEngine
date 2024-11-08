@@ -31,7 +31,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.gltf");
     model_->GetModel()->primitiveConstants_->data_.imageBasedLightingIntensity_ = 0.47f;
-    model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_ = 15.25f;
+    model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_ = 30.25f;
 
     //アニメーション初期化
     AnimationInitialize();
@@ -86,7 +86,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     stateMachine_->RegisterState(new VitesseState::Aiming(this));
 
     //初期ステート設定
-    animStateMachine_->SetState(static_cast<int>(AnimationState::Ground_Move));
+    animStateMachine_->SetState(static_cast<int>(AnimationState::Default));
     stateMachine_->SetState(static_cast<int>(ActionState::Boarding));
 
     stateMachine_->SetActive(true);

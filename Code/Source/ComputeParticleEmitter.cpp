@@ -411,7 +411,7 @@ void ComputeParticleEmitter::EmitParticle(const EmitParameter& param)
 		data.color_.z = param.color_.z + Math::RandomRange(-colorAmp.z,colorAmp.z);
 		data.color_.w = param.color_.w + Math::RandomRange(-colorAmp.w,colorAmp.w);
 
-		data.color_ = data.color_ * param.brightness_;
+		data.color_ = data.color_ * param.intensity_;
 		Engine::renderManager_->GetParticleSystem()->Emit(data);
 	}
 }
@@ -463,7 +463,7 @@ void ComputeParticleEmitter::SetEmitParamater(std::string filename)
 	emitParam.rotationAcceleration_         = { mJson["Rotation"]["acceleration"][0],mJson["Rotation"]["acceleration"][1],mJson["Rotation"]["acceleration"][2] };
 	emitParam.rotationAccelerationAmplitud_ = { mJson["Rotation"]["accelerationAmplitude"][0],mJson["Rotation"]["accelerationAmplitude"][1],mJson["Rotation"]["accelerationAmplitude"][2] };
 
-	emitParam.brightness_	 = mJson["brightness"];
+	emitParam.intensity_	 = mJson["brightness"];
 	emitParam.color_		 = { mJson["color"][0],mJson["color"][1],mJson["color"][2],mJson["color"][3] };
 	emitParam.colorAmplitud_ = { mJson["colorAmplitude"][0],mJson["colorAmplitude"][1],mJson["colorAmplitude"][2],mJson["colorAmplitude"][3] };
 }
@@ -502,7 +502,7 @@ void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& par
 		{"acceleration",		 {param.rotationAcceleration_.x,param.rotationAcceleration_.y,param.rotationAcceleration_.z}},
 		{"accelerationAmplitude",{param.rotationAccelerationAmplitud_.x,param.rotationAccelerationAmplitud_.y,param.rotationAccelerationAmplitud_.z}}
 	};
-	mJson["brightness"]     = param.brightness_;
+	mJson["brightness"]     = param.intensity_;
 	mJson["color"]		    = { param.color_.x,param.color_.y,param.color_.z,param.color_.w };
 	mJson["colorAmplitude"] = { param.colorAmplitud_.x,param.colorAmplitud_.y,param.colorAmplitud_.z,param.colorAmplitud_.w};
 
@@ -537,7 +537,7 @@ ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::EmitP
 	rotationVelocityAmplitude_    = param.rotationVelocityAmplitude_;
 	rotationAcceleration_         = param.rotationAcceleration_;
 	rotationAccelerationAmplitud_ = param.rotationAccelerationAmplitud_;
-	brightness_                   = param.brightness_;//color�̏搔
+	intensity_                   = param.intensity_;//color�̏搔
 	color_                        = param.color_;
 	colorAmplitud_                = param.colorAmplitud_;
 
@@ -559,7 +559,7 @@ void AbyssEngine::ComputeParticleEmitter::EmitParameter::DrawImGui()
 		ImGui::ColorEdit4("Color", &color_.x, ImGuiColorEditFlags_PickerHueWheel);
 		ImGui::DragFloat4("Color Amplitud", &colorAmplitud_.x, 0.001f, 0.0f);
 
-		ImGui::DragFloat("Brightness", &brightness_, 0.01f);
+		ImGui::DragFloat("Brightness", &intensity_, 0.01f);
 
 		if (ImGui::TreeNode("Emit Position"))
 		{

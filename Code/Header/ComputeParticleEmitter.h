@@ -69,7 +69,7 @@ namespace AbyssEngine
             //@¶¬‰ñ“]‰Á‘¬“x‚ÌU‚ê•
             Vector3 rotationAccelerationAmplitud_ = {};
 
-            float brightness_ = 1.0f;//color‚Ìæ”
+            float intensity_ = 1.0f;//color‚Ìæ”
 
             Vector4 color_ = { 1,1,1,1 };
 

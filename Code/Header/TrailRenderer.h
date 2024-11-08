@@ -21,7 +21,7 @@ namespace AbyssEngine
     public:
         void SetWidth(float width) { width_ = width; }
         void SetColor(Vector4 col) { color_ = col; }
-        void SetBrightness(float bright) { brightness_ = bright; }
+        void SetBrightness(float bright) { intensity_ = bright; }
 
     public:
         struct Constant
@@ -69,7 +69,7 @@ namespace AbyssEngine
         Vector3 previousPosition_;
 
         //–¾‚é‚³
-        float brightness_ = 1.0f;
+        float intensity_ = 1.0f;
 
 
         Microsoft::WRL::ComPtr<ID3D11VertexShader>	     vertexShader_;

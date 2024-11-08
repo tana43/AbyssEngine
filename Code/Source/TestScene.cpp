@@ -155,7 +155,7 @@ void TestScene::Initialize()
     Engine::stageManager_->SetStage(stageCom);*/
 
     const auto& lunar = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Lunar/LunarSurface.gltf");
-    lunar->GetTransform()->SetLocalScaleFactor(10.0f);
+    lunar->GetTransform()->SetLocalScaleFactor(4.45f);
     lunar->GetComponent<StaticMesh>()->SetIBLIntensity(0.05f);
     stageCom->RegisterTriangles();
     Engine::stageManager_->SetStage(stageCom);

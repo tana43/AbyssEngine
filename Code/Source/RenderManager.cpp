@@ -874,6 +874,7 @@ void RenderManager::IBLInitialize()
 	texture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	texture2dDesc.CPUAccessFlags = 0;
 	texture2dDesc.MiscFlags = 0;
+
 #if 0
 	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/sunset_jhbcentral_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/sunset_jhbcentral_4k/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
@@ -881,16 +882,21 @@ void RenderManager::IBLInitialize()
 	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
 #else
 	//Texture::LoadTextureFromFile("./Assets/dds/syferfontein_0d_clear_puresky_4k/syferfontein_0d_clear_puresky_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/kloofendal_48d_partly_cloudy_puresky_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+
+	/*Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/kloofendal_48d_partly_cloudy_puresky_4k.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/sheen_pmrem.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/sheen_pmrem.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);*/
+
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close_diffuse.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close_specular.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close_sheen.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
+#endif // 0
+
 	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[4].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/lut_sheen_E.dds", iblShaderResourceView_[5].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/lut_charlie.dds", iblShaderResourceView_[6].GetAddressOf(), &texture2dDesc);
-#endif // 0
-
-	
 }
 
 void RenderManager::IBLSetResources()

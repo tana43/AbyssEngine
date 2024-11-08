@@ -31,13 +31,14 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     particleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
     ComputeParticleEmitter::EmitParameter param;
     param.emitNum_ = 190;
-    param.texType_ = 3;
-    param.lifespan_ = 0.15;
-    param.lifespanAmplitude_ = 0.07f;
+    param.texType_ = 0;
+    param.lifespan_ = 0.15f;
+    param.lifespanAmplitude_ = 0.1f;
     param.rotationVelocityAmplitude_ = { 0.0f,0.0f,360.0f };
     param.color_ = {0,0.5f,0.7f,1.0f};
     param.colorAmplitud_ = {0,0,1.0f,0};
     param.scaleInit_ = { 0.2f,0.2f,0.2f };
+    param.intensity_ = 6.0f;
     particleEmitter_->SetEmitParamater(param);
     particleEmitter_->SetUseTransform(false);
 }
@@ -184,7 +185,9 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             //射撃方向から見た右ベクトルと上ベクトルを算出し、拡散方向を指定する
             const Vector3 right = shootingDirection.Cross(Vector3::Up);
             const Vector3 up = shootingDirection.Cross(right);
+            emitParam.positionAmplitude_ = shootingDirection * 0.1f;
             emitParam.velocityAmplitude_ = right * particleAmplitudeSpeed_ + up * particleAmplitudeSpeed_ + shootingDirection * particleAmplitudeSpeed_;
+            emitParam.accelerationAmplitud_ = right * particleAmplitudeSpeed_ + up * particleAmplitudeSpeed_ + shootingDirection * particleAmplitudeSpeed_;
             particleEmitter_->SetEmitParamater(emitParam);
             break;
         }

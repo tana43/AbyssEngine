@@ -25,7 +25,7 @@ void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     particleEmitPrameter_.texType_ = 3;
     particleEmitPrameter_.emitNum_ = 12;
     particleEmitPrameter_.color_ = { 0,0.25f,1.0f,1.0f };
-    particleEmitPrameter_.brightness_ = 3.0f;
+    particleEmitPrameter_.intensity_ = 10.0f;
     particleEmitPrameter_.colorAmplitud_ = { 0,0.1f,1.0f,0 };
     particleEmitPrameter_.positionAmplitude_ = {2.0f,2.0f,2.0f};
     particleEmitPrameter_.scaleInit_ = { 0.4f,0.4f };
@@ -85,5 +85,5 @@ void Beam::SetWidth(const float& width)
 void Beam::SetBrightness(const float& bright)
 {
     trailRenderer_->SetBrightness(bright);
-    particleEmitPrameter_.brightness_ = bright;
+    particleEmitPrameter_.intensity_ = bright;
 }

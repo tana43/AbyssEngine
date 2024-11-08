@@ -147,7 +147,7 @@ private:
     std::shared_ptr<AbyssEngine::ComputeParticleEmitter> particleEmitter_;
     float particleAmplitudeSpeed_ = 70.0f;//パーティクルが周りに散らばる速度
     float particleSpeed_ = 200.0f;//攻撃方向へ向かう速度
-    float flashParticleLifespan_ = 0.1f;
+    float flashParticleLifespan_ = 0.03f;
     //AbyssEngine::Vector3 muzzleFlashDirection_;//マズルフラッシュを発生させるベクトル
 
     bool isHoming_ = false;
