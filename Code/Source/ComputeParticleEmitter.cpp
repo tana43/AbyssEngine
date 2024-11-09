@@ -466,6 +466,8 @@ void ComputeParticleEmitter::SetEmitParamater(std::string filename)
 	emitParam.intensity_	 = mJson["brightness"];
 	emitParam.color_		 = { mJson["color"][0],mJson["color"][1],mJson["color"][2],mJson["color"][3] };
 	emitParam.colorAmplitud_ = { mJson["colorAmplitude"][0],mJson["colorAmplitude"][1],mJson["colorAmplitude"][2],mJson["colorAmplitude"][3] };
+
+	mainParam_ = emitParam;
 }
 
 void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& param, const std::string& filename)

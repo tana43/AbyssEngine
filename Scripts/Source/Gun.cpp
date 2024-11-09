@@ -30,15 +30,16 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //マズルフラッシュ(ParticleEmitter)
     particleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
     ComputeParticleEmitter::EmitParameter param;
-    param.emitNum_ = 190;
+    param.emitNum_ = 30;
     param.texType_ = 0;
-    param.lifespan_ = 0.15f;
+    param.lifespan_ = 0.35f;
     param.lifespanAmplitude_ = 0.1f;
-    param.rotationVelocityAmplitude_ = { 0.0f,0.0f,360.0f };
+    //param.rotationVelocityAmplitude_ = { 0.0f,0.0f,360.0f };
     param.color_ = {0,0.5f,0.7f,1.0f};
     param.colorAmplitud_ = {0,0,1.0f,0};
-    param.scaleInit_ = { 0.2f,0.2f,0.2f };
-    param.intensity_ = 6.0f;
+    param.scaleInit_ = { 0.05f,0.05f,0.05f };
+    param.intensity_ = 60.0f;
+    param.accelerationAmplitud_ = { 30.0f,30.0f,30.0f };
     particleEmitter_->SetEmitParamater(param);
     particleEmitter_->SetUseTransform(false);
 }

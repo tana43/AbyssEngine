@@ -440,6 +440,7 @@
     <ClInclude Include="Scripts\Header\Beam.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Scripts\Header\SpaceParticleEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -739,6 +740,7 @@
     <ClCompile Include="Scripts\Source\Beam.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Scripts\Source\SpaceParticleEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

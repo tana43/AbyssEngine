@@ -144,10 +144,18 @@ void VitesseState::Landing::Initialize()
 
 void VitesseState::Landing::Update(float deltaTime)
 {
+    auto i = Input::GameSupport::GetMoveVector();
+
+    //移動入力が入っているならGroundMoveへ
+    if (i.LengthSquared() > 0.01f)
+    {
+        owner_->GetAnimator()->SetAnimationTransTime(0.3f);
+        owner_->ChangeActionState(Vitesse::ActionState::GMove);
+    }
+
     //アニメーションが終了次第GroundMoveへ
     if (owner_->GetAnimator()->GetAnimationFinished())
     {
-
         owner_->ChangeActionState(Vitesse::ActionState::GMove);
     }
 }
@@ -689,6 +697,12 @@ void VitesseState::Aiming::Update(float deltaTime)
     {
         //空中飛行ステート
         owner_->ChangeActionState(Vitesse::ActionState::FMove);
+    }
+
+    //ダッシュボタンが押されているなら高速ステートへ
+    if (Input::GameSupport::GetDashButton())
+    {
+        owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
     }
 }
 

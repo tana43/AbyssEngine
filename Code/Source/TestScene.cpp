@@ -16,6 +16,7 @@
 #include "BossMech.h"
 #include "Input.h"
 #include "SceneManager.h"
+#include "SpaceParticleEffect.h"
 
 #include "ComputeParticleEmitter.h"
 #include "Bloom.h"
@@ -200,6 +201,10 @@ void TestScene::Initialize()
     const auto& effectEmitter = InstanceActor("Effect");
     //effectEmitter->AddComponent<ParticleEmitter>();
     effectEmitter->AddComponent<ComputeParticleEmitter>();
+
+    //空間パーティクル作成
+    const auto& spaceParticleEmitter = InstanceActor("SpaceParticleEmitter");
+    spaceParticleEmitter->AddComponent<SpaceParticleEffect>();
 }
 
 void TestScene::Update()
