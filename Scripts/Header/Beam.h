@@ -27,7 +27,7 @@ public:
 
     void SetColor(const AbyssEngine::Vector4& color);
     void SetWidth(const float& width);
-    void SetBrightness(const float& bright);
+    void SetIntensity(const float& bright);
 
     const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
 

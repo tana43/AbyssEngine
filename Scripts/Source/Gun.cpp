@@ -35,7 +35,7 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     param.lifespan_ = 0.35f;
     param.lifespanAmplitude_ = 0.1f;
     //param.rotationVelocityAmplitude_ = { 0.0f,0.0f,360.0f };
-    param.color_ = {0,0.5f,0.7f,1.0f};
+    param.color_ = {0,0.2f,1.0f,1.0f};
     param.colorAmplitud_ = {0,0,1.0f,0};
     param.scaleInit_ = { 0.05f,0.05f,0.05f };
     param.intensity_ = 60.0f;
@@ -78,7 +78,7 @@ void Gun::DrawImGui()
             ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
             ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
             ImGui::ColorEdit4("Beam Particle Color", &beamParticleColor_.x, ImGuiColorEditFlags_PickerHueWheel);
-            ImGui::DragFloat("Brightness", &beamBrightness_, 0.01f);
+            ImGui::DragFloat("Brightness", &beamIntensity_, 0.01f);
 
             ImGui::DragFloat("Particle Speed", &particleSpeed_, 0.01f);
             ImGui::DragFloat("Particle Amplitude Speed", &particleAmplitudeSpeed_, 0.01f);
@@ -170,7 +170,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetHomingStrength(homingStrength_);
             proj->SetIsHoming(isHoming_);
             proj->SetTargetTag(targetTag_);
-            proj->SetBrightness(beamBrightness_);
+            proj->SetIntensity(beamIntensity_);
             proj->GetParticleEmitParameter().color_ = beamParticleColor_;
             proj->SetLifespan(bulletLifespan_);
 

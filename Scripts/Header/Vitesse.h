@@ -170,7 +170,7 @@ public:
 
     const std::shared_ptr<AbyssEngine::Camera>& GetCamera() const { return camera_; }
 
-    const float& GetDefaultCameraLagSpeed() const { return defaultCameraLagSpeed_; }
+    const AbyssEngine::Vector3& GetDefaultCameraLagSpeed() const { return defaultCameraLagSpeed_; }
 
     const std::weak_ptr<AbyssEngine::Actor>& GetLockonTarget() const { return lockonTarget_; }
 
@@ -293,7 +293,7 @@ private:
     float highSpeedFlightMaxSpeed_ = 50.0f;
 
     //カメラのデフォルト値
-    float defaultCameraLagSpeed_ = 0.0f;
+    AbyssEngine::Vector3 defaultCameraLagSpeed_ = { 0,0,0 };
     
     //右手武器
     std::shared_ptr<AbyssEngine::StaticMesh> rightWeaponModel_;

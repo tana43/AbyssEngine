@@ -54,12 +54,15 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
     const auto& c = Engine::sceneManager_->GetActiveScene().InstanceActor("Vitesse Camera");
     camera_ = c->AddComponent<Camera>();
-    //c->SetParent(actor_);
+    camera_->SetViewTarget(transform_.get());
+
+    //下４行後でいらんくなる
     camera_->SetFov(DirectX::XMConvertToRadians(80.0f));
     camera_->SetBaseTargetOffset(Vector3(0.8f, 1.4f, 0));
     camera_->SetTargetOffset(Vector3(0.8f, 1.4f, 0));
-    camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
+
+    camera_->SetCameraLagSpeed(Vector3(10.0f,2.0f,2.0f));
 
     //トランスフォーム設定
     /*transform_->SetScaleFactor(7.0f);

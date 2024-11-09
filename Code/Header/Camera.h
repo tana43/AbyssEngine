@@ -56,7 +56,11 @@ namespace AbyssEngine
         Vector3 WorldToViewportPosition(Vector3 worldPosition); //ワールド座標からビューポート座標へ
 
         //前方向取得
-        Vector3 GetForward();
+        const Vector3& GetForward() { return forward_; }
+        //右方向取得
+        const Vector3& GetRight() { return right_; }
+        //上方向取得
+        const Vector3& GetUp() { return up_; }
 
     private:
         void ZoomUpdate();
@@ -99,12 +103,13 @@ namespace AbyssEngine
         const Vector3& GetSocketOffset() const { return socketOffset_; }
         const Vector3& GetTargetOffset() const { return targetOffset_; }
         const float& GetArmLength() const { return armLength_; }
-        const float& GetCameraLagSpeed() const { return cameraLagSpeed_; }
+        const Vector3& GetCameraLagSpeed() const { return cameraLagSpeed_; }
         void SetSocketOffset(const Vector3& offset) { socketOffset_ = offset; }
         void SetTargetOffset(const Vector3& offset) { targetOffset_ = offset; }
         void SetArmLength(const float& length) { armLength_ = length; }
 
-        void SetCameraLagSpeed(const float& speed) { cameraLagSpeed_ = speed; }
+        void SetCameraLagSpeed(const float& speed) { cameraLagSpeed_.x = speed; cameraLagSpeed_.y = speed; cameraLagSpeed_.z = speed; }
+        void SetCameraLagSpeed(const Vector3& speed) { cameraLagSpeed_ = speed; }
 
         void SetFov(const float& fov) { fov_ = fov; }
 
@@ -132,7 +137,7 @@ namespace AbyssEngine
         float armLength_ = 1.0f;//実際に使用するカメラからターゲットまでの距離
 
         bool enableCameraLag_ = true;//ターゲットへのカメラの追従を遅延させる
-        float cameraLagSpeed_ = 10.0f;//カメラの追従速度
+        Vector3 cameraLagSpeed_ = { 10.0f,10.0f,10.0f };//カメラの追従速度
         CONSTANT_FLOAT Camera_Lag_Max_Distance = 3.0f;//カメラが遅延することができる最大距離
 
         Vector2 limitAngleX_ = { -80.0f,80.0f };//x:min y:max
@@ -158,6 +163,10 @@ namespace AbyssEngine
 
         //当たり判定にのみ使用する余分に判定を取るための値
         float excessLength_ = 0.14f;
+
+        Vector3 right_;
+        Vector3 forward_;
+        Vector3 up_;
 
         //カメラシェイク
     public:

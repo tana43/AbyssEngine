@@ -15,4 +15,5 @@ struct VS_OUT
 cbuffer Cbuffer : register(b0)
 {
     float4 color;
+    float intensity;
 };

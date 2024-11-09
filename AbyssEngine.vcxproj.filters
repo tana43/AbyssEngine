@@ -441,6 +441,7 @@
       <Filter>Script\Header</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\Header\SpaceParticleEffect.h" />
+    <ClInclude Include="Scripts\Header\VitesseCameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -741,6 +742,7 @@
       <Filter>Script\Source</Filter>
     </ClCompile>
     <ClCompile Include="Scripts\Source\SpaceParticleEffect.cpp" />
+    <ClCompile Include="Scripts\Source\VitesseCameraController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

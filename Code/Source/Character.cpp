@@ -50,9 +50,16 @@ void Character::DrawImGui()
 
         ImGui::DragFloat3("Move Vec", &moveVec_.x, 0.05f, -1.0f, 1.0f);
 
-        ImGui::DragFloat("Terrain Radius", &terrainRadius_, 0.01f, 0.0f);
-        ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
-        ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
+        if (ImGui::TreeNode("Terrain Collision"))
+        {
+            ImGui::DragFloat("Terrain Radius", &terrainRadius_, 0.01f, 0.0f);
+            ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
+            ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
+            ImGui::DragFloat("Terrain Landing Dist", &pseudoLandingDist_, 0.01f, 0.0f);
+
+            ImGui::TreePop();
+        }
+
 
         ImGui::DragFloat("Max_Health", &Max_Health, 0.1f);
         ImGui::SliderFloat("Health", &health_, 0.0f, Max_Health);
@@ -142,7 +149,7 @@ void Character::TurnY(Vector3 dir, bool smooth)
     }
 
     //回転速度制限
-    std::clamp(rotSpeed, Min_Rot_Speed, Max_Rot_Speed);
+    rotSpeed = std::clamp(rotSpeed, Min_Rot_Speed, Max_Rot_Speed);
 
     //外積のY軸のみ求め、回転方向を求める
     float crossY = forward.z * dir.x - forward.x * dir.z;
@@ -540,6 +547,9 @@ void Character::UpdateVerticalMove()
             //オフセット分加算
             distance += terrainStepOffset_;
 
+            //着地判定とみなす距離分のオフセット加算
+            distance += pseudoLandingDist_;
+
             Vector3 origin = transform_->GetPosition() + centerOffset;
             Vector3 direction = velocity_.y > 0 ? Vector3(0, 1, 0) : Vector3(0, -1, 0);
             Vector3 hitPosition, hitNormal;
@@ -557,6 +567,7 @@ void Character::UpdateVerticalMove()
                 //着地した
                 Landing();
                 distance -= terrainStepOffset_;
+                //distance += pseudoLandingDist_;
                 moved.y = pos.y + direction.y * distance;
 
                 //  制限角度以内なら滑る処理はスキップ

@@ -59,7 +59,8 @@ void TrailRenderer::Initialize(const std::shared_ptr<Actor>& actor)
 void TrailRenderer::Update()
 {
 	//カラー更新
-	constantBuffer_->data_.color_ = color_ * intensity_;
+	//constantBuffer_->data_.color_ = color_ * intensity_;
+	constantBuffer_->data_.color_ = color_;
 
 	if (!isInitPosition_)
 	{
@@ -100,12 +101,13 @@ void TrailRenderer::Update()
 	//ポリゴン作成
 	{
 #if 1
+		float u = 0;
+		//UV値の加算量
+		float amount = 1.0f / (ARRAYSIZE(trailDatas) - 1);
+
 		// 保存していた頂点バッファでポリゴンを作る
 		for (int i = 0; i < MAX_POLYGON; ++i)
 		{
-			//UV値の加算量
-			float amount = 1.0f / (ARRAYSIZE(trailDatas) - 1);
-			float u = 0;
 
 			//幅を減らしていく
 			float weight = static_cast<float>(MAX_POLYGON - i) / static_cast<float>(MAX_POLYGON);

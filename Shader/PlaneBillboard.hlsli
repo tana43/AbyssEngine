@@ -5,6 +5,7 @@ cbuffer ConstantBuffer : register(b0)
 {
     row_major matrix worldMatrix;
     float4 color_;
+    float intensity_;
 };
 
 struct VS_IN

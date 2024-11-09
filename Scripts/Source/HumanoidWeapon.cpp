@@ -21,6 +21,7 @@ HumanoidWeapon::HumanoidWeapon()
     terrainRadius_ = 3.77f;
     terrainCenterOffset_ = 1.03f;
     terrainStepOffset_ = 7.7f;
+    pseudoLandingDist_ = 1.0f;
 }
 
 void HumanoidWeapon::Update()

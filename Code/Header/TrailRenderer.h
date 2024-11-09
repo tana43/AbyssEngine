@@ -21,13 +21,14 @@ namespace AbyssEngine
     public:
         void SetWidth(float width) { width_ = width; }
         void SetColor(Vector4 col) { color_ = col; }
-        void SetBrightness(float bright) { intensity_ = bright; }
+        void SetIntensity(float intensity) { constantBuffer_->data_.intensity_ = intensity; }
 
     public:
         struct Constant
         {
             DirectX::XMFLOAT4 color_ = { 1,1,1,1 };
             //DirectX::XMFLOAT2 uvScrollSpeed_;
+            float intensity_ = 1.0f;
         };
         const std::unique_ptr<ConstantBuffer<Constant>>& GetConstantBuffer() { return constantBuffer_; }
 
@@ -67,9 +68,6 @@ namespace AbyssEngine
 
         //ëOâÒÇÃç¿ïW
         Vector3 previousPosition_;
-
-        //ñæÇÈÇ≥
-        float intensity_ = 1.0f;
 
 
         Microsoft::WRL::ComPtr<ID3D11VertexShader>	     vertexShader_;

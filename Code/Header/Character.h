@@ -140,8 +140,8 @@ namespace AbyssEngine
         float Max_Vertical_Speed = 20.0f;//縦方向に対する最大速度
 
         float baseRotSpeed_ = 300.0f;//回転速度
-        float Max_Rot_Speed = 800.0f;//最大回転速度
-        float Min_Rot_Speed = 300.0f;//最低回転速度
+        float Max_Rot_Speed = 1200.0f;//最大回転速度
+        float Min_Rot_Speed = 1.0f;//最低回転速度
 
         float airborneCoefficient_ = 0.3f;//空中にいる際に地上よりも移動の自由を効かなくするための値
         float airResistance_ = 0.2f;//空気抵抗
@@ -173,6 +173,9 @@ namespace AbyssEngine
         float hitStopTimer_ = 100;//時間計測用
 
         bool isDead_ = false;
+
+        //着地しているとみなす地面までの距離 ※着地判定が曖昧でガタガタしないようにするため
+        float pseudoLandingDist_ = 0.01f;
         
     };
 }

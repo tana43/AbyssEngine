@@ -8,6 +8,7 @@
 #include "LineRenderer.h"
 #include "Easing.h"
 #include "StageManager.h"
+#include <cmath>
 
 #include <iostream>
 #include <fstream>
@@ -45,7 +46,7 @@ void Camera::DrawImGui()
         ImGui::DragFloat("Far Z", &farZ_, 1.0f, 0.1f);
 
         ImGui::DragFloat("Arm Length", &armLength_, 0.01f, 0.1f);
-        ImGui::DragFloat("Camera Lag Speed", &cameraLagSpeed_, 0.01f,0.001f);
+        ImGui::DragFloat3("Camera Lag Speed", &cameraLagSpeed_.x, 0.01f,0.001f);
         ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.01f);
         ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.01f);
 
@@ -155,6 +156,9 @@ void Camera::Update()
     const Vector3 forward = {R._31,R._32,R._33};
     const Vector3 right = { R._11,R._12,R._13 };
     const Vector3 up = { R._21,R._22,R._23 };
+    forward_ = forward;
+    right_   = right;
+    up_      = up;
 
     //ビュー行列作成
     if (viewTarget_)
@@ -442,13 +446,6 @@ Vector3 AbyssEngine::Camera::WorldToViewportPosition(Vector3 worldPosition)
     return viewportPosition;
 }
 
-Vector3 AbyssEngine::Camera::GetForward()
-{
-    Vector3 eyeToFocus = focus_ - eye_;
-    eyeToFocus.Normalize();
-
-    return eyeToFocus;
-}
 
 void Camera::ZoomUpdate()
 {
@@ -538,9 +535,22 @@ void Camera::CameraLagUpdate()
     //カメラからビューターゲットへのベクトル
     const auto& vec = target - cameraPos;
 
-    //移動ベクトル計算
-    Vector3 moveVec = Vector3::Lerp(Vector3(0,0,0), vec, 1.0f / cameraLagSpeed_) * actor_->GetDeltaTime() * 100.0f;// * 100.0f単純に値が小さすぎるから増やしてるだけ
-    if (moveVec.LengthSquared() > vec.LengthSquared())
+    //各軸補間値算出
+    //x：右ベクトル、y：上ベクトル、z：前ベクトル
+    Vector3 moveVec = {
+        std::lerp(0.0f, vec.x, 1.0f / cameraLagSpeed_.x),
+        std::lerp(0.0f, vec.y, 1.0f / cameraLagSpeed_.y),
+        std::lerp(0.0f, vec.z, 1.0f / cameraLagSpeed_.z)
+    };
+
+    Vector3 velocity = {
+        (forward_.x + right_.x + up_.x) * moveVec.x,
+        (forward_.y + right_.y + up_.y) * moveVec.y,
+        (forward_.z + right_.z + up_.z) * moveVec.z,
+    };
+    velocity = velocity * actor_->GetDeltaTime() * 100.0f;
+    
+    if (velocity.LengthSquared() > vec.LengthSquared())
     {
         /*Vector3 vecNormal;
         moveVec.Normalize(vecNormal);
@@ -550,7 +560,7 @@ void Camera::CameraLagUpdate()
     }
     else
     {
-        cameraPos = cameraPos + moveVec;
+        cameraPos = cameraPos + velocity;
     }
 
     transform_->SetPosition(cameraPos);

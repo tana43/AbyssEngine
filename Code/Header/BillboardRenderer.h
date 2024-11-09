@@ -30,6 +30,7 @@ namespace AbyssEngine
         {
             Matrix worldMatrix_;
             Vector4 color_ = {1,1,1,1};
+            float intensity_ = 1.0f;
         };
 
     public:
@@ -41,6 +42,7 @@ namespace AbyssEngine
         void SetOffsetPos(const Vector3& pos) { offsetPos_ = pos; }
         void SetRotationZ(const float& rot) { rotZ_ = rot; }
         void SetScale(const float& sca) { offsetScale_ = sca; }
+        void SetIntensity(const float& intensity) { constantBuffer_->data_.intensity_ = intensity; }
 
     private:
         // ’¸“_\‘¢‘Ì

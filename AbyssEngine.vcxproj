@@ -128,6 +128,7 @@
     <ClInclude Include="Scripts\Header\GameUIAdmin.h" />
     <ClInclude Include="Scripts\Header\Vitesse.h" />
     <ClInclude Include="Scripts\Header\VitesseAnimState.h" />
+    <ClInclude Include="Scripts\Header\VitesseCameraController.h" />
     <ClInclude Include="Scripts\Header\VitesseConstants.h" />
     <ClInclude Include="Scripts\Header\VitesseState.h" />
   </ItemGroup>
@@ -230,6 +231,7 @@
     <ClCompile Include="Scripts\Source\GameUIAdmin.cpp" />
     <ClCompile Include="Scripts\Source\Vitesse.cpp" />
     <ClCompile Include="Scripts\Source\VitesseAnimState.cpp" />
+    <ClCompile Include="Scripts\Source\VitesseCameraController.cpp" />
     <ClCompile Include="Scripts\Source\VitesseConstants.cpp" />
     <ClCompile Include="Scripts\Source\VitesseState.cpp" />
   </ItemGroup>

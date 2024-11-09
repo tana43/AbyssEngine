@@ -76,7 +76,7 @@ public:
 
     void SetEnableMuzzleFlashParticleEffect(const bool& enable) { enableMuzzleFlashParticleEffect_ = enable; }
 
-    void SetBeamBrightness(const float& bright) { beamBrightness_ = bright; }
+    void SetBeamBrightness(const float& bright) { beamIntensity_ = bright; }
 
     void SetBeamParticleColor(const AbyssEngine::Vector4& col) { beamParticleColor_ = col; }
 
@@ -154,7 +154,7 @@ private:
     float homingStrength_ = 1.0f;
 
     //ビームの明るさ
-    float beamBrightness_ = 1.0f;
+    float beamIntensity_ = 4.0f;
 
     //マズルフラッシュ用のパーティクルエフェクトを再生するか
     bool enableMuzzleFlashParticleEffect_ = true;
