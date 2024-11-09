@@ -174,7 +174,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     camera_->SetBaseArmLength(0.4f);
     camera_->SetTargetOffset(Vector3(0.29f, 0.6f, 0));
     camera_->SetArmLength(0.4f);
-    camera_->SetCameraLagSpeed(0.05f);
+    camera_->SetCameraLagSpeed(Vector3(1.0f,1.3f,1.0f));
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
 

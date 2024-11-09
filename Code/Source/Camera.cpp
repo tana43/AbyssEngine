@@ -47,6 +47,7 @@ void Camera::DrawImGui()
 
         ImGui::DragFloat("Arm Length", &armLength_, 0.01f, 0.1f);
         ImGui::DragFloat3("Camera Lag Speed", &cameraLagSpeed_.x, 0.01f,0.001f);
+        ImGui::Checkbox("Enable Camera Lag", &enableCameraLag_);
         ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.01f);
         ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.01f);
 
@@ -156,9 +157,6 @@ void Camera::Update()
     const Vector3 forward = {R._31,R._32,R._33};
     const Vector3 right = { R._11,R._12,R._13 };
     const Vector3 up = { R._21,R._22,R._23 };
-    forward_ = forward;
-    right_   = right;
-    up_      = up;
 
     //ビュー行列作成
     if (viewTarget_)
@@ -445,6 +443,26 @@ Vector3 AbyssEngine::Camera::WorldToViewportPosition(Vector3 worldPosition)
     
     return viewportPosition;
 }
+//
+//Vector3 AbyssEngine::Camera::GetForward()
+//{
+//    const Vector3 v = focus_ - eye_;
+//    v.Normalize();
+//    return v;
+//}
+//
+//Vector3 AbyssEngine::Camera::GetRight()
+//{
+//    const Vector3 f = GetForward();
+//    Vector3 cross = Vector3::Up.Cross(f);
+//    cross.Normalize();
+//    return cross;
+//}
+//
+//Vector3 AbyssEngine::Camera::GetUp()
+//{
+//    return GetForward().Cross(GetRight());
+//}
 
 
 void Camera::ZoomUpdate()
@@ -527,43 +545,55 @@ void Camera::CameraLagUpdate()
 
     auto cameraPos = transform_->GetPosition();
 
-    //const auto& offset = transform_->GetRight() * targetOffset_.x + transform_->GetUp() * targetOffset_.y + transform_->GetForward() * targetOffset_.z;
-    //const auto& target = viewTarget_->GetPosition() + offset;
     //回転は後から計算するので無視する
     const auto& target = viewTarget_->GetPosition();
 
-    //カメラからビューターゲットへのベクトル
-    const auto& vec = target - cameraPos;
-
-    //各軸補間値算出
-    //x：右ベクトル、y：上ベクトル、z：前ベクトル
-    Vector3 moveVec = {
-        std::lerp(0.0f, vec.x, 1.0f / cameraLagSpeed_.x),
-        std::lerp(0.0f, vec.y, 1.0f / cameraLagSpeed_.y),
-        std::lerp(0.0f, vec.z, 1.0f / cameraLagSpeed_.z)
-    };
-
-    Vector3 velocity = {
-        (forward_.x + right_.x + up_.x) * moveVec.x,
-        (forward_.y + right_.y + up_.y) * moveVec.y,
-        (forward_.z + right_.z + up_.z) * moveVec.z,
-    };
-    velocity = velocity * actor_->GetDeltaTime() * 100.0f;
-    
-    if (velocity.LengthSquared() > vec.LengthSquared())
+    if (enableCameraLag_)
     {
-        /*Vector3 vecNormal;
-        moveVec.Normalize(vecNormal);
-        moveVec = vecNormal * vec.Length();*/
+        //カメラからビューターゲットへのベクトル
+        const auto& vec = target - cameraPos;
+        const Vector3 vecNormal = vec.Normalize();
+        const float dist = vec.Length();
 
-        cameraPos = target;
+        //カメラから見たローカル空間ベクトル算出
+        Matrix mat = transform_->CalcWorldMatrix();
+        Matrix matInvarse = mat.Invert();
+        //Vector3 localMoveVec = Vector3::TransformNormal(vec,matInvarse);
+        Vector3 localMoveVecNormal = Vector3::TransformNormal(vecNormal, matInvarse);
+
+        //それぞれ補間値に応じて移動量を制限
+        /*Vector3 moveVec = {
+            std::lerp(0.0f,localMoveVec.x,1.0f / cameraLagSpeed_.x),
+            std::lerp(0.0f,localMoveVec.y,1.0f / cameraLagSpeed_.y),
+            std::lerp(0.0f,localMoveVec.z,1.0f / cameraLagSpeed_.z)
+        };*/
+        Vector3 moveVecNormal = {
+            std::lerp(0.0f,localMoveVecNormal.x,1.0f / cameraLagSpeed_.x),
+            std::lerp(0.0f,localMoveVecNormal.y,1.0f / cameraLagSpeed_.y),
+            std::lerp(0.0f,localMoveVecNormal.z,1.0f / cameraLagSpeed_.z)
+        };
+
+        //ワールド空間へ戻す
+        //Vector3 worldMoveVec = Vector3::TransformNormal(moveVec, mat);
+        Vector3 worldMoveVecNormal = Vector3::TransformNormal(moveVecNormal, mat);
+
+        Vector3 velocity = worldMoveVecNormal * dist;
+        //velocity *= 0.333333f;
+        velocity *= actor_->GetDeltaTime() * 10.0f;
+
+        //速度制限
+        if (fabsf(velocity.x) > fabsf(vec.x))velocity.x = vec.x;
+        if (fabsf(velocity.y) > fabsf(vec.y))velocity.y = vec.y;
+        if (fabsf(velocity.z) > fabsf(vec.z))velocity.z = vec.z;
+            
+        cameraPos += velocity;
+        transform_->SetPosition(cameraPos);
     }
     else
     {
-        cameraPos = cameraPos + velocity;
+        transform_->SetPosition(target);
     }
 
-    transform_->SetPosition(cameraPos);
 }
 
 void AbyssEngine::Camera::CameraRollController()

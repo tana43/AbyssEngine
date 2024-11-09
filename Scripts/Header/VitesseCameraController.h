@@ -17,6 +17,6 @@ public:
 
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
-
+    std::shared_ptr<AbyssEngine::Transform> targetTransform_;
 };
 

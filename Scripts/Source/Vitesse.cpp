@@ -61,8 +61,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     camera_->SetBaseTargetOffset(Vector3(0.8f, 1.4f, 0));
     camera_->SetTargetOffset(Vector3(0.8f, 1.4f, 0));
     camera_->SetEnableDebugController(false);
-
-    camera_->SetCameraLagSpeed(Vector3(10.0f,2.0f,2.0f));
+    camera_->SetCameraLagSpeed(Vector3(3.25f,2.0f,2.0f));
 
     //トランスフォーム設定
     /*transform_->SetScaleFactor(7.0f);
@@ -831,7 +830,7 @@ void Vitesse::Flinch(StaggerType type)
 void Vitesse::RotateToFront()
 {
     //カメラが向いている向きに回転させる
-    Vector3 cameraForward = camera_->GetForward();
+    Vector3 cameraForward = camera_->GetTransform()->GetForward();
     TurnY(cameraForward);
 }
 

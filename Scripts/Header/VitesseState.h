@@ -51,7 +51,7 @@ namespace VitesseState
         float dodgeTime_ = 0.3f;
         float dodgeCameraArmLength_ = 40.0f;
         float highSpeedCameraArmLength_ = 26.0f;
-        float cameraLagSpeed = 35.0f;
+        AbyssEngine::Vector3 cameraLagSpeed = { 4.0f,4.0f,3.0f };
 
         //ŽÎ‚ß‰ñ”ð‚ð‚µ‚Ä‚¢‚é‚©
         bool rollingDodge_ = false;
@@ -125,7 +125,7 @@ namespace VitesseState
 
     private:
         float cameraArmLength_ = 35.0f;
-        float cameraLagSpeed_ = 30.0f;
+        AbyssEngine::Vector3 cameraLagSpeed_ = { 4.0f,4.0f,4.0f, };
 
         int step_ = 0;
     };

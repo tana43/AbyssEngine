@@ -199,6 +199,8 @@ namespace AbyssEngine
 		void Clamp(const Vector3& vmin, const Vector3& vmax);
 		void Clamp(const Vector3& vmin, const Vector3& vmax, Vector3& result) const;
 
+		static Vector3 Abs(const Vector3& v);
+
 		// Static functions
 		static float Distance(const Vector3& v1, const Vector3& v2);
 		static float DistanceSquared(const Vector3& v1, const Vector3& v2);
@@ -1447,6 +1449,16 @@ namespace AbyssEngine
 		XMVECTOR v3 = XMLoadFloat3(&vmax);
 		XMVECTOR X = XMVectorClamp(v1, v2, v3);
 		XMStoreFloat3(&result, X);
+	}
+
+	inline Vector3 Vector3::Abs(const Vector3& v)
+	{
+		using namespace DirectX;
+		Vector3 result;
+		XMVECTOR v1 = XMLoadFloat3(&v);
+		v1 = DirectX::XMVectorAbs(v1);
+		XMStoreFloat3(&result, v1);
+		return result;
 	}
 
 	//------------------------------------------------------------------------------
