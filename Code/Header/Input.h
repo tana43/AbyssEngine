@@ -49,6 +49,10 @@ namespace AbyssEngine
             static const bool GetMeleeAttackButton();//近接攻撃
 
             static const bool GetBoardingButton();//ヴィテス搭乗ボタン-
+
+
+            //システム周り
+            static const bool GetDecideButton();
         };
         
     private:

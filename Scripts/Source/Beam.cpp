@@ -13,7 +13,7 @@ void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     Projectile::Initialize(actor);
 
     billboardRenderer_ = actor->AddComponent<BillboardRenderer>("./Assets/Effects/Texture/Particle04_bokashi_soft.png");
-    billboardRenderer_->SetIntensity(10.0f);
+    billboardRenderer_->SetIntensity(2.0f);
 
     trailRenderer_ = actor->AddComponent<TrailRenderer>("./Assets/Effects/TrailTexture/Beam.png");
 
@@ -27,7 +27,7 @@ void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     particleEmitPrameter_.emitNum_ = 12;
     particleEmitPrameter_.color_ = { 0,0.25f,1.0f,1.0f };
     particleEmitPrameter_.intensity_ = 100.0f;
-    particleEmitPrameter_.colorAmplitud_ = { 0,0.1f,1.0f,0 };
+    particleEmitPrameter_.colorAmplitud_ = { 0,0,0,0 };
     particleEmitPrameter_.positionAmplitude_ = {2.0f,2.0f,2.0f};
     particleEmitPrameter_.scaleInit_ = { 0.4f,0.4f };
     particleEmitPrameter_.rotationAmplitude_ = { 0,0,180.0f };
@@ -87,4 +87,9 @@ void Beam::SetIntensity(const float& bright)
 {
     trailRenderer_->SetIntensity(bright);
     particleEmitPrameter_.intensity_ = bright;
+}
+
+void Beam::SetParticleIntensity(const float& intensity)
+{
+    particleEmitPrameter_.intensity_ = intensity;
 }

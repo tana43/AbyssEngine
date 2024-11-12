@@ -234,6 +234,8 @@ void AbyssEngine::SpriteRenderer::DrawImGui()
 	ImGui::SetNextItemOpen(false,ImGuiCond_FirstUseEver);
 	if (ImGui::TreeNode(filePath_.c_str()))
 	{
+		ImGui::Checkbox("Enable", &enabled_);
+
 		ImGui::DragFloat2("Size", &size_.x, 0.1f, 0.0f);
 		ImGui::DragFloat2("Scale", &scale_.x, 0.01f, 0.0f);
 		ImGui::DragFloat2("UV Origin", &uvOrigin_.x, 0.1f, 0.0f);

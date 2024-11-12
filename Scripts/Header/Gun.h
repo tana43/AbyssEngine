@@ -55,6 +55,7 @@ public:
     void SetRateOfFire(const float& rate) { rateOfFire_ = rate; }
 
     const std::shared_ptr<AbyssEngine::BillboardRenderer>& GetMuzzleFlashComponent() const { return muzzleFlashComponent_; }
+    const std::shared_ptr<AbyssEngine::BillboardRenderer>& GetBeamMuzzleFlashComponent() const { return beamMuzzleFlashComponent_; }
 
     void SetColliderTag(AbyssEngine::Collider::Tag tag) { colliderTag_ = static_cast<unsigned int>(tag); }
 
@@ -76,13 +77,17 @@ public:
 
     void SetEnableMuzzleFlashParticleEffect(const bool& enable) { enableMuzzleFlashParticleEffect_ = enable; }
 
-    void SetBeamBrightness(const float& bright) { beamIntensity_ = bright; }
+    void SetBeamIntensity(const float& intensity) { beamIntensity_ = intensity; }
+
+    void SetBeamParticleIntensity(const float& intensity) { beamParticleIntensity_ = intensity; }
 
     void SetBeamParticleColor(const AbyssEngine::Vector4& col) { beamParticleColor_ = col; }
 
     void SetActiveRateOfFire(const bool& active) { activeRateOfFire_ = active; }
 
     void SetBulletLifespan(const float& lifespan) { bulletLifespan_ = lifespan; }
+
+    void SetTargetTransform(const std::shared_ptr<AbyssEngine::Transform>& transform) { targetTransform_ = transform; }
 
 private:
     //ADS(スコープを覗いているか)
@@ -156,11 +161,17 @@ private:
     //ビームの明るさ
     float beamIntensity_ = 4.0f;
 
+    //ビームのパーティクルの明るさ
+    float beamParticleIntensity_ = 30.0f;
+
     //マズルフラッシュ用のパーティクルエフェクトを再生するか
     bool enableMuzzleFlashParticleEffect_ = true;
 
     //目標に設定するアクターのタグ
     unsigned int targetTag_;
+
+    //ホーミングターゲット
+    std::weak_ptr<AbyssEngine::Transform> targetTransform_;
 
     AbyssEngine::Vector4 beamParticleColor_ = { 0,0.25f,1.0f,1.0f };
 };

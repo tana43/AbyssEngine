@@ -222,6 +222,7 @@ ActionBase<BossMech>::State MechIdleAction::Run(float deltaTime)
 	{
 	case 0://初期化
 		owner_->GetAnimator()->PlayAnimation("Idle");
+		owner_->ToGroundMode();
 
 		timer_ = 0.0f;
 
@@ -251,6 +252,7 @@ ActionBase<BossMech>::State MechRunAttackAction::Run(float deltaTime)
 	{
 	case 0://初期化
 		owner_->GetAnimator()->PlayAnimation("Crouching");
+		owner_->ToGroundMode();
 
 		runTimer_ = 0.0f;
 
@@ -284,11 +286,90 @@ ActionBase<BossMech>::State MechRunAttackAction::Run(float deltaTime)
 			//待機完了
 			return ActionBase::State::Complete;
 		}
-
+		
 		runTimer_ += deltaTime;
 		break;
 	}
 
+	return ActionBase::State::Run;
+}
+
+
+ActionBase<BossMech>::State MechShotBeamAction::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case static_cast<int>(Step::Init):
+
+		//初期化
+		owner_->GetAnimator()->PlayAnimation("Skill_01");
+		owner_->ToFlightMode();
+
+		timer_ = 0.0f;
+
+		step++;
+		break;
+
+	case static_cast<int>(Step::Idle):
+		//モーションがある程度進むまで待機
+		if (timer_ > shotStartTime_)
+		{
+			step++;
+		}
+
+		break;
+	case static_cast<int>(Step::Shot):
+
+		//ビームを撃つ
+		owner_->ShotHomingBeam();
+
+		//if (owner_->GetAnimator()->GetAnimationFinished())
+		if (timer_ > shotEndTime_)
+		{
+			step++;
+		}
+		break;
+	case static_cast<int>(Step::End):
+
+		//終了化
+		step = 0;
+
+		return ActionBase::State::Complete;
+
+		break;
+	}
+
+	timer_ += deltaTime;
+
+	return ActionBase::State::Run;
+}
+
+ActionBase<BossMech>::State MechFlyIdleAction::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case 0://初期化
+		owner_->GetAnimator()->PlayAnimation("Fly_Idle");
+		owner_->ToFlightMode();
+
+		timer_ = 0.0f;
+
+		step++;
+		break;
+
+	case 1:
+		//待機中
+		if (timer_ > Time)
+		{
+			step = 0;
+
+			//待機完了
+			return ActionBase::State::Complete;
+		}
+
+		timer_ += deltaTime;
+		break;
+	}
 	return ActionBase::State::Run;
 }
 

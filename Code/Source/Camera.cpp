@@ -480,9 +480,12 @@ void Camera::ZoomUpdate()
         socketOffset_.y = nextZoomParam_.socketOffset_.y;
         socketOffset_.z = nextZoomParam_.socketOffset_.z;
 
-        targetOffset_.x = nextZoomParam_.targetOffset_.x;
-        targetOffset_.y = nextZoomParam_.targetOffset_.y;
-        targetOffset_.z = nextZoomParam_.targetOffset_.z;
+        if (activeZoomTargetOffset_)
+        {
+            targetOffset_.x = nextZoomParam_.targetOffset_.x;
+            targetOffset_.y = nextZoomParam_.targetOffset_.y;
+            targetOffset_.z = nextZoomParam_.targetOffset_.z;
+        }
 
         //ズーム終了
         isZooming_ = false;
@@ -500,9 +503,12 @@ void Camera::ZoomUpdate()
     socketOffset_.y = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.socketOffset_.y,retainZoomParam_.socketOffset_.y);
     socketOffset_.z = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.socketOffset_.z,retainZoomParam_.socketOffset_.z);
 
-    targetOffset_.x = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.x,retainZoomParam_.targetOffset_.x);
-    targetOffset_.y = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.y,retainZoomParam_.targetOffset_.y);
-    targetOffset_.z = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.z,retainZoomParam_.targetOffset_.z);
+    if (activeZoomTargetOffset_)
+    {
+        targetOffset_.x = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.x, retainZoomParam_.targetOffset_.x);
+        targetOffset_.y = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.y, retainZoomParam_.targetOffset_.y);
+        targetOffset_.z = Easing::InOutSine(compValue, 1.0f, nextZoomParam_.targetOffset_.z, retainZoomParam_.targetOffset_.z);
+    }
 }                                                                                            
 
 void Camera::DebugCameraController()
@@ -582,10 +588,10 @@ void Camera::CameraLagUpdate()
         velocity *= actor_->GetDeltaTime() * 10.0f;
 
         //速度制限
-        if (fabsf(velocity.x) > fabsf(vec.x))velocity.x = vec.x;
+        /*if (fabsf(velocity.x) > fabsf(vec.x))velocity.x = vec.x;
         if (fabsf(velocity.y) > fabsf(vec.y))velocity.y = vec.y;
-        if (fabsf(velocity.z) > fabsf(vec.z))velocity.z = vec.z;
-            
+        if (fabsf(velocity.z) > fabsf(vec.z))velocity.z = vec.z;*/
+         
         cameraPos += velocity;
         transform_->SetPosition(cameraPos);
     }

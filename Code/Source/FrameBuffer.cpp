@@ -15,7 +15,7 @@ FrameBuffer::FrameBuffer(uint32_t width, uint32_t height_, bool hasDepthstencil,
     texture2dDesc_.Height = height_;
     texture2dDesc_.MipLevels = generateMips ? 0 : 1;
     texture2dDesc_.ArraySize = 1;
-    texture2dDesc_.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    texture2dDesc_.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	texture2dDesc_.SampleDesc.Count = 1;
 	texture2dDesc_.SampleDesc.Quality = 0;
 	texture2dDesc_.Usage = D3D11_USAGE_DEFAULT;

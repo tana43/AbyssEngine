@@ -63,8 +63,15 @@ void AbyssEngine::Projectile::MoveUpdate()
 void AbyssEngine::Projectile::HomingUpdate()
 {
     //ƒ^[ƒQƒbƒg‚ðŒŸõ
-    const auto& t = Engine::sceneManager_->GetActiveScene().FindByTag(targetTag_);
-    if (const auto& target = t.lock())
+    std::shared_ptr<Transform> target;
+    if (!(target = targetTransform_.lock()))
+    {
+        //“o˜^‚³‚ê‚Ä‚¢‚éƒ^[ƒQƒbƒg‚ª‚¢‚È‚¢‚È‚çƒ^ƒOŒŸõ
+        target = Engine::sceneManager_->GetActiveScene().FindByTag(targetTag_).lock()->GetTransform();
+    }
+
+
+    if (target)
     {
         //Ž©•ª‚ÌŒü‚«‚Æ“G‚ÌŒü‚«‚©‚çisŠp“x‚ð•âŠ®‚µ‚Ä‚¢‚­
         const Vector3 pos = transform_->GetPosition();

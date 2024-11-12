@@ -19,6 +19,9 @@ public:
     virtual void ToFlightMode();//フライトモードへ移行
     virtual void ToGroundMode();//陸上モードへ移行
 
+    const bool& GetIsFlightMode() const { return flightMode_; }
+    const bool& GetIsGroundMode() const { return !flightMode_; }
+
 public:
     const float& GetDefaultMaxHorizontalSpeed() const { return defaultMaxHorizontalSpeed; }
     const float& GetDefaultMaxVerticalSpeed() const { return defaultMaxVerticalSpeed; }

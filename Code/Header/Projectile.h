@@ -45,6 +45,8 @@ namespace AbyssEngine
 
         void SetLifespan(const float& lifespan) { lifespan_ = lifespan; }
 
+        void SetTargetTransfrom(const std::shared_ptr<Transform>& t) { targetTransform_ = t; }
+
     private:
         void LifeTimeUpdate();
 
@@ -75,6 +77,9 @@ namespace AbyssEngine
 
         //ホーミングするターゲットのタグ
         unsigned int targetTag_ = 0;
+
+        //ホーミングターゲット
+        std::weak_ptr<Transform> targetTransform_;
 
         //ホーミング強度
         float homingStrength_ = 1.0f;

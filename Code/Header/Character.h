@@ -94,6 +94,7 @@ namespace AbyssEngine
         //void SetExternalFactorsMove(const AbyssEngine::Vector3& move) { externalFactorsMove_ = move; } //セットは禁止！！！
         void AddExternalFactorsMove(const AbyssEngine::Vector3& move) { externalFactorsMove_ = externalFactorsMove_ + move; }
 
+        const bool& GetIsDead() const { return isDead_; }
 
     protected:
 

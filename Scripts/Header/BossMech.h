@@ -26,6 +26,10 @@ public:
         Jump_Loop,
         Jump_End,
         Crouching,//クラウチング
+
+        Fly_Idle,
+
+        Skill_01,//ビーム攻撃用
     };
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
@@ -36,7 +40,7 @@ public:
     void RushAttackUpdate();
 
     //誘導するビームを生成
-    void ShotHomingBeam();
+    bool ShotHomingBeam();
 
 public:
     const std::weak_ptr<Vitesse>& GetTargetVitesse() const { return targetVitesse_; }
@@ -50,6 +54,8 @@ private:
 
     //アタッカーシステム初期化
     void AttackerSystemInitialize();
+
+    void UpdateMuzzlePos();
 
 public:
     const std::shared_ptr<AbyssEngine::AttackerSystem>& GetAttackerSystem() const { return attackerSystem_; }
@@ -72,8 +78,8 @@ private:
     //突進攻撃の誘導の強さ　
     float rushHoming_ = 1.0f;
 
-    //ガンコンポーネント
-    std::shared_ptr<Gun> gunCom_;
+    //ガンコンポーネント左手
+    std::shared_ptr<Gun> gunComL_;
 
 
     //射撃方向を計算するようのタイマー
@@ -82,7 +88,8 @@ private:
     //一度に撃つビームの数
     int shotHomingBeamCount_ = 50;
 
-
     float beamShotTimer_;
+
+    float shotBeamActionCooldown_;
 };
 

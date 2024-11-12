@@ -147,6 +147,10 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetDirection(shootingDirection);
             proj->SetSpeed(bulletSpeed_);
             proj->SetLifespan(bulletLifespan_);
+            if (const auto& t = targetTransform_.lock())
+            {
+                proj->SetTargetTransfrom(t);
+            }
 
             //エフェクト設定
             muzzleFlashComponent_->SetVisibility(true);
@@ -173,6 +177,11 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetIntensity(beamIntensity_);
             proj->GetParticleEmitParameter().color_ = beamParticleColor_;
             proj->SetLifespan(bulletLifespan_);
+            proj->SetParticleIntensity(beamParticleIntensity_);
+            if (const auto& t = targetTransform_.lock())
+            {
+                proj->SetTargetTransfrom(t);
+            }
 
             //エフェクト設定
             beamMuzzleFlashComponent_->SetVisibility(true);

@@ -43,6 +43,7 @@ namespace AbyssEngine
         void SetRotationZ(const float& rot) { rotZ_ = rot; }
         void SetScale(const float& sca) { offsetScale_ = sca; }
         void SetIntensity(const float& intensity) { constantBuffer_->data_.intensity_ = intensity; }
+        void SetColor(const AbyssEngine::Vector4& col) { constantBuffer_->data_.color_ = col; }
 
     private:
         // ’¸“_\‘¢‘Ì

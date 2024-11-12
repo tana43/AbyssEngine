@@ -14,7 +14,7 @@ class BotAttackAction : public ActionBase<BotEnemy>
 {
 public:
 	BotAttackAction(BotEnemy* owner) : ActionBase(owner) {}
-	ActionBase::State Run(float elapsedTime)override;
+	ActionBase::State Run(float deltaTime)override;
 private:
 
 	enum class Step
@@ -34,7 +34,7 @@ class BotSideDodgeAction : public ActionBase<BotEnemy>
 {
 public:
 	BotSideDodgeAction(BotEnemy* owner) : ActionBase(owner) {}
-	ActionBase::State Run(float elapsedTime)override;
+	ActionBase::State Run(float deltaTime)override;
 private:
 	//ç∂âEÇ«ÇøÇÁÇ…à⁄ìÆÇ∑ÇÈÇ©
 	bool moveRight_;
@@ -49,7 +49,7 @@ class BotIdleAction : public ActionBase<BotEnemy>
 {
 public:
 	BotIdleAction(BotEnemy* owner) : ActionBase(owner) {}
-	ActionBase::State Run(float elapsedTime)override;
+	ActionBase::State Run(float deltaTime)override;
 
 private:
 	float timer_;
@@ -60,7 +60,7 @@ class BotWonderActioin : public ActionBase<BotEnemy>
 {
 public:
 	BotWonderActioin(BotEnemy* owner) : ActionBase(owner) {}
-	ActionBase::State Run(float elapsedTime)override;
+	ActionBase::State Run(float deltaTime)override;
 };
 
 #pragma endregion
@@ -71,7 +71,19 @@ class MechIdleAction : public ActionBase<BossMech>
 {
 public:
 	MechIdleAction(BossMech* owner) : ActionBase(owner) {}
-	ActionBase::State Run(float elapsedTime)override;
+	ActionBase::State Run(float deltaTime)override;
+
+private:
+	float timer_ = 0.0f;
+	const float Time = 1.0f;
+};
+
+// ë“ã@
+class MechFlyIdleAction : public ActionBase<BossMech>
+{
+public:
+	MechFlyIdleAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
 
 private:
 	float timer_ = 0.0f;
@@ -83,13 +95,34 @@ class MechRunAttackAction : public ActionBase<BossMech>
 {
 public:
 	MechRunAttackAction(BossMech* owner) : ActionBase(owner) {}
-	ActionBase::State Run(float elapsedTime)override;
+	ActionBase::State Run(float deltaTime)override;
 
 private:
 	float runTimer_;
 
 	//ç≈ëÂÇÃÉ_ÉbÉVÉÖéûä‘
 	const float Max_Run_Time = 4.0f;
+};
+
+//ÉrÅ[ÉÄçUåÇ
+class MechShotBeamAction : public ActionBase<BossMech>
+{
+public:
+	MechShotBeamAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+
+private:
+	enum class Step
+	{
+		Init,
+		Idle,
+		Shot,
+		End,
+	};
+
+	float timer_ = 0.0f;
+	float shotStartTime_ = 0.5f;
+	float shotEndTime_ = 1.0f;
 };
 
 //ì]ì|Ç∆Ç©ÇÕó~ÇµÇ¢Ç»

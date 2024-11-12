@@ -140,6 +140,8 @@ void VitesseState::Landing::Initialize()
 
     //スラスターを全て止める
     owner_->ThrusterAllStop();
+
+    timer_ = 0.0f;
 }
 
 void VitesseState::Landing::Update(float deltaTime)
@@ -147,7 +149,7 @@ void VitesseState::Landing::Update(float deltaTime)
     auto i = Input::GameSupport::GetMoveVector();
 
     //移動入力が入っているならGroundMoveへ
-    if (i.LengthSquared() > 0.01f)
+    if (timer_ > 0.3f && i.LengthSquared() > 0.01f)
     {
         owner_->GetAnimator()->SetAnimationTransTime(0.3f);
         owner_->ChangeActionState(Vitesse::ActionState::GMove);
@@ -158,6 +160,8 @@ void VitesseState::Landing::Update(float deltaTime)
     {
         owner_->ChangeActionState(Vitesse::ActionState::GMove);
     }
+
+    timer_ += owner_->GetActor()->GetDeltaTime();
 }
 
 void VitesseState::Landing::Finalize()

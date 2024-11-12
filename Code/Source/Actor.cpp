@@ -225,6 +225,22 @@ void Actor::RemoveParent()
 	}
 }
 
+std::weak_ptr<Actor> AbyssEngine::Actor::FindChild(std::string name)
+{
+	for (const auto& child : children_)
+	{
+		if (const auto& c = child.lock())
+		{
+			if (c->name_ == name)
+			{
+				return child;
+			}
+		}
+	}
+
+	return std::weak_ptr<Actor>();
+}
+
 bool Actor::GetActiveInHierarchy() const
 {
 	if (active_)

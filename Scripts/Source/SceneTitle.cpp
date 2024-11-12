@@ -18,6 +18,10 @@ void SceneTitle::Initialize()
     //ƒ^ƒCƒgƒ‹‰æ‘œ
     const auto& titleSprite_ = InstanceActor("Title_Sprite");
     titleSprite_->AddComponent<SpriteRenderer>("./Assets/Images/Proto_Load_01.png");
+
+    const auto& loadSprite = InstanceActor("Load");
+    loadSprite_ = loadSprite->AddComponent<SpriteRenderer>("./Assets/Images/NowLoading.png");
+    loadSprite_.lock()->SetEnable(false);
 }
 
 void SceneTitle::Update()
@@ -27,6 +31,10 @@ void SceneTitle::Update()
     if (Keyboard::GetKeyDown(DirectX::Keyboard::Enter))
     {
         Engine::sceneManager_->SetNextScene("Test");
+        if (const auto& l = loadSprite_.lock())
+        {
+            l->SetEnable(true);
+        }
     }
 }
 

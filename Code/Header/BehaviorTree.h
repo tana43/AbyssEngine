@@ -97,7 +97,14 @@ namespace AbyssEngine
 			{
 				if (active_)
 				{
-					ImGui::Text(activeNode_->GetName().c_str());
+					if (activeNode_)
+					{
+						ImGui::Text(activeNode_->GetName().c_str());
+					}
+					else
+					{
+						ImGui::Text("NONE");
+					}
 				}
 
 				ImGui::Checkbox("Active", &active_);

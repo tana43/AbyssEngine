@@ -50,6 +50,9 @@ namespace AbyssEngine
         //生成されるトレイルの幅
         float width_ = 0.1f;
 
+        //対数で保存するために変数をバッファと別に持っておく
+        float intensity_ = 1.0f;
+
         //頂点を登録する更新間隔
         float updateFrequency_ = 0.03f;
 

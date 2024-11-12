@@ -14,6 +14,7 @@
 #include "AttackerSystem.h"
 #include "Gun.h"
 #include "StageManager.h"
+#include "VitesseCameraController.h"
 
 #include "ThrusterEffect.h"
 
@@ -55,23 +56,21 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     const auto& c = Engine::sceneManager_->GetActiveScene().InstanceActor("Vitesse Camera");
     camera_ = c->AddComponent<Camera>();
     camera_->SetViewTarget(transform_.get());
+    c->AddComponent<VitesseCameraController>();
 
     //下４行後でいらんくなる
-    camera_->SetFov(DirectX::XMConvertToRadians(80.0f));
-    camera_->SetBaseTargetOffset(Vector3(0.8f, 1.4f, 0));
-    camera_->SetTargetOffset(Vector3(0.8f, 1.4f, 0));
-    camera_->SetEnableDebugController(false);
-    camera_->SetCameraLagSpeed(Vector3(3.25f,2.0f,2.0f));
+    //camera_->SetFov(DirectX::XMConvertToRadians(80.0f));
+    //camera_->SetBaseTargetOffset(Vector3(0.8f, 1.4f, 0));
+    //camera_->SetTargetOffset(Vector3(0.8f, 1.4f, 0));
+    //camera_->SetEnableDebugController(false);
+    //camera_->SetCameraLagSpeed(Vector3(3.25f,2.0f,2.0f));
 
     //トランスフォーム設定
     /*transform_->SetScaleFactor(7.0f);
     transform_->SetPosition(Vector3(0, 3.5f, 4.0f));*/
 
     //カメラ設定
-    camera_->SetArmLength(18.0f);
-    camera_->SetTargetOffset({ 12.2f,14.5f,0 });
-    camera_->SetBaseArmLength(18.0f);
-    camera_->SetBaseTargetOffset({ 12.2f,14.5f,0 });
+    
     defaultCameraLagSpeed_ = camera_->GetCameraLagSpeed();
 
     //ステートマシン設定
@@ -803,7 +802,7 @@ void Vitesse::GunInitialize(Gun& gun)
     //g.>SetRateOfFire(1.0f);
     gun.SetRateOfFire(0.3f);
     gun.SetBulletSpeed(500.0f);
-    gun.SetBeamWidth(2.7f);
+    gun.SetBeamWidth(1.0f);
     gun.SetBeamScale(1.7f);
     gun.SetBeamColor(Vector4(0.0f, 1.0f, 1.0f, 1.0f));
     gun.SetPrecision(0.0f);

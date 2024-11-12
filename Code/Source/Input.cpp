@@ -186,6 +186,7 @@ const bool AbyssEngine::Input::GameSupport::GetAimButton()
 
 const bool AbyssEngine::Input::GameSupport::GetShotButton()
 {
+    // Game: デバッグ用の射撃入力制限
     //return false;
 
     auto& i = Engine::inputManager_;
@@ -235,6 +236,18 @@ const bool AbyssEngine::Input::GameSupport::GetBoardingButton()
 {
     auto& i = Engine::inputManager_;
     if (i->keyboard_->GetKeyDown(DirectX::Keyboard::Space) ||
+        i->gamePad_.GetButtonDown() & GamePad::BTN_A)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+const bool AbyssEngine::Input::GameSupport::GetDecideButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::Enter) ||
         i->gamePad_.GetButtonDown() & GamePad::BTN_A)
     {
         return true;

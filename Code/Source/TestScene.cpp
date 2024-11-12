@@ -17,9 +17,11 @@
 #include "Input.h"
 #include "SceneManager.h"
 #include "SpaceParticleEffect.h"
+#include "GameHost.h"
 
 #include "ComputeParticleEmitter.h"
 #include "Bloom.h"
+
 
 #include "imgui/imgui.h"
 //#include "StaticMeshBatching.h"
@@ -182,7 +184,7 @@ void TestScene::Initialize()
 
     //ボス配置
     const auto& boss = InstanceActor("Boss_Mech_Test");
-    boss->AddComponent<BossMech>();
+    const auto& bc = boss->AddComponent<BossMech>();
 
     //swordEfe_ = std::make_unique<Effect>("./Assets/Effects/Thruster_01.efk");
 
@@ -205,6 +207,11 @@ void TestScene::Initialize()
     //空間パーティクル作成
     const auto& spaceParticleEmitter = InstanceActor("SpaceParticleEmitter");
     spaceParticleEmitter->AddComponent<SpaceParticleEffect>();
+
+    //ゲームクリアなどを管理する進行役を作成
+    const auto& host = InstanceActor("GameHost");
+    const auto& gh = host->AddComponent<GameHost>();
+    gh->SetBoss(bc);
 }
 
 void TestScene::Update()

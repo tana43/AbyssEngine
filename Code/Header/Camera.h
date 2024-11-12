@@ -108,6 +108,8 @@ namespace AbyssEngine
         void SetTargetOffset(const Vector3& offset) { targetOffset_ = offset; }
         void SetArmLength(const float& length) { armLength_ = length; }
 
+        void SetActiveZoomTargetOffset(const bool& active) { activeZoomTargetOffset_ = active; }
+
         //void SetCameraLagSpeed(const float& speed) { cameraLagSpeed_.x = speed; cameraLagSpeed_.y = speed; cameraLagSpeed_.z = speed; }
         void SetCameraLagSpeed(const Vector3& speed) { cameraLagSpeed_ = Vector3::Max(speed,Vector3::One); }
 
@@ -227,6 +229,8 @@ namespace AbyssEngine
 
     private:
         bool activeCameraShake_ = false;
+
+        bool activeZoomTargetOffset_ = true;
 
         Vector3 shakePosition_{ 0,0,0 };
         Vector4 shakeRotation_{ 0,0,0,1 };

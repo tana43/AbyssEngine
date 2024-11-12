@@ -53,6 +53,8 @@ namespace AbyssEngine
         void SetParent(const std::shared_ptr<Actor>& parent);//親を設定
         void RemoveParent();//親子関係を解除
 
+        [[nodiscard]] std::weak_ptr<Actor> FindChild(std::string name);
+
 
         [[nodiscard]] bool GetActive() const { return active_; };   //アクターがアクティブかどうか
         void SetActive(const bool active) { active_ = active; }

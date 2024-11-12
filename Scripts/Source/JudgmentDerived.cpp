@@ -102,3 +102,20 @@ bool MechRunAttackJudgment::Judgment()
 	return true;
 }
 #pragma endregion
+
+bool MechShotBeamJudgment::Judgment()
+{
+
+
+	return true;
+}
+
+bool MechFlyJudgment::Judgment()
+{
+	return owner_->GetIsFlightMode();
+}
+
+bool MechGroundJudgment::Judgment()
+{
+	return owner_->GetIsGroundMode();
+}

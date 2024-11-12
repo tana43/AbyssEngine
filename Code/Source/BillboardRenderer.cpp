@@ -111,7 +111,7 @@ void BillboardRenderer::Render()
 
     if (!visibility_)return;
 
-    DXSystem::SetBlendState(BS_State::Alpha);
+    //DXSystem::SetBlendState(BS_State::Alpha);
 
     //定数バッファ更新
     constantBuffer_->Activate(0, CBufferUsage::vp);
@@ -161,7 +161,8 @@ void BillboardRenderer::DrawImGui()
         ImGui::DragFloat("Rot Z", &rotZ_,0.01f);
         ImGui::DragFloat("Offset Scale", &offsetScale_,0.01f);
 
-        ImGui::ColorPicker4("Color", &constantBuffer_->data_.color_.x, ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::ColorEdit4("Color", &constantBuffer_->data_.color_.x, ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::DragFloat("Intensity", &constantBuffer_->data_.intensity_, 0.01f);
 
         ImGui::TreePop();
     }

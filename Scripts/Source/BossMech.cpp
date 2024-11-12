@@ -10,6 +10,7 @@
 #include "AttackerSystem.h"
 #include "Gun.h"
 #include "Input.h"
+#include "BillboardRenderer.h"
 
 using namespace AbyssEngine;
 
@@ -20,7 +21,8 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     HumanoidWeapon::Initialize(actor);
 
     //パラメータの設定
-    health_ = 1000.0f;
+    //health_ = 1000.0f;
+    health_ = 10.0f;
     Max_Health = 1000.0f;
     Max_Horizontal_Speed = 100.0f;
     Max_Vertical_Speed = 100.0f;
@@ -37,22 +39,44 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.glb");
     model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.gltf");
     model_->GetAnimator()->AppendAnimations({
-        "./Assets/Models/Enemy/Boss/Mech_Run.glb",
-        "./Assets/Models/Enemy/Boss/Mech_Jump_Start.glb",
-        "./Assets/Models/Enemy/Boss/Mech_Jump_Loop.glb",
-        "./Assets/Models/Enemy/Boss/Mech_Jump_End.glb",
-        "./Assets/Models/Enemy/Boss/Mech_CrouchingStart.glb",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Run.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Jump_Start.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Jump_Loop.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Jump_End.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_CrouchingStart.gltf",
+
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Fly_Idle.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Skill_03_Attacker.gltf",
+
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Skill_03_Attacker.gltf",
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Skill_03_Attacker.gltf",
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Skill_03_Attacker.gltf",
+         
+         
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Mech_Combo_01.gltf",
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Mech_Combo_02.gltf",
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Mech_Combo_03.gltf",
+
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Dash_Dodge_Left.gltf",
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Dash_Dodge_Right.gltf",
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Dash_Forward.gltf",
+        //"./Assets/Models/Enemy/Boss/Animations/Mech_Fly_Front_End.gltf",
+
+
         },
         {
             "Run",
             "Jump_Start",
             "Jump_Loop",
             "Jump_End",
-            "Crouching"
+            "Crouching",
+            "Fly_Idle",
+            "Skill_01",
         }
     );
 
     model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Crouching)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Skill_01)]->SetLoopFlag(false);
 
     transform_->SetScaleFactor(35.0f);
 
@@ -68,45 +92,47 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //アタッカーシステム
     AttackerSystemInitialize();
 
+
+    gunComL_ = actor->AddComponent<Gun>();
+    gunComL_->SetIsHoming(true);
+    gunComL_->SetTargetTag(Actor::Tag_Player);
+    gunComL_->SetBulletType(Gun::BulletType::Beam);
+    gunComL_->SetBeamColor(Vector4(0.80f, 0.15f, 0.0f, 1.0f));
+    gunComL_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    gunComL_->SetBeamIntensity(1.5f);
+    gunComL_->SetBeamParticleIntensity(30.0f);
+    gunComL_->SetEnableMuzzleFlashParticleEffect(false);
+    gunComL_->SetBulletSpeed(200.0f);
+    gunComL_->SetHomingStrength(2.0f);
+    gunComL_->SetColliderTag(Collider::Tag::Enemy);
+    gunComL_->SetActiveRateOfFire(true);
+    gunComL_->SetBulletLifespan(5.0f);
+
+    gunComL_->SetRateOfFire(0.1f);
+
+    gunComL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
+    gunComL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
+
+    actor->ReplaceTag(Actor::Tag_Enemy);
+
     //ターゲットになるヴィテスを取得
     const auto& vitesseActor = Engine::sceneManager_->GetActiveScene().Find("Vitesse");
     if (const auto& a = vitesseActor.lock())
     {
         targetVitesse_ = a->GetComponent<Vitesse>();
+
+        if (const auto& center = a->FindChild("HitCollider_LowChest").lock())
+        {
+            gunComL_->SetTargetTransform(center->GetTransform());
+        }
     }
-
-
-    gunCom_ = actor->AddComponent<Gun>();
-    gunCom_->SetIsHoming(true);
-    gunCom_->SetTargetTag(Actor::Tag_Player);
-    gunCom_->SetBulletType(Gun::BulletType::Beam);
-    gunCom_->SetBeamColor(Vector4(0.37f, 0.0f, 0.0f, 1.0f));
-    gunCom_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    gunCom_->SetBeamBrightness(1.5f);
-    gunCom_->SetEnableMuzzleFlashParticleEffect(false);
-    gunCom_->SetBulletSpeed(200.0f);
-    gunCom_->SetHomingStrength(2.0f);
-    gunCom_->SetColliderTag(Collider::Tag::Enemy);
-    gunCom_->SetActiveRateOfFire(false);
-    gunCom_->SetBulletLifespan(5.0f);
-
-    actor->ReplaceTag(Actor::Tag_Enemy);
-
-
 }
 
 void BossMech::Update()
 {
     HumanoidWeapon::Update();
 
-    Vector3 muzzlePos = transform_->GetPosition() + center_;
-    muzzlePos = muzzlePos + transform_->GetForward() * 100.0f;
-    gunCom_->SetMuzzlePos(muzzlePos);
-
-    if (Keyboard::instance_->GetKeyDown(DirectX::Keyboard::X))
-    {
-        ShotHomingBeam();
-    }
+    UpdateMuzzlePos();
 }
 
 
@@ -122,8 +148,9 @@ void BossMech::RushAttackUpdate()
     }
 }
 
-void BossMech::ShotHomingBeam()
+bool BossMech::ShotHomingBeam()
 {
+#if 0
     float interval = DirectX::XM_2PI / static_cast<float>(shotHomingBeamCount_);
     for (int i = 0; i < shotHomingBeamCount_; i++)
     {
@@ -139,10 +166,13 @@ void BossMech::ShotHomingBeam()
             sin * forward.z + sin * right.z
         };
         dire.Normalize();
-        gunCom_->Shot(dire);
+        return gunComL_->Shot(dire);
         //shotDireTimer_ += Time::GetDeltaTime() * 5.0f;
 
     }
+#else
+    return gunComL_->Shot(transform_->GetForward());
+#endif // 0
 }
 
 void BossMech::ColliderInitialize()
@@ -309,11 +339,14 @@ void BossMech::BehaviorTreeInitialize()
     aiTree_->AddNode("Root", "Scout", 1, Ai_SelectRule::Sequence, nullptr, nullptr);
 
     //戦闘ノード
-    aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
+    aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
+    aiTree_->AddNode("Battle", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
+    //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
     //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
 
     //偵察ノード
-    aiTree_->AddNode("Scout", "Idle", 1, Ai_SelectRule::Non, nullptr, new MechIdleAction(this));
+    aiTree_->AddNode("Scout", "Idle", 1, Ai_SelectRule::Non, new MechGroundJudgment(this), new MechIdleAction(this));
+    aiTree_->AddNode("Scout", "FlyIdle", 1, Ai_SelectRule::Non, new MechFlyJudgment(this), new MechFlyIdleAction(this));
 
 #if 1
     aiTree_->SetActive(false);
@@ -339,4 +372,17 @@ void BossMech::AttackerSystemInitialize()
     atkData.staggerType_ = StaggerType::Middle;
 
     attackerSystem_->RegistAttackData("Rush", atkData);
+}
+
+void BossMech::UpdateMuzzlePos()
+{
+    Matrix mat = model_->FindSocket("hand_r");
+    mat = mat * transform_->GetWorldMatrix();
+    Vector3 muzzlePos = { mat.m[3][0],mat.m[3][1],mat.m[3][2] };
+    gunComL_->SetMuzzlePos(muzzlePos);
+
+    if (Keyboard::instance_->GetKeyDown(DirectX::Keyboard::X))
+    {
+        ShotHomingBeam();
+    }
 }

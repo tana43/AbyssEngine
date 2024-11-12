@@ -750,7 +750,9 @@ void RenderManager::RenderEffect() const
 {
 	DXSystem::SetDepthStencilState(DS_State::LEqual_No_Write);
 	DXSystem::SetRasterizerState(RS_State::Cull_None);
-	DXSystem::SetBlendState(BS_State::Alpha);
+	DXSystem::SetBlendState(BS_State::Add);
+	//DXSystem::SetBlendState(BS_State::Multiply);
+	//DXSystem::SetBlendState(BS_State::Add);
 	for (auto& r : rendererEffectList_)
 	{
 		const auto& pRend = r.lock();

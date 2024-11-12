@@ -69,4 +69,30 @@ public:
 	// 判定
 	bool Judgment();
 };
+
+class MechShotBeamJudgment : Inheritance_Mech
+{
+public:
+	MechShotBeamJudgment(BossMech* owner) :JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+
+//飛行モードか
+class MechFlyJudgment : Inheritance_Mech
+{
+public:
+	MechFlyJudgment(BossMech* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+
+//地上モードか
+class MechGroundJudgment : Inheritance_Mech
+{
+public:
+	MechGroundJudgment(BossMech* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
 #pragma endregion

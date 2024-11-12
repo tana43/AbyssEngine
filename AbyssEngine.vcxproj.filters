@@ -442,6 +442,7 @@
     </ClInclude>
     <ClInclude Include="Scripts\Header\SpaceParticleEffect.h" />
     <ClInclude Include="Scripts\Header\VitesseCameraController.h" />
+    <ClInclude Include="Scripts\Header\GameHost.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -743,6 +744,7 @@
     </ClCompile>
     <ClCompile Include="Scripts\Source\SpaceParticleEffect.cpp" />
     <ClCompile Include="Scripts\Source\VitesseCameraController.cpp" />
+    <ClCompile Include="Scripts\Source\GameHost.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
