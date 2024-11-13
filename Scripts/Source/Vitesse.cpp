@@ -32,7 +32,7 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.gltf");
     model_->GetModel()->primitiveConstants_->data_.imageBasedLightingIntensity_ = 0.47f;
-    model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_ = 120.0f;
+    model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_ = 36.12f;
 
     //アニメーション初期化
     AnimationInitialize();
@@ -493,7 +493,7 @@ void Vitesse::ThrusterInfluenceVelocity()
 
     if (speed > 0.01f)
     {
-        if (!slowDown_)
+        if (!isSlowDown_)
         {
             float power = 0.6f + moveDirection_.z * 0.4f;
             thrusters_[static_cast<int>(VitesseConstants::Thruster::Location::BackPack_R_U)]->Fire(power);

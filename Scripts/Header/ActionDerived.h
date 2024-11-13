@@ -125,6 +125,24 @@ private:
 	float shotEndTime_ = 1.0f;
 };
 
+//ƒvƒŒƒCƒ„[‚Ì–Ú‚Ì‘O‚Ü‚ÅˆÚ“®‚·‚é
+class MechMoveToVitesseAction : public ActionBase<BossMech>
+{
+public:
+	MechMoveToVitesseAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+
+private:
+	enum class Step
+	{
+		Init,
+		Start,
+		Move,
+		Failed,
+		Complete,
+	};
+};
+
 //“]“|‚Æ‚©‚Í—~‚µ‚¢‚È
 
 #pragma endregion

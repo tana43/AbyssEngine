@@ -323,7 +323,7 @@ void VitesseState::HighSpeedFlight::Initialize()
 
     //ラジアルブラー設定
     auto& postEffect = Engine::renderManager_->GetBufferEffects().data_;
-    postEffect.radialBlurStrength_ = 0.5f;
+    postEffect.radialBlurStrength_ = 0.3f;
     postEffect.radialBlurSampleCount_ = 5;
 
     //カメラのズームを変更

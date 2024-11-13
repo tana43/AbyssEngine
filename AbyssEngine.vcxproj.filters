@@ -406,7 +406,6 @@
     <ClInclude Include="Code\Header\GameCollider.h">
       <Filter>Code\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\ComboAttack.h" />
     <ClInclude Include="Code\Header\ComboSystem.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
@@ -440,9 +439,18 @@
     <ClInclude Include="Scripts\Header\Beam.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\SpaceParticleEffect.h" />
-    <ClInclude Include="Scripts\Header\VitesseCameraController.h" />
-    <ClInclude Include="Scripts\Header\GameHost.h" />
+    <ClInclude Include="Scripts\Header\GameHost.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\VitesseCameraController.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Header\SpaceParticleEffect.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ComboAttack.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -742,9 +750,15 @@
     <ClCompile Include="Scripts\Source\Beam.cpp">
       <Filter>Script\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Source\SpaceParticleEffect.cpp" />
-    <ClCompile Include="Scripts\Source\VitesseCameraController.cpp" />
-    <ClCompile Include="Scripts\Source\GameHost.cpp" />
+    <ClCompile Include="Scripts\Source\GameHost.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\SpaceParticleEffect.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scripts\Source\VitesseCameraController.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

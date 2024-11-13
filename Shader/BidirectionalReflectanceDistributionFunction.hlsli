@@ -49,9 +49,9 @@ float3 BrdfSpecularGgx(float3 f0, float3 f90, float alphaRoughness, float specul
 }
 float3 PunctualRadianceClearCoat(float3 N /*clearcoat_normal*/, float3 V, float3 L, float3 H, float VoH, float3 f0, float3 f90, float clearcoatRoughness)
 {
-    float NoL = clamp(dot(N, L), 0.0, 1.0);
-    float NoV = clamp(dot(N, V), 0.0, 1.0);
-    float NoH = clamp(dot(N, H), 0.0, 1.0);
+    float NoL = clamp(dot(N, L), 0.2, 1.0);
+    float NoV = clamp(dot(N, V), 0.2, 1.0);
+    float NoH = clamp(dot(N, H), 0.2, 1.0);
     return NoL * BrdfSpecularGgx(f0, f90, clearcoatRoughness * clearcoatRoughness, 1.0, VoH, NoL, NoV, NoH);
 }
 
@@ -109,7 +109,7 @@ float3 BrdfSpecularSheen(float3 sheenColor, float sheenRoughness, float NoL, flo
 
 float3 IblRadianceGgx(float3 N, float3 V, float roughness, float3 f0, float specularWeight, float intensity)
 {
-    float NoV = clamp(dot(N, V), 0.0, 1.0);
+    float NoV = clamp(dot(N, V), 0.2, 1.0);
 	
     float2 brdfSamplePoint = clamp(float2(NoV, roughness), 0.0, 1.0);
     float2 fAb = SampleLutGgx(brdfSamplePoint).rg;
@@ -128,7 +128,7 @@ float3 IblRadianceGgx(float3 N, float3 V, float roughness, float3 f0, float spec
 // specularWeight is introduced with KHR_materials_specular
 float3 IblRadianceLambertian(float3 N, float3 V, float roughness, float3 diffuseColor, float3 f0, float specularWeight, float intensity)
 {
-    float NoV = clamp(dot(N, V), 0.0, 1.0);
+    float NoV = clamp(dot(N, V), 0.2, 1.0);
 	
     float2 brdfSamplePoint = clamp(float2(NoV, roughness), 0.0, 1.0);
     float2 fAb = SampleLutGgx(brdfSamplePoint).rg;
@@ -151,7 +151,7 @@ float3 IblRadianceLambertian(float3 N, float3 V, float roughness, float3 diffuse
 }
 float3 IblRadianceCharlie(float3 N, float3 V, float sheenRoughness, float3 sheenColor, float intensity)
 {
-    float NoV = clamp(dot(N, V), 0.0, 1.0);
+    float NoV = clamp(dot(N, V), 0.2, 1.0);
 
     float2 brdfSamplePoint = clamp(float2(NoV, sheenRoughness), 0.0, 1.0);
     float brdf = SampleLutCharlie(brdfSamplePoint).b;
@@ -218,7 +218,7 @@ float3 IblVolumeRefraction(float3 N, float3 V, float perceptualRoughness, float3
     float3 attenuated_color = ApplyVolumeAttenuation(transmitted_light, length(transmissionRay), attenuationColor, attenuationDistance);
 
     // Sample GGX LUT to get the specular component.
-    float NoV = clamp(dot(N, V), 0.0, 1.0);
+    float NoV = clamp(dot(N, V), 0.2, 1.0);
     float2 brdfSamplePoint = clamp(float2(NoV, perceptualRoughness), 0.0, 1.0);
     float2 brdf = SampleLutGgx(brdfSamplePoint).rg;
     float3 specular_color = f0 * brdf.x + f90 * brdf.y;

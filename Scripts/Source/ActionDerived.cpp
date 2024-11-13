@@ -6,6 +6,7 @@
 #include "Engine.h"
 #include "BossMech.h"
 #include "AttackerSystem.h"
+#include "Vitesse.h"
 
 using namespace AbyssEngine;
 
@@ -373,4 +374,70 @@ ActionBase<BossMech>::State MechFlyIdleAction::Run(float deltaTime)
 	return ActionBase::State::Run;
 }
 
+ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case static_cast<int>(Step::Init):
+		//‰Šú‰»
+		owner_->GetAnimator()->PlayAnimation("Fly_Front_Start");
+
+		step++;
+
+		break;
+	case static_cast<int>(Step::Start):
+
+		if (const auto& v = owner_->GetTargetVitesse().lock())
+		{
+			owner_->MoveTo(v->GetTransform()->GetPosition());
+		}
+
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			owner_->GetAnimator()->PlayAnimation("Fly_Front_Loop");
+
+			step++;
+		}
+
+		break;
+	case static_cast<int>(Step::Move):
+
+		//ƒ^[ƒQƒbƒg‚Ü‚ÅˆÚ“®‚³‚¹‚é
+		if (const auto& v = owner_->GetTargetVitesse().lock())
+		{
+			if (owner_->MoveTo(v->GetTransform()->GetPosition()))
+			{
+				step = static_cast<int>(Step::Complete);
+			}
+		}
+		else
+		{
+			step = static_cast<int>(Step::Failed);
+		}
+
+		break;
+	case static_cast<int>(Step::Complete):
+
+		//‹}’âŽ~‚³‚¹‚é
+		owner_->SetMoveVec(Vector3::Zero);
+		owner_->SetVelocity(Vector3::Zero);
+
+		step = 0;
+
+		return ActionBase::State::Complete;
+
+		break;
+	case static_cast<int>(Step::Failed):
+
+		step = 0;
+
+		return ActionBase::State::Failed;
+
+		break;
+	}
+
+	return ActionBase::State::Run;
+}
+
 #pragma endregion
+

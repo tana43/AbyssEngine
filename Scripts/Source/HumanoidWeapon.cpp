@@ -31,7 +31,7 @@ void HumanoidWeapon::Update()
 
 void HumanoidWeapon::UpdateVelocity()
 {
-    slowDown_ = false;
+    isSlowDown_ = false;
 
     //通常の速力処理に加えて、飛行モード時の速力処理を追加する
     //重力を無視し、カメラの向いている方向へ動くようにする
@@ -48,10 +48,11 @@ void HumanoidWeapon::UpdateVelocity()
                 //速度制限
                 Vector2 velocityXZ = { velocity_.x,velocity_.z };
                 float spd = velocityXZ.Length();
+
                 if (spd > Max_Horizontal_Speed)
                 {
                     velocityXZ.Normalize();
-                    if (spd - Max_Horizontal_Speed < 0.1f)
+                    if (isLimitSpeed_ || spd - Max_Horizontal_Speed < 0.1f)
                     {
                         //そのまま最大速度を代入
                         velocityXZ = velocityXZ * Max_Horizontal_Speed;
@@ -89,7 +90,7 @@ void HumanoidWeapon::UpdateVelocity()
                     velocity_.z = deceVelocityXZ.z;
 
                     //減速したのでフラグを立てる
-                    slowDown_ = true;
+                    isSlowDown_ = true;
                 }
             }
         }

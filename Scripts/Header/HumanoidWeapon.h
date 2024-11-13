@@ -44,7 +44,10 @@ protected:
     float defaultMaxHorizontalSpeed = 40.0f;
     float defaultMaxVerticalSpeed = 40.0f;
 
+    //最大速度を越えた時に速度を強制的に最大速度へ落とすか
+    bool isLimitSpeed_ = false;
+
     //減速したか
-    bool slowDown_ = false;
+    bool isSlowDown_ = false;
 };
 

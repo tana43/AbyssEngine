@@ -24,14 +24,17 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //health_ = 1000.0f;
     health_ = 10.0f;
     Max_Health = 1000.0f;
-    Max_Horizontal_Speed = 100.0f;
-    Max_Vertical_Speed = 100.0f;
-    baseRotSpeed_ = 500.0f;
-    acceleration_ = 100.0f;
+    Max_Horizontal_Speed = 200.0f;
+    Max_Vertical_Speed = 200.0f;
+    baseRotSpeed_ = 3000.0f;
+    Max_Rot_Speed = 3000.0f;
+    acceleration_ = 1000.0f;
     deceleration_ = 60.0f;
     speedingDecel_ = 200.0f;
     Gravity = -30.0f;
     center_ = { 0,100,0 };
+
+    isLimitSpeed_ = true;
 
 
     //enableGravity_ = false;
@@ -53,14 +56,19 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         //"./Assets/Models/Enemy/Boss/Animations/Mech_Skill_03_Attacker.gltf",
          
          
-        //"./Assets/Models/Enemy/Boss/Animations/Mech_Mech_Combo_01.gltf",
-        //"./Assets/Models/Enemy/Boss/Animations/Mech_Mech_Combo_02.gltf",
-        //"./Assets/Models/Enemy/Boss/Animations/Mech_Mech_Combo_03.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Combo_01.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Combo_02.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Combo_03.gltf",
 
         //"./Assets/Models/Enemy/Boss/Animations/Mech_Dash_Dodge_Left.gltf",
         //"./Assets/Models/Enemy/Boss/Animations/Mech_Dash_Dodge_Right.gltf",
         //"./Assets/Models/Enemy/Boss/Animations/Mech_Dash_Forward.gltf",
         //"./Assets/Models/Enemy/Boss/Animations/Mech_Fly_Front_End.gltf",
+
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Fly_Front_Start.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Fly_Front_Loop.gltf",
+        "./Assets/Models/Enemy/Boss/Animations/Mech_Fly_Front_End.gltf",
+
 
 
         },
@@ -72,11 +80,20 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
             "Crouching",
             "Fly_Idle",
             "Skill_01",
+            "Combo_01",
+            "Combo_02",
+            "Combo_03",
+            "Fly_Front_Start",
+            "Fly_Front_Loop",
+            "Fly_Front_End",
         }
     );
 
     model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Crouching)]->SetLoopFlag(false);
     model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Skill_01)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Fly_Front_Start)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Fly_Front_Start)]->SetAnimSpeed(2.0f);
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Fly_Front_End)]->SetLoopFlag(false);
 
     transform_->SetScaleFactor(35.0f);
 
@@ -321,6 +338,9 @@ void BossMech::ColliderInitialize()
         {
             col->ReplaceTag(Collider::Tag::Enemy);
         }
+
+        //中心になるコライダー設定
+        coreCollider_ = collider[0]->GetActor();
     }
 }
 
@@ -339,7 +359,8 @@ void BossMech::BehaviorTreeInitialize()
     aiTree_->AddNode("Root", "Scout", 1, Ai_SelectRule::Sequence, nullptr, nullptr);
 
     //戦闘ノード
-    aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
+    aiTree_->AddNode("Battle", "MoveToVitesse", 0, Ai_SelectRule::Non, nullptr, new MechMoveToVitesseAction(this));
+    //aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
     aiTree_->AddNode("Battle", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
     //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
     //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
@@ -385,4 +406,23 @@ void BossMech::UpdateMuzzlePos()
     {
         ShotHomingBeam();
     }
+}
+
+bool BossMech::MoveTo(Vector3 goalPos)
+{
+    Vector3 vec = goalPos - coreCollider_.lock()->GetTransform()->GetPosition();
+    Vector3 vecNormal;
+    vec.Normalize(vecNormal);
+
+    //キャラを動かす
+    velocity_ = vecNormal * Max_Horizontal_Speed;
+
+    const float naerRange = 40.0f;
+
+    if (vec.LengthSquared() < naerRange * naerRange)
+    {
+        return true;
+    }
+
+    return false;
 }

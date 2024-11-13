@@ -890,10 +890,15 @@ void RenderManager::IBLInitialize()
 	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
 	Texture::LoadTextureFromFile("./Assets/dds/kloofendal_48d_partly_cloudy_puresky_4k/sheen_pmrem.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);*/
 
-	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close_diffuse.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close_specular.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
-	Texture::LoadTextureFromFile("./Assets/dds/Lunar/volcanic_planet_close_sheen.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
+	/*Texture::LoadTextureFromFile("./Assets/dds/Lunar_01/volcanic_planet_close.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar_01/volcanic_planet_close_diffuse.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar_01/volcanic_planet_close_specular.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar_01/volcanic_planet_close_sheen.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);*/
+
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar_02/HDR_multi_nebulae.dds", iblShaderResourceView_[0].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar_02/diffuse_iem.dds", iblShaderResourceView_[1].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar_02/specular_pmrem.dds", iblShaderResourceView_[2].GetAddressOf(), &texture2dDesc);
+	Texture::LoadTextureFromFile("./Assets/dds/Lunar_02/sheen_pmrem.dds", iblShaderResourceView_[3].GetAddressOf(), &texture2dDesc);
 #endif // 0
 
 	Texture::LoadTextureFromFile("./Assets/dds/lut_ggx.dds", iblShaderResourceView_[4].GetAddressOf(), &texture2dDesc);

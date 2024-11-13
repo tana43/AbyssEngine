@@ -5,13 +5,13 @@
 class Vitesse;
 
 //継承元
-#define Inheritance  public State<Vitesse>
+#define VitesseInheritance  public State<Vitesse>
 
 namespace VitesseState
 {
     //Game:Vitesse 移動ステート
     //地上における移動ステート（待機も含まれている）
-    class GroundMove : Inheritance
+    class GroundMove : VitesseInheritance
     {
     public:
         GroundMove(Vitesse* vitesse) : State(vitesse, "GroundMove") {}
@@ -24,7 +24,7 @@ namespace VitesseState
 
     //Game:Vitesse 空中移動ステート
     //空中における空中移動ステート（待機も含まれている）
-    class Flight : Inheritance
+    class Flight : VitesseInheritance
     {
     public:
         Flight(Vitesse* vitesse) : State(vitesse, "Flight") {}
@@ -37,7 +37,7 @@ namespace VitesseState
 
     //Game:Vitesse 回避、高速飛行ステート
     //回避、高速移動ステート
-    class HighSpeedFlight : Inheritance
+    class HighSpeedFlight : VitesseInheritance
     {
     public:
         HighSpeedFlight(Vitesse* vitesse) : State(vitesse, "HighSpeedFlight") {}
@@ -59,7 +59,7 @@ namespace VitesseState
 
     //Game:Vitesse 離陸ステート
     //離陸ステート
-    class TakeOff : Inheritance
+    class TakeOff : VitesseInheritance
     {
     public:
         TakeOff(Vitesse* vitesse) : State(vitesse, "TakeOff") {}
@@ -78,7 +78,7 @@ namespace VitesseState
 
     //Game:Vitesse 着陸ステート
     //着陸ステート
-    class Landing : Inheritance
+    class Landing : VitesseInheritance
     {
     public:
         Landing(Vitesse* vitesse) : State(vitesse, "Landing") {}
@@ -97,7 +97,7 @@ namespace VitesseState
     };
 
     //パイロット乗り込みステート
-    class Boarding : Inheritance
+    class Boarding : VitesseInheritance
     {
     public:
         Boarding(Vitesse* vitesse) : State(vitesse, "Boarding") {}
@@ -113,7 +113,7 @@ namespace VitesseState
     };
 
     //近接攻撃を仕掛けにいくときのダッシュ
-    class MeleeAttackDash : Inheritance
+    class MeleeAttackDash : VitesseInheritance
     {
     public:
         MeleeAttackDash(Vitesse* vitesse) : State(vitesse, "MeleeAttackDash") {}
@@ -131,7 +131,7 @@ namespace VitesseState
     };
 
     //近接攻撃
-    class MeleeAttack : Inheritance
+    class MeleeAttack : VitesseInheritance
     {
     public:
         MeleeAttack(Vitesse* vitesse) : State(vitesse, "MeleeAttack") {}
@@ -144,7 +144,7 @@ namespace VitesseState
     };
 
     //ひるみ
-    class Flinch : Inheritance
+    class Flinch : VitesseInheritance
     {
     public:
         Flinch(Vitesse* vitesse) : State(vitesse, "MeleeAttack") {}
@@ -159,7 +159,7 @@ namespace VitesseState
 
     };
 
-    class Aiming : Inheritance
+    class Aiming : VitesseInheritance
     {
     public:
         Aiming(Vitesse* vitesse) : State(vitesse, "Aiming") {}

@@ -39,7 +39,7 @@ void TestScene::Initialize()
     Engine::renderManager_->GetBufferScene().data_.exposure_ = 1.0f;
     Engine::renderManager_->GetBufferEffects().data_.shadowFilterRadius_ = 4.0f;
     Engine::renderManager_->GetBufferEffects().data_.shadowColor_ = 0.25f;
-    Engine::renderManager_->GetBloom()->bloomIntensity_ = 0.15f;
+    Engine::renderManager_->GetBloom()->bloomIntensity_ = 0.29f;
     Engine::renderManager_->GetBloom()->bloomExtractionThreshold_ = 0.56f;
     Engine::renderManager_->SetCriticalDepthValue(2000.0f);
 

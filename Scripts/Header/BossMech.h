@@ -30,6 +30,14 @@ public:
         Fly_Idle,
 
         Skill_01,//ビーム攻撃用
+
+        Combo_01,//近接攻撃
+        Combo_02,//近接攻撃
+        Combo_03,//近接攻撃
+
+        Fly_Front_Start,
+        Fly_Front_Loop,
+        Fly_Front_End,
     };
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
@@ -41,6 +49,9 @@ public:
 
     //誘導するビームを生成
     bool ShotHomingBeam();
+
+    //目標座標まで移動する 移動が完了したかを返す
+    bool MoveTo(AbyssEngine::Vector3 goalPos);
 
 public:
     const std::weak_ptr<Vitesse>& GetTargetVitesse() const { return targetVitesse_; }
@@ -70,6 +81,7 @@ private:
     std::shared_ptr<AbyssEngine::BehaviorTree<BossMech>> aiTree_;
 
     //アタッカーシステム
+    //近接攻撃の当たり判定などを管理する
     std::shared_ptr<AbyssEngine::AttackerSystem> attackerSystem_;
 
     //攻撃判定用コライダー
@@ -81,6 +93,8 @@ private:
     //ガンコンポーネント左手
     std::shared_ptr<Gun> gunComL_;
 
+    //自分の中心となるコライダー
+    std::weak_ptr<AbyssEngine::Actor> coreCollider_;
 
     //射撃方向を計算するようのタイマー
     //float shotDireTimer_;
@@ -91,5 +105,6 @@ private:
     float beamShotTimer_;
 
     float shotBeamActionCooldown_;
+    
 };
 
