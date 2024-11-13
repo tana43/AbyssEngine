@@ -304,8 +304,8 @@ void Vitesse::AnimationInitialize()
 
         //çƒê∂ë¨ìxÇÃí≤êÆ
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FR))->SetAnimSpeed(0.5f);
-        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FL))->SetLoopFlag(0.5f);
-        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Flinch))->SetLoopFlag(0.64f);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FL))->SetAnimSpeed(0.5f);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Flinch))->SetAnimSpeed(0.64f);
 
 
         //ínè„à⁄ìÆ
@@ -816,6 +816,7 @@ void Vitesse::Flinch(StaggerType type)
     //    break;
     case AbyssEngine::StaggerType::Middle:
         ChangeActionState(ActionState::Flinch);
+
         break;
     //case AbyssEngine::StaggerType::Low:
     //    break;

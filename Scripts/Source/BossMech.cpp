@@ -95,6 +95,10 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Fly_Front_Start)]->SetAnimSpeed(2.0f);
     model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Fly_Front_End)]->SetLoopFlag(false);
 
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Combo_01)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Combo_02)]->SetLoopFlag(false);
+    model_->GetAnimator()->GetAnimations()[static_cast<float>(AnimationIndex::Combo_03)]->SetLoopFlag(false);
+
     transform_->SetScaleFactor(35.0f);
 
    /* const auto& coll = AddHitCollider(Vector3::Zero, 10.0f, "Collider_Chest");
@@ -360,6 +364,7 @@ void BossMech::BehaviorTreeInitialize()
 
     //í“¬ƒm[ƒh
     aiTree_->AddNode("Battle", "MoveToVitesse", 0, Ai_SelectRule::Non, nullptr, new MechMoveToVitesseAction(this));
+    aiTree_->AddNode("Battle", "Combo_01", 0, Ai_SelectRule::Non, nullptr, new MechCombo01Action(this));
     //aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
     aiTree_->AddNode("Battle", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
     //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
@@ -378,21 +383,54 @@ void BossMech::AttackerSystemInitialize()
 {
     attackerSystem_ = actor_->AddComponent<AttackerSystem>();
 
-    AttackData atkData;
-    for (auto& collider : attackColliders_)
+    //“ËiUŒ‚
     {
-        atkData.attackColliderList_.emplace_back(collider);
-    }
-    atkData.power_ = 10.0f;
-    atkData.duration_ = 7.0f;
-    atkData.maxHits_ = 1.0f;
-    atkData.staggerValue_ = 1.0f;
-    atkData.hitStopDuration_ = 0.0f;
-    atkData.hitStopOutTime_ = 0.0f;
-    atkData.knockback_ = 400.0f;
-    atkData.staggerType_ = StaggerType::Middle;
+        AttackData atkData;
+        for (auto& collider : attackColliders_)
+        {
+            atkData.attackColliderList_.emplace_back(collider);
+        }
+        atkData.power_ = 10.0f;
+        atkData.duration_ = 7.0f;
+        atkData.maxHits_ = 1.0f;
+        atkData.staggerValue_ = 1.0f;
+        atkData.hitStopDuration_ = 0.0f;
+        atkData.hitStopOutTime_ = 0.0f;
+        atkData.knockback_ = 400.0f;
+        atkData.staggerType_ = StaggerType::Middle;
 
-    attackerSystem_->RegistAttackData("Rush", atkData);
+        attackerSystem_->RegistAttackData("Rush", atkData);
+    }
+
+    //ƒRƒ“ƒ{UŒ‚01
+    {
+        AttackData atkData;
+        for (auto& collider : attackColliders_)
+        {
+            //“o˜^‚·‚éƒRƒ‰ƒCƒ_[–¼
+            if (
+                collider->GetActor()->name_ == "Collider_Lowerarm_R" ||
+                collider->GetActor()->name_ == "Collider_Hand_R" ||
+                collider->GetActor()->name_ == "Collider_Lowerarm_L" ||
+                collider->GetActor()->name_ == "Collider_Hand_L"
+                )
+            {
+                atkData.attackColliderList_.emplace_back(collider);
+            }
+        }
+        atkData.power_ = 10.0f;
+        atkData.duration_ = 1.0f;
+        atkData.maxHits_ = 1.0f;
+        atkData.staggerValue_ = 1.0f;
+        atkData.hitStopDuration_ = 0.0f;
+        atkData.hitStopOutTime_ = 0.0f;
+        atkData.knockback_ = 100.0f;
+        atkData.isHitRotate_ = true;//UŒ‚‚ªƒqƒbƒg‚µ‚½Žž‚É‚·‚®‚É‚»‚Ì•ûŒü‚Ö‘ŠŽè‚ð‰ñ“]‚³‚¹‚é
+        atkData.staggerType_ = StaggerType::Middle;
+
+        attackerSystem_->RegistAttackData("Combo_01", atkData);
+    }
+
 }
 
 void BossMech::UpdateMuzzlePos()

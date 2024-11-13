@@ -143,6 +143,11 @@ private:
 	};
 };
 
-//“]“|‚Æ‚©‚Í—~‚µ‚¢‚È
-
+//“G‚É‹ßÚUŒ‚
+class MechCombo01Action : public ActionBase<BossMech>
+{
+public:
+	MechCombo01Action(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+};
 #pragma endregion

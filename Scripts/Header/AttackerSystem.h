@@ -31,7 +31,7 @@ namespace AbyssEngine
         float hitStopDuration_ = 0.2f;//攻撃が当たった際にヒットストップする時間
         float hitStopOutTime_ = 0.05f;//ヒットストップのフェード開始時間
 
-        
+        bool isHitRotate_ = false;
 
         //判定を出現させるコライダー
         std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;

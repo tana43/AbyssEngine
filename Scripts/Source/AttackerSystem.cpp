@@ -148,6 +148,13 @@ void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& 
         const Vector3 impulse = param.vector_ * param.knockback_;
         target->AddImpulse(impulse);
 
+        //UŒ‚‚ð‹ò‚ç‚Á‚½•û‚ªAUŒ‚•ûŒü‚É‡‚í‚¹‚Ä‰ñ“]‚·‚é‚©
+        if (currentAttack_.isHitRotate_)
+        {
+            //‘¦À‚É‰ñ“]‚³‚¹‚é
+            target->TurnY(-vec,false);
+        }
+
         //‹¯‚Ý
         target->Flinch(currentAttack_.staggerType_);
     }
@@ -196,5 +203,6 @@ AttackData& AbyssEngine::AttackData::operator=(const AttackData& data)
     hitStopOutTime_     = data.hitStopOutTime_;
     attackColliderList_ = data.attackColliderList_;
     staggerType_        = data.staggerType_;
+    isHitRotate_        = data.isHitRotate_;
     return *this;
 }

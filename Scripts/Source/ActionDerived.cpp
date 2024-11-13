@@ -389,7 +389,11 @@ ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
 
 		if (const auto& v = owner_->GetTargetVitesse().lock())
 		{
-			owner_->MoveTo(v->GetTransform()->GetPosition());
+			if (owner_->MoveTo(v->GetTransform()->GetPosition()))
+			{
+				step = static_cast<int>(Step::Complete);
+				break;
+			}
 		}
 
 		if (owner_->GetAnimator()->GetAnimationFinished())
@@ -439,5 +443,38 @@ ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
 	return ActionBase::State::Run;
 }
 
-#pragma endregion
+ActionBase<BossMech>::State MechCombo01Action::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case 0:
+		//‰Šú‰»
+		owner_->GetAnimator()->PlayAnimation("Combo_01");
 
+		//UŒ‚ˆ—ŠJŽn
+		owner_->GetAttackerSystem()->Attack("Combo_01");
+
+		step++;
+
+		break;
+	case 1:
+
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			step++;
+		}
+
+		break;
+	case 2:
+
+		step = 0;
+
+		return ActionBase::State::Complete;
+
+		break;
+	}
+
+	return ActionBase::State::Run;
+}
+
+#pragma endregion

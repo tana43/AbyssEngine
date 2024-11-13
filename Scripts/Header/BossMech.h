@@ -56,6 +56,8 @@ public:
 public:
     const std::weak_ptr<Vitesse>& GetTargetVitesse() const { return targetVitesse_; }
 
+    const std::shared_ptr<AbyssEngine::AttackerSystem>& GetAttackerSystem() const { return attackerSystem_; }
+
 private:
     //コライダー設定
     void ColliderInitialize();
@@ -67,9 +69,6 @@ private:
     void AttackerSystemInitialize();
 
     void UpdateMuzzlePos();
-
-public:
-    const std::shared_ptr<AbyssEngine::AttackerSystem>& GetAttackerSystem() const { return attackerSystem_; }
 
 private:
     //std::shared_ptr<AbyssEngine::SkeletalMesh> model_;

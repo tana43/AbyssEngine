@@ -141,15 +141,15 @@ void Character::TurnY(Vector3 dir, bool smooth)
         dot = dot + 1.0f;
 
         rotSpeed = baseRotSpeed_ * rotAmount;
+
+        //回転速度制限
+        rotSpeed = std::clamp(rotSpeed, Min_Rot_Speed, Max_Rot_Speed);
         
     }
     else
     {
         rotSpeed = rotAmount;
     }
-
-    //回転速度制限
-    rotSpeed = std::clamp(rotSpeed, Min_Rot_Speed, Max_Rot_Speed);
 
     //外積のY軸のみ求め、回転方向を求める
     float crossY = forward.z * dir.x - forward.x * dir.z;
