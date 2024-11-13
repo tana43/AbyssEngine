@@ -1113,6 +1113,12 @@ bool Vitesse::ApplyDamage(const AttackParameter& param, DamageResult* damageResu
     //    }
     //}
 
+    if (hit)
+    {
+        //‚Æ‚è‚ ‚¦‚¸ƒJƒƒ‰“K“–‚É—h‚ç‚µ‚Æ‚­
+        camera_->CameraShake("DamageShake");
+    }
+
     return hit;
 }
 

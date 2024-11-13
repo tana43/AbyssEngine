@@ -477,4 +477,74 @@ ActionBase<BossMech>::State MechCombo01Action::Run(float deltaTime)
 	return ActionBase::State::Run;
 }
 
+
+ActionBase<BossMech>::State MechCombo02Action::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case 0:
+		//‰Šú‰»
+		owner_->GetAnimator()->PlayAnimation("Combo_02");
+
+		//UŒ‚ˆ—ŠJŽn
+		owner_->GetAttackerSystem()->Attack("Combo_02");
+
+		step++;
+
+		break;
+	case 1:
+
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			step++;
+		}
+
+		break;
+	case 2:
+
+		step = 0;
+
+		return ActionBase::State::Complete;
+
+		break;
+	}
+
+	return ActionBase::State::Run;
+}
+
+
+ActionBase<BossMech>::State MechCombo03Action::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case 0:
+		//‰Šú‰»
+		owner_->GetAnimator()->PlayAnimation("Combo_03");
+
+		//UŒ‚ˆ—ŠJŽn
+		owner_->GetAttackerSystem()->Attack("Combo_03");
+
+		step++;
+
+		break;
+	case 1:
+
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			step++;
+		}
+
+		break;
+	case 2:
+
+		step = 0;
+
+		return ActionBase::State::Complete;
+
+		break;
+	}
+
+	return ActionBase::State::Run;
+}
+
 #pragma endregion

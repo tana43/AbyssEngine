@@ -363,12 +363,29 @@ void BossMech::BehaviorTreeInitialize()
     aiTree_->AddNode("Root", "Scout", 1, Ai_SelectRule::Sequence, nullptr, nullptr);
 
     //í“¬ƒm[ƒh
-    aiTree_->AddNode("Battle", "MoveToVitesse", 0, Ai_SelectRule::Non, nullptr, new MechMoveToVitesseAction(this));
-    aiTree_->AddNode("Battle", "Combo_01", 0, Ai_SelectRule::Non, nullptr, new MechCombo01Action(this));
-    //aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
-    aiTree_->AddNode("Battle", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
-    //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
-    //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
+    {
+        //ƒ”ƒBƒeƒX‚Ü‚ÅÚ‹ß
+        aiTree_->AddNode("Battle", "MoveToVitesse", 0, Ai_SelectRule::Non, nullptr, new MechMoveToVitesseAction(this));
+        //aiTree_->AddNode("Battle", "Combo_01", 0, Ai_SelectRule::Non, nullptr, new MechCombo01Action(this));
+        //aiTree_->AddNode("Battle", "Combo_02", 0, Ai_SelectRule::Non, nullptr, new MechCombo02Action(this));
+        //aiTree_->AddNode("Battle", "Combo_03", 0, Ai_SelectRule::Non, nullptr, new MechCombo03Action(this));
+        // 
+        //‚RŽí‚ÌƒRƒ“ƒ{‚ð‚Ç‚ê‚©Ž©“®‚Å‘I‘ð‚µAŽÀs‚³‚¹‚é
+        aiTree_->AddNode("Battle", "Combo_Random", 0, Ai_SelectRule::Random, nullptr, nullptr);
+        {
+            aiTree_->AddNode("Combo_Random", "Combo_01", 0, Ai_SelectRule::Non, nullptr, new MechCombo01Action(this));
+            aiTree_->AddNode("Combo_Random", "Combo_02", 0, Ai_SelectRule::Non, nullptr, new MechCombo02Action(this));
+            aiTree_->AddNode("Combo_Random", "Combo_03", 0, Ai_SelectRule::Non, nullptr, new MechCombo03Action(this));
+
+        }
+
+        aiTree_->AddNode("Battle", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
+
+
+        //aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
+        //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
+        //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
+    }
 
     //’ãŽ@ƒm[ƒh
     aiTree_->AddNode("Scout", "Idle", 1, Ai_SelectRule::Non, new MechGroundJudgment(this), new MechIdleAction(this));
@@ -409,11 +426,14 @@ void BossMech::AttackerSystemInitialize()
         {
             //“o˜^‚·‚éƒRƒ‰ƒCƒ_[–¼
             if (
-                collider->GetActor()->name_ == "Collider_Lowerarm_R" ||
-                collider->GetActor()->name_ == "Collider_Hand_R" ||
                 collider->GetActor()->name_ == "Collider_Lowerarm_L" ||
-                collider->GetActor()->name_ == "Collider_Hand_L"
+                collider->GetActor()->name_ == "Collider_Hand_L" ||
+                collider->GetActor()->name_ == "Collider_Thigh_R"||
+                collider->GetActor()->name_ == "Collider_Knee_R" ||
+                collider->GetActor()->name_ == "Collider_Downknee_R" ||
+                collider->GetActor()->name_ == "Collider_Foot_R"
                 )
+
             {
                 atkData.attackColliderList_.emplace_back(collider);
             }
@@ -429,6 +449,66 @@ void BossMech::AttackerSystemInitialize()
         atkData.staggerType_ = StaggerType::Middle;
 
         attackerSystem_->RegistAttackData("Combo_01", atkData);
+    }
+
+    //ƒRƒ“ƒ{UŒ‚02
+    {
+        AttackData atkData;
+        for (auto& collider : attackColliders_)
+        {
+            //“o˜^‚·‚éƒRƒ‰ƒCƒ_[–¼
+            if (
+                collider->GetActor()->name_ == "Collider_Lowerarm_R" ||
+                collider->GetActor()->name_ == "Collider_Hand_R" ||
+                collider->GetActor()->name_ == "Collider_Lowerarm_L" ||
+                collider->GetActor()->name_ == "Collider_Hand_L"
+                )
+            {
+                atkData.attackColliderList_.emplace_back(collider);
+            }
+        }
+        atkData.power_ = 10.0f;
+        atkData.duration_ = 1.0f;
+        atkData.maxHits_ = 1.0f;
+        atkData.staggerValue_ = 1.0f;
+        atkData.hitStopDuration_ = 0.0f;
+        atkData.hitStopOutTime_ = 0.0f;
+        atkData.knockback_ = 200.0f;
+        atkData.isHitRotate_ = true;//UŒ‚‚ªƒqƒbƒg‚µ‚½Žž‚É‚·‚®‚É‚»‚Ì•ûŒü‚Ö‘ŠŽè‚ð‰ñ“]‚³‚¹‚é
+        atkData.staggerType_ = StaggerType::Middle;
+
+        attackerSystem_->RegistAttackData("Combo_02", atkData);
+    }
+
+    //ƒRƒ“ƒ{UŒ‚03
+    {
+        AttackData atkData;
+        for (auto& collider : attackColliders_)
+        {
+            //“o˜^‚·‚éƒRƒ‰ƒCƒ_[–¼
+            if (
+                collider->GetActor()->name_ == "Collider_Lowerarm_R" ||
+                collider->GetActor()->name_ == "Collider_Hand_R" ||
+                collider->GetActor()->name_ == "Collider_Thigh_L" ||
+                collider->GetActor()->name_ == "Collider_Knee_L" ||
+                collider->GetActor()->name_ == "Collider_Downknee_L" ||
+                collider->GetActor()->name_ == "Collider_Foot_L"
+                )
+            {
+                atkData.attackColliderList_.emplace_back(collider);
+            }
+        }
+        atkData.power_ = 10.0f;
+        atkData.duration_ = 1.0f;
+        atkData.maxHits_ = 1.0f;
+        atkData.staggerValue_ = 1.0f;
+        atkData.hitStopDuration_ = 0.0f;
+        atkData.hitStopOutTime_ = 0.0f;
+        atkData.knockback_ = 100.0f;
+        atkData.isHitRotate_ = true;//UŒ‚‚ªƒqƒbƒg‚µ‚½Žž‚É‚·‚®‚É‚»‚Ì•ûŒü‚Ö‘ŠŽè‚ð‰ñ“]‚³‚¹‚é
+        atkData.staggerType_ = StaggerType::Middle;
+
+        attackerSystem_->RegistAttackData("Combo_03", atkData);
     }
 
 }

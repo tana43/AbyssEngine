@@ -125,7 +125,7 @@ void Character::TurnY(Vector3 dir, bool smooth)
     float rotY = transform_->GetRotation().y;
 
     //内積値から最終的に向きたい角度を計算する
-    float dot = forward.Dot(dir);
+    float dot = std::clamp(forward.Dot(dir),-1.0f,1.0f);
     float rotAmount = acosf(dot);
     if (dot > 0.999f)
     {
@@ -161,7 +161,7 @@ void Character::TurnY(Vector3 dir, bool smooth)
     }
     else
     {
-        rotY += rotSpeed;
+        rotY += DirectX::XMConvertToDegrees(rotSpeed);
     }
     transform_->SetRotationY(rotY);
 }

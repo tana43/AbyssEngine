@@ -152,7 +152,7 @@ void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& 
         if (currentAttack_.isHitRotate_)
         {
             //‘¦À‚É‰ñ“]‚³‚¹‚é
-            target->TurnY(-vec,false);
+            target->TurnY(-param.vector_,false);
         }
 
         //‹¯‚Ý

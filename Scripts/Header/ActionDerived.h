@@ -150,4 +150,20 @@ public:
 	MechCombo01Action(BossMech* owner) : ActionBase(owner) {}
 	ActionBase::State Run(float deltaTime)override;
 };
+
+//“G‚É‹ßÚUŒ‚
+class MechCombo02Action : public ActionBase<BossMech>
+{
+public:
+	MechCombo02Action(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+};
+
+//“G‚É‹ßÚUŒ‚
+class MechCombo03Action : public ActionBase<BossMech>
+{
+public:
+	MechCombo03Action(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+};
 #pragma endregion
