@@ -45,6 +45,8 @@ void Input::DrawImGui()
         ImGui::Checkbox("reverse AxisR X", &reverseAxisRX_);
         ImGui::Checkbox("reverse AxisR Y", &reverseAxisRY_);
 
+        ImGui::DragFloat("Camera Roll Sensitivity",&cameraRollSensitivity_, 0.01f);
+
         ImGui::EndMenu();
     }
 }
@@ -144,6 +146,7 @@ const Vector2 Input::GameSupport::GetCameraRollVector()
     if (i->reverseAxisRX_)input.x *= -1;
     if (i->reverseAxisRY_)input.y *= -1;
     
+    input *= i->cameraRollSensitivity_;
 
     return input;
 }
@@ -176,7 +179,7 @@ const bool AbyssEngine::Input::GameSupport::GetAimButton()
 {
     auto& i = Engine::inputManager_;
     if (i->mouse_->GetButtonState().rightButton ||
-        i->gamePad_.GetButton() & GamePad::BTN_LEFT_SHOULDER)
+        i->gamePad_.GetButton() & GamePad::BTN_LEFT_TRIGGER)
     {
         return true;
     }
@@ -191,7 +194,7 @@ const bool AbyssEngine::Input::GameSupport::GetShotButton()
 
     auto& i = Engine::inputManager_;
     if (i->mouse_->GetButtonState().leftButton ||
-        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER)
+        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_TRIGGER)
     {
         return true;
     }
@@ -203,7 +206,7 @@ const bool AbyssEngine::Input::GameSupport::GetOneShotButton()
 {
     auto& i = Engine::inputManager_;
     if (i->mouse_->GetButtonDown(Mouse::BTN_LEFT) ||
-        i->gamePad_.GetButtonDown() & GamePad::BTN_RIGHT_SHOULDER)
+        i->gamePad_.GetButtonDown() & GamePad::BTN_RIGHT_TRIGGER)
     {
         return true;
     }
@@ -223,7 +226,7 @@ const bool AbyssEngine::Input::GameSupport::GetMeleeAttackButton()
     }
 #else
     if (i->keyboard_->GetKeyDown(DirectX::Keyboard::E) ||
-        i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER)
+        i->gamePad_.GetButton() & GamePad::BTN_Y)
     {
         return true;
     }

@@ -62,6 +62,12 @@ void GameUIAdmin::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetScale({ 0.5f,0.5f });
     //GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetColorAlpha(0.7f);
     GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetColor(Vector4(1,0,0,0.9f));
+
+    spriteList_.emplace_back(actor->AddComponent<SpriteRenderer>("./Assets/Images/UI/Vitesse/Boostgauge_Back.png"));
+    spriteList_.emplace_back(actor->AddComponent<SpriteRenderer>("./Assets/Images/UI/Vitesse/Boostgauge_Main.png"));
+    GetUI(Usefulness::HUD_Boost_Gauge_Back)->SetOffsetPosition(Vector2(600.0f,941.0f));
+    GetUI(Usefulness::HUD_Boost_Gauge_Main)->SetOffsetPosition(Vector2(605.2f,941.0f));
+    GetUI(Usefulness::HUD_Boost_Gauge_Main)->SetSize(Vector2(678.3,11.0f));
 }
 
 void GameUIAdmin::UpdateAfter()

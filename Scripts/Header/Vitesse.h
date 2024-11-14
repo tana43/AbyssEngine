@@ -353,5 +353,9 @@ private:
 
     //カメラの位置やロックオンの状況から狙っている位置を持たせておく
     AbyssEngine::Vector3 aimTargetPos_;
+
+    //ブーストゲージ
+    float Max_Boost_Amount = 100.0f;
+    float boostAmount_ = Max_Boost_Amount;
 };
 

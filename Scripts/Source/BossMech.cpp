@@ -535,12 +535,20 @@ bool BossMech::MoveTo(Vector3 goalPos)
     //ƒLƒƒƒ‰‚ð“®‚©‚·
     velocity_ = vecNormal * Max_Horizontal_Speed;
 
-    const float naerRange = 40.0f;
-
-    if (vec.LengthSquared() < naerRange * naerRange)
+    if (vec.LengthSquared() < nearRange_ * nearRange_)
     {
         return true;
     }
 
     return false;
+}
+
+void BossMech::DrawImGui()
+{
+    HumanoidWeapon::DrawImGui();
+
+    if (ImGui::TreeNode("BossMech"))
+    {
+        ImGui::DragFloat("Near Range", &nearRange_, 0.1f);
+    }
 }

@@ -67,6 +67,9 @@ namespace AbyssEngine
         //右スティックの反転入力
         bool reverseAxisRX_ = false;
         bool reverseAxisRY_ = true;
+
+        //カメラ回転時の感度
+        float cameraRollSensitivity_ = 2.0f;
     };
 }
 

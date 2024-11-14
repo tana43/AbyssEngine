@@ -51,7 +51,7 @@ namespace VitesseState
         float dodgeTime_ = 0.3f;
         float dodgeCameraArmLength_ = 40.0f;
         float highSpeedCameraArmLength_ = 26.0f;
-        AbyssEngine::Vector3 cameraLagSpeed = { 4.0f,4.0f,3.0f };
+        AbyssEngine::Vector3 cameraLagSpeed = { 3.0f,3.0f,1.5f };
 
         //斜め回避をしているか
         bool rollingDodge_ = false;
@@ -125,7 +125,7 @@ namespace VitesseState
 
     private:
         float cameraArmLength_ = 35.0f;
-        AbyssEngine::Vector3 cameraLagSpeed_ = { 4.0f,4.0f,4.0f, };
+        AbyssEngine::Vector3 cameraLagSpeed_ = { 3.0f,3.0f,1.5f, };
 
         int step_ = 0;
     };
@@ -168,6 +168,11 @@ namespace VitesseState
         void Initialize() override;
         void Update(float deltaTime) override;
         void Finalize() override;
+
+    private:
+        
+        //入力が途切れたときにステートが切り替わるまでの時間
+        float stateLimitTime_ = 0.3f;
     };
 }
 

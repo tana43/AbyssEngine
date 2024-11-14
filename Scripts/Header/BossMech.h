@@ -53,6 +53,8 @@ public:
     //目標座標まで移動する 移動が完了したかを返す
     bool MoveTo(AbyssEngine::Vector3 goalPos);
 
+    void DrawImGui()override;
+
 public:
     const std::weak_ptr<Vitesse>& GetTargetVitesse() const { return targetVitesse_; }
 
@@ -104,6 +106,9 @@ private:
     float beamShotTimer_;
 
     float shotBeamActionCooldown_;
+
+    //目標地点に到達したとみなす判定距離
+    float nearRange_ = 5.0f;
     
 };
 

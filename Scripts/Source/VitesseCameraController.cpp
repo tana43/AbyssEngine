@@ -17,7 +17,7 @@ void VitesseCameraController::Initialize(const std::shared_ptr<AbyssEngine::Acto
     camera_->SetBaseTargetOffset(targetOffset_);
     camera_->SetTargetOffset(targetOffset_);
     camera_->SetEnableDebugController(false);
-    camera_->SetCameraLagSpeed(Vector3(3.25f, 2.0f, 2.0f));
+    camera_->SetCameraLagSpeed(Vector3(2.0f, 2.0f, 1.3f));
     camera_->SetArmLength(18.0f);
     camera_->SetBaseArmLength(18.0f);
     camera_->SetActiveZoomTargetOffset(false);

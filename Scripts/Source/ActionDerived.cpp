@@ -376,6 +376,34 @@ ActionBase<BossMech>::State MechFlyIdleAction::Run(float deltaTime)
 
 ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
 {
+	//ターゲットまで移動させる
+	//ターゲットそのままの位置に行くとプレイヤーに押し付ける形になるので
+	//ターゲットの目の前あたりに行くようにする
+	if (const auto& v = owner_->GetTargetVitesse().lock())
+	{
+		//ターゲットの手前の位置を算出
+		Vector3 movePos;
+		Vector3 targetPos = v->GetTransform()->GetPosition();
+
+		Vector3 targetToOwner = owner_->GetTransform()->GetPosition() - targetPos;
+		Vector3 inFront = { targetToOwner.x,0,targetToOwner.z };
+		inFront.Normalize();
+
+		const float range = 20.0f;
+		inFront *= range;
+		movePos = targetPos + inFront;
+
+		if (owner_->MoveTo(movePos))
+		{
+			step = static_cast<int>(Step::Complete);
+		}
+	}
+	else
+	{
+		step = static_cast<int>(Step::Failed);
+	}
+
+
 	switch (step)
 	{
 	case static_cast<int>(Step::Init):
@@ -387,15 +415,6 @@ ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
 		break;
 	case static_cast<int>(Step::Start):
 
-		if (const auto& v = owner_->GetTargetVitesse().lock())
-		{
-			if (owner_->MoveTo(v->GetTransform()->GetPosition()))
-			{
-				step = static_cast<int>(Step::Complete);
-				break;
-			}
-		}
-
 		if (owner_->GetAnimator()->GetAnimationFinished())
 		{
 			owner_->GetAnimator()->PlayAnimation("Fly_Front_Loop");
@@ -406,18 +425,7 @@ ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
 		break;
 	case static_cast<int>(Step::Move):
 
-		//ターゲットまで移動させる
-		if (const auto& v = owner_->GetTargetVitesse().lock())
-		{
-			if (owner_->MoveTo(v->GetTransform()->GetPosition()))
-			{
-				step = static_cast<int>(Step::Complete);
-			}
-		}
-		else
-		{
-			step = static_cast<int>(Step::Failed);
-		}
+		//移動処理のとこでステップの遷移してる
 
 		break;
 	case static_cast<int>(Step::Complete):
@@ -439,6 +447,8 @@ ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
 
 		break;
 	}
+
+
 
 	return ActionBase::State::Run;
 }

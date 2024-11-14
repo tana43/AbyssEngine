@@ -693,14 +693,23 @@ void VitesseState::Aiming::Update(float deltaTime)
         Input::GameSupport::GetShotButton()
         )
     {
+        timer_ = 0.0f;
+
         owner_->BeamShot();
     }
 
     //別ステートへ
     if (!Input::GameSupport::GetShotButton())
     {
-        //空中飛行ステート
-        owner_->ChangeActionState(Vitesse::ActionState::FMove);
+        if (timer_ > stateLimitTime_)
+        {
+            //空中飛行ステート
+            owner_->ChangeActionState(Vitesse::ActionState::FMove);
+        }
+        else
+        {
+            timer_ += deltaTime;
+        }
     }
 
     //ダッシュボタンが押されているなら高速ステートへ
