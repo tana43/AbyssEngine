@@ -158,6 +158,8 @@ void Vitesse::Update()
     //射撃位置更新
     UpdateShotTarget();
 
+    //ブーストゲージ更新
+    UpdateBoostGauge();
     
 
     //RotateToFront();
@@ -179,6 +181,31 @@ void Vitesse::DrawImGui()
     {
         ImGui::DragFloat3("Muzzle Offset R",&muzzleOffsetPosR_.x, 0.05f);
         ImGui::DragFloat3("Muzzle Offset L",&muzzleOffsetPosL_.x, 0.05f);
+
+        if (ImGui::TreeNode("Boost"))
+        {
+            ImGui::DragFloat("Max Boost Amount", &Max_Boost_Amount, 0.1f);
+            ImGui::SliderFloat("Boost Amount", &boostAmount_, 0.0f,Max_Boost_Amount);
+
+            ImGui::DragFloat("Boost Heal Amount", &boostHealAmount_, 0.1f);
+            ImGui::DragFloat("Overheat Heal Amount", &boostOverHeatHealAmount_, 0.1f);
+
+            ImGui::DragFloat("Boost Heal Start Time", &boostHealStartTime_, 0.1f);
+
+            //Cost
+            if(ImGui::TreeNode("Boost Cost"))
+            {
+
+                ImGui::DragFloat("Dodge Boost Cost", &dodgeBoostCost_, 0.1f);
+                ImGui::DragFloat("Dash Boost Cost", &dashBoostCostS_, 0.1f);
+                ImGui::DragFloat("Melee Boost Cost", &meleeBoostCostS_, 0.1f);
+
+                ImGui::TreePop();
+            }
+
+
+            ImGui::TreePop();
+        }
 
         ImGui::TreePop();
     }
@@ -775,6 +802,25 @@ void Vitesse::BeamShot()
     BeamShotByComponent(*gunComponentL_.get(), targetPosition);
 }
 
+bool Vitesse::UseBoostGauge(float useBoostAmount)
+{
+    if (isBoostOverHeat_)return false;
+
+    boostTimer_ = 0.0f;
+
+    boostAmount_ = boostAmount_ - useBoostAmount;
+
+    if (boostAmount_ < 0)
+    {
+        //ブーストゲージが足りなかった
+        //オーバーヒート
+        isBoostOverHeat_ = true;
+    }
+
+    
+    return true;
+}
+
 bool Vitesse::BeamShotByComponent(Gun& gun, Vector3 targetPosition)
 {
     Vector3 shootDirection;
@@ -806,6 +852,34 @@ void Vitesse::GunInitialize(Gun& gun)
     gun.SetBeamScale(1.7f);
     gun.SetBeamColor(Vector4(0.0f, 1.0f, 1.0f, 1.0f));
     gun.SetPrecision(0.0f);
+}
+
+void Vitesse::UpdateBoostGauge()
+{
+    //ブーストが満タンか
+    if (boostAmount_ < Max_Boost_Amount)
+    {
+        //満タンじゃないなら開始時間を判定し回復させる
+        if (isBoostOverHeat_) {
+            //オーバーヒート時は即時回復
+            boostAmount_ += boostOverHeatHealAmount_ * actor_->GetDeltaTime();
+        }
+        else
+        {
+            if (boostTimer_ > boostHealStartTime_)
+            {
+                boostAmount_ += boostHealAmount_ * actor_->GetDeltaTime();
+            }
+        }
+    }
+    else
+    {
+        boostAmount_ = Max_Boost_Amount;
+
+        if(isBoostOverHeat_)isBoostOverHeat_ = false;
+    }
+
+    boostTimer_ += actor_->GetDeltaTime();
 }
 
 void Vitesse::Flinch(StaggerType type)

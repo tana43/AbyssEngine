@@ -37,7 +37,10 @@ void VitesseState::GroundMove::Update(float deltaTime)
     //ダッシュボタンが押されているなら高速ステートへ
     if (Input::GameSupport::GetDashButton())
     {
-        owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
+        if (owner_->UseBoostGauge(owner_->GetDodgeBoostCost()))
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
+        }
     }
 
     //落下モーション再生中に着地したなら着地ステートへ
@@ -94,7 +97,10 @@ void VitesseState::Flight::Update(float deltaTime)
     //ダッシュボタンが押されているなら高速ステートへ
     if (Input::GameSupport::GetDashButton())
     {
-        owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
+        if (owner_->UseBoostGauge(owner_->GetDodgeBoostCost()))
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
+        }
     }
 
     //攻撃ボタンが押されたら近接攻撃ステートへ
@@ -412,6 +418,12 @@ void VitesseState::HighSpeedFlight::Update(float deltaTime)
     //回避中は通常移動へ移行しない
     if (timer_ > dodgeTime_ && !rollingDodge_)
     {
+        //ダッシュ中ブーストゲージを消費
+        if (!owner_->UseBoostGauge(owner_->GetDashBoostCostS() * deltaTime))
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::FMove);
+        }
+
         //ダッシュボタンが押されていないなら通常飛行ステートへ
         if (!Input::GameSupport::GetDashButton())
         {
@@ -538,6 +550,15 @@ void VitesseState::MeleeAttackDash::Update(float deltaTime)
     float distanceSq = toTarget.LengthSquared();
     float range = owner_->GetMeleeAtkRange();
 
+    //ブーストゲージを消費
+    if (!owner_->UseBoostGauge(owner_->GetMeleeBoostCostS() * deltaTime))
+    {
+        //ブーストが足りないならその場で近接攻撃
+        //近接攻撃ステートへ
+        owner_->ChangeActionState(Vitesse::ActionState::MeleeAtk);
+        return;
+    }
+
     //ターゲットが近接攻撃範囲内か判定
     if (distanceSq < range * range)
     {
@@ -555,6 +576,15 @@ void VitesseState::MeleeAttackDash::Update(float deltaTime)
 
     //ターゲットを中心にラジアルブラー
     owner_->RadialBlurFromTarget();
+
+    //ダッシュボタンが押されているなら高速ステートへ
+    if (Input::GameSupport::GetDashButton())
+    {
+        if (owner_->UseBoostGauge(owner_->GetDodgeBoostCost()))
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
+        }
+    }
 }
 
 void VitesseState::MeleeAttackDash::Finalize()
@@ -604,6 +634,16 @@ void VitesseState::MeleeAttack::Update(float deltaTime)
         owner_->ChangeActionState(Vitesse::ActionState::FMove);
         return;
     }
+
+    //ダッシュボタンが押されているなら高速ステートへ
+    if (Input::GameSupport::GetDashButton())
+    {
+        if (owner_->UseBoostGauge(owner_->GetDodgeBoostCost()))
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
+            return;
+        }
+    }
 }
 
 void VitesseState::MeleeAttack::Finalize()
@@ -637,7 +677,10 @@ void VitesseState::Flinch::Update(float deltaTime)
         //ダッシュボタンが押されているなら高速ステートへ
         if (Input::GameSupport::GetDashButton())
         {
-            owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
+            if (owner_->UseBoostGauge(owner_->GetDodgeBoostCost()))
+            {
+                owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
+            }
         }
 
         //何か操作があれば空中飛行ステートへ
@@ -715,7 +758,10 @@ void VitesseState::Aiming::Update(float deltaTime)
     //ダッシュボタンが押されているなら高速ステートへ
     if (Input::GameSupport::GetDashButton())
     {
-        owner_->GetStateMachine()->ChangeState(static_cast<int>(Vitesse::ActionState::HighSpeedFlight));
+        if (owner_->UseBoostGauge(owner_->GetDodgeBoostCost()))
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
+        }
     }
 }
 

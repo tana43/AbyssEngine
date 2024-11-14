@@ -178,6 +178,15 @@ public:
 
     const AbyssEngine::Vector3& GetAimTargetPosition() const { return aimTargetPos_; }
 
+    const float& GetBoostAmount() const { return boostAmount_; }
+    const float& GetMaxBoostAmount() const { return Max_Boost_Amount; }
+
+    const float& GetDodgeBoostCost() const { return dodgeBoostCost_; }
+    const float& GetDashBoostCostS() const { return dashBoostCostS_; }
+    const float& GetMeleeBoostCostS() const { return meleeBoostCostS_; }
+
+    const bool& GetIsBoostOverHeat() const { return isBoostOverHeat_; }
+
     //ターゲットまでのベクトルを算出
     //ターゲットがいない場合は見ている方向を返す
     AbyssEngine::Vector3 ToTarget();
@@ -219,6 +228,9 @@ public:
     //ビーム攻撃
     void BeamShot();
 
+    //引数分ブーストゲージ(max100)を減らす ブーストが足りないならfalseを返す
+    bool UseBoostGauge(float useBoostAmount);
+
 private:
     void CameraRollUpdate();
 
@@ -245,7 +257,11 @@ private:
     //ビーム攻撃
     bool BeamShotByComponent(Gun& gun,AbyssEngine::Vector3 targetPosition);
 
+    //ガンコンポーネントを初期化
     void GunInitialize(Gun& gun);
+
+    //ブーストゲージ更新
+    void UpdateBoostGauge();
 
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
@@ -357,5 +373,15 @@ private:
     //ブーストゲージ
     float Max_Boost_Amount = 100.0f;
     float boostAmount_ = Max_Boost_Amount;
+    float boostHealAmount_ = 25.0f;//ブーストが１秒間に回復する量
+    float boostOverHeatHealAmount_ = 35.0f;//オーバーヒート時にブーストが１秒間に回復する量
+    float boostHealStartTime_ = 1.0f;//最後にブーストを使ってから回復し始めるまでのタイム
+    float boostTimer_ = 0.0f;
+    bool isBoostOverHeat_ = false;
+
+    //消費ブースト
+    float dodgeBoostCost_ = 8.0f;//瞬間
+    float dashBoostCostS_ = 10.0f;//毎秒
+    float meleeBoostCostS_;//近接攻撃時
 };
 

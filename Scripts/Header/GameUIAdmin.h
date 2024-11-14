@@ -44,6 +44,9 @@ public:
     //ヴィテス搭乗時の
     void UiUpdateVitesse();
 
+    //ブーストゲージ
+    void UiUpdateBoostGauge();
+
     //プレイヤーを設定
     void SetPlayer(const std::shared_ptr<Soldier>& p) { player_ = p; }
 
@@ -67,5 +70,9 @@ private:
     float lockonMovetimer_ = 0.0f;
     //ロック変更の際にUIの移動に掛ける時間
     float Lockon_Move_Time = 0.1f;
+
+    //ブーストゲージの点滅用タイマー
+    float boostGaugeBlinkTimer_ = 0.0f;
+
 };
 

@@ -75,6 +75,8 @@ void GameUIAdmin::UpdateAfter()
     UiUpdatePlayerSoldier();
 
     UiUpdateVitesse();
+
+    UiUpdateBoostGauge();
 }
 
 void GameUIAdmin::UiUpdatePlayerSoldier()
@@ -104,11 +106,14 @@ void GameUIAdmin::UiUpdateVitesse()
     //ヴィテス搭乗時はレティクルのUIを消す
     if (player_->GetVitesseOnBoard())
     {
+        //ヴィテス搭乗中のUI
         GetUI(Usefulness::HUD_Reticle_Base)->SetEnable(true);
         //GetUI(Usefulness::HUD_Reticle_Circle)->SetEnable(true);
         GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetEnable(true);
         GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetEnable(true);
         GetUI(Usefulness::Vitesse_Reticle)->SetEnable(true);
+        GetUI(Usefulness::HUD_Boost_Gauge_Back)->SetEnable(true);
+        GetUI(Usefulness::HUD_Boost_Gauge_Main)->SetEnable(true);
 
         //通常のレティクルを消しておく
         GetUI(Usefulness::Reticle)->SetEnable(false);
@@ -142,11 +147,15 @@ void GameUIAdmin::UiUpdateVitesse()
     }
     else
     {
+        //歩兵時のUI
+
         GetUI(Usefulness::HUD_Reticle_Base)->SetEnable(false);
         //GetUI(Usefulness::HUD_Reticle_Circle)->SetEnable(false);
         GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetEnable(false);
         GetUI(Usefulness::HUD_Reticle_Lockon_Out)->SetEnable(false);
         GetUI(Usefulness::Vitesse_Reticle)->SetEnable(false);
+        GetUI(Usefulness::HUD_Boost_Gauge_Back)->SetEnable(false);
+        GetUI(Usefulness::HUD_Boost_Gauge_Main)->SetEnable(false);
 
         //通常のレティクルをアクティブに
         GetUI(Usefulness::Reticle)->SetEnable(true);
@@ -159,6 +168,39 @@ void GameUIAdmin::UiUpdateVitesse()
     //GetUI(Usefulness::HUD_Reticle_Circle)->SetAngle(angle + 15.0f * actor_->GetDeltaTime());
     float angle = GetUI(Usefulness::HUD_Reticle_Lockon_In)->GetAngle();
     GetUI(Usefulness::HUD_Reticle_Lockon_In)->SetAngle(angle + 15.0f * actor_->GetDeltaTime());
+}
+
+void GameUIAdmin::UiUpdateBoostGauge()
+{
+    //ブーストゲージを更新
+
+    auto& gauge = GetUI(Usefulness::HUD_Boost_Gauge_Main);
+
+    const auto& vitesse = player_->GetMyVitesse();
+
+    float max = vitesse->GetMaxBoostAmount();
+    float now = vitesse->GetBoostAmount();
+
+    gauge->SetScale(Vector2(
+        std::clamp(now/max,0.0f,1.0f),
+        1.0f
+    ));
+
+    //オーバーヒートしているなら点滅させる
+    if (vitesse->GetIsBoostOverHeat())
+    {
+        gauge->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+        gauge->SetColorAlpha(fabsf(sinf(boostGaugeBlinkTimer_)));
+
+        boostGaugeBlinkTimer_ += Time::GetDeltaTime() * 12.0f;
+    }
+    else
+    {
+        //オーバーヒートしていないなら白に戻す
+        gauge->SetColor(Vector4::One);
+    }
+
 }
 
 void GameUIAdmin::LockonUiMove()
