@@ -21,8 +21,8 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     HumanoidWeapon::Initialize(actor);
 
     //ƒpƒ‰ƒ[ƒ^‚Ìİ’è
-    //health_ = 1000.0f;
-    health_ = 10.0f;
+    health_ = 1000.0f;
+    //health_ = 10.0f;
     Max_Health = 1000.0f;
     Max_Horizontal_Speed = 200.0f;
     Max_Vertical_Speed = 200.0f;
