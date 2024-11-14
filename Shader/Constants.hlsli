@@ -14,6 +14,7 @@ struct SceneConstants
     float4 eyePosition;
     float4 focusPosition;
     float4 skyColor;
+    float4 addSkyColor;
     float exposure;
     float pureWhite;
     float skyboxRoughness;

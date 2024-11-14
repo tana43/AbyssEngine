@@ -96,6 +96,7 @@ namespace AbyssEngine
 
         //アセット化したパラメーターをセットする
         void SetEmitParamater(std::string filename);
+        static EmitParameter GetJsonEmitParamater(std::string filename);
         void SetEmitParamater(const EmitParameter& param) { mainParam_ = param; };
 
         void SetUseTransform(const bool& flag) { useTransform_ = flag; }

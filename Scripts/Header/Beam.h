@@ -32,7 +32,10 @@ public:
 
     const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
 
-    AbyssEngine::ComputeParticleEmitter::EmitParameter& GetParticleEmitParameter() { return particleEmitPrameter_; }
+    AbyssEngine::ComputeParticleEmitter::EmitParameter& GetStraightParticleEmitParameter() { return straightParticleEmitPrameter_; }
+
+    const std::shared_ptr<AbyssEngine::ComputeParticleEmitter>& GetHitParticleEmitter() const { return hitParticleEmitter_; }
+    const std::shared_ptr<AbyssEngine::ComputeParticleEmitter>& GetHitFireParticleEmitter() const { return hitFireParticleEmitter_; }
 
 private:
     //攻撃力
@@ -47,12 +50,18 @@ private:
     //トレイルレンダラー
     std::shared_ptr<AbyssEngine::TrailRenderer> trailRenderer_;
 
-    //パーティクル
-    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> particleEmitter_;
+    //直進中に生成されるパーティクル
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> straightParticleEmitter_;
 
-    AbyssEngine::ComputeParticleEmitter::EmitParameter particleEmitPrameter_;
+    //着弾時に生成されるパーティクル
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> hitParticleEmitter_;
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> hitFireParticleEmitter_;
+
+    AbyssEngine::ComputeParticleEmitter::EmitParameter straightParticleEmitPrameter_;
     float particleSpeed_ = 20.0f;
     float particleAmplitude_ = 9.0f;//パーティクルの散らばり
+
+    
 
     
 };

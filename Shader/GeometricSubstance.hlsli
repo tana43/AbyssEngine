@@ -20,6 +20,7 @@ struct PrimitiveConstants
     int skin;
     float emissiveIntensity;//エミッシブ
     float imageBasedLightingIntensity;//IBL
+    float minAmbient;//影になる部分の最低値
 };
 cbuffer primitiveConstants : register(b0)
 {

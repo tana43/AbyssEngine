@@ -382,6 +382,6 @@ private:
     //消費ブースト
     float dodgeBoostCost_ = 8.0f;//瞬間
     float dashBoostCostS_ = 10.0f;//毎秒
-    float meleeBoostCostS_;//近接攻撃時
+    float meleeBoostCostS_ = 7.0f;//近接攻撃時
 };
 

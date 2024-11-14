@@ -2,13 +2,12 @@
 #include "ScriptComponent.h"
 #include "MathHelper.h"
 #include "Collider.h"
-//#include "ComputeParticleEmitter.h"
+#include "ComputeParticleEmitter.h"
 
 namespace AbyssEngine
 {
     class Projectile;
     class BillboardRenderer;
-    class ComputeParticleEmitter;
 }
 
 class Gun : public AbyssEngine::ScriptComponent
@@ -89,6 +88,9 @@ public:
 
     void SetTargetTransform(const std::shared_ptr<AbyssEngine::Transform>& transform) { targetTransform_ = transform; }
 
+    void SetHitParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { hitParticleParam_ = param; }
+    void SetHitFireParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { hitFireParticleParam_ = param; }
+
 private:
     //ADS(スコープを覗いているか)
     bool ADS_ = false;
@@ -149,7 +151,7 @@ private:
     float bulletSpeed_ = 50.0f;
 
     //発砲時に出現させるパーティクルエフェクト
-    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> particleEmitter_;
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> muzzleFlashParticleEmitter_;
     float particleAmplitudeSpeed_ = 70.0f;//パーティクルが周りに散らばる速度
     float particleSpeed_ = 200.0f;//攻撃方向へ向かう速度
     float flashParticleLifespan_ = 0.03f;
@@ -174,5 +176,10 @@ private:
     std::weak_ptr<AbyssEngine::Transform> targetTransform_;
 
     AbyssEngine::Vector4 beamParticleColor_ = { 0,0.25f,1.0f,1.0f };
+
+    //ヒットエフェクトのパラメーターを持たせておく
+    //射出時ビームアクターに設定する
+    AbyssEngine::ComputeParticleEmitter::EmitParameter hitParticleParam_;
+    AbyssEngine::ComputeParticleEmitter::EmitParameter hitFireParticleParam_;
 };
 

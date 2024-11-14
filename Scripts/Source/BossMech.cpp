@@ -37,6 +37,8 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     isLimitSpeed_ = true;
 
 
+
+
     //enableGravity_ = false;
 
     //model_ = actor->AddComponent<AbyssEngine::SkeletalMesh>("./Assets/Models/Enemy/Boss/Mech_Idle.glb");
@@ -101,6 +103,9 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     transform_->SetScaleFactor(35.0f);
 
+
+    model_->GetModel()->primitiveConstants_->data_.minAmbient = 0.4f;
+
    /* const auto& coll = AddHitCollider(Vector3::Zero, 10.0f, "Collider_Chest");
     coll->AttachModel(model_, "spine_02");*/
 
@@ -133,6 +138,9 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     gunComL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
     gunComL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
+
+    gunComL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
+    gunComL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
 
     actor->ReplaceTag(Actor::Tag_Enemy);
 

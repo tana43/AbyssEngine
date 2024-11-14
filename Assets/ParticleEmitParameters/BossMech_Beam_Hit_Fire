@@ -1,0 +1,32 @@
+{
+  "Position": {
+    "acceleration": [ 0.0, 111.80000305175781, 0.0 ],
+    "accelerationAmplitude": [ 0.0, 0.0, 0.0 ],
+    "amplitude": [ 0.0, 0.0, 0.0 ],
+    "vellocityAmplitude": [ 50.0, 50.0, 50.0 ],
+    "velocity": [ 0.0, 11.300000190734863, 0.0 ]
+  },
+  "Rotation": {
+    "acceleration": [ 0.0, 0.0, 0.0 ],
+    "accelerationAmplitude": [ 0.0, 0.0, 0.0 ],
+    "amplitude": [ 164.89999389648438, 89.30000305175781, 149.5 ],
+    "vellocityAmplitude": [ 0.0, 0.10000000149011612, 0.0 ],
+    "velocity": [ 0.0, 0.10000000149011612, 0.0 ]
+  },
+  "Scale": {
+    "acceleration": [ 0.0, 0.0 ],
+    "accelerationAmplitude": [ 0.0, 0.0 ],
+    "amplitude": [ 0.0, 0.0 ],
+    "init": [ 1.0, 1.0, 1.0 ],
+    "vellocityAmplitude": [ 0.0, 0.0 ],
+    "velocity": [ 0.0, 0.0 ]
+  },
+  "brightness": 27.690000534057617,
+  "color": [ 1.0, 0.03969162702560425, 0.01471853256225586, 1.0 ],
+  "colorAmplitude": [ 0.0, 0.0, 0.0, 0.0 ],
+  "emitNum": 35,
+  "emitTime": 1.0,
+  "lifespan": 0.2800000011920929,
+  "lifespanAmplitude": 0.05000000074505806,
+  "texType": 5
+}

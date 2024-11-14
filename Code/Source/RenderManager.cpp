@@ -245,7 +245,7 @@ RenderManager::RenderManager()
 		DXSystem::GetDevice().Get(),
 		numParticle,
 		particleTexture_->GetResource(),
-		DirectX::XMUINT2(5, 1));
+		DirectX::XMUINT2(6, 1));
 }
 
 RenderManager::~RenderManager()
@@ -556,7 +556,8 @@ void RenderManager::DrawImGui()
 		ImGui::DragFloat("Skybox Roughness", &buffer.skyboxRoughness_,0.01f,0.0f);
 		ImGui::DragFloat("Time", &buffer.time_);
 
-		ImGui::ColorPicker4("Sky Color", &buffer.skyColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+		ImGui::ColorEdit4("Sky Color", &buffer.skyColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+		ImGui::ColorEdit4("Add Sky Color", &buffer.addSkyColor_.x, ImGuiColorEditFlags_PickerHueWheel);
 
 		ImGui::EndMenu();
 	}
@@ -566,10 +567,9 @@ void RenderManager::DrawImGui()
 		bloom_->DrawImGui();
 
 		ImGui::Checkbox("Enable Shadow", &enableShadow_);
-		ImGui::DragFloat("Critical Depth Value", &criticalDepthValue_, 1.0f, 1.0f, 3000.0f);
+		ImGui::DragFloat("Critical Depth Value", &criticalDepthValue_, 1.0f, 1.0f);
 		ImGui::Checkbox("Colorize Cascaded Layer", reinterpret_cast<bool*>(&bufferEffects_->data_.colorizeCascadedLayer_));
 		ImGui::DragFloat("Split Scheme Weight", &cascadedShadowMap_->splitSchemeWeight_, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("Critical Depth Value", &criticalDepthValue_, 1.0f, 0.0f, 1000.0f);
 		ImGui::DragFloat("Shadow Depth Bias", &bufferEffects_->data_.shadowDepthBias_, 0.000001f, 0.0f, 0.01f, "%.8f");
 		ImGui::SliderFloat("Shadow Color", &bufferEffects_->data_.shadowColor_, 0.0f, 1.0f);
 		ImGui::SliderFloat("Shadow Filter Radius", &bufferEffects_->data_.shadowFilterRadius_, 0.0f, 64.0f);

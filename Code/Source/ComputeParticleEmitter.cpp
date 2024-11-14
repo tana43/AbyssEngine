@@ -423,6 +423,13 @@ void AbyssEngine::ComputeParticleEmitter::EmitParticle()
 
 void ComputeParticleEmitter::SetEmitParamater(std::string filename)
 {
+	mainParam_ = GetJsonEmitParamater(filename);
+}
+
+ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::GetJsonEmitParamater(std::string filename)
+{
+	//return EmitParameter();
+
 	using namespace std;
 	string filepath = "./Assets/ParticleEmitParameters/" + filename;
 	ifstream ifs(filepath);
@@ -439,35 +446,36 @@ void ComputeParticleEmitter::SetEmitParamater(std::string filename)
 
 	//ì«Ç›çûÇ›
 	EmitParameter emitParam;
-	emitParam.emitNum_           = mJson["emitNum"];
-	emitParam.lifespan_          = mJson["lifespan"];
+	emitParam.emitNum_ = mJson["emitNum"];
+	emitParam.lifespan_ = mJson["lifespan"];
 	emitParam.lifespanAmplitude_ = mJson["lifespanAmplitude"];
-	emitParam.emitTime_          = mJson["emitTime"];
-	emitParam.texType_           = mJson["texType"];
+	emitParam.emitTime_ = mJson["emitTime"];
+	emitParam.texType_ = mJson["texType"];
 
-	emitParam.positionAmplitude_         = { mJson["Position"]["amplitude"][0],mJson["Position"]["amplitude"][1],mJson["Position"]["amplitude"][2] };
-	emitParam.velocity_                  = { mJson["Position"]["velocity"][0],mJson["Position"]["velocity"][1],mJson["Position"]["velocity"][2] };
-	emitParam.velocityAmplitude_         = { mJson["Position"]["vellocityAmplitude"][0],mJson["Position"]["vellocityAmplitude"][1],mJson["Position"]["vellocityAmplitude"][2] };
-	emitParam.acceleration_              = { mJson["Position"]["acceleration"][0],mJson["Position"]["acceleration"][1],mJson["Position"]["acceleration"][2] };
-	emitParam.accelerationAmplitud_      = { mJson["Position"]["accelerationAmplitude"][0],mJson["Position"]["accelerationAmplitude"][1],mJson["Position"]["accelerationAmplitude"][2] };
-	
-	emitParam.scaleAmplitude_            = { mJson["Scale"]["amplitude"][0],mJson["Scale"]["amplitude"][1] };
-	emitParam.scaleVelocity_             = { mJson["Scale"]["velocity"][0],mJson["Scale"]["velocity"][1] };
-	emitParam.scaleVelocityAmplitude_    = { mJson["Scale"]["vellocityAmplitude"][0],mJson["Scale"]["vellocityAmplitude"][1] };
-	emitParam.scaleAcceleration_         = { mJson["Scale"]["acceleration"][0],mJson["Scale"]["acceleration"][1] };
+	emitParam.positionAmplitude_ = { mJson["Position"]["amplitude"][0],mJson["Position"]["amplitude"][1],mJson["Position"]["amplitude"][2] };
+	emitParam.velocity_ = { mJson["Position"]["velocity"][0],mJson["Position"]["velocity"][1],mJson["Position"]["velocity"][2] };
+	emitParam.velocityAmplitude_ = { mJson["Position"]["vellocityAmplitude"][0],mJson["Position"]["vellocityAmplitude"][1],mJson["Position"]["vellocityAmplitude"][2] };
+	emitParam.acceleration_ = { mJson["Position"]["acceleration"][0],mJson["Position"]["acceleration"][1],mJson["Position"]["acceleration"][2] };
+	emitParam.accelerationAmplitud_ = { mJson["Position"]["accelerationAmplitude"][0],mJson["Position"]["accelerationAmplitude"][1],mJson["Position"]["accelerationAmplitude"][2] };
+
+	emitParam.scaleInit_ = { mJson["Scale"]["init"][0],mJson["Scale"]["init"][1],mJson["Scale"]["init"][2] };
+	emitParam.scaleAmplitude_ = { mJson["Scale"]["amplitude"][0],mJson["Scale"]["amplitude"][1] };
+	emitParam.scaleVelocity_ = { mJson["Scale"]["velocity"][0],mJson["Scale"]["velocity"][1] };
+	emitParam.scaleVelocityAmplitude_ = { mJson["Scale"]["vellocityAmplitude"][0],mJson["Scale"]["vellocityAmplitude"][1] };
+	emitParam.scaleAcceleration_ = { mJson["Scale"]["acceleration"][0],mJson["Scale"]["acceleration"][1] };
 	emitParam.scaleAccelerationAmplitud_ = { mJson["Scale"]["accelerationAmplitude"][0],mJson["Scale"]["accelerationAmplitude"][1] };
 
-	emitParam.rotationAmplitude_            = { mJson["Rotation"]["amplitude"][0],mJson["Rotation"]["amplitude"][1],mJson["Rotation"]["amplitude"][2] };
-	emitParam.rotationVelocity_             = { mJson["Rotation"]["velocity"][0],mJson["Rotation"]["velocity"][1],mJson["Rotation"]["velocity"][2] };
-	emitParam.rotationVelocityAmplitude_    = { mJson["Rotation"]["vellocityAmplitude"][0],mJson["Rotation"]["vellocityAmplitude"][1],mJson["Rotation"]["vellocityAmplitude"][2] };
-	emitParam.rotationAcceleration_         = { mJson["Rotation"]["acceleration"][0],mJson["Rotation"]["acceleration"][1],mJson["Rotation"]["acceleration"][2] };
+	emitParam.rotationAmplitude_ = { mJson["Rotation"]["amplitude"][0],mJson["Rotation"]["amplitude"][1],mJson["Rotation"]["amplitude"][2] };
+	emitParam.rotationVelocity_ = { mJson["Rotation"]["velocity"][0],mJson["Rotation"]["velocity"][1],mJson["Rotation"]["velocity"][2] };
+	emitParam.rotationVelocityAmplitude_ = { mJson["Rotation"]["vellocityAmplitude"][0],mJson["Rotation"]["vellocityAmplitude"][1],mJson["Rotation"]["vellocityAmplitude"][2] };
+	emitParam.rotationAcceleration_ = { mJson["Rotation"]["acceleration"][0],mJson["Rotation"]["acceleration"][1],mJson["Rotation"]["acceleration"][2] };
 	emitParam.rotationAccelerationAmplitud_ = { mJson["Rotation"]["accelerationAmplitude"][0],mJson["Rotation"]["accelerationAmplitude"][1],mJson["Rotation"]["accelerationAmplitude"][2] };
 
-	emitParam.intensity_	 = mJson["brightness"];
-	emitParam.color_		 = { mJson["color"][0],mJson["color"][1],mJson["color"][2],mJson["color"][3] };
+	emitParam.intensity_ = mJson["brightness"];
+	emitParam.color_ = { mJson["color"][0],mJson["color"][1],mJson["color"][2],mJson["color"][3] };
 	emitParam.colorAmplitud_ = { mJson["colorAmplitude"][0],mJson["colorAmplitude"][1],mJson["colorAmplitude"][2],mJson["colorAmplitude"][3] };
 
-	mainParam_ = emitParam;
+	return emitParam;
 }
 
 void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& param, const std::string& filename)
@@ -490,6 +498,7 @@ void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& par
 	};
 	mJson["Scale"] =
 	{
+		{"init",				{param.scaleInit_.x,param.scaleInit_.y,param.scaleInit_.z}},
 		{"amplitude",			 {param.scaleAmplitude_.x,param.scaleAmplitude_.y}},
 		{"velocity",			 {param.scaleVelocity_.x,param.scaleVelocity_.y}},
 		{"vellocityAmplitude",  {param.scaleVelocityAmplitude_.x,param.scaleVelocityAmplitude_.y}},

@@ -28,7 +28,7 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     beamMuzzleFlashComponent_->SetScale(0.87f);
 
     //マズルフラッシュ(ParticleEmitter)
-    particleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
+    muzzleFlashParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
     ComputeParticleEmitter::EmitParameter param;
     param.emitNum_ = 30;
     param.texType_ = 0;
@@ -40,8 +40,11 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     param.scaleInit_ = { 0.05f,0.05f,0.05f };
     param.intensity_ = 60.0f;
     param.accelerationAmplitud_ = { 30.0f,30.0f,30.0f };
-    particleEmitter_->SetEmitParamater(param);
-    particleEmitter_->SetUseTransform(false);
+    muzzleFlashParticleEmitter_->SetEmitParamater(param);
+    muzzleFlashParticleEmitter_->SetUseTransform(false);
+
+    hitParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Hit");
+    hitFireParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Hit_Fire");
 }
 
 void Gun::DrawImGui()
@@ -175,9 +178,11 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetIsHoming(isHoming_);
             proj->SetTargetTag(targetTag_);
             proj->SetIntensity(beamIntensity_);
-            proj->GetParticleEmitParameter().color_ = beamParticleColor_;
+            proj->GetStraightParticleEmitParameter().color_ = beamParticleColor_;
             proj->SetLifespan(bulletLifespan_);
             proj->SetParticleIntensity(beamParticleIntensity_);
+            proj->GetHitParticleEmitter()->SetEmitParamater(hitParticleParam_);
+            proj->GetHitFireParticleEmitter()->SetEmitParamater(hitFireParticleParam_);
             if (const auto& t = targetTransform_.lock())
             {
                 proj->SetTargetTransfrom(t);
@@ -189,7 +194,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             beamMuzzleFlashComponent_->SetRotationZ(Math::RandomRange(0.0f, 360.0f));
 
             //パーティクル設定
-            auto emitParam = particleEmitter_->GetEmitParamter();
+            auto emitParam = muzzleFlashParticleEmitter_->GetEmitParamter();
             emitParam.velocity_ = shootingDirection * particleSpeed_;
 
             //射撃方向から見た右ベクトルと上ベクトルを算出し、拡散方向を指定する
@@ -198,7 +203,7 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             emitParam.positionAmplitude_ = shootingDirection * 0.1f;
             emitParam.velocityAmplitude_ = right * particleAmplitudeSpeed_ + up * particleAmplitudeSpeed_ + shootingDirection * particleAmplitudeSpeed_;
             emitParam.accelerationAmplitud_ = right * particleAmplitudeSpeed_ + up * particleAmplitudeSpeed_ + shootingDirection * particleAmplitudeSpeed_;
-            particleEmitter_->SetEmitParamater(emitParam);
+            muzzleFlashParticleEmitter_->SetEmitParamater(emitParam);
             break;
         }
         }
@@ -258,7 +263,7 @@ void Gun::UpdateFlashParticleEffect()
     if (flashLifespan_ < flashParticleLifespan_)
     {
         //マズルフラッシュエフェクト再生
-        particleEmitter_->SetEmitPositionNotUseTransform(muzzlePos_);
-        particleEmitter_->EmitParticle();
+        muzzleFlashParticleEmitter_->SetEmitPositionNotUseTransform(muzzlePos_);
+        muzzleFlashParticleEmitter_->EmitParticle();
     }
 }

@@ -113,10 +113,11 @@ namespace AbyssEngine
             Matrix inverseProjection_;
             Matrix inverseViewProjection_;
             Vector4 lightDirection_ = {0.23f,-0.87f,1.43f,0};
-            Vector4 lightColor_ = {1,1,1,1};
+            Vector4 lightColor_ = {1.0f,1.0f,1.0f,1.0f};
             Vector4 eyePosition_;
             Vector4 focusPosition_;
-            Vector4 skyColor_ = {1,1,1,0.9647f};
+            Vector4 skyColor_ = {1.0f,1.0f,1.0f,1.0f};
+            Vector4 addSkyColor_ = {0.0f,0.0f,0.012f,0.0f};
             float exposure_ = 1.0f;
             float pureWhite_ = 3.0f;
             float skyboxRoughness_ = 0.0f;

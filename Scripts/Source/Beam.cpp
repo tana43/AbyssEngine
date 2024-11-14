@@ -17,20 +17,22 @@ void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     trailRenderer_ = actor->AddComponent<TrailRenderer>("./Assets/Effects/TrailTexture/Beam.png");
 
-    particleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
+    straightParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
+    hitParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
+    hitFireParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
 
     transform_->SetScaleFactor(0.03f);
 
     //パーティクルエミッター設定
-    particleEmitPrameter_.lifespan_ = 0.5f;
-    particleEmitPrameter_.texType_ = 3;
-    particleEmitPrameter_.emitNum_ = 12;
-    particleEmitPrameter_.color_ = { 0,0.25f,1.0f,1.0f };
-    particleEmitPrameter_.intensity_ = 100.0f;
-    particleEmitPrameter_.colorAmplitud_ = { 0,0,0,0 };
-    particleEmitPrameter_.positionAmplitude_ = {2.0f,2.0f,2.0f};
-    particleEmitPrameter_.scaleInit_ = { 0.4f,0.4f };
-    particleEmitPrameter_.rotationAmplitude_ = { 0,0,180.0f };
+    straightParticleEmitPrameter_.lifespan_ = 0.5f;
+    straightParticleEmitPrameter_.texType_ = 3;
+    straightParticleEmitPrameter_.emitNum_ = 12;
+    straightParticleEmitPrameter_.color_ = { 0,0.25f,1.0f,1.0f };
+    straightParticleEmitPrameter_.intensity_ = 100.0f;
+    straightParticleEmitPrameter_.colorAmplitud_ = { 0,0,0,0 };
+    straightParticleEmitPrameter_.positionAmplitude_ = {2.0f,2.0f,2.0f};
+    straightParticleEmitPrameter_.scaleInit_ = { 0.4f,0.4f };
+    straightParticleEmitPrameter_.rotationAmplitude_ = { 0,0,180.0f };
     //particleEmitter_->SetEmitParamater(particleEmitPrameter_);
 }
 
@@ -53,6 +55,10 @@ void Beam::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, 
             param.power_ = attackPoint_;
             chara->ApplyDamage(param, &dmgResult);
 
+            //パーティクルヒットエフェクト再生
+            hitFireParticleEmitter_->EmitParticle();
+            hitParticleEmitter_->EmitParticle();
+
             Actor::Destroy(actor_);
         }
     }
@@ -61,15 +67,15 @@ void Beam::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, 
 void Beam::ParticleUpdate()
 {
     //パーティクルの動きを設定
-    particleEmitPrameter_.velocity_ = -direction_ * particleSpeed_;
+    straightParticleEmitPrameter_.velocity_ = -direction_ * particleSpeed_;
 
     //右方向ベクトルと上方向ベクトルからパーティクルの散らばりを算出
     const Vector3 right = direction_.Cross(Vector3::Up);
     const Vector3 up = right.Cross(direction_);
-    particleEmitPrameter_.velocityAmplitude_ = right * particleAmplitude_ + up * particleAmplitude_;
+    straightParticleEmitPrameter_.velocityAmplitude_ = right * particleAmplitude_ + up * particleAmplitude_;
 
     //パーティクル生成
-    particleEmitter_->EmitParticle(particleEmitPrameter_);
+    straightParticleEmitter_->EmitParticle(straightParticleEmitPrameter_);
 }
 
 void Beam::SetColor(const Vector4& color)
@@ -86,10 +92,10 @@ void Beam::SetWidth(const float& width)
 void Beam::SetIntensity(const float& bright)
 {
     trailRenderer_->SetIntensity(bright);
-    particleEmitPrameter_.intensity_ = bright;
+    straightParticleEmitPrameter_.intensity_ = bright;
 }
 
 void Beam::SetParticleIntensity(const float& intensity)
 {
-    particleEmitPrameter_.intensity_ = intensity;
+    straightParticleEmitPrameter_.intensity_ = intensity;
 }

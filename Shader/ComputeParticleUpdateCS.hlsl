@@ -58,5 +58,5 @@ void main(uint3 dispatchThreadId : SV_DispatchThreadID)
     particleDataBuffer[index].texcoord.zw = float2(w, h);
 
     //™X‚É“§–¾‚É‚µ‚Ä‚¢‚­
-    particleDataBuffer[index].color.a = saturate(particleDataBuffer[index].parameter.y);
+    particleDataBuffer[index].color.a = saturate(particleDataBuffer[index].parameter.y * 0.5f);
 }
