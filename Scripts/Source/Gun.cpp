@@ -45,6 +45,7 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     hitParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Hit");
     hitFireParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Hit_Fire");
+    terrainHitParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Terrain_Hit");
 }
 
 void Gun::DrawImGui()
@@ -189,6 +190,7 @@ bool Gun::Shot(Vector3 shootingDirection,Vector3* terrainHitPosition)
             proj->SetParticleIntensity(beamParticleIntensity_);
             proj->GetHitParticleEmitter()->SetEmitParamater(hitParticleParam_);
             proj->GetHitFireParticleEmitter()->SetEmitParamater(hitFireParticleParam_);
+            proj->GetTerrainHitParticleEmitter()->SetEmitParamater(terrainHitParticleParam_);
 
             if (!isHoming_)
             {

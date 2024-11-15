@@ -20,6 +20,7 @@ void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     straightParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
     hitParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
     hitFireParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
+    terrainHitParticleEmitter_ = actor->AddComponent<ComputeParticleEmitter>();
 
     transform_->SetScaleFactor(0.03f);
 

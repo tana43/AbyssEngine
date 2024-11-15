@@ -373,24 +373,24 @@ void BossMech::BehaviorTreeInitialize()
     //戦闘ノード
     {
         //ヴィテスまで接近
-        aiTree_->AddNode("Battle", "MoveToVitesse", 0, Ai_SelectRule::Non, nullptr, new MechMoveToVitesseAction(this));
+        //aiTree_->AddNode("Battle", "MoveToVitesse", 0, Ai_SelectRule::Non, nullptr, new MechMoveToVitesseAction(this));
         //aiTree_->AddNode("Battle", "Combo_01", 0, Ai_SelectRule::Non, nullptr, new MechCombo01Action(this));
         //aiTree_->AddNode("Battle", "Combo_02", 0, Ai_SelectRule::Non, nullptr, new MechCombo02Action(this));
         //aiTree_->AddNode("Battle", "Combo_03", 0, Ai_SelectRule::Non, nullptr, new MechCombo03Action(this));
         // 
         //３種のコンボをどれか自動で選択し、実行させる
-        aiTree_->AddNode("Battle", "Combo_Random", 0, Ai_SelectRule::Random, nullptr, nullptr);
-        {
-            aiTree_->AddNode("Combo_Random", "Combo_01", 0, Ai_SelectRule::Non, nullptr, new MechCombo01Action(this));
-            aiTree_->AddNode("Combo_Random", "Combo_02", 0, Ai_SelectRule::Non, nullptr, new MechCombo02Action(this));
-            aiTree_->AddNode("Combo_Random", "Combo_03", 0, Ai_SelectRule::Non, nullptr, new MechCombo03Action(this));
+        //aiTree_->AddNode("Battle", "Combo_Random", 0, Ai_SelectRule::Random, nullptr, nullptr);
+        //{
+        //    aiTree_->AddNode("Combo_Random", "Combo_01", 0, Ai_SelectRule::Non, nullptr, new MechCombo01Action(this));
+        //    aiTree_->AddNode("Combo_Random", "Combo_02", 0, Ai_SelectRule::Non, nullptr, new MechCombo02Action(this));
+        //    aiTree_->AddNode("Combo_Random", "Combo_03", 0, Ai_SelectRule::Non, nullptr, new MechCombo03Action(this));
+        //}
 
-        }
+        aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
 
         aiTree_->AddNode("Battle", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
 
 
-        //aiTree_->AddNode("Battle", "ShotBeam", 0, Ai_SelectRule::Non, new MechShotBeamJudgment(this), new MechShotBeamAction(this));
         //aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new MechRunAttackJudgment(this), new MechRunAttackAction(this));
         //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
     }

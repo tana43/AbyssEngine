@@ -90,6 +90,7 @@ public:
 
     void SetHitParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { hitParticleParam_ = param; }
     void SetHitFireParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { hitFireParticleParam_ = param; }
+    void SetTerrainHitParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { terrainHitParticleParam_ = param; }
 
 private:
     //ADS(スコープを覗いているか)
@@ -181,5 +182,6 @@ private:
     //射出時ビームアクターに設定する
     AbyssEngine::ComputeParticleEmitter::EmitParameter hitParticleParam_;
     AbyssEngine::ComputeParticleEmitter::EmitParameter hitFireParticleParam_;
+    AbyssEngine::ComputeParticleEmitter::EmitParameter terrainHitParticleParam_;
 };
 

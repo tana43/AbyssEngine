@@ -6,6 +6,8 @@
 #include "SphereCollider.h"
 #include "GameCollider.h"
 #include "SceneManager.h"
+#include "StageManager.h"
+#include "Stage.h"
 
 using namespace AbyssEngine;
 
@@ -94,7 +96,30 @@ void AbyssEngine::Projectile::IsTerrainHitUpdate()
 {
     if (isHoming_)
     {
+        //50以上のときは地面に当たることはほぼ無いので
+        if (transform_->GetPosition().y > 50.0f)return;
+
         //ホーミングは毎フレーム判定処理する必要がある
+        if (const auto& stage = Engine::stageManager_->GetActiveStage().lock())
+        {
+            const Vector3 start = transform_->GetPosition();
+            const float speed = speed_ * actor_->GetDeltaTime();
+            const Vector3 end = transform_->GetPosition() + direction_ * speed;
+            Vector3 hitPosition, hitNormal;
+
+            //レイキャスト
+            if (stage->RayCast(start, end,hitPosition,hitNormal))
+            {
+                //当たったなら削除する
+                 
+                //座標を地形が当たった位置へ
+                transform_->SetPosition(hitPosition);
+
+                HitTerrain();
+
+                Actor::Destroy(actor_);
+            }
+        }
     }
     else
     {
