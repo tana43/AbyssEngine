@@ -119,7 +119,7 @@ void Gun::Update()
     flashLifespan_ += actor_->GetDeltaTime();
 }
 
-bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
+bool Gun::Shot(Vector3 shootingDirection,Vector3* terrainHitPosition)
 {
     //Œ‚‚Â‚±‚Æ‚ª‰Â”\‚©
     if (!activeRateOfFire_ || rateTimer_ < 0)
@@ -150,6 +150,12 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetDirection(shootingDirection);
             proj->SetSpeed(bulletSpeed_);
             proj->SetLifespan(bulletLifespan_);
+
+            if (terrainHitPosition)
+            {
+                proj->SetTerrainHitPos(*terrainHitPosition);
+            }
+
             if (const auto& t = targetTransform_.lock())
             {
                 proj->SetTargetTransfrom(t);
@@ -183,6 +189,15 @@ bool Gun::Shot(AbyssEngine::Vector3 shootingDirection)
             proj->SetParticleIntensity(beamParticleIntensity_);
             proj->GetHitParticleEmitter()->SetEmitParamater(hitParticleParam_);
             proj->GetHitFireParticleEmitter()->SetEmitParamater(hitFireParticleParam_);
+
+            if (!isHoming_)
+            {
+                if (terrainHitPosition)
+                {
+                    proj->SetTerrainHitPos(*terrainHitPosition);
+                }
+            }
+
             if (const auto& t = targetTransform_.lock())
             {
                 proj->SetTargetTransfrom(t);

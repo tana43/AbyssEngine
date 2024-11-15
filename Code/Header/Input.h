@@ -50,6 +50,8 @@ namespace AbyssEngine
 
             static const bool GetBoardingButton();//ヴィテス搭乗ボタン-
 
+            static const bool GetChangeTargetButton();//ターゲット切り替え
+
 
             //システム周り
             static const bool GetDecideButton();

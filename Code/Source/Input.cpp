@@ -247,6 +247,18 @@ const bool AbyssEngine::Input::GameSupport::GetBoardingButton()
     return false;
 }
 
+const bool AbyssEngine::Input::GameSupport::GetChangeTargetButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->mouse_->GetButtonDown(Mouse::BTN_RIGHT) ||
+        i->gamePad_.GetButtonDown() & GamePad::BTN_X)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 const bool AbyssEngine::Input::GameSupport::GetDecideButton()
 {
     auto& i = Engine::inputManager_;

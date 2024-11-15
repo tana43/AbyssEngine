@@ -773,6 +773,9 @@ void Vitesse::BeamShot()
     //標的の座標
     Vector3 targetPosition;
 
+    //地形判定であたるであろう位置
+    Vector3* terrainHitPos = nullptr;
+
     if (const auto& target = lockonTarget_.lock())
     {
         targetPosition = target->GetTransform()->GetPosition();
@@ -789,6 +792,9 @@ void Vitesse::BeamShot()
         {
             //当たった位置に飛ばす
             targetPosition = hitPos;
+
+            //地形にあたる位置
+            terrainHitPos = &hitPos;
         }
         else
         {
@@ -799,8 +805,8 @@ void Vitesse::BeamShot()
 
     //if (BeamShotByComponent(*gunComponentR_.get(), targetPosition)) {}
     //else BeamShotByComponent(*gunComponentL_.get(), targetPosition);
-    BeamShotByComponent(*gunComponentR_.get(), targetPosition);
-    BeamShotByComponent(*gunComponentL_.get(), targetPosition);
+    BeamShotByComponent(*gunComponentR_.get(), targetPosition,terrainHitPos);
+    BeamShotByComponent(*gunComponentL_.get(), targetPosition,terrainHitPos);
 }
 
 bool Vitesse::UseBoostGauge(float useBoostAmount)
@@ -822,7 +828,7 @@ bool Vitesse::UseBoostGauge(float useBoostAmount)
     return true;
 }
 
-bool Vitesse::BeamShotByComponent(Gun& gun, Vector3 targetPosition)
+bool Vitesse::BeamShotByComponent(Gun& gun, Vector3 targetPosition,Vector3* terrainHitPosition)
 {
     Vector3 shootDirection;
 
@@ -831,7 +837,7 @@ bool Vitesse::BeamShotByComponent(Gun& gun, Vector3 targetPosition)
     toTarget.Normalize();
     shootDirection = toTarget;
 
-    if (gun.Shot(shootDirection))
+    if (gun.Shot(shootDirection,terrainHitPosition))
     {
         //画面振動
         camera_->CameraShake("BeamShot");
@@ -1046,11 +1052,13 @@ void Vitesse::TargetAcquisition()
     float nearestDistSq = FLT_MAX;
 
     //ターゲットを検知したかのフラグ
-    bool findTarget = false;
+    //bool findTarget = false;
 
     //ターゲットが変更フラグをリセットしておく
     changeLockonTarget_ = false;
 
+    //ターゲットに設定可能なコライダーを登録するベクター
+    std::vector<std::shared_ptr<HitCollider>> targetList;
     for (auto& collider : colliderList)
     {
         if (const auto& col = collider.lock())
@@ -1059,15 +1067,82 @@ void Vitesse::TargetAcquisition()
             if (!col->GetLockonTarget())continue;
             if (col->GetTag() != static_cast<unsigned int>(Collider::Tag::Enemy))continue;
 
+            //内積値が負のコライダーは確実にカメラから写らないので省く
             const Vector3 colPos = col->GetTransform()->GetPosition();
             const Vector3 pos = transform_->GetPosition();
-
             const Vector3 toCollider = Vector3::Normalize(colPos - pos);
             const Vector3 cameraForward = Vector3::Normalize(camera_->GetFocus() - camera_->GetEye());
-            
-            //内積値が負のコライダーは確実にカメラから写らないので省く
             float dot = cameraForward.Dot(toCollider);
             if (dot < 0)continue;
+
+            targetList.emplace_back(col);
+        }
+    }
+
+    //ターゲットが設定されている場合は既存のターゲットを更新する
+    //if (!findTarget)
+    if (const auto& actor = lockonTarget_.lock())
+    {
+        const Vector3 targetPos = actor->GetTransform()->GetPosition();
+        const Vector3 pos = transform_->GetPosition();
+
+        const Vector3 toCollider = Vector3::Normalize(targetPos - pos);
+        const Vector3 cameraForward = Vector3::Normalize(camera_->GetFocus() - camera_->GetEye());
+
+        //内積値が負ならリセットする
+        float dot = cameraForward.Dot(toCollider);
+        if (dot < 0)
+        {
+            lockonTarget_.reset();
+            return;
+        }
+        else
+        {
+            //スクリーン座標から画面中央からどの程度の位置にいるか検索
+            Vector2 targetScreenPos = camera_->WorldToScreenPosition(targetPos);
+            D3D11_VIEWPORT viewport;
+            DXSystem::GetViewport(1, &viewport);
+            Vector2 targetViewport = { targetScreenPos.x / viewport.Width, targetScreenPos.y / viewport.Height };
+
+            //ビューポート座標から画面外に出ていないか調べる
+            if ((targetViewport.x > 0 && targetViewport.x < 1) &&
+                (targetViewport.y > 0 && targetViewport.y < 1))
+            {
+                //画面内にいるので引き続き補足
+            }
+            else
+            {
+                //画面外に出ているのでリセット
+                lockonTarget_.reset();
+
+                //ここで処理をやめる
+                return;
+            }
+        }
+
+        //ロック切り替え
+        if (Input::GameSupport::GetChangeTargetButton())
+        {
+            for (int i = 0; i < targetList.size(); i++)
+            {
+                //自分の次の要素番号になるコライダーをターゲットに
+                if (targetList[i]->GetActor() == actor) 
+                {
+                    int next = i + 1;
+                    if (next >= targetList.size())next = 0;
+                    lockonTarget_ = targetList[next]->GetActor();
+                }
+            }
+        }
+    }
+    else
+    {
+        //設定されていないなら現在画面中心にもっとも近いコライダーをターゲットに
+        for (auto itr = targetList.begin(); itr != targetList.end(); ++itr)
+        {
+            HitCollider* col = itr->get();
+            const Vector3 colPos = col->GetTransform()->GetPosition();
+            const Vector3 pos = transform_->GetPosition();
 
             //スクリーン座標から画面中央からどの程度の位置にいるか検索
             Vector2 colliderScreenPos = camera_->WorldToScreenPosition(colPos);
@@ -1081,23 +1156,10 @@ void Vitesse::TargetAcquisition()
             //距離判定
             if (distSq < lockRadius_ * lockRadius_)
             {
-                findTarget = true;
+                //findTarget = true;
 
-                //ターゲットがすでに設定されているか
-                if (lockonTarget_.lock())
-                {
-                    //現在のターゲットとの距離を比較、必要ならターゲット更新
-                    if (nearestDistSq > distSq)
-                    {
-                        //ターゲットを設定
-                        lockonTarget_ = col->GetActor();
-                        nearestDistSq = distSq;
-
-                        //ターゲット変更フラグを立てる
-                        //changeLockonTarget_ = true;
-                    }
-                }
-                else
+                //ターゲットが設定されていないか
+                if (!lockonTarget_.lock())
                 {
                     //ターゲットを設定
                     lockonTarget_ = col->GetActor();
@@ -1105,43 +1167,6 @@ void Vitesse::TargetAcquisition()
 
                     //ターゲット変更フラグを立てる
                     changeLockonTarget_ = true;
-                }
-            }
-        }
-    }
-
-    //ターゲットが見つからなかった場合は既存のターゲットを更新する
-    if (!findTarget)
-    {
-        if (const auto& actor = lockonTarget_.lock())
-        {
-            const Vector3 targetPos = actor->GetTransform()->GetPosition();
-            const Vector3 pos = transform_->GetPosition();
-
-            const Vector3 toCollider = Vector3::Normalize(targetPos - pos);
-            const Vector3 cameraForward = Vector3::Normalize(camera_->GetFocus() - camera_->GetEye());
-
-            //内積値が負ならリセットする
-            float dot = cameraForward.Dot(toCollider);
-            if (dot < 0)lockonTarget_.reset();
-            else
-            {
-                //スクリーン座標から画面中央からどの程度の位置にいるか検索
-                Vector2 targetScreenPos = camera_->WorldToScreenPosition(targetPos);
-                D3D11_VIEWPORT viewport;
-                DXSystem::GetViewport(1, &viewport);
-                Vector2 targetViewport = { targetScreenPos.x/viewport.Width, targetScreenPos.y/viewport.Height};
-                
-                //ビューポート座標から画面外に出ていないか調べる
-                if ((targetViewport.x > 0 && targetViewport.x < 1) &&
-                    (targetViewport.y > 0 && targetViewport.y < 1))
-                {
-                    //画面内にいるので引き続き補足
-                }
-                else
-                {
-                    //画面外に出ているのでリセット
-                    lockonTarget_.reset();
                 }
             }
         }

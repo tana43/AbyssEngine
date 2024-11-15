@@ -204,7 +204,7 @@ void BotEnemy::Shot()
     const Vector3 pos = transform_->GetPosition();
     Vector3 toAimPos = aimPosition_ - pos;
     toAimPos.Normalize();
-    gunComponentR_->Shot(toAimPos);
+    gunComponentR_->Shot(toAimPos,nullptr);
 
     //UŒ‚‚ğ•s‰Â‚É
     canAttack_ = false;

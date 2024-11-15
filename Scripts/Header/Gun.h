@@ -35,7 +35,7 @@ public:
     /// 射撃
     /// </summary>
     /// <param name="hootingDirection">弾を打つ方向(正規化させること)</param>
-    bool Shot(AbyssEngine::Vector3 shootingDirection);
+    bool Shot(AbyssEngine::Vector3 shootingDirection, AbyssEngine::Vector3* terrainHitPosition = nullptr);
 
     //マズルフラッシュのエフェクトの座標更新
     void UpdateFlashEffect();

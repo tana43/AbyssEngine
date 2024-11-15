@@ -99,3 +99,9 @@ void Beam::SetParticleIntensity(const float& intensity)
 {
     straightParticleEmitPrameter_.intensity_ = intensity;
 }
+
+void Beam::HitTerrain()
+{
+    //エフェクト生成
+    terrainHitParticleEmitter_->EmitParticle();
+}

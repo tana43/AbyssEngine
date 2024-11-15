@@ -30,12 +30,15 @@ public:
     void SetIntensity(const float& bright);
     void SetParticleIntensity(const float& intensity);
 
+    void HitTerrain()override;
+
     const std::shared_ptr<AbyssEngine::AttackCollider>& GetAttackCollider() { return attackCollider_; }
 
     AbyssEngine::ComputeParticleEmitter::EmitParameter& GetStraightParticleEmitParameter() { return straightParticleEmitPrameter_; }
 
     const std::shared_ptr<AbyssEngine::ComputeParticleEmitter>& GetHitParticleEmitter() const { return hitParticleEmitter_; }
     const std::shared_ptr<AbyssEngine::ComputeParticleEmitter>& GetHitFireParticleEmitter() const { return hitFireParticleEmitter_; }
+    const std::shared_ptr<AbyssEngine::ComputeParticleEmitter>& GetTerrainHitParticleEmitter() const { return terrainHitParticleEmitter_; }
 
 private:
     //攻撃力
@@ -56,6 +59,9 @@ private:
     //着弾時に生成されるパーティクル
     std::shared_ptr<AbyssEngine::ComputeParticleEmitter> hitParticleEmitter_;
     std::shared_ptr<AbyssEngine::ComputeParticleEmitter> hitFireParticleEmitter_;
+
+    //地形に着弾時に生成されるパーティクル
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> terrainHitParticleEmitter_;
 
     AbyssEngine::ComputeParticleEmitter::EmitParameter straightParticleEmitPrameter_;
     float particleSpeed_ = 20.0f;

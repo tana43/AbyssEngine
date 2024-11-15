@@ -28,6 +28,9 @@ void Projectile::Update()
     //移動更新
     MoveUpdate();
     
+    //地形処理
+    IsTerrainHitUpdate();
+
 
 #if _DEBUG
     Engine::renderManager_->debugRenderer_->DrawSphere(transform_->GetPosition(), radius_, Vector4(1, 0, 0, 1));
@@ -84,5 +87,35 @@ void AbyssEngine::Projectile::HomingUpdate()
         t = std::clamp(t, 0.0f, 1.0f);
 
         direction_ = Vector3::Lerp(direction_, dir, t);
+    }
+}
+
+void AbyssEngine::Projectile::IsTerrainHitUpdate()
+{
+    if (isHoming_)
+    {
+        //ホーミングは毎フレーム判定処理する必要がある
+    }
+    else
+    {
+        //地形にあたらないなら処理しない
+        if (!isTerrainHit_)return;
+
+        //地面に当たるところまでのベクトルと、進行方向で内積
+        Vector3 toHit = terrainHitPos_ - transform_->GetPosition();
+        toHit.Normalize();
+
+        float dot = toHit.Dot(direction_);
+
+        //内積値が負なら通り過ぎているのでDestroyする
+        if (dot < 0)
+        {
+            //座標を地形が当たった位置へ
+            transform_->SetPosition(terrainHitPos_);
+
+            HitTerrain();
+
+            Actor::Destroy(actor_);
+        }
     }
 }

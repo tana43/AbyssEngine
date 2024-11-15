@@ -255,7 +255,7 @@ private:
     void UpdateGunMuzzlePos();
     
     //ビーム攻撃
-    bool BeamShotByComponent(Gun& gun,AbyssEngine::Vector3 targetPosition);
+    bool BeamShotByComponent(Gun& gun,AbyssEngine::Vector3 targetPosition, AbyssEngine::Vector3* terrainHitPosition = nullptr);
 
     //ガンコンポーネントを初期化
     void GunInitialize(Gun& gun);

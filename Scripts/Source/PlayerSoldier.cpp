@@ -395,6 +395,8 @@ void Soldier::GunShot()
     eyeToFocus.Normalize();
     const float range = 1000.0f;
 
+    Vector3* terrainHitPos = nullptr;
+
     const Vector3 start = camera_->GetEye();
     const Vector3 end = start + eyeToFocus * range;
     Vector3 hitPos,hitNormal,shootDirection;
@@ -407,6 +409,8 @@ void Soldier::GunShot()
         Vector3 toTarget = hitPos - gunComponentR_->GetMuzzlePos();
         toTarget.Normalize();
         shootDirection = toTarget;
+
+        terrainHitPos = &hitPos;
     }
     else
     {
@@ -417,7 +421,7 @@ void Soldier::GunShot()
         shootDirection = toTarget;
     }
 
-    if (gunComponentR_->Shot(shootDirection))
+    if (gunComponentR_->Shot(shootDirection),terrainHitPos)
     {
         //‰æ–ÊU“®
         Camera::CameraShakeParameters param;

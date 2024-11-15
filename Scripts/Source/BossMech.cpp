@@ -200,7 +200,7 @@ bool BossMech::ShotHomingBeam()
 
     }
 #else
-    return gunComL_->Shot(transform_->GetForward());
+    return gunComL_->Shot(transform_->GetForward(),nullptr);
 #endif // 0
 }
 

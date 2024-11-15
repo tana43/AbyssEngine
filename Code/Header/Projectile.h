@@ -47,6 +47,16 @@ namespace AbyssEngine
 
         void SetTargetTransfrom(const std::shared_ptr<Transform>& t) { targetTransform_ = t; }
 
+        void SetTerrainHitPos(const Vector3& pos) 
+        {
+            //この関数が呼ばれるときは地形に当たるということになるから、フラグも同時に上げておく
+            terrainHitPos_ = pos; 
+            isTerrainHit_ = true;
+        }
+
+        //地形に当たった際に呼び出される
+        virtual void HitTerrain() {}
+
     private:
         void LifeTimeUpdate();
 
@@ -55,6 +65,9 @@ namespace AbyssEngine
 
         //ホーミング移動更新
         void HomingUpdate();
+
+        //地形判定を越えていないか判定
+        void IsTerrainHitUpdate();
 
     protected:
         //進行方向
@@ -83,6 +96,12 @@ namespace AbyssEngine
 
         //ホーミング強度
         float homingStrength_ = 1.0f;
+
+        //直進弾のときは、あらかじめ弾が地形に当たる位置を設定しておく
+        Vector3 terrainHitPos_ = {};
+
+        //そもそも地形に当たるのか
+        bool isTerrainHit_ = false;
     };
 }
 
