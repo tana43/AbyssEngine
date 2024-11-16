@@ -69,6 +69,9 @@ const Vector2 Input::GameSupport::GetMoveVector()
     input.x += i->gamePad_.GetAxisLX();
     input.y += i->gamePad_.GetAxisLY();
 
+    if (i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER)input.x += 1.0f;
+    if (i->gamePad_.GetButton() & GamePad::BTN_LEFT_SHOULDER)input.x -= 1.0f;
+
     //‚à‚µ“ü—ÍƒxƒNƒgƒ‹‚ÌLength‚ª1‚ð’´‚¦‚é‚Ä‚¢‚éê‡‚Í³‹K‰»‚µ‚Ä‚¨‚­
     if (sqrtf(input.x * input.x + input.y * input.y) > 1)
     {
@@ -102,7 +105,10 @@ const bool Input::GameSupport::GetDashButton()
     bool input = false;
     auto& i = Engine::inputManager_;
     if (i->keyboard_->GetKeyState().LeftShift ||
-        (i->gamePad_.GetButton() & GamePad::BTN_X))
+        (i->gamePad_.GetButton() & GamePad::BTN_X) || 
+        (i->gamePad_.GetButton() & GamePad::BTN_RIGHT_SHOULDER) || 
+        (i->gamePad_.GetButton() & GamePad::BTN_LEFT_SHOULDER) 
+        )
     {
         input = true;
     }
@@ -251,7 +257,7 @@ const bool AbyssEngine::Input::GameSupport::GetChangeTargetButton()
 {
     auto& i = Engine::inputManager_;
     if (i->mouse_->GetButtonDown(Mouse::BTN_RIGHT) ||
-        i->gamePad_.GetButtonDown() & GamePad::BTN_X)
+        (i->gamePad_.GetButtonDown() & GamePad::BTN_B))
     {
         return true;
     }
@@ -264,6 +270,18 @@ const bool AbyssEngine::Input::GameSupport::GetDecideButton()
     auto& i = Engine::inputManager_;
     if (i->keyboard_->GetKeyDown(DirectX::Keyboard::Enter) ||
         i->gamePad_.GetButtonDown() & GamePad::BTN_A)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+const bool AbyssEngine::Input::GameSupport::GetStartButton()
+{
+    auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::Enter) ||
+        i->gamePad_.GetButtonDown() & GamePad::BTN_START)
     {
         return true;
     }

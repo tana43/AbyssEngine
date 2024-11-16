@@ -50,7 +50,7 @@ void GameHost::Update()
     //ゲームクリアしていてエンターが押されたらタイトルへ
     if (gameClear_)
     {
-        if (Input::GameSupport::GetDecideButton())
+        if (Input::GameSupport::GetStartButton())
         {
             Engine::sceneManager_->SetNextScene("Title");
             loadSpriteRenderer_->SetEnable(true);

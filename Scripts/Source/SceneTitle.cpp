@@ -4,6 +4,7 @@
 #include "Keyboard.h"
 #include "SceneManager.h"
 #include "Engine.h"
+#include "Input.h"
 
 using namespace AbyssEngine;
 
@@ -28,7 +29,7 @@ void SceneTitle::Update()
 {
     Scene::Update();
 
-    if (Keyboard::GetKeyDown(DirectX::Keyboard::Enter))
+    if (Input::GameSupport::GetStartButton())
     {
         Engine::sceneManager_->SetNextScene("Test");
         if (const auto& l = loadSprite_.lock())

@@ -119,28 +119,28 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     AttackerSystemInitialize();
 
 
-    gunComL_ = actor->AddComponent<Gun>();
-    gunComL_->SetIsHoming(true);
-    gunComL_->SetTargetTag(Actor::Tag_Player);
-    gunComL_->SetBulletType(Gun::BulletType::Beam);
-    gunComL_->SetBeamColor(Vector4(0.80f, 0.15f, 0.0f, 1.0f));
-    gunComL_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    gunComL_->SetBeamIntensity(1.5f);
-    gunComL_->SetBeamParticleIntensity(30.0f);
-    gunComL_->SetEnableMuzzleFlashParticleEffect(false);
-    gunComL_->SetBulletSpeed(200.0f);
-    gunComL_->SetHomingStrength(2.0f);
-    gunComL_->SetColliderTag(Collider::Tag::Enemy);
-    gunComL_->SetActiveRateOfFire(true);
-    gunComL_->SetBulletLifespan(5.0f);
+    noramlHomingGunL_ = actor->AddComponent<Gun>();
+    noramlHomingGunL_->SetIsHoming(true);
+    noramlHomingGunL_->SetTargetTag(Actor::Tag_Player);
+    noramlHomingGunL_->SetBulletType(Gun::BulletType::Beam);
+    noramlHomingGunL_->SetBeamColor(Vector4(0.80f, 0.15f, 0.0f, 1.0f));
+    noramlHomingGunL_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    noramlHomingGunL_->SetBeamIntensity(1.5f);
+    noramlHomingGunL_->SetBeamParticleIntensity(30.0f);
+    noramlHomingGunL_->SetEnableMuzzleFlashParticleEffect(false);
+    noramlHomingGunL_->SetBulletSpeed(200.0f);
+    noramlHomingGunL_->SetHomingStrength(2.0f);
+    noramlHomingGunL_->SetColliderTag(Collider::Tag::Enemy);
+    noramlHomingGunL_->SetActiveRateOfFire(true);
+    noramlHomingGunL_->SetBulletLifespan(5.0f);
 
-    gunComL_->SetRateOfFire(0.1f);
+    noramlHomingGunL_->SetRateOfFire(0.1f);
 
-    gunComL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
-    gunComL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
+    noramlHomingGunL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
+    noramlHomingGunL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
 
-    gunComL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
-    gunComL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+    noramlHomingGunL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
+    noramlHomingGunL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
 
     actor->ReplaceTag(Actor::Tag_Enemy);
 
@@ -152,7 +152,7 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
         if (const auto& center = a->FindChild("HitCollider_LowChest").lock())
         {
-            gunComL_->SetTargetTransform(center->GetTransform());
+            noramlHomingGunL_->SetTargetTransform(center->GetTransform());
         }
     }
 }
@@ -200,7 +200,7 @@ bool BossMech::ShotHomingBeam()
 
     }
 #else
-    return gunComL_->Shot(transform_->GetForward(),nullptr);
+    return noramlHomingGunL_->Shot(transform_->GetForward(),nullptr);
 #endif // 0
 }
 
@@ -526,7 +526,7 @@ void BossMech::UpdateMuzzlePos()
     Matrix mat = model_->FindSocket("hand_r");
     mat = mat * transform_->GetWorldMatrix();
     Vector3 muzzlePos = { mat.m[3][0],mat.m[3][1],mat.m[3][2] };
-    gunComL_->SetMuzzlePos(muzzlePos);
+    noramlHomingGunL_->SetMuzzlePos(muzzlePos);
 
     if (Keyboard::instance_->GetKeyDown(DirectX::Keyboard::X))
     {

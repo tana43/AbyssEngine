@@ -55,6 +55,7 @@ namespace AbyssEngine
 
             //システム周り
             static const bool GetDecideButton();
+            static const bool GetStartButton();//スタートボタン
         };
         
     private:

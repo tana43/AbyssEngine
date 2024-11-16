@@ -91,8 +91,8 @@ private:
     //突進攻撃の誘導の強さ　
     float rushHoming_ = 1.0f;
 
-    //ガンコンポーネント左手
-    std::shared_ptr<Gun> gunComL_;
+    //通常のホーミング弾を撃つガンコンポーネント
+    std::shared_ptr<Gun> noramlHomingGunL_;
 
     //自分の中心となるコライダー
     std::weak_ptr<AbyssEngine::Actor> coreCollider_;
