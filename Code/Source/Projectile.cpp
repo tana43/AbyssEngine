@@ -8,6 +8,7 @@
 #include "SceneManager.h"
 #include "StageManager.h"
 #include "Stage.h"
+#include "Character.h"
 
 using namespace AbyssEngine;
 
@@ -67,6 +68,9 @@ void AbyssEngine::Projectile::MoveUpdate()
 
 void AbyssEngine::Projectile::HomingUpdate()
 {
+    //ホーミング可能か
+    if (homingExpired_)return;
+
     //ターゲットを検索
     std::shared_ptr<Transform> target;
     if (!(target = targetTransform_.lock()))
@@ -78,18 +82,66 @@ void AbyssEngine::Projectile::HomingUpdate()
 
     if (target)
     {
-        //自分の向きと敵の向きから進行角度を補完していく
         const Vector3 pos = transform_->GetPosition();
-        const Vector3 targetPos = target->GetTransform()->GetPosition();
+        Vector3 targetPos = target->GetTransform()->GetPosition();
+        Vector3 vec = targetPos - pos;
+        float qDist = vec.LengthSquared();
 
-        Vector3 dir = targetPos - pos;
-        dir.Normalize();
+        //ターゲットがキャラクターを持っているなら、1秒先の座標を予測させる
+        if (const auto& parent = target->GetActor()->GetParent().lock())
+        {
+            if (const auto& targetChara = parent->GetComponent<Character>())
+            {
+                //おおよそターゲットまで移動するのに何秒掛かるかを算出
+                //ホーミングの軌道を考慮しないので、どうしても短めの時間になってしまう
+                float t = qDist / (speed_ * speed_);
 
-        float t = homingStrength_ * Time::GetDeltaTime();
-        t = std::clamp(t, 0.0f, 1.0f);
+                t = std::clamp(t, 0.0f, 1.5f);
 
-        direction_ = Vector3::Lerp(direction_, dir, t);
+                //到達時間までが少ないときはターゲット位置にホーミングする
+                //if (t < 0.3f)
+                //{
+                //    //そのままでいいのでなにもしない
+                //}
+                //else
+                {
+                    //t秒後の座標を算出
+                    const Vector3 velo = targetChara->GetVelocity();
+                    const Vector3 targetPosFuture = targetPos + velo * t;
+                    targetPos = targetPosFuture;
+                }
+
+
+                Vector3 dir = targetPos - pos;
+                dir.Normalize();
+
+                float homingStrength = homingStrength_ * Time::GetDeltaTime();
+                homingStrength = std::clamp(homingStrength, 0.0f, 1.0f);
+
+                direction_ = Vector3::Lerp(direction_, dir, homingStrength);
+            }
+        }
+        else
+        {
+            //キャラクターのコンポーネントがなければ前と同じ処理
+            //自分の向きと敵の向きから進行角度を補完していく
+            Vector3 dir = targetPos - pos;
+            dir.Normalize();
+
+            float homingStrength = homingStrength_ * Time::GetDeltaTime();
+            homingStrength = std::clamp(homingStrength, 0.0f, 1.0f);
+
+            direction_ = Vector3::Lerp(direction_, dir, homingStrength);
+        }
+
+        //距離判定
+        if (qDist < homingExpiredLength_ * homingExpiredLength_)
+        {
+            homingExpired_ = true;
+        }
     }
+
+    
 }
 
 void AbyssEngine::Projectile::IsTerrainHitUpdate()

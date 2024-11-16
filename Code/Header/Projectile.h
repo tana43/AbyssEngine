@@ -88,6 +88,12 @@ namespace AbyssEngine
         //敵へホーミングするか
         bool isHoming_ = false;
 
+        //ターゲットに一定距離近づいたらホーミングをさせないようにする
+        bool homingExpired_ = false;
+
+        //ホーミングを終了させる距離
+        float homingExpiredLength_ = 30.0f;
+
         //ホーミングするターゲットのタグ
         unsigned int targetTag_ = 0;
 
