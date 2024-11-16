@@ -119,28 +119,86 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     AttackerSystemInitialize();
 
 
-    noramlHomingGunL_ = actor->AddComponent<Gun>();
-    noramlHomingGunL_->SetIsHoming(true);
-    noramlHomingGunL_->SetTargetTag(Actor::Tag_Player);
-    noramlHomingGunL_->SetBulletType(Gun::BulletType::Beam);
-    noramlHomingGunL_->SetBeamColor(Vector4(0.80f, 0.15f, 0.0f, 1.0f));
-    noramlHomingGunL_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    noramlHomingGunL_->SetBeamIntensity(1.5f);
-    noramlHomingGunL_->SetBeamParticleIntensity(30.0f);
-    noramlHomingGunL_->SetEnableMuzzleFlashParticleEffect(false);
-    noramlHomingGunL_->SetBulletSpeed(200.0f);
-    noramlHomingGunL_->SetHomingStrength(2.0f);
-    noramlHomingGunL_->SetColliderTag(Collider::Tag::Enemy);
-    noramlHomingGunL_->SetActiveRateOfFire(true);
-    noramlHomingGunL_->SetBulletLifespan(5.0f);
+    //’Êí’e‚ÌÝ’è
+    {
+        noramlHomingGunL_ = actor->AddComponent<Gun>();
+        noramlHomingGunL_->SetIsHoming(true);
+        noramlHomingGunL_->SetTargetTag(Actor::Tag_Player);
+        noramlHomingGunL_->SetBulletType(Gun::BulletType::Beam);
+        noramlHomingGunL_->SetBeamColor(Vector4(0.80f, 0.15f, 0.0f, 1.0f));
+        noramlHomingGunL_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+        noramlHomingGunL_->SetBeamIntensity(4.0f);
+        noramlHomingGunL_->SetBeamParticleIntensity(30.0f);
+        noramlHomingGunL_->SetEnableMuzzleFlashParticleEffect(false);
+        noramlHomingGunL_->SetBulletSpeed(200.0f);
+        noramlHomingGunL_->SetHomingStrength(2.0f);
+        noramlHomingGunL_->SetColliderTag(Collider::Tag::Enemy);
+        noramlHomingGunL_->SetActiveRateOfFire(true);
+        noramlHomingGunL_->SetBulletLifespan(5.0f);
 
-    noramlHomingGunL_->SetRateOfFire(0.1f);
+        noramlHomingGunL_->SetRateOfFire(0.1f);
 
-    noramlHomingGunL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
-    noramlHomingGunL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
+        noramlHomingGunL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
+        noramlHomingGunL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
 
-    noramlHomingGunL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
-    noramlHomingGunL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+        noramlHomingGunL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
+        noramlHomingGunL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+        noramlHomingGunL_->SetTerrainHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+    }
+
+    //‹­ƒz[ƒ~ƒ“ƒO’e‚ÌÝ’è
+    {
+        superHomingGunL_ = actor->AddComponent<Gun>();
+        superHomingGunL_->SetIsHoming(true);
+        superHomingGunL_->SetTargetTag(Actor::Tag_Player);
+        superHomingGunL_->SetBulletType(Gun::BulletType::Beam);
+        superHomingGunL_->SetBeamColor(Vector4(0.80f, 0.15f, 0.0f, 1.0f));
+        superHomingGunL_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+        superHomingGunL_->SetBeamIntensity(1.5f);
+        superHomingGunL_->SetBeamParticleIntensity(30.0f);
+        superHomingGunL_->SetEnableMuzzleFlashParticleEffect(false);
+        superHomingGunL_->SetBulletSpeed(200.0f);
+        superHomingGunL_->SetHomingStrength(2.0f);
+        superHomingGunL_->SetColliderTag(Collider::Tag::Enemy);
+        superHomingGunL_->SetActiveRateOfFire(true);
+        superHomingGunL_->SetBulletLifespan(5.0f);
+
+        superHomingGunL_->SetRateOfFire(0.1f);
+
+        superHomingGunL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
+        superHomingGunL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
+
+        superHomingGunL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
+        superHomingGunL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+    }
+
+    //’x‰„‚µ‚Ä‚©‚çƒz[ƒ~ƒ“ƒO‚·‚é’e‚ÌÝ’è
+    {
+        delayHomingGunL_ = actor->AddComponent<Gun>();
+        delayHomingGunL_->SetIsHoming(true);
+        delayHomingGunL_->SetTargetTag(Actor::Tag_Player);
+        delayHomingGunL_->SetBulletType(Gun::BulletType::Beam);
+        delayHomingGunL_->SetBeamColor(Vector4(0.80f, 0.15f, 0.0f, 1.0f));
+        delayHomingGunL_->SetBeamParticleColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+        delayHomingGunL_->SetBeamIntensity(1.5f);
+        delayHomingGunL_->SetBeamParticleIntensity(30.0f);
+        delayHomingGunL_->SetEnableMuzzleFlashParticleEffect(false);
+        delayHomingGunL_->SetBulletSpeed(200.0f);
+        delayHomingGunL_->SetHomingStrength(2.0f);
+        delayHomingGunL_->SetColliderTag(Collider::Tag::Enemy);
+        delayHomingGunL_->SetActiveRateOfFire(true);
+        delayHomingGunL_->SetBulletLifespan(5.0f);
+
+        delayHomingGunL_->SetRateOfFire(0.1f);
+
+        delayHomingGunL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(1.0f, 0.2f, 0.0f, 1.0f));
+        delayHomingGunL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
+
+        delayHomingGunL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
+        delayHomingGunL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+    }
+
+
 
     actor->ReplaceTag(Actor::Tag_Enemy);
 

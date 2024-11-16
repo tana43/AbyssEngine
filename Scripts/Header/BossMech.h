@@ -94,6 +94,12 @@ private:
     //通常のホーミング弾を撃つガンコンポーネント
     std::shared_ptr<Gun> noramlHomingGunL_;
 
+    //ホーミングが強い弾を撃つ
+    std::shared_ptr<Gun> superHomingGunL_;
+
+    //一定時間経過後にホーミングする弾を撃つ
+    std::shared_ptr<Gun> delayHomingGunL_;
+
     //自分の中心となるコライダー
     std::weak_ptr<AbyssEngine::Actor> coreCollider_;
 
