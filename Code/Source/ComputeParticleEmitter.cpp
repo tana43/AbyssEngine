@@ -336,8 +336,9 @@ void ComputeParticleEmitter::EmitParticle(const EmitParameter& param)
 		sa.y += Math::RandomRange(-scaleAccelAmp.y, scaleAccelAmp.y);
 
 		//@‰ñ“]
-		Vector4 rotation = transform_->GetRotation();
-		Vector3 r = { rotation.x,rotation.y,rotation.z };
+		//Vector4 rotation = transform_->GetRotation();
+		//Vector3 r = { rotation.x,rotation.y,rotation.z };
+		Vector3 r = Vector3::Zero;
 		r.x += Math::RandomRange(-rotAmp.x, rotAmp.x);
 		r.y += Math::RandomRange(-rotAmp.y, rotAmp.y);
 		r.z += Math::RandomRange(-rotAmp.z, rotAmp.z);

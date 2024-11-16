@@ -26,6 +26,7 @@ namespace AbyssEngine
         void SetPositionY(const float& y) { position_.y = y; }
         void SetPositionZ(const float& z) { position_.z = z; }
 
+        [[nodiscard]] const Matrix& GetRotateMatrix();
         [[nodiscard]] const Vector4& GetRotation() const { return rotation_; };
         void SetRotation(const Vector4& rotation) { rotation_ = rotation; }
         void SetRotation(const Vector3& rotation) { rotation_.x = rotation.x; rotation_.y = rotation.y; rotation_.z = rotation.z; }

@@ -42,6 +42,28 @@ void Projectile::Update()
     LifeTimeUpdate();
 }
 
+void AbyssEngine::Projectile::SetDirection(const Vector3& dir)
+{
+    //前方向算出　方向と被らないようにすこし真上からずらす
+    Vector3 forward = transform_->GetForward();
+    forward.y += 0.00001f;
+
+    //回転軸算出
+    Vector3 axis = forward.Cross(dir);
+    axis.Normalize();
+
+    //回転量算出
+    float angle = acosf(std::clamp(forward.Dot(dir),-1.0f,1.0f));
+
+    //回転行列算出
+    Matrix R = transform_->GetRotateMatrix() * Matrix::CreateFromAxisAngle(axis, angle);
+
+    //クォータニオンに変換
+    Quaternion q = DirectX::XMQuaternionRotationMatrix(R);
+    
+    transform_->SetRotation(q.To_Euler());
+}
+
 void AbyssEngine::Projectile::SetRadius(const float& radius)
 {
     radius_ = radius;
@@ -61,9 +83,14 @@ void AbyssEngine::Projectile::LifeTimeUpdate()
 void AbyssEngine::Projectile::MoveUpdate()
 {
     //飛び道具の射出距離
+    //const Vector3& pos = transform_->GetPosition();
+    //const Vector3& velo = direction_ * speed_ * actor_->GetDeltaTime();
+    //transform_->SetPosition(pos + velo);
+
     const Vector3& pos = transform_->GetPosition();
-    const Vector3& velo = direction_ * speed_ * actor_->GetDeltaTime();
+    const Vector3& velo = transform_->GetForward() * speed_ * actor_->GetDeltaTime();
     transform_->SetPosition(pos + velo);
+
 }
 
 void AbyssEngine::Projectile::HomingUpdate()
@@ -111,27 +138,13 @@ void AbyssEngine::Projectile::HomingUpdate()
                     targetPos = targetPosFuture;
                 }
 
-
-                Vector3 dir = targetPos - pos;
-                dir.Normalize();
-
-                float homingStrength = homingStrength_ * Time::GetDeltaTime();
-                homingStrength = std::clamp(homingStrength, 0.0f, 1.0f);
-
-                direction_ = Vector3::Lerp(direction_, dir, homingStrength);
+                Homing(targetPos);
             }
         }
         else
         {
             //キャラクターのコンポーネントがなければ前と同じ処理
-            //自分の向きと敵の向きから進行角度を補完していく
-            Vector3 dir = targetPos - pos;
-            dir.Normalize();
-
-            float homingStrength = homingStrength_ * Time::GetDeltaTime();
-            homingStrength = std::clamp(homingStrength, 0.0f, 1.0f);
-
-            direction_ = Vector3::Lerp(direction_, dir, homingStrength);
+            Homing(targetPos);
         }
 
         //距離判定
@@ -156,7 +169,7 @@ void AbyssEngine::Projectile::IsTerrainHitUpdate()
         {
             const Vector3 start = transform_->GetPosition();
             const float speed = speed_ * actor_->GetDeltaTime();
-            const Vector3 end = transform_->GetPosition() + direction_ * speed;
+            const Vector3 end = transform_->GetPosition() + transform_->GetForward() * speed;
             Vector3 hitPosition, hitNormal;
 
             //レイキャスト
@@ -182,7 +195,7 @@ void AbyssEngine::Projectile::IsTerrainHitUpdate()
         Vector3 toHit = terrainHitPos_ - transform_->GetPosition();
         toHit.Normalize();
 
-        float dot = toHit.Dot(direction_);
+        float dot = toHit.Dot(transform_->GetForward());
 
         //内積値が負なら通り過ぎているのでDestroyする
         if (dot < 0)
@@ -195,4 +208,50 @@ void AbyssEngine::Projectile::IsTerrainHitUpdate()
             Actor::Destroy(actor_);
         }
     }
+}
+
+void AbyssEngine::Projectile::Homing(Vector3 targetPos)
+{
+    const Vector3 pos = transform_->GetPosition();
+    Vector3 dir = targetPos - pos;
+    //dir.Normalize();
+    const Vector3 forward = transform_->GetForward();
+    Vector3 forwardXZ = {forward.x, 0, forward.z};
+    Vector3 forwardHY = { forward.x + forward.z, forward.y, 0};
+    forwardXZ.Normalize();
+    forwardHY.Normalize();
+
+    Vector3 dirXZ = { dir.x , 0, dir.z };//XZ平面での方向
+    Vector3 dirHY = {dir.x + dir.z,dir.y,0};//YとXZを足し合わせた方向
+    dirXZ.Normalize();
+    dirHY.Normalize();
+
+    //左右と上下判定が同時にできないので、別々で処理して最後に回転量を足し合わせる
+
+    //必要な回転角を算出
+    float horiRad = acosf(std::clamp(forwardXZ.Dot(dirXZ), -1.0f, 1.0f));
+    float vertRad = acosf(std::clamp(forwardHY.Dot(dirHY), -1.0f, 1.0f));
+
+    //回転速度算出
+    //float horiRotSpeed = min(homingStrength_ * actor_->GetDeltaTime(), horiRad);
+    //float vertRotSpeed = min(homingStrength_ * actor_->GetDeltaTime(), vertRad);
+    float horiRotSpeed = horiRad;
+    float vertRotSpeed = vertRad;
+
+    //外積をとり左右判定
+    const Vector3 horiCross = forwardXZ.Cross(dirXZ);
+    const Vector3 vertCross = forwardXZ.Cross(dirHY);
+    if (horiCross.y > 0)horiRotSpeed = -horiRotSpeed;
+    if (vertCross.z > 0)vertRotSpeed = -vertRotSpeed;
+    
+
+    //任意軸で回転行列作成
+    Matrix HAR = Matrix::CreateFromAxisAngle(horiCross, horiRotSpeed);
+    Matrix VAR = Matrix::CreateFromAxisAngle(vertCross, vertRotSpeed);
+
+    //ホーミング後の回転行列を算出し、代入
+    Matrix R = transform_->GetRotateMatrix() * HAR * VAR;
+
+    Quaternion q = Quaternion::CreateFromRotationMatrix(R);
+    transform_->SetRotation(q.To_Euler());
 }

@@ -68,11 +68,11 @@ void Beam::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, 
 void Beam::ParticleUpdate()
 {
     //パーティクルの動きを設定
-    straightParticleEmitPrameter_.velocity_ = -direction_ * particleSpeed_;
+    straightParticleEmitPrameter_.velocity_ = -transform_->GetForward() * particleSpeed_;
 
     //右方向ベクトルと上方向ベクトルからパーティクルの散らばりを算出
-    const Vector3 right = direction_.Cross(Vector3::Up);
-    const Vector3 up = right.Cross(direction_);
+    const Vector3 right = transform_->GetRight();
+    const Vector3 up = transform_->GetUp();
     straightParticleEmitPrameter_.velocityAmplitude_ = right * particleAmplitude_ + up * particleAmplitude_;
 
     //パーティクル生成

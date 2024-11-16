@@ -29,7 +29,8 @@ namespace AbyssEngine
             Vector3& hitPosition);
 
     public:
-        void SetDirection(const Vector3& dir) { direction_ = dir; }
+        //進行方向ベクトルから回転行列を算出
+        void SetDirection(const Vector3& dir);
 
         const std::shared_ptr<AttackCollider>& GetAtkCollider() const { return atkCollider_; }
 
@@ -69,9 +70,12 @@ namespace AbyssEngine
         //地形判定を越えていないか判定
         void IsTerrainHitUpdate();
 
+        //targetPosにホーミングさせる
+        void Homing(Vector3 targetPos);
+
     protected:
         //進行方向
-        Vector3 direction_;
+        //Vector3 direction_;
 
         //速度
         float speed_ = 50.0f;

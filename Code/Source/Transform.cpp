@@ -128,6 +128,12 @@ void Transform::SetWorldMatrix(const Matrix& mat)
     up_.Normalize();
 }
 
+const Matrix& AbyssEngine::Transform::GetRotateMatrix()
+{
+    Vector3 euler = { rotation_.x,rotation_.y,rotation_.z };
+    return Matrix::CreateFromQuaternion(Quaternion::Euler(euler));
+}
+
 Vector3 Transform::GetEulerAngles() const 
 {
     return rotation_.To_Euler();
