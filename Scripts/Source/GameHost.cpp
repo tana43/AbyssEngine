@@ -44,17 +44,24 @@ void GameHost::Update()
         {
             gameClear_ = true;
             spriteRenderer_->SetEnable(true);
+
+            toTitleTimer_ = 3.0f;
         }
     }
 
     //ゲームクリアしていてエンターが押されたらタイトルへ
+    //クリアから３秒経過してもタイトルへ
     if (gameClear_)
     {
-        if (Input::GameSupport::GetStartButton())
+        if (toTitleTimer_ < 0 || Input::GameSupport::GetStartButton())
         {
             Engine::sceneManager_->SetNextScene("Title");
             loadSpriteRenderer_->SetEnable(true);
         }
+
+        
+
+        toTitleTimer_ -= Time::GetDeltaTime();
     }
 
 }

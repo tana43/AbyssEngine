@@ -11,7 +11,7 @@ namespace AbyssEngine
     //class ComputeParticleEmitter;
 }
 
-class Beam : public AbyssEngine::Projectile
+class Missile : public AbyssEngine::Projectile
 {
 public:
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;

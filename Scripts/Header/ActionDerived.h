@@ -105,10 +105,10 @@ private:
 };
 
 //ƒr[ƒ€UŒ‚
-class MechShotBeamAction : public ActionBase<BossMech>
+class MechShotNormalBeamAction : public ActionBase<BossMech>
 {
 public:
-	MechShotBeamAction(BossMech* owner) : ActionBase(owner) {}
+	MechShotNormalBeamAction(BossMech* owner) : ActionBase(owner) {}
 	ActionBase::State Run(float deltaTime)override;
 
 private:
@@ -124,6 +124,47 @@ private:
 	float shotStartTime_ = 0.5f;
 	float shotEndTime_ = 1.0f;
 };
+
+//ŠgUƒr[ƒ€UŒ‚
+class MechShotSuperHomingBeamAction : public ActionBase<BossMech>
+{
+public:
+	MechShotSuperHomingBeamAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+
+private:
+	enum class Step
+	{
+		Init,
+		Idle,
+		Shot,
+		End,
+	};
+
+	float timer_ = 0.0f;
+	float shotTime_ = 0.5f;
+};
+
+//ƒ~ƒTƒCƒ‹UŒ‚
+class MechShotMissileAction : public ActionBase<BossMech>
+{
+public:
+	MechShotMissileAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+
+private:
+	enum class Step
+	{
+		Init,
+		Idle,
+		Shot,
+		End,
+	};
+
+	float timer_ = 0.0f;
+	float shotTime_ = 0.5f;
+};
+
 
 //ƒvƒŒƒCƒ„[‚Ì–Ú‚Ì‘O‚Ü‚ÅˆÚ“®‚·‚é
 class MechMoveToVitesseAction : public ActionBase<BossMech>
@@ -141,6 +182,29 @@ private:
 		Failed,
 		Complete,
 	};
+};
+
+//“G‚©‚çƒoƒbƒN‚·‚é
+class MechBackToVitesseAction : public ActionBase<BossMech>
+{
+public:
+	MechBackToVitesseAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+
+private:
+	enum class Step
+	{
+		Init,
+		Move,
+		Failed,
+		Complete,
+	};
+
+	void Finalize();
+
+private:
+	float moveTime_ = 1.5f;
+	float moveTimer_;
 };
 
 //“G‚É‹ßÚUŒ‚
@@ -164,6 +228,37 @@ class MechCombo03Action : public ActionBase<BossMech>
 {
 public:
 	MechCombo03Action(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+};
+
+//€–S
+class MechDieAction : public ActionBase<BossMech>
+{
+public:
+	MechDieAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+};
+
+//‰¡ˆÚ“®
+class MechSideMoveAction : public ActionBase<BossMech>
+{
+public:
+	MechSideMoveAction(BossMech* owner) : ActionBase(owner) {}
+	ActionBase::State Run(float deltaTime)override;
+private:
+
+	bool isMoveRight_ = true;
+
+	float moveTime_ = 1.0f;
+	float timer_;
+
+};
+
+//€–S
+class MechTurnToVitesse : public ActionBase<BossMech>
+{
+public:
+	MechTurnToVitesse(BossMech* owner) : ActionBase(owner) {}
 	ActionBase::State Run(float deltaTime)override;
 };
 #pragma endregion

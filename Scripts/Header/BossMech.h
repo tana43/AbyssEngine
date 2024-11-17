@@ -47,11 +47,27 @@ public:
     //突進
     void RushAttackUpdate();
 
-    //誘導するビームを生成
-    bool ShotHomingBeam();
+    //誘導するビームを発射
+    bool ShotNormalHomingBeam();
+    //強誘導するビームを発射
+    bool ShotSuperHomingBeam();
+    //拡散させるように撃つ強誘導ビームを発射
+    bool DiffusionShotSuperHomingBeam();
+    //ミサイル発射
+    bool ShotMissile();
+    //bool ShotNormalHomingBeam();
 
     //目標座標まで移動する 移動が完了したかを返す
     bool MoveTo(AbyssEngine::Vector3 goalPos);
+
+    //ターゲットから引き下がる
+    void BackTo(AbyssEngine::Vector3 TargetPos);
+
+    //ターゲットまでの距離を判定　範囲内ならtrue
+    bool CheckTargetDistance(AbyssEngine::Vector3 targetPos,float range);
+
+    //ヴィテスの方へ回転する
+    bool TurnToVitesse();
 
     void DrawImGui()override;
 
@@ -59,6 +75,8 @@ public:
     const std::weak_ptr<Vitesse>& GetTargetVitesse() const { return targetVitesse_; }
 
     const std::shared_ptr<AbyssEngine::AttackerSystem>& GetAttackerSystem() const { return attackerSystem_; }
+
+    const float& GetTargetNearDist() const { return targetNearDist_;}
 
 private:
     //コライダー設定
@@ -98,7 +116,7 @@ private:
     std::shared_ptr<Gun> superHomingGunL_;
 
     //一定時間経過後にホーミングする弾を撃つ
-    std::shared_ptr<Gun> delayHomingGunL_;
+    std::shared_ptr<Gun> missileGunL_;
 
     //自分の中心となるコライダー
     std::weak_ptr<AbyssEngine::Actor> coreCollider_;
@@ -107,14 +125,16 @@ private:
     //float shotDireTimer_;
 
     //一度に撃つビームの数
-    int shotHomingBeamCount_ = 50;
+    int shotHomingBeamCount_ = 20;
 
     float beamShotTimer_;
 
     float shotBeamActionCooldown_;
 
     //目標地点に到達したとみなす判定距離
-    float nearRange_ = 5.0f;
+    float nearRange_ = 20.0f;
     
+    //ターゲットが近距離にいているか判断させるための距離変数
+    float targetNearDist_ = 50.0f;
 };
 

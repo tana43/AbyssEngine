@@ -18,9 +18,9 @@ public:
     {
         Bullet,
         Beam,
+        Missile,
         Max,
     };
-   
 
     Gun() {}
     ~Gun() = default;
@@ -63,10 +63,13 @@ public:
     void SetBulletSpeed(const float& speed) { bulletSpeed_ = speed; }
 
     void SetBeamColor(const AbyssEngine::Vector4& color) { beamColor_ = color; }
+    void SetMissileColor(const AbyssEngine::Vector4& color) { missileColor_ = color; }
 
     void SetBeamScale(const float& scale) { beamScale_ = scale; }
+    void SetMissileScale(const float& scale) { missileScale_ = scale; }
 
     void SetBeamWidth(const float& width) { beamWidth_ = width; }
+    void SetMissileWidth(const float& width) { missileWidth_ = width; }
 
     void SetHomingStrength(const float& str) { homingStrength_ = str; }
 
@@ -77,10 +80,14 @@ public:
     void SetEnableMuzzleFlashParticleEffect(const bool& enable) { enableMuzzleFlashParticleEffect_ = enable; }
 
     void SetBeamIntensity(const float& intensity) { beamIntensity_ = intensity; }
+    void SetMissileIntensity(const float& intensity) { missileIntensity_ = intensity; }
 
     void SetBeamParticleIntensity(const float& intensity) { beamParticleIntensity_ = intensity; }
+    void SetMissileParticleIntensity(const float& intensity) { missileParticleIntensity_ = intensity; }
 
     void SetBeamParticleColor(const AbyssEngine::Vector4& col) { beamParticleColor_ = col; }
+
+    void SetMissileParticleColor(const AbyssEngine::Vector4& col) { missileParticleColor_ = col; }
 
     void SetActiveRateOfFire(const bool& active) { activeRateOfFire_ = active; }
 
@@ -143,10 +150,18 @@ private:
 
     //ビームの幅
     float beamWidth_ = 1.0f;
+    float missileWidth_ = 1.0f;
     //ビームのカラー
     AbyssEngine::Vector4 beamColor_ = {1,1,1,1};
-    //ビームのビルボードエフェクトの大きさ
+    //ビームエフェクトの大きさ
     float beamScale_ = 1.0f;
+    float missileScale_ = 1.0f;
+
+    //ミサイルのカラー
+    AbyssEngine::Vector4 missileColor_ = { 1.0f,0.4f,0.0f,1.0f };
+
+    //ミサイルのパーティクルカラー
+    AbyssEngine::Vector4 missileParticleColor_ = { 1.0f,0.4f,0.0f,1.0f };
 
     //発砲する弾丸の速度
     float bulletSpeed_ = 50.0f;
@@ -163,9 +178,11 @@ private:
 
     //ビームの明るさ
     float beamIntensity_ = 4.0f;
+    float missileIntensity_ = 4.0f;
 
     //ビームのパーティクルの明るさ
     float beamParticleIntensity_ = 30.0f;
+    float missileParticleIntensity_ = 3.0f;
 
     //マズルフラッシュ用のパーティクルエフェクトを再生するか
     bool enableMuzzleFlashParticleEffect_ = true;

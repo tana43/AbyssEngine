@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "Bullet.h"
 #include "Beam.h"
+#include "Missile.h"
 #include "BillboardRenderer.h"
 
 #include "imgui/imgui.h"
@@ -76,26 +77,43 @@ void Gun::DrawImGui()
         }
 
 
-        if (ImGui::TreeNode("Beam"))
+        switch (bulletType_)
         {
-            ImGui::DragFloat("Beam Width", &beamWidth_, 0.1f, 0.0f);
-            ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
-            ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
-            ImGui::ColorEdit4("Beam Particle Color", &beamParticleColor_.x, ImGuiColorEditFlags_PickerHueWheel);
-            ImGui::DragFloat("Brightness", &beamIntensity_, 0.01f);
+        case Gun::BulletType::Beam:
+            if (ImGui::TreeNode("Beam"))
+            {
+                ImGui::DragFloat("Beam Width", &beamWidth_, 0.1f, 0.0f);
+                ImGui::DragFloat("Beam Billboard Size", &beamScale_, 0.1f);
+                ImGui::ColorEdit4("Beam Color", &beamColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+                ImGui::ColorEdit4("Beam Particle Color", &beamParticleColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+                ImGui::DragFloat("Brightness", &beamIntensity_, 0.01f);
 
-            ImGui::DragFloat("Particle Speed", &particleSpeed_, 0.01f);
-            ImGui::DragFloat("Particle Amplitude Speed", &particleAmplitudeSpeed_, 0.01f);
+                ImGui::DragFloat("Particle Speed", &particleSpeed_, 0.01f);
+                ImGui::DragFloat("Particle Amplitude Speed", &particleAmplitudeSpeed_, 0.01f);
 
-            ImGui::Checkbox("MuzzleFlash Effect", &enableMuzzleFlashParticleEffect_);
-            ImGui::Checkbox("Homing", &isHoming_);
+                ImGui::Checkbox("MuzzleFlash Effect", &enableMuzzleFlashParticleEffect_);
+                ImGui::Checkbox("Homing", &isHoming_);
 
-            ImGui::DragFloat("Homing Strength",&homingStrength_,0.01f);
+                ImGui::DragFloat("Homing Strength", &homingStrength_, 0.01f);
 
-            ImGui::TreePop();
+                ImGui::TreePop();
+            }
+            break;
+        case Gun::BulletType::Missile:
+            if (ImGui::TreeNode("Missile"))
+            {
+                ImGui::ColorEdit4("Missile Color", &missileColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+                ImGui::ColorEdit4("Missle Particle Color", &missileParticleColor_.x, ImGuiColorEditFlags_PickerHueWheel);
+
+                ImGui::DragFloat("Missile Width", &missileWidth_, 0.1f, 0.0f);
+                ImGui::DragFloat("Missile Scale", &missileScale_, 0.1f);
+                ImGui::DragFloat("Billboard Intensity", &missileIntensity_, 0.01f);
+                ImGui::DragFloat("Missile Particle Intensity", &missileParticleIntensity_, 0.01f);
+
+                ImGui::TreePop();
+            }
+            break;
         }
-
-        
 
         ImGui::TreePop();
     }
@@ -223,6 +241,60 @@ bool Gun::Shot(Vector3 shootingDirection,Vector3* terrainHitPosition)
             muzzleFlashParticleEmitter_->SetEmitParamater(emitParam);
             break;
         }
+        case Gun::BulletType::Missile:
+        {
+            const auto& proj = bullet->AddComponent<Missile>();
+            //弾丸の設定
+            bullet->GetTransform()->SetPosition(muzzlePos_);
+            proj->SetRadius(bulletRadius_);
+            proj->GetAtkCollider()->ReplaceTag(colliderTag_);
+            proj->SetDirection(shootingDirection);
+            proj->SetColor(missileColor_);
+            proj->SetWidth(missileWidth_);
+            proj->GetTransform()->SetScaleFactor(missileScale_);
+            proj->SetSpeed(bulletSpeed_);
+            proj->SetHomingStrength(homingStrength_);
+            proj->SetIsHoming(isHoming_);
+            proj->SetTargetTag(targetTag_);
+            proj->SetIntensity(missileIntensity_);
+            proj->GetStraightParticleEmitParameter().color_ = missileParticleColor_;
+            proj->SetLifespan(bulletLifespan_);
+            proj->SetParticleIntensity(missileParticleIntensity_);
+            proj->GetHitParticleEmitter()->SetEmitParamater(hitParticleParam_);
+            proj->GetHitFireParticleEmitter()->SetEmitParamater(hitFireParticleParam_);
+            proj->GetTerrainHitParticleEmitter()->SetEmitParamater(terrainHitParticleParam_);
+
+            if (!isHoming_)
+            {
+                if (terrainHitPosition)
+                {
+                    proj->SetTerrainHitPos(*terrainHitPosition);
+                }
+            }
+
+            if (const auto& t = targetTransform_.lock())
+            {
+                proj->SetTargetTransfrom(t);
+            }
+
+            //エフェクト設定
+            muzzleFlashComponent_->SetVisibility(true);
+            flashLifespan_ = 0.0f;
+            muzzleFlashComponent_->SetRotationZ(Math::RandomRange(0.0f, 360.0f));
+
+            //パーティクル設定
+            auto emitParam = muzzleFlashParticleEmitter_->GetEmitParamter();
+            emitParam.velocity_ = shootingDirection * particleSpeed_;
+
+            //射撃方向から見た右ベクトルと上ベクトルを算出し、拡散方向を指定する
+            const Vector3 right = shootingDirection.Cross(Vector3::Up);
+            const Vector3 up = shootingDirection.Cross(right);
+            emitParam.positionAmplitude_ = shootingDirection * 0.1f;
+            emitParam.velocityAmplitude_ = right * particleAmplitudeSpeed_ + up * particleAmplitudeSpeed_ + shootingDirection * particleAmplitudeSpeed_;
+            emitParam.accelerationAmplitud_ = right * particleAmplitudeSpeed_ + up * particleAmplitudeSpeed_ + shootingDirection * particleAmplitudeSpeed_;
+            muzzleFlashParticleEmitter_->SetEmitParamater(emitParam);
+            break;
+        }
         }
        
 
@@ -264,6 +336,16 @@ void Gun::UpdateFlashEffect()
         {
             beamMuzzleFlashComponent_->SetVisibility(false);
         }
+        break;
+
+    default:
+        muzzleFlashComponent_->SetOffsetPos(offset);
+        //エフェクト寿命計算
+        if (flashLifespan_ > Max_Flash_Lifespan)
+        {
+            muzzleFlashComponent_->SetVisibility(false);
+        }
+
         break;
     }
 

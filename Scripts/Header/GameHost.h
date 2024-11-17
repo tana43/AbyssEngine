@@ -27,5 +27,6 @@ private:
     std::shared_ptr<AbyssEngine::SpriteRenderer> spriteRenderer_;
     std::shared_ptr<AbyssEngine::SpriteRenderer> loadSpriteRenderer_;
 
+    float toTitleTimer_;
 };
 

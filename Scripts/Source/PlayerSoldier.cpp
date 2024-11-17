@@ -278,13 +278,13 @@ void Soldier::UpdateMove()
 void Soldier::CameraRollUpdate()
 {
     //“ü—Í’lŽæ“¾
-    /*Vector2 input = Input::GameSupport::GetCameraRollVector();
+    Vector2 input = Input::GameSupport::GetCameraRollVector();
 
     auto r = camera_->GetTransform()->GetRotation();
     const float rollSpeed = cameraRollSpeed_ * actor_->GetDeltaTime();
     r.x = r.x + input.y * rollSpeed;
     r.y = r.y + input.x * rollSpeed;
-    camera_->GetTransform()->SetRotation(r);*/
+    camera_->GetTransform()->SetRotation(r);
 
     if (!camera_->GetIsMainCamera())return;
     camera_->CameraRollController();

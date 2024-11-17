@@ -119,3 +119,38 @@ bool MechGroundJudgment::Judgment()
 {
 	return owner_->GetIsGroundMode();
 }
+
+bool MechDieJudgment::Judgment()
+{
+	return owner_->GetIsDead();
+}
+
+bool MechNearRangeJudgment::Judgment()
+{
+	if (const auto& t = owner_->GetTargetVitesse().lock())
+	{
+		return owner_->CheckTargetDistance(t->GetTransform()->GetPosition(), owner_->GetTargetNearDist());
+	}
+
+	return false;
+}
+
+bool MechNearestRangeJudgment::Judgment()
+{
+	if (const auto& t = owner_->GetTargetVitesse().lock())
+	{
+		return owner_->CheckTargetDistance(t->GetTransform()->GetPosition(),30.0f);
+	}
+
+	return false;
+}
+
+bool MechMiddleRangeJudgment::Judgment()
+{
+	if (const auto& t = owner_->GetTargetVitesse().lock())
+	{
+		return !owner_->CheckTargetDistance(t->GetTransform()->GetPosition(), owner_->GetTargetNearDist());
+	}
+
+	return false;
+}

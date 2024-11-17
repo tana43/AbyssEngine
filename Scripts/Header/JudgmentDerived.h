@@ -95,4 +95,40 @@ public:
 	// 判定
 	bool Judgment();
 };
+
+//死亡しているか
+class MechDieJudgment : Inheritance_Mech
+{
+public:
+	MechDieJudgment(BossMech* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+
+//ターゲットは近距離か
+class MechNearRangeJudgment : Inheritance_Mech
+{
+public:
+	MechNearRangeJudgment(BossMech* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+
+//ターゲットは中距離か
+class MechMiddleRangeJudgment : Inheritance_Mech
+{
+public:
+	MechMiddleRangeJudgment(BossMech* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
+
+//ターゲットと近すぎないか
+class MechNearestRangeJudgment : Inheritance_Mech
+{
+public:
+	MechNearestRangeJudgment(BossMech* owner) : JudgmentBase(owner) {}
+	// 判定
+	bool Judgment();
+};
 #pragma endregion

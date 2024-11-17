@@ -39,6 +39,7 @@
     <ClInclude Include="Code\Header\EffectEditScene.h" />
     <ClInclude Include="Code\Header\FadeSystem.h" />
     <ClInclude Include="Code\Header\GameCollider.h" />
+    <ClInclude Include="Code\Header\Missile.h" />
     <ClInclude Include="Code\Header\ParticleEmitter.h" />
     <ClInclude Include="Code\Header\PerlinNoise.h" />
     <ClInclude Include="Code\Header\Projectile.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="Code\Source\EffectEditScene.cpp" />
     <ClCompile Include="Code\Source\FadeSystem.cpp" />
     <ClCompile Include="Code\Source\GameCollider.cpp" />
+    <ClCompile Include="Code\Source\Missile.cpp" />
     <ClCompile Include="Code\Source\ParticleEmitter.cpp" />
     <ClCompile Include="Code\Source\PerlinNoise.cpp" />
     <ClCompile Include="Code\Source\Projectile.cpp" />

@@ -374,8 +374,8 @@ private:
     float Max_Boost_Amount = 100.0f;
     float boostAmount_ = Max_Boost_Amount;
     float boostHealAmount_ = 25.0f;//ブーストが１秒間に回復する量
-    float boostOverHeatHealAmount_ = 35.0f;//オーバーヒート時にブーストが１秒間に回復する量
-    float boostHealStartTime_ = 1.0f;//最後にブーストを使ってから回復し始めるまでのタイム
+    float boostOverHeatHealAmount_ = 45.0f;//オーバーヒート時にブーストが１秒間に回復する量
+    float boostHealStartTime_ = 0.5f;//最後にブーストを使ってから回復し始めるまでのタイム
     float boostTimer_ = 0.0f;
     bool isBoostOverHeat_ = false;
 

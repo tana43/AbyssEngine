@@ -296,7 +296,7 @@ ActionBase<BossMech>::State MechRunAttackAction::Run(float deltaTime)
 }
 
 
-ActionBase<BossMech>::State MechShotBeamAction::Run(float deltaTime)
+ActionBase<BossMech>::State MechShotNormalBeamAction::Run(float deltaTime)
 {
 	switch (step)
 	{
@@ -322,7 +322,7 @@ ActionBase<BossMech>::State MechShotBeamAction::Run(float deltaTime)
 	case static_cast<int>(Step::Shot):
 
 		//ビームを撃つ
-		owner_->ShotHomingBeam();
+		owner_->ShotNormalHomingBeam();
 
 		//if (owner_->GetAnimator()->GetAnimationFinished())
 		if (timer_ > shotEndTime_)
@@ -389,7 +389,7 @@ ActionBase<BossMech>::State MechMoveToVitesseAction::Run(float deltaTime)
 		Vector3 inFront = { targetToOwner.x,0,targetToOwner.z };
 		inFront.Normalize();
 
-		const float range = 20.0f;
+		const float range = 10.0f;
 		inFront *= range;
 		movePos = targetPos + inFront;
 
@@ -546,6 +546,298 @@ ActionBase<BossMech>::State MechCombo03Action::Run(float deltaTime)
 
 		break;
 	case 2:
+
+		step = 0;
+
+		return ActionBase::State::Complete;
+
+		break;
+	}
+
+	return ActionBase::State::Run;
+}
+
+
+ActionBase<BossMech>::State MechShotSuperHomingBeamAction::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case static_cast<int>(Step::Init):
+
+		//初期化
+		owner_->GetAnimator()->PlayAnimation("Skill_01");
+		owner_->ToFlightMode();
+
+		timer_ = 0.0f;
+
+		step++;
+		break;
+
+	case static_cast<int>(Step::Idle):
+		//モーションがある程度進むまで待機
+		if (timer_ > shotTime_)
+		{
+			step++;
+		}
+
+		break;
+	case static_cast<int>(Step::Shot):
+
+		//ビームを撃つ
+		owner_->DiffusionShotSuperHomingBeam();
+		step++;
+		break;
+	case static_cast<int>(Step::End):
+
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			//終了化
+			step = 0;
+
+			return ActionBase::State::Complete;
+		}
+		
+		break;
+	}
+
+	timer_ += deltaTime;
+
+	return ActionBase::State::Run;
+}
+
+
+ActionBase<BossMech>::State MechShotMissileAction::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case static_cast<int>(Step::Init):
+
+		//初期化
+		owner_->GetAnimator()->PlayAnimation("Skill_01");
+		owner_->ToFlightMode();
+
+		timer_ = 0.0f;
+
+		step++;
+		break;
+
+	case static_cast<int>(Step::Idle):
+		//モーションがある程度進むまで待機
+		if (timer_ > shotTime_)
+		{
+			step++;
+		}
+
+		break;
+	case static_cast<int>(Step::Shot):
+
+		//ビームを撃つ
+		owner_->ShotMissile();
+		step++;
+		break;
+	case static_cast<int>(Step::End):
+
+		if (owner_->GetAnimator()->GetAnimationFinished())
+		{
+			//終了化
+			step = 0;
+
+			return ActionBase::State::Complete;
+		}
+
+		break;
+	}
+
+	timer_ += deltaTime;
+
+	return ActionBase::State::Run;
+}
+
+
+ActionBase<BossMech>::State MechDieAction::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case 0:
+		owner_->GetAnimator()->PlayAnimation("Fly_Idle");
+		step++;
+		break;
+
+	case 1:
+		break;
+	}
+
+
+	return ActionBase::State::Run;
+}
+
+ActionBase<BossMech>::State MechSideMoveAction::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case 0:
+		//左右どちらに動くか判別 とりま乱数
+		isMoveRight_ = rand() % 2;
+
+		if(isMoveRight_)owner_->GetAnimator()->PlayAnimation("Fly_Right_Loop");
+		else owner_->GetAnimator()->PlayAnimation("Fly_Left_Loop");
+
+		//自動回転制御を停止
+		owner_->SetEnableAutoTurn(false);
+
+		step++;
+		break;
+	case 1:
+		//動きの処理
+
+		if (const auto& target = owner_->GetTargetVitesse().lock())
+		{
+			const Vector3 ownerPos = owner_->GetTransform()->GetPosition();
+			const Vector3 targetPos = target->GetTransform()->GetPosition();
+			Vector3 toTarget = targetPos - ownerPos;
+			Vector3 dirToTarget;
+			toTarget.Normalize(dirToTarget);
+
+			//上ベクトルとターゲットまでとのベクトルから移動すべき横方向を算出
+			Vector3 moveVec = DirectX::XMVector3Normalize(Vector3::Up.Cross(dirToTarget));
+			moveVec.Normalize();
+
+			//移動ベクトルセット
+			if (!isMoveRight_)moveVec = -moveVec;
+			owner_->SetMoveVec(moveVec);
+
+			//回転
+			owner_->TurnY(dirToTarget);
+		}
+
+		if (timer_ > moveTime_)
+		{
+			step++;
+		}
+
+		//タイマー更新
+		timer_ += deltaTime;
+
+		break;
+
+	case 2:
+		//終了
+
+		timer_ = 0.0f;
+
+		step = 0;
+		
+		//自動回転制御をするようにさせておく
+		owner_->SetEnableAutoTurn(true);
+
+
+		owner_->SetMoveVec(Vector3(0, 0, 0));
+
+		return ActionBase::State::Complete;
+		break;
+	}
+
+	return ActionBase::State::Run;
+}
+
+void MechBackToVitesseAction::Finalize()
+{
+	//急停止させる
+	owner_->SetMoveVec(Vector3::Zero);
+	owner_->SetVelocity(Vector3::Zero);
+
+	step = 0;
+
+	//自動回転制御オン
+	owner_->SetEnableAutoTurn(true);
+
+	moveTimer_ = 0;
+
+}
+
+
+ActionBase<BossMech>::State MechBackToVitesseAction::Run(float deltaTime)
+{
+	if (const auto& v = owner_->GetTargetVitesse().lock())
+	{
+		//ターゲットの手前の位置を算出
+		Vector3 movePos;
+		Vector3 targetPos = v->GetTransform()->GetPosition();
+
+		owner_->BackTo(targetPos);
+
+		Vector3 vec = DirectX::XMVector3Normalize(targetPos - owner_->GetTransform()->GetPosition());
+
+		owner_->TurnY(vec);
+	}
+	else
+	{
+		step = static_cast<int>(Step::Failed);
+	}
+
+
+	switch (step)
+	{
+	case static_cast<int>(Step::Init):
+		//初期化
+		owner_->GetAnimator()->PlayAnimation("Fly_Back_Loop");
+
+		//自動回転制御オフ
+		owner_->SetEnableAutoTurn(false);
+
+		step++;
+
+		break;
+	case static_cast<int>(Step::Move):
+
+		//移動処理のとこでステップの遷移してる
+
+		break;
+	case static_cast<int>(Step::Complete)://完了
+
+		Finalize();
+		return ActionBase::State::Complete;
+
+		break;
+	case static_cast<int>(Step::Failed)://失敗
+
+		Finalize();
+		return ActionBase::State::Failed;
+
+		break;
+	}
+
+	//経過時間判定
+	if (moveTimer_ > moveTime_)
+	{
+		step = static_cast<int>(Step::Complete);
+	}
+
+	moveTimer_ += deltaTime;
+
+	return ActionBase::State::Run;
+}
+
+ActionBase<BossMech>::State MechTurnToVitesse::Run(float deltaTime)
+{
+	switch (step)
+	{
+	case 0://初期化
+		owner_->GetAnimator()->PlayAnimation("Fly_Idle");
+
+		owner_->SetEnableAutoTurn(false);
+
+		step++;
+		break;
+	case 1:
+		if (owner_->TurnToVitesse())
+		{
+			step++;
+		}
+
+		break;
+	case 2://終了
+		owner_->SetEnableAutoTurn(true);
 
 		step = 0;
 
