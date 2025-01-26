@@ -3,7 +3,6 @@
 #include "Vitesse.h"
 #include "Transform.h"
 #include "Input.h"
-
 #include "Engine.h"
 
 using namespace AbyssEngine;
@@ -43,7 +42,7 @@ void SoldierState::Move::Update(float deltaTime)
     }
 
     //回避
-    if (Input::GameSupport::GetDashButton())
+    if (Input::GameSupport::GetDashButtonDown())
     {
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Dodge));
     }
@@ -71,6 +70,10 @@ void SoldierState::Aim::Initialize()
 
     //歩行速度を遅くする
     owner_->SetMaxHorizontalSpeed(Max_Move_Speed);
+
+    //カメラ感度の取得と設定
+    priCameraSensi_ = Input::GetCameraRollSensitivity();
+    Input::SetCameraRollSensitivity(cameraSensi_);
 
 }
 
@@ -113,6 +116,9 @@ void SoldierState::Aim::Finalize()
 
     //ジャンプを可能に
     owner_->SetCanJump(true);
+
+    //カメラ感度を戻す
+    Input::SetCameraRollSensitivity(priCameraSensi_);
 }
 
 void SoldierState::Jump::Initialize()
@@ -275,6 +281,24 @@ void SoldierState::Dodge::Update(float deltaTime)
         owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Move));
     }
 
+    //ジャンプキャンセル
+    if (Input::GameSupport::GetJumpButton())
+    {
+        if (owner_->Jump(owner_->GetJumpPower()))
+        {
+            //ルートモーションで動いた移動値を速度へ代入することで、回避途中のジャンプを高速にし、裏技っぽくする
+            Vector3 rootMotionMove = owner_->GetAnimator()->GetRootMotionMove();
+
+            //現在は1フレームでの移動値なので1秒間の移動値に変更しVelocityとする
+            rootMotionMove *= (1.0f / 0.016f);
+
+            rootMotionMove.y = owner_->GetVelocity().y;
+            owner_->SetVelocity(rootMotionMove);
+
+            owner_->GetStateMachine()->ChangeState(static_cast<int>(Soldier::ActionState::Jump));
+        }
+    }
+
     //キャンセル行動
     //現在キャンセル可能か
     bool otherCancel = false;
@@ -321,7 +345,7 @@ void SoldierState::Dodge::Finalize()
 SoldierState::Dodge::Direction SoldierState::Dodge::DirectionJudge(const Vector3& moveVec)
 {
     const Vector3& forward = owner_->GetTransform()->GetForward();
-    float dot = moveVec.Dot(forward);
+    float dot = std::clamp(moveVec.Dot(forward),-1.0f,1.0f);
     float degree = DirectX::XMConvertToDegrees(acosf(dot));
     
     //方向を算出

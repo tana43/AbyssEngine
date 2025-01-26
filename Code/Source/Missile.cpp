@@ -5,8 +5,14 @@
 //#include "ComputeParticleEmitter.h"
 #include "TrailRenderer.h"
 #include "BillboardRenderer.h"
+#include "AudioSource.h"
 
 using namespace AbyssEngine;
+
+Missile::~Missile()
+{
+    alwaysSound_->Stop();
+}
 
 void Missile::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
@@ -35,8 +41,22 @@ void Missile::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     straightParticleEmitPrameter_.positionAmplitude_ = { 0.0f,0.0f,0.0f };
     straightParticleEmitPrameter_.scaleInit_ = { 2.0f,2.0f };
 
+    hitFireParticleEmitter_->SetEmitParamater("Missile_Hit_Fire");
+
     radius_ = 1.0f;
     //particleEmitter_->SetEmitParamater(particleEmitPrameter_);
+
+    //オーディオ初期化
+    alwaysSound_ = actor->AddComponent<AudioSource>();
+    alwaysSound_->SetAssetAudioIndex(AudioIndex::Missile_Always);
+    alwaysSound_->SetRangeOfSound(50.0f);
+    alwaysSound_->SetIsLoop(true);
+    alwaysSound_->Play();
+
+    hitSound_ = actor->AddComponent<AudioSource>();
+    hitSound_->SetAssetAudioIndex(AudioIndex::Missile_Hit);
+    hitSound_->SetRangeOfSound(100.0f);
+
 }
 
 void Missile::Update()
@@ -61,6 +81,10 @@ void Missile::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collisio
             //パーティクルヒットエフェクト再生
             hitFireParticleEmitter_->EmitParticle();
             hitParticleEmitter_->EmitParticle();
+
+            //サウンド
+            hitSound_->Play();
+            alwaysSound_->Stop();
 
             Actor::Destroy(actor_);
         }

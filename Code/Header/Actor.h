@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Renderer.h"
 #include "Collider.h"
+#include "AudioSource.h"
 
 #include <nlohmann/json.hpp>
 
@@ -121,13 +122,8 @@ namespace AbyssEngine
         if (path)
         {
             //コライダーもしくはレンダラーを継承したコンポーネントか
-            const auto& p = std::dynamic_pointer_cast<Renderer>(buff);
-            if (p)p->SetFilePath(path);
-            else
-            {
-                const auto& c = std::dynamic_pointer_cast<Collider>(buff);
-                c->SetFilePath(path);
-            }
+            if (const auto& p = std::dynamic_pointer_cast<Renderer>(buff))p->SetFilePath(path);
+            else if(const auto& p = std::dynamic_pointer_cast<Collider>(buff))p->SetFilePath(path);
         }
 
         //複数アタッチできるか確認

@@ -222,6 +222,9 @@ namespace AbyssEngine
 
         void SetTargetPosition(const Vector3& pos) { targetPosition_ = pos; }
 
+        void SetRootInitRotation(const Vector3& rot) { rootInitRotation_ = { rot.x,rot.y,rot.x,1 }; }
+        void SetHandInitRotation(const Vector3& rot) { handInitRotation_ = { rot.x,rot.y,rot.z,1 }; }
+
     private:
         //根本、中間、先端ノードの親子関係は連続しているか判定し、続いていなければ間のボーンを登録する
         //GeometricSubstance::Node* CheckDirectLineBones(GltfSkeletalMesh* model);
@@ -252,6 +255,10 @@ namespace AbyssEngine
 
         //逆間接防止用のポールターゲット座標
         Vector3 poleLocalPosition_ = {0,-1.0f,0};
+
+        //デバッグ用　初期回転値
+        Vector4 rootInitRotation_ = {0,0,0,1};
+        Vector4 handInitRotation_ = {0,0,0,1};
     };
 
     //エイムモーション

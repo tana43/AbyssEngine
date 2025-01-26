@@ -623,6 +623,9 @@ void AbyssEngine::AnimAimIK::DrawImGui(Animator* animator)
         ImGui::SliderFloat("Arm Extension", &armExtension, 0.0f, 3.0f);
         ImGui::DragFloat3("Pole Local Position", &poleLocalPosition_.x, 0.01f);
 
+        ImGui::DragFloat3("Root Init Rotation", &rootInitRotation_.x, 1.0f);
+        ImGui::DragFloat3("Hand Init Rotation", &handInitRotation_.x, 1.0f);
+
         //無視するノードが中間ノードより上にいているか
         ImGui::Checkbox("IgnoreNode is Mid Up",&isUpIgnoreNode_);
 
@@ -661,13 +664,26 @@ std::vector<GeometricSubstance::Node> AbyssEngine::AnimAimIK::UpdateAnimation(Gl
     {
         ignoreNodeSecond = &model->GetNode(animatedNodes_, ignoreNodeNameSecond_);
     }
+
+    
+#if 0 
     rootNode.rotation_ = { 0,0,0,1 };
-    midNode.rotation_ = { 0,0,0,1 };
     tipNode.rotation_ = { 0,0,0,1 };
+    
+#else
+    //初期回転値を設定
+    Quaternion rootQua = Quaternion::Euler(rootInitRotation_.x, rootInitRotation_.y, rootInitRotation_.z);
+    rootNode.rotation_ = rootQua;
+    Quaternion handQua = Quaternion::Euler(handInitRotation_.x, handInitRotation_.y, handInitRotation_.z);
+    tipNode.rotation_ = handQua;
+#endif
+    midNode.rotation_ = { 0,0,0,1 };
     if (ignoreNode)ignoreNode->rotation_ = { 0,0,0,1 };
     if (ignoreNodeSecond)ignoreNodeSecond->rotation_ = { 0,0,0,1 };
 
     animatedNodes_[tipNode.children_[0]].rotation_ = { 0,0,0,1 };
+
+
     //model->NodeCumulateTransforms(animatedNodes_,rootNode);
     model->CumulateTransforms(animatedNodes_, 0);
 
@@ -901,6 +917,15 @@ void AbyssEngine::AnimAiming::DrawImGui(Animator* animator)
 {
     if (ImGui::BeginMenu(name_.c_str()))
     {
+        Animation::DrawImGui(animator);
+
+        static Vector3 targetPos;
+
+        ImGui::DragFloat3("TargetPos", &targetPos.x, 0.1f);
+
+        aimIkLeft_->SetTargetPosition(targetPos);
+        aimIkRight_->SetTargetPosition(targetPos);
+
         aimIkLeft_->DrawImGui(animator);
         aimIkRight_->DrawImGui(animator);
 

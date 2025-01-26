@@ -46,13 +46,13 @@ void HumanoidWeapon::UpdateVelocity()
                 velocity_ = velocity_ + moveVecXZ * (acceleration_ * actor_->GetDeltaTime());
 
                 //速度制限
+                //最大速度をある程度越えている場合、減速させていく
                 Vector2 velocityXZ = { velocity_.x,velocity_.z };
                 float spd = velocityXZ.Length();
-
                 if (spd > Max_Horizontal_Speed)
                 {
                     velocityXZ.Normalize();
-                    if (isLimitSpeed_ || spd - Max_Horizontal_Speed < 0.1f)
+                    if (spd - Max_Horizontal_Speed < speedOver_)
                     {
                         //そのまま最大速度を代入
                         velocityXZ = velocityXZ * Max_Horizontal_Speed;

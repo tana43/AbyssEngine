@@ -8,12 +8,17 @@
 class ThrusterEffect;
 class Soldier;
 class Gun;
+template<class T>
+class ComboSystem;
 
 namespace AbyssEngine
 {
     class StaticMesh;
     class AttackerSystem;
     class AttackCollider;
+    class ComputeParticleEmitter;
+    class AudioSource;
+    class SwordTrailRenderer;
 }
 
 class Vitesse : public HumanoidWeapon
@@ -24,6 +29,7 @@ public:
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor);
     void Update()override;
+    void UpdateEnd()override;
     void DrawImGui()override;
 
     void AnimationInitialize();
@@ -43,6 +49,9 @@ public:
     //攻撃判定がヒットした
     void OnCollision(const std::shared_ptr<AbyssEngine::Collider>& hitCollider, 
         AbyssEngine::Collision::IntersectionResult result)override;
+
+    //ソードトレイルのオンオフ
+    void ActiveSwordTrail(bool active);
 
 public:
     //行動ステート
@@ -187,6 +196,18 @@ public:
 
     const bool& GetIsBoostOverHeat() const { return isBoostOverHeat_; }
 
+    const std::shared_ptr<AbyssEngine::ComputeParticleEmitter>& GetDodgeParticleEffect() const { return dodgeParticleEffect_; }
+
+    void SetIsSystemStart(const bool& flag) { isSystemStart_ = flag; }
+
+    const std::shared_ptr<AbyssEngine::AudioSource>& GetMeleeBoostSound() { return meleeBoostSound_; }
+    const std::shared_ptr<AbyssEngine::AudioSource>& GetBoostBurstSound() { return boostBurstSound_; }
+
+    const std::shared_ptr<ComboSystem<Vitesse>>& GetComboSystem() { return comboSystem_; }
+
+
+    void BeginAttack(const std::string& name);
+
     //ターゲットまでのベクトルを算出
     //ターゲットがいない場合は見ている方向を返す
     AbyssEngine::Vector3 ToTarget();
@@ -203,6 +224,9 @@ public:
 
     //地上モードへ移行
     void ToGroundMode()override;
+
+    //飛行モードへ移行
+    void ToFlightMode()override;
 
     //ターゲットのコライダーを補足する
     void TargetAcquisition();
@@ -243,15 +267,18 @@ private:
     //上昇の入力を反映させる
     void RiseInputUpdate();
 
-    //コライダー設定
+    //コライダー初期化
     void ColliderInitialize();
 
-    //アタッカー設定(コライダーを設定した後がいいかも)
+    //アタッカー初期化(コライダーを設定した後がいいかも)
     void AttackerInitialize();
+
+    //コンボ関係の初期化
+    void ComboInitialize();
 
     void AimIKTest();
 
-    //射撃攻撃を仮更新
+    //銃口の位置更新
     void UpdateGunMuzzlePos();
     
     //ビーム攻撃
@@ -262,6 +289,15 @@ private:
 
     //ブーストゲージ更新
     void UpdateBoostGauge();
+
+    //エミッシブで起動を表現する
+    void UpdateEmissive();
+
+    //効果音初期化
+    void AudioInitialize();
+
+    //ソードトレイルの位置更新
+    void UpdateSwordTrailPos();
 
 private:
     std::shared_ptr<AbyssEngine::Camera> camera_;
@@ -302,8 +338,8 @@ private:
     //回避行動
     AbyssEngine::Vector3 dodgeDirection_ = {0,0,0};
     //回避速度
-    float dodgeSpeed_ = 100.0f;
-    float dodgeMaxSpeed_ = 100.0f;
+    float dodgeSpeed_ = 110.0f;
+    float dodgeMaxSpeed_ = 150.0f;
 
     //高速飛行移動速度
     float highSpeedFlightMaxSpeed_ = 50.0f;
@@ -348,7 +384,7 @@ private:
     float meleeAtkDashMaxSpeed_ = 70.0f;
 
     //近接攻撃が可能になる範囲
-    float meleeAtkRange_ = 25.0f;
+    float meleeAtkRange_ = 35.0f;
 
     //近接攻撃中の速度
     float meleeAtkSpeed_ = 10.0f;
@@ -383,5 +419,29 @@ private:
     float dodgeBoostCost_ = 8.0f;//瞬間
     float dashBoostCostS_ = 10.0f;//毎秒
     float meleeBoostCostS_ = 7.0f;//近接攻撃時
+
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> dodgeParticleEffect_;
+
+    std::shared_ptr<AbyssEngine::AudioSource> changeTargetSound_;
+    std::shared_ptr<AbyssEngine::AudioSource> systemStartUpSound_;
+    std::shared_ptr<AbyssEngine::AudioSource> boostAlwaysSound_;
+    std::shared_ptr<AbyssEngine::AudioSource> boostBurstSound_;
+    std::shared_ptr<AbyssEngine::AudioSource> boostAlertSound_;//ブーストが切れたときに鳴らすSE
+    std::shared_ptr<AbyssEngine::AudioSource> boostFullSound_;//ブーストが満タンになったときにSE
+    std::shared_ptr<AbyssEngine::AudioSource> meleeBoostSound_;//近接攻撃前のブーストSE
+
+    //システム起動演出
+    //エミッシブ強度
+    float initEmissiveIntensity_;
+    float sSUTimer_ = 0.0f;
+    float sSUTime_ = 0.5f;
+    bool isSystemStart_ = false;
+
+    //ソードトレイル
+    std::shared_ptr<AbyssEngine::SwordTrailRenderer> swordTrailR_;
+    std::shared_ptr<AbyssEngine::SwordTrailRenderer> swordTrailL_;
+
+    //コンボシステム
+    std::shared_ptr<ComboSystem<Vitesse>> comboSystem_;
 };
 

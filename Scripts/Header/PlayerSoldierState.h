@@ -41,6 +41,12 @@ namespace SoldierState
 
         //エイムステートが別のステートに切り替わる最小時間
         const float Minimum_Time = 0.15f;
+
+        //エイム時のカメラ感度
+        float cameraSensi_ = 0.3f;
+
+        //以前までのカメラ感度
+        float priCameraSensi_;
     };
 
     class Jump : Inheritance

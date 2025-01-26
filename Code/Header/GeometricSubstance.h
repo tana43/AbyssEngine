@@ -502,7 +502,8 @@ namespace AbyssEngine
 			int skin_ = -1;
 			float emissiveIntensity_ = 15.0f;
 			float imageBasedLightingIntensity_ = 1.0f;
-			float minAmbient = 0.0f;
+			float minAmbient_ = 0.0f;
+			float maxAmbient_ = 1.0f;
 		};
 		std::unique_ptr<ConstantBuffer<PrimitiveConstants>> primitiveConstants_;
 		const int Primitive_Slot = 0; // b0

@@ -1,14 +1,14 @@
 #pragma once
 #include "Effect.h"
 #include "MathHelper.h"
-#include "Component.h"
+#include "Renderer.h"
 
 namespace AbyssEngine
 {
     class SkeletalMesh;
 }
 
-class ThrusterEffect : public AbyssEngine::Component
+class ThrusterEffect : public AbyssEngine::Renderer
 {
 private:
     //噴射行程
@@ -28,6 +28,9 @@ public:
     ~ThrusterEffect();
 
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
+
+    void RecalculateFrame()override;
+    void Render()override {}
 
     bool CanMultiple()override { return true; }
 
@@ -97,6 +100,6 @@ public:
     float extSpeed_ = 20.0f;
 
     //ブーストダッシュ時の出力
-    float boostPower_;
+    float boostPower_ = 1.0f;
 };
 

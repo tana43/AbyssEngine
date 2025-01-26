@@ -20,6 +20,8 @@
 #include "Animator.h"
 #include "Animation.h"
 
+#include "AudioSource.h"
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -29,25 +31,28 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     //アクターとトランスフォームの登録
     Character::Initialize(actor);
 
+    baseRotSpeed_ = 600.0f;
+    baseAcceleration_ = 4.2f;
+
     //モデル読み込み
 #if 1
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.gltf");
     model_->GetAnimator()->AppendAnimations({
                 //"./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_WalkFwd.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_RunFwd.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle_ADS.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Jump.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Fall_Loop.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Land.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Back.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Forward.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Right.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Left.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Back.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Forward.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Right.glb",
-                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Left.glb"
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_WalkFwd.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_RunFwd.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle_ADS.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Jump.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Fall_Loop.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Land.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Back.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Forward.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Right.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Roll_Left.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Back.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_Cartwheel_Forward.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Right.gltf",
+                "./Assets/Models/Soldier/Sci_Fi_Soldier_03_Dodge_NoHandSpin_Left.gltf"
         },
         {
             //"Idle",
@@ -102,6 +107,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
         });
 #endif // 0
 
+    GetModel()->GetModel()->primitiveConstants_->data_.minAmbient_ = 0.2f;
     
     AnimBlendSpace1D moveAnim = AnimBlendSpace1D(model_.get(), "Move", 0, 2);
     moveAnim.AddBlendAnimation(1, 0.6f);
@@ -163,6 +169,8 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
 
     gunComponentR_ = actor_->AddComponent<Gun>();
     gunComponentR_->SetColliderTag(Collider::Tag::Player);
+    gunComponentR_->SetBullletAttackPoint(0.3f);
+    gunComponentR_->GetShotSound()->SetAssetAudioIndex(AudioIndex::Gun_Shot);
 
     //プレイヤーカメラ設定(プレイヤーと親子関係に)
     //今はそのままアタッチしているが、後々独自のカメラ挙動をつくる
@@ -174,7 +182,8 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     camera_->SetBaseArmLength(0.4f);
     camera_->SetTargetOffset(Vector3(0.29f, 0.6f, 0));
     camera_->SetArmLength(0.4f);
-    camera_->SetCameraLagSpeed(Vector3(1.0f,1.3f,1.0f));
+    camera_->SetCameraLagSpeed(Vector3(1.0f,2.8f,1.0f));
+    camera_->SetCameraLagSpeedFactor(10.0f);
     camera_->SetViewTarget(transform_.get());
     camera_->SetEnableDebugController(false);
 
@@ -203,7 +212,7 @@ void Soldier::Initialize(const std::shared_ptr<Actor>& actor)
     socketFade_ = std::make_unique<FadeSystem>(params[0], static_cast<size_t>(sizeof(params) / sizeof(float*)));
 
 #if _DEBUG
-    camera_->SetEnableDebugController(true);
+    //camera_->SetEnableDebugController(true);
 #endif // _DEBUG
 
     //銃口のオフセット位置設定
@@ -410,6 +419,7 @@ void Soldier::GunShot()
         toTarget.Normalize();
         shootDirection = toTarget;
 
+        //地形に当たる位置も算出
         terrainHitPos = &hitPos;
     }
     else
@@ -421,16 +431,20 @@ void Soldier::GunShot()
         shootDirection = toTarget;
     }
 
-    if (gunComponentR_->Shot(shootDirection),terrainHitPos)
+    if (gunComponentR_->Shot(shootDirection,terrainHitPos))
     {
         //画面振動
-        Camera::CameraShakeParameters param;
+        /*Camera::CameraShakeParameters param;
         param.position_.amplitudeMultiplier_ = 0.03f;
         param.position_.frequencyMultiplier_ = 5.0f;
         param.rotation_.amplitudeMultiplier_ = 0.0f;
         param.timing_.duration_ = 0.05f;
         param.timing_.blendOutTime_ = 0.05f;
-        camera_->CameraShake(param);
+        camera_->CameraShake(param);*/
+        camera_->CameraShake("Soldier_Shot");
+
+        //コントローラー振動
+        Input::GetGamePad().Vibration(0.1f, 0.1f);
     }
 }
 

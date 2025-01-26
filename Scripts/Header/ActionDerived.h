@@ -203,7 +203,7 @@ private:
 	void Finalize();
 
 private:
-	float moveTime_ = 1.5f;
+	float moveTime_ = 1.0f;
 	float moveTimer_;
 };
 
@@ -249,7 +249,7 @@ private:
 
 	bool isMoveRight_ = true;
 
-	float moveTime_ = 1.0f;
+	float moveTime_ = 0.7f;
 	float timer_;
 
 };

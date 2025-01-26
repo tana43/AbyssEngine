@@ -1,4 +1,4 @@
-#include "VitesseState.h"
+ #include "VitesseState.h"
 #include "Vitesse.h"
 #include "Animator.h"
 #include "Easing.h"
@@ -9,6 +9,8 @@
 #include "StaticMesh.h"
 #include "AttackerSystem.h"
 #include "PlayerSoldier.h"
+#include "ComputeParticleEmitter.h"
+#include "ComboSystem.h"
 
 using namespace AbyssEngine;
 
@@ -254,6 +256,10 @@ void VitesseState::Boarding::Update(float deltaTime)
             if (owner_->GetPilot().lock())
             {
                 owner_->GetAnimator()->PlayAnimation(static_cast<int>(Vitesse::AnimationIndex::Board_Complete));
+
+                //右手武器の描画オンに
+                owner_->GetRightWeaponModel()->SetEnable(true);
+
                 board_ = true;
             }
         }
@@ -275,9 +281,6 @@ void VitesseState::Boarding::Finalize()
 
     //乗り込み不可へ
     owner_->SetCanBoarding(false);
-
-    //右手武器の描画オンに
-    owner_->GetRightWeaponModel()->SetEnable(true);
 }
 
 void VitesseState::HighSpeedFlight::Initialize()
@@ -343,17 +346,21 @@ void VitesseState::HighSpeedFlight::Initialize()
     camera->SetCameraLagSpeed(cameraLagSpeed);
 
     //カメラ振動
-    Camera::CameraShakeParameters shakeParam;
+    /*Camera::CameraShakeParameters shakeParam;
     shakeParam.position_.amplitudeMultiplier_ = 0;
     shakeParam.position_.frequencyMultiplier_ = 0;
     shakeParam.rotation_.amplitudeMultiplier_ = 11.1f;
     shakeParam.rotation_.frequencyMultiplier_ = 25.5f;
     shakeParam.timing_.duration_ = 0.2f;
     shakeParam.timing_.blendInTime_ = 0.0f;
-    shakeParam.timing_.blendOutTime_ = 0.1f;
+    shakeParam.timing_.blendOutTime_ = 0.1f;*/
+    owner_->GetCamera()->CameraShake("Vitesse_Dodge_Camera_Shake");
 
     //コントローラー振動
     Input::GetGamePad().Vibration(0.3f,0.3f);
+
+    //エフェクト再生
+    owner_->GetDodgeParticleEffect()->EmitParticle();
 
     timer_ = 0.0f;
 }
@@ -414,6 +421,21 @@ void VitesseState::HighSpeedFlight::Update(float deltaTime)
     timer_ += deltaTime;
 
     //各ステートに遷移
+
+    //ダッシュボタンが押されているなら高速ステートへ
+    if (Input::GameSupport::GetDashButtonDown())
+    {
+        if (owner_->UseBoostGauge(owner_->GetDodgeBoostCost()))
+        {
+            owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
+        }
+    }
+
+    //攻撃ボタンが押されたら近接攻撃ステートへ
+    if (Input::GameSupport::GetMeleeAttackButton())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
+    }
 
     //回避中は通常移動へ移行しない
     if (timer_ > dodgeTime_ && !rollingDodge_)
@@ -486,6 +508,10 @@ void VitesseState::MeleeAttackDash::Initialize()
     //アニメーション再生
     owner_->PlayAnimation(Vitesse::AnimationIndex::Slash_Dash_Start);
 
+    //SE再生
+    owner_->GetMeleeBoostSound()->Play();
+    owner_->GetBoostBurstSound()->Play();
+
     //ステップ方向を算出し、移動する
     {
         //ターゲットのまでのベクトル
@@ -523,6 +549,9 @@ void VitesseState::MeleeAttackDash::Initialize()
 
     //コントローラー振動
     Input::GetGamePad().Vibration(0.3f, 0.3f);
+
+    //ソードトレイルを表示
+    owner_->ActiveSwordTrail(true);
 
     //ステップ数をリセット
     step_ = 0;
@@ -570,6 +599,8 @@ void VitesseState::MeleeAttackDash::Update(float deltaTime)
     //ターゲットの方向へ動かす
     toTarget.Normalize();
     owner_->SetMoveVec(toTarget);
+    float speed = owner_->GetVelocity().Length();
+    owner_->SetVelocity(toTarget * speed);
 
     //スラスター噴射
     owner_->ThrusterInfluenceVelocity();
@@ -592,6 +623,9 @@ void VitesseState::MeleeAttackDash::Finalize()
     //アニメーションステートをデフォルトに
     owner_->ChangeAnimationState(Vitesse::AnimationState::Default);
 
+    //SE停止
+    owner_->GetMeleeBoostSound()->Stop();
+
     //最大速度を元に戻す
     owner_->SetMaxHorizontalSpeed(owner_->GetDefaultMaxHorizontalSpeed());
     owner_->SetMaxVerticalSpeed(owner_->GetDefaultMaxVerticalSpeed());
@@ -606,12 +640,13 @@ void VitesseState::MeleeAttackDash::Finalize()
     //ズームをリセット
     owner_->GetCamera()->ZoomReset(1.5f);
     owner_->GetCamera()->SetCameraLagSpeed(owner_->GetDefaultCameraLagSpeed());
+
+    //ソードトレイルを非表示
+    owner_->ActiveSwordTrail(false);
 }
 
 void VitesseState::MeleeAttack::Initialize()
 {
-    //仮でN攻撃１段目を再生
-    owner_->PlayAnimation(Vitesse::AnimationIndex::Slash_N_1);
 
     //速度を変更
     Vector3 toTarget;
@@ -622,14 +657,26 @@ void VitesseState::MeleeAttack::Initialize()
 
     owner_->StepMove(toTarget, owner_->GetMeleeAtkSpeed());
 
+
+    //仮でN攻撃１段目を再生
+    //owner_->PlayAnimation(Vitesse::AnimationIndex::Slash_N_1);
+
     //アタッカーシステムに攻撃させる
-    owner_->GetAttackerSystem()->Attack("Slash_N_1");
+    //owner_->GetAttackerSystem()->Attack("Slash_N_1");
+
+    //コンボシステムを開始する ここでモーション再生とかしてる
+    owner_->GetComboSystem()->StartCombo();  
+
+    //ソードトレイルを表示
+    owner_->ActiveSwordTrail(true);
 }
 
 void VitesseState::MeleeAttack::Update(float deltaTime)
 {
     //アニメーション終了時に通常飛行へ遷移
-    if(owner_->GetAnimator()->GetAnimationFinished())
+    //if(owner_->GetAnimator()->GetAnimationFinished())
+    //コンボ終了時に通常飛行へ遷移
+    if(owner_->GetComboSystem()->GetComboFinished())
     {
         owner_->ChangeActionState(Vitesse::ActionState::FMove);
         return;
@@ -651,6 +698,9 @@ void VitesseState::MeleeAttack::Finalize()
     //最大速度を元に戻す
     owner_->SetMaxHorizontalSpeed(owner_->GetDefaultMaxHorizontalSpeed());
     owner_->SetMaxVerticalSpeed(owner_->GetDefaultMaxVerticalSpeed());
+
+    //ソードトレイルを表示
+    owner_->ActiveSwordTrail(false);
 }
 
 void VitesseState::Flinch::Initialize()
@@ -762,6 +812,12 @@ void VitesseState::Aiming::Update(float deltaTime)
         {
             owner_->ChangeActionState(Vitesse::ActionState::HighSpeedFlight);
         }
+    }
+
+    //攻撃ボタンが押されたら近接攻撃ステートへ
+    if (Input::GameSupport::GetMeleeAttackButton())
+    {
+        owner_->ChangeActionState(Vitesse::ActionState::MeleeAtkDash);
     }
 }
 

@@ -47,8 +47,8 @@ namespace AbyssEngine
             Vector4	parameter_;		//	x : パーティクル処理タイプ, y : 生存時間, z : 生存フラグ, w : 経過時間倍率
 
             Vector4	position_;		//	生成座標
-            Vector4	rotation_;		//	拡縮情報
-            Vector4	scale_;			//	回転情報
+            Vector4	rotation_;		//	回転情報
+            Vector4	scale_;			//	拡縮情報
 
             Vector4	velocity_;		//	初速
             Vector4	acceleration_;	//	加速度

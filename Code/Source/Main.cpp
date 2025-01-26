@@ -153,7 +153,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLi
 			//Timeクラス更新
 			float timeScale = AbyssEngine::Time::GetTimeScale();
 			float deltaTime = static_cast<float>(GetTickCount64() - before) * 0.001f * timeScale;
-			if (deltaTime > 0.5f)deltaTime = 0.5f;//制限
+			if (deltaTime > 0.5f)deltaTime = 0.0f;//制限
 			AbyssEngine::Time::SetDeltaTime(deltaTime);
 
 			//FPSを算出し表示

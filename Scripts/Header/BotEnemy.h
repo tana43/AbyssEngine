@@ -9,6 +9,7 @@ namespace AbyssEngine
     class Animator;
     class SphereCollider;
     class HitCollider;
+    class ComputeParticleEmitter;
 }
 
 class Gun;
@@ -53,6 +54,11 @@ public:
 
     //“–‚½‚è”»’è‚Ì‰Šú‰»
     void ColliderInitialize();
+
+
+    void OnDead()override;
+
+    void OnDamaged()override;
 
 public:
     const std::shared_ptr<AbyssEngine::SkeletalMesh>& GetModel() const { return model_; }
@@ -104,5 +110,7 @@ private:
     bool isTargetFind_ = false;
 
     std::shared_ptr<AbyssEngine::HitCollider> hitCollider_;
+
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> destroyEffect_;
 };
 

@@ -76,8 +76,6 @@ namespace AbyssEngine
             //　色の振れ幅
             Vector4 colorAmplitud_ = { 0,0,0,0 };
 
-            EmitParameter operator=(const EmitParameter& param);
-
             void DrawImGui();
         };
 
@@ -89,6 +87,9 @@ namespace AbyssEngine
         void DrawDebug()override;
 
         void Update();
+
+        //同じコンポーネントを複数アタッチ可能か
+        bool CanMultiple() override { return true; }
 
         //パーティクル生成
         void EmitParticle(const EmitParameter& param);

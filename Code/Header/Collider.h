@@ -44,8 +44,8 @@ namespace AbyssEngine
     public:
         struct Triangle
         {
-            DirectX::XMFLOAT3	positions[3];
-            DirectX::XMFLOAT3	normal;
+            Vector3	positions[3];
+            Vector3	normal;
         };
 
     protected:

@@ -4,6 +4,8 @@
 
 namespace AbyssEngine
 {
+    class SpriteRenderer;
+
     class TestScene : public Scene
     {
     private:
@@ -13,6 +15,8 @@ namespace AbyssEngine
         void Finalize()override;
 
         std::unique_ptr<Effect> swordEfe_;
+
+        std::weak_ptr<SpriteRenderer> fadeOutSprite_;
     };
 }
 

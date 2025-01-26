@@ -113,12 +113,16 @@ namespace AbyssEngine
         //void SetCameraLagSpeed(const float& speed) { cameraLagSpeed_.x = speed; cameraLagSpeed_.y = speed; cameraLagSpeed_.z = speed; }
         void SetCameraLagSpeed(const Vector3& speed) { cameraLagSpeed_ = Vector3::Max(speed,Vector3::One); }
 
+        void SetExcessLength(const float& length) { excessLength_ = length; }
+
         void SetFov(const float& fov) { fov_ = fov; }
+
+        void SetCameraLagSpeedFactor(const float& f) { cameraLagSpeedFactor_ = f; }
 
     private: 
         float fov_ = DirectX::XMConvertToRadians(60.0f);
         float nearZ_ = 0.1f;
-        float farZ_ = 1000.0f;
+        float farZ_ = 1000000.0f;
         float orthographicSize_ = 1000.0f;
         bool isOrthographic = false;
         Matrix viewMatrix_ = {};
@@ -141,6 +145,7 @@ namespace AbyssEngine
         bool enableCameraLag_ = true;//ターゲットへのカメラの追従を遅延させる
         Vector3 cameraLagSpeed_ = { 10.0f,10.0f,10.0f };//カメラの追従速度 1以下には設定できない
         CONSTANT_FLOAT Camera_Lag_Max_Distance = 3.0f;//カメラが遅延することができる最大距離
+        float cameraLagSpeedFactor_ = 10.0f;
 
         Vector2 limitAngleX_ = { -80.0f,80.0f };//x:min y:max
 
@@ -218,8 +223,6 @@ namespace AbyssEngine
                 float blendInTime_ = 0.1f;//この揺れのフェードインの時間
                 float blendOutTime_ = 0.1f;//この揺れのフェードアウトの時間
             }timing_;
-
-            CameraShakeParameters operator=(const CameraShakeParameters& param);
         };
 
         //カメラ振動　今は重複はできず１つの振動をするだけ

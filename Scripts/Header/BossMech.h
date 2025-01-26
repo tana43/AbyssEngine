@@ -9,6 +9,7 @@ namespace AbyssEngine
     class BehaviorTree;
     class AttackerSystem;
     class AttackCollider;
+    class AudioSource;
 }
 
 class Gun;
@@ -132,9 +133,12 @@ private:
     float shotBeamActionCooldown_;
 
     //目標地点に到達したとみなす判定距離
-    float nearRange_ = 20.0f;
+    float nearRange_ = 30.0f;
     
     //ターゲットが近距離にいているか判断させるための距離変数
     float targetNearDist_ = 50.0f;
+
+    //近接攻撃ヒット音
+    std::shared_ptr<AbyssEngine::AudioSource> meleeAtkHitSound_;
 };
 

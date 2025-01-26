@@ -4,6 +4,10 @@
 #include "DXSystem.h"
 #include <string>
 
+namespace tinygltf
+{
+    class Model;
+}
 namespace AbyssEngine
 {
     class Asset;
@@ -12,7 +16,6 @@ namespace AbyssEngine
     class GltfStaticMesh;
     class GltfCollisionMesh;
     class Effect;
-    class ComputeParticleSystem;
 
     //アセットを管理するクラス
     class AssetManager
@@ -25,6 +28,7 @@ namespace AbyssEngine
         std::unordered_map<std::string, std::shared_ptr<Texture>> cacheTexture_{}; //テクスチャのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<GltfSkeletalMesh>> cacheSkeletalMesh_{}; //スケルタルメッシュのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<GltfStaticMesh>> cacheStaticMesh_{}; //スタティックメッシュのキャッシュ
+        std::unordered_map<std::string, std::shared_ptr<tinygltf::Model>> cacheAnimation_{}; //アニメーションのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<GltfCollisionMesh>> cacheCollisionMesh_{}; //コリジョンメッシュのキャッシュ
         std::unordered_map<std::string, std::shared_ptr<Effect>> cacheEffect_{}; //エフェクシアエフェクトのキャッシュ
 

@@ -52,13 +52,14 @@ void Stage::DrawImGui()
 	if (ImGui::TreeNode("Stage"))
 	{
 		ImGui::DragInt("Show Triangles", &showTriangleCount_);
+		ImGui::DragInt("Current Area", &currentArea_);
 
 		ImGui::TreePop();
 	}
 #endif // _DEBUG
 }
 
-bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPosition, Vector3& hitNormal)
+bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPosition, Vector3& hitNormal,bool spaceDivisoin)
 {
 	//レイの長さが０のときは処理しない
 	if (Vector3(start - end).LengthSquared() == 0)return false;
@@ -70,7 +71,7 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 	float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(Vec));
 
 	// 空間分割せず、普通にレイキャストをする
-	if (!spaceDivisionEnabled_)
+	if (!spaceDivisoin)
 	{
 		for (const Collider::Triangle& triangle : triangles_)
 		{
@@ -93,7 +94,7 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 	{
 		//各空間とレイとの判定
 		int i = 0;
-		for (auto& area : areas)
+		for (auto& area : areas_)
 		{
 			float dist = distance;
 			if (area.boundingBox.Intersects(start, Direction, dist))
@@ -113,10 +114,10 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 						distance = dist;
 						hitNormal = triangle.normal;
 						hit = true;
+						currentArea_ = i;
+						break;
 					}
 				}
-				currentArea_ = i;
-				break;
 			}
 			++i;
 		}
@@ -129,7 +130,7 @@ bool Stage::RayCast(const Vector3& start, const Vector3& end, Vector3& hitPositi
 	return hit;
 }
 
-bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Vector3& direction, float radius, float& distance, AbyssEngine::Vector3& hitPosition, AbyssEngine::Vector3& hitNormal,bool drawDebug)
+bool Stage::SphereCast(const AbyssEngine::Vector3& origin, const AbyssEngine::Vector3& direction, float radius, float& distance, AbyssEngine::Vector3& hitPosition, AbyssEngine::Vector3& hitNormal,bool spaceDivision,bool drawDebug)
 {
 	bool hit = false;
 
@@ -200,6 +201,9 @@ void Stage::RegisterTriangles()
     //一度登録された三角形をクリア
     triangles_.clear();
 
+	Vector3 volumeMin = DirectX::XMVectorReplicate(FLT_MAX);
+	Vector3 volumeMax = DirectX::XMVectorReplicate(-FLT_MAX);
+
     //再登録
     for (const auto& m : meshColliders_)
     {
@@ -209,12 +213,71 @@ void Stage::RegisterTriangles()
 			for (const auto& tri : model->triangles_)
 			{
 				triangles_.emplace_back(tri);
+
+				// モデル全体のAABBを計測
+				volumeMin = DirectX::XMVectorMin(volumeMin, tri.positions[0]);
+				volumeMin = DirectX::XMVectorMin(volumeMin, tri.positions[1]);
+				volumeMin = DirectX::XMVectorMin(volumeMin, tri.positions[2]);
+				volumeMax = DirectX::XMVectorMax(volumeMax, tri.positions[0]);
+				volumeMax = DirectX::XMVectorMax(volumeMax, tri.positions[1]);
+				volumeMax = DirectX::XMVectorMax(volumeMax, tri.positions[2]);
 			}
 		}
     }
+	
+	//空間分割する
+	{
+		areas_.clear();
+
+		//モデル全体のAABBからXZ平面に指定のサイズで分割されたエリアを作成
+		const int cellSize = 5;
+
+		//モデル全体のAABBの大きさ
+		const Vector3 boxSize = volumeMax - volumeMin;
+
+		//モデルを分割した際の１つの空間の大きさ
+		const Vector3 gridSize = boxSize / cellSize;
+
+		for (int x = 0; x < cellSize; x++)
+		{
+			for (int z = 0; z < cellSize; z++)
+			{
+				Area& area = areas_.emplace_back();
+
+				//DirectXのBaundingBoxの仕様上、ボックスの中心から正負、両側に広がる範囲を指定する必要がある
+				//なのでセンターを指定する場合は、指定したい範囲の真ん中を基準点として考える
+				//センターを決定
+				area.boundingBox.Center = {
+					(volumeMin.x + gridSize.x / 2) + gridSize.x * x,
+					0,
+					(volumeMin.z + gridSize.z / 2) + gridSize.z * z
+				};
+				//範囲の決定(ここはどの空間も同じ値)
+				area.boundingBox.Extents = {
+					gridSize.x / 2,
+					10000000,
+					gridSize.z / 2
+				};
+
+				for (int i = 0; i < triangles_.size(); ++i)
+				{
+					auto& triangle = triangles_[i];
+
+					//指定した三角形がAABBに入っているかチェック
+					auto result = area.boundingBox.Contains(
+						DirectX::XMLoadFloat3(&triangle.positions[0]),
+						DirectX::XMLoadFloat3(&triangle.positions[1]),
+						DirectX::XMLoadFloat3(&triangle.positions[2])
+					);
+
+					//交差した、もしくは三角形が含まれているならエリアに要素を追加
+					if (result >= DirectX::ContainmentType::INTERSECTS)
+					{
+						area.triangleIndices.emplace_back(i);
+					}
+				}
+			}
+		}
+	}
 }
 
-void Stage::SpaceDivision()
-{
-
-}

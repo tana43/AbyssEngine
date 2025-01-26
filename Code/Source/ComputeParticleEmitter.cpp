@@ -526,35 +526,6 @@ void AbyssEngine::ComputeParticleEmitter::AssetCreation(const EmitParameter& par
 	writingFile.close();
 }
 
-ComputeParticleEmitter::EmitParameter AbyssEngine::ComputeParticleEmitter::EmitParameter::operator=(const EmitParameter& param)
-{
-	emitNum_                      = param.emitNum_;
-	lifespan_                     = param.lifespan_;
-	lifespanAmplitude_            = param.lifespanAmplitude_;
-	emitTime_                      = param.emitTime_;
-	texType_                      = param.texType_;
-	positionAmplitude_            = param.positionAmplitude_;
-	velocity_                     = param.velocity_;
-	velocityAmplitude_            = param.velocityAmplitude_;
-	acceleration_                 = param.acceleration_;
-	accelerationAmplitud_         = param.accelerationAmplitud_;
-	scaleInit_					  = param.scaleInit_;
-	scaleAmplitude_               = param.scaleAmplitude_;
-	scaleVelocity_                = param.scaleVelocity_;
-	scaleVelocityAmplitude_       = param.scaleVelocityAmplitude_;
-	scaleAcceleration_            = param.scaleAcceleration_;
-	scaleAccelerationAmplitud_    = param.scaleAccelerationAmplitud_;
-	rotationAmplitude_            = param.rotationAmplitude_;
-	rotationVelocity_             = param.rotationVelocity_;
-	rotationVelocityAmplitude_    = param.rotationVelocityAmplitude_;
-	rotationAcceleration_         = param.rotationAcceleration_;
-	rotationAccelerationAmplitud_ = param.rotationAccelerationAmplitud_;
-	intensity_                   = param.intensity_;//color�̏搔
-	color_                        = param.color_;
-	colorAmplitud_                = param.colorAmplitud_;
-
-	return *this;
-}
 
 void AbyssEngine::ComputeParticleEmitter::EmitParameter::DrawImGui()
 {

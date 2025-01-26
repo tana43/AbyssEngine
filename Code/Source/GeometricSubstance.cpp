@@ -19,6 +19,9 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include "Engine.h"
+#include "AssetManager.h"
+
 using namespace AbyssEngine;
 
 void GeometricSubstance::ExtractAssets(const tinygltf::Model& transmissionModel)
@@ -575,30 +578,45 @@ void GeometricSubstance::AppendAnimation(const std::string& filename)
 	tinyGltf.SetImageLoader(NullLoadImageData, nullptr);
 #endif
 
-	tinygltf::Model transmissionModel;
-	std::string error, warning;
-	bool succeeded = false;
-	if (filename.find(".glb") != std::string::npos)
+	std::shared_ptr<tinygltf::Model> transmissionModel;
+
+	//モデル読み込み
+	const auto& it = Engine::assetManager_->cacheAnimation_.find(filename);
+	if (it != Engine::assetManager_->cacheAnimation_.end())
 	{
-		succeeded = tinyGltf.LoadBinaryFromFile(&transmissionModel, &error, &warning, filename.c_str());
+		transmissionModel = it->second;
 	}
-	else if (filename.find(".gltf") != std::string::npos)
+	else
 	{
-		succeeded = tinyGltf.LoadASCIIFromFile(&transmissionModel, &error, &warning, filename.c_str());
+		transmissionModel = std::make_shared<tinygltf::Model>();
+		std::string error, warning;
+		bool succeeded = false;
+		if (filename.find(".glb") != std::string::npos)
+		{
+			succeeded = tinyGltf.LoadBinaryFromFile(transmissionModel.get(), &error, &warning, filename.c_str());
+		}
+		else if (filename.find(".gltf") != std::string::npos)
+		{
+			succeeded = tinyGltf.LoadASCIIFromFile(transmissionModel.get(), &error, &warning, filename.c_str());
+		}
+		if (!warning.empty())
+		{
+			OutputDebugStringA(warning.c_str());
+		}
+		if (!error.empty())
+		{
+			throw std::exception(error.c_str());
+		}
+		if (!succeeded)
+		{
+			throw std::exception("Failed to load glTF file");
+		}
+
+		//アセットマネージャーに登録
+		Engine::assetManager_->cacheAnimation_[filename] = transmissionModel;
 	}
-	if (!warning.empty())
-	{
-		OutputDebugStringA(warning.c_str());
-	}
-	if (!error.empty())
-	{
-		throw std::exception(error.c_str());
-	}
-	if (!succeeded)
-	{
-		throw std::exception("Failed to load glTF file");
-	}
-	ExtractAnimations(transmissionModel);
+	
+	ExtractAnimations(*transmissionModel);
 }
 void GeometricSubstance::ExtractAnimations(const tinygltf::Model& transmissionModel)
 {

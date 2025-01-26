@@ -15,6 +15,13 @@
 #include "Gun.h"
 #include "StageManager.h"
 #include "VitesseCameraController.h"
+#include "ComputeParticleEmitter.h"
+#include "AudioSource.h"
+#include "Easing.h"
+#include "SwordTrailRenderer.h"
+
+#include "ComboSystem.h"
+#include "VitesseComboNode.h"
 
 #include "ThrusterEffect.h"
 
@@ -28,12 +35,17 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
     HumanoidWeapon::Initialize(actor);
 
+    health_ = 1000.0f;
+    Max_Health = 1000.0f;
+    speedOver_ = 10.0f;
+
     //モデル読み込み
     //model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.glb");
     model_ = actor_->AddComponent<SkeletalMesh>("./Assets/Models/Vitesse/Vitesse_UE_01_Stand.gltf");
     model_->GetModel()->primitiveConstants_->data_.imageBasedLightingIntensity_ = 0.47f;
     model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_ = 36.12f;
-    model_->GetModel()->primitiveConstants_->data_.minAmbient = 0.1f;
+    initEmissiveIntensity_ = model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_;
+    model_->GetModel()->primitiveConstants_->data_.minAmbient_ = 0.1f;
 
     //アニメーション初期化
     AnimationInitialize();
@@ -127,6 +139,37 @@ void Vitesse::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     GunInitialize(*gunComponentL_.get());
 
     actor->ReplaceTag(Actor::Tag_Player);
+
+    //パーティクルエフェクト
+    dodgeParticleEffect_ = actor->AddComponent<ComputeParticleEmitter>();
+    dodgeParticleEffect_->SetEmitParamater("Vitesse_Dodge_Effect");
+
+    //ソードトレイル
+    {
+        swordTrailR_ = actor->AddComponent<SwordTrailRenderer>("./Assets/Effects/TrailTexture/SwordTrail_06.png");
+        swordTrailR_->SetOffsetRotation({ 180.0f, 0.0f, 0.0f });
+        swordTrailR_->SetOffsetPosition({ 0.0f,0.05f,0.7f });
+        swordTrailR_->SetIntensity(2.0f);
+        swordTrailR_->SetColor({ 0.6f,1.0f,1.0f,1.0f });
+        swordTrailR_->SetSwordRange(15.3f);
+
+        swordTrailL_ = actor->AddComponent<SwordTrailRenderer>("./Assets/Effects/TrailTexture/SwordTrail_06.png");
+        swordTrailL_->SetOffsetRotation({ 180.0f, 0.0f, 0.0f });
+        swordTrailL_->SetOffsetPosition({ 0.0f,0.05f,0.7f });
+        swordTrailL_->SetIntensity(2.0f);
+        swordTrailL_->SetColor({ 0.6f,1.0f,1.0f,1.0f });
+        swordTrailL_->SetSwordRange(15.3f);
+    }
+
+    //オーディオコンポーネント初期化
+    AudioInitialize();
+
+
+    //コンボシステム初期化
+    ComboInitialize();
+
+    //ソードトレイルを非表示
+    ActiveSwordTrail(false);
 }
 
 void Vitesse::Update()
@@ -161,6 +204,10 @@ void Vitesse::Update()
 
     //ブーストゲージ更新
     UpdateBoostGauge();
+
+    //エミッシブ更新
+    UpdateEmissive();
+
     
 
     //RotateToFront();
@@ -172,6 +219,14 @@ void Vitesse::Update()
     //{
     //    BeamShot();
     //}
+}
+
+void Vitesse::UpdateEnd()
+{
+    //描画に関係する更新処理
+
+    //ソードトレイル更新
+    UpdateSwordTrailPos();
 }
 
 void Vitesse::DrawImGui()
@@ -192,6 +247,8 @@ void Vitesse::DrawImGui()
             ImGui::DragFloat("Overheat Heal Amount", &boostOverHeatHealAmount_, 0.1f);
 
             ImGui::DragFloat("Boost Heal Start Time", &boostHealStartTime_, 0.1f);
+
+            ImGui::DragFloat("Melee Dash Speed", &meleeAtkDashMaxSpeed_,0.1f);
 
             //Cost
             if(ImGui::TreeNode("Boost Cost"))
@@ -327,6 +384,8 @@ void Vitesse::AnimationInitialize()
 
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_Dash_Start))->SetLoopFlag(false);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_N_1))->SetLoopFlag(false);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_N_2))->SetLoopFlag(false);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_N_3))->SetLoopFlag(false);
 
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Flinch))->SetLoopFlag(false);
 
@@ -334,6 +393,7 @@ void Vitesse::AnimationInitialize()
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FR))->SetAnimSpeed(0.5f);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Dodge_FL))->SetAnimSpeed(0.5f);
         model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Flinch))->SetAnimSpeed(0.64f);
+        model_->GetAnimator()->GetAnimations().at(static_cast<int>(AnimationIndex::Slash_N_3))->SetAnimSpeed(0.674f);
 
 
         //地上移動
@@ -440,6 +500,10 @@ void Vitesse::AnimationInitialize()
                 //無視するノード（肩下）
                 //aimIKAnimation_->SetIgnoreNodeName("rig_J_uparm_R");
                 ikR->SetAnimator(GetAnimator().get());
+
+                //初期回転値設定
+                ikR->SetRootInitRotation(Vector3(140.0f,0.0f,180.0f));
+                ikR->SetHandInitRotation(Vector3(-20.0f,5.0f,-20.0f));
             }
 
             //Aim IK 左
@@ -461,6 +525,10 @@ void Vitesse::AnimationInitialize()
                 //無視するノード（肩下）
                 //ikL->SetIgnoreNodeName("rig_J_uparm_L");
                 ikL->SetAnimator(GetAnimator().get());
+
+                //初期回転値設定
+                ikL->SetRootInitRotation(Vector3(140.0f, 0.0f, 180.0f));
+                ikL->SetHandInitRotation(Vector3(-21.0f, 5.0f, -20.0f));
             }
 
             aimingAnimation_ = new AnimAiming(model_.get(),"AimMove", bs2d, ikR, ikL);
@@ -715,7 +783,12 @@ void Vitesse::AttackerInitialize()
         {
             atkData.attackColliderList_.emplace_back(collider);
         }
-        atkData.duration_ = 1.0f;//持続時間
+        for (const auto& collider : lWeaponAtkColliderList_)
+        {
+            atkData.attackColliderList_.emplace_back(collider);
+        }
+        atkData.startTime_ = 0.05f;//持続時間
+        atkData.duration_ = 0.3f;//持続時間
         //atkData.staggerValue_
         atkData.maxHits_ = 1;//攻撃最大ヒット回数
         atkData.hitStopDuration_ = 0.1f;//ヒットストップ時間
@@ -724,6 +797,26 @@ void Vitesse::AttackerInitialize()
         attackerSystem_->RegistAttackData("Slash_N_1", atkData);
     }
     
+}
+
+void Vitesse::ComboInitialize()
+{
+        comboSystem_ = actor_->AddComponent<ComboSystem<Vitesse>>();
+        comboSystem_->SetOwner(std::static_pointer_cast<Vitesse>(shared_from_this()));
+        comboSystem_->AddComboNode("", "root", ComboSystemInterface::InputDirection::Null, std::make_shared<VitesseComboRoot>());
+        {
+            //1段目N攻撃
+            comboSystem_->AddComboNode("root", "N_1", ComboSystemInterface::InputDirection::Neutral, std::make_shared<VitesseComboN1>());
+            {
+                //2段目N攻撃
+                comboSystem_->AddComboNode("N_1", "N_2", ComboSystemInterface::InputDirection::Neutral, std::make_shared<VitesseComboN2>());
+                {
+                    //3段目N攻撃
+                    comboSystem_->AddComboNode("N_2", "N_3", ComboSystemInterface::InputDirection::Neutral, std::make_shared<VitesseComboN3>());
+
+                }
+            }
+        }
 }
 
 void Vitesse::AimIKTest()
@@ -773,22 +866,39 @@ void Vitesse::BeamShot()
     //標的の座標
     Vector3 targetPosition;
 
-    //地形判定であたるであろう位置
+    // 地形判定であたるであろう位置
     Vector3* terrainHitPos = nullptr;
+
+    // ステージ
+    const auto& stage = Engine::stageManager_->GetActiveStage().lock();
 
     if (const auto& target = lockonTarget_.lock())
     {
-        targetPosition = target->GetTransform()->GetPosition();
+        const Vector3 start = camera_->GetEye();
+        const Vector3 end = target->GetTransform()->GetPosition();
+        Vector3 hitPos, hitNormal;
+
+        if (stage->RayCast(start,end,hitPos,hitNormal))
+        {
+            // 当たった位置に飛ばす
+            targetPosition = hitPos;
+
+            // 地形にあたる位置
+            terrainHitPos = &hitPos;
+        }
+        else
+        {
+            // 地形に判定
+            targetPosition = end;
+        }
     }
     else
     {
         const Vector3 start = camera_->GetEye();
         const Vector3 end = start + eyeToFocus * range;
         Vector3 hitPos, hitNormal;
-        const auto& stage = Engine::stageManager_->GetActiveStage().lock();
-        if (stage->RayCast(
-            start, end, hitPos, hitNormal
-        ))
+        
+        if (stage->RayCast(start, end, hitPos, hitNormal))
         {
             //当たった位置に飛ばす
             targetPosition = hitPos;
@@ -805,8 +915,16 @@ void Vitesse::BeamShot()
 
     //if (BeamShotByComponent(*gunComponentR_.get(), targetPosition)) {}
     //else BeamShotByComponent(*gunComponentL_.get(), targetPosition);
-    BeamShotByComponent(*gunComponentR_.get(), targetPosition,terrainHitPos);
-    BeamShotByComponent(*gunComponentL_.get(), targetPosition,terrainHitPos);
+
+    //打てたか判定
+     bool shootR = BeamShotByComponent(*gunComponentR_.get(), targetPosition, terrainHitPos);
+     bool shootL = BeamShotByComponent(*gunComponentL_.get(), targetPosition,terrainHitPos);
+
+     //コントローラー振動
+     if (shootR || shootL)
+     {
+         Input::GetGamePad().Vibration(0.1f, 0.1f);
+     }
 }
 
 bool Vitesse::UseBoostGauge(float useBoostAmount)
@@ -822,6 +940,8 @@ bool Vitesse::UseBoostGauge(float useBoostAmount)
         //ブーストゲージが足りなかった
         //オーバーヒート
         isBoostOverHeat_ = true;
+
+        boostAlertSound_->SetVolume(1.0f);
     }
 
     
@@ -859,6 +979,7 @@ void Vitesse::GunInitialize(Gun& gun)
     gun.SetBeamScale(1.7f);
     gun.SetBeamColor(Vector4(0.0f, 1.0f, 1.0f, 1.0f));
     gun.SetPrecision(0.0f);
+    gun.GetShotSound()->SetAssetAudioIndex(AudioIndex::Beam_Shot_Vitesse);
 }
 
 void Vitesse::UpdateBoostGauge()
@@ -883,10 +1004,90 @@ void Vitesse::UpdateBoostGauge()
     {
         boostAmount_ = Max_Boost_Amount;
 
-        if(isBoostOverHeat_)isBoostOverHeat_ = false;
+        if (isBoostOverHeat_)
+        {
+            //アラート音解除
+            boostAlertSound_->SetVolume(0.0f);
+
+            // ブースト満タンSE
+            boostFullSound_->Play();
+
+            isBoostOverHeat_ = false;
+        }
     }
 
     boostTimer_ += actor_->GetDeltaTime();
+}
+
+void Vitesse::UpdateEmissive()
+{
+    //タイマー更新
+    if (isSystemStart_)
+    {
+        sSUTimer_ += actor_->GetDeltaTime();
+    }
+    else
+    {
+        sSUTimer_ -= actor_->GetDeltaTime();
+    }
+    sSUTimer_ = std::clamp(sSUTimer_, 0.0f, sSUTime_);
+
+    float emissive = Easing::InCubic(sSUTimer_, sSUTime_, initEmissiveIntensity_, 0.0f);
+
+    model_->GetModel()->primitiveConstants_->data_.emissiveIntensity_ = emissive;
+}
+
+void Vitesse::AudioInitialize()
+{
+    // サウンド
+
+    // ターゲット切り替え
+    changeTargetSound_ = actor_->AddComponent<AudioSource>();
+    changeTargetSound_->SetAssetAudioIndex(AudioIndex::Change_Target);
+    changeTargetSound_->SetActiveDistanceAttenuation(false);
+
+    // システム起動
+    systemStartUpSound_ = actor_->AddComponent<AudioSource>();
+    systemStartUpSound_->SetAssetAudioIndex(AudioIndex::System_Start_Up);
+    systemStartUpSound_->SetActiveDistanceAttenuation(false);
+
+    // 常になるブースト音
+    boostAlwaysSound_ = actor_->AddComponent<AudioSource>();
+    boostAlwaysSound_->SetAssetAudioIndex(AudioIndex::Boost_Always);
+    boostAlwaysSound_->SetRangeOfSound(10.0f);
+    boostAlwaysSound_->SetIsLoop(true);
+    boostAlwaysSound_->SetVolume(0.0f);
+    // 再生しておく
+    boostAlwaysSound_->Play();
+
+    // 回避時になるブースト音
+    boostBurstSound_ = actor_->AddComponent<AudioSource>();
+    boostBurstSound_->SetAssetAudioIndex(AudioIndex::Boost_Burst);
+    boostBurstSound_->SetRangeOfSound(80.0f);
+
+    // ブーストが切れた時になる音
+    boostAlertSound_ = actor_->AddComponent<AudioSource>();
+    boostAlertSound_->SetAssetAudioIndex(AudioIndex::Alert);
+    boostAlertSound_->SetIsLoop(true);
+    boostAlertSound_->SetActiveDistanceAttenuation(false);
+    boostAlertSound_->SetVolume(0.0f);
+    boostAlertSound_->Play();//再生しておく
+
+    // ブーストが満タンになった音
+    boostFullSound_ = actor_->AddComponent<AudioSource>();
+    boostFullSound_->SetAssetAudioIndex(AudioIndex::Pi);
+    boostFullSound_->SetActiveDistanceAttenuation(false);
+
+    // 近接攻撃のときの接近用ブーストＳＥ
+    meleeBoostSound_ = actor_->AddComponent<AudioSource>();
+    meleeBoostSound_->SetAssetAudioIndex(AudioIndex::Melee_Boost);
+    meleeBoostSound_->SetRangeOfSound(200.0f);
+}
+
+void Vitesse::UpdateSwordTrailPos()
+{
+    swordTrailR_->SetAttachedMesh(rightWeaponModel_);
+    swordTrailL_->SetAttachedMesh(leftWeaponModel_);
 }
 
 void Vitesse::Flinch(StaggerType type)
@@ -957,6 +1158,9 @@ void Vitesse::Dodge(Vector3 direction)
 
     //現在の速度を回避方向へ加速
     velocity_ = direction * dodgeSpeed_;
+
+    //再生する
+    boostBurstSound_->Play();
 }
 
 void Vitesse::StepMove(AbyssEngine::Vector3 moveDirection, float speed)
@@ -972,6 +1176,17 @@ void Vitesse::StepMove(AbyssEngine::Vector3 moveDirection, float speed)
 void Vitesse::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& hitCollider, Collision::IntersectionResult result)
 {
     
+}
+
+void Vitesse::ActiveSwordTrail(bool active)
+{
+    swordTrailL_->SetActiveTrail(active);
+    swordTrailR_->SetActiveTrail(active);
+}
+
+void Vitesse::BeginAttack(const std::string& name)
+{
+    attackerSystem_->Attack(name);
 }
 
 Vector3 Vitesse::ToTarget()
@@ -1036,9 +1251,22 @@ void Vitesse::UpdateInputMove()
 
 void Vitesse::ToGroundMode()
 {
+    if (!flightMode_)return;
+
     HumanoidWeapon::ToGroundMode();
 
+    boostAlwaysSound_->SetVolume(0.0f);
+
     ThrusterAllStop();
+}
+
+void Vitesse::ToFlightMode()
+{
+    if(flightMode_)return;
+
+    HumanoidWeapon::ToFlightMode();
+
+    boostAlwaysSound_->SetVolume(1.0f);
 }
 
 //ターゲットとなるコライダーを補足する
@@ -1131,6 +1359,8 @@ void Vitesse::TargetAcquisition()
                     int next = i + 1;
                     if (next >= targetList.size())next = 0;
                     lockonTarget_ = targetList[next]->GetActor();
+
+                    changeLockonTarget_ = true;
                 }
             }
         }
@@ -1170,6 +1400,14 @@ void Vitesse::TargetAcquisition()
                 }
             }
         }
+    }
+
+    if (changeLockonTarget_)
+    {
+        //ターゲットが切り替わったなら
+
+        //SE再生
+        changeTargetSound_->Play();
     }
 }
 

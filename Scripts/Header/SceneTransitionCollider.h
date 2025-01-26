@@ -16,10 +16,14 @@ public:
 
     void SetTransSceneName(const std::string& name) { transSceneName_ = name; }
 
+    void Update()override;
+
 private:
     //‘JˆÚæ‚ÌƒV[ƒ“–¼
     std::string transSceneName_ = "Test";
 
     std::shared_ptr<AbyssEngine::SpriteRenderer> spriteRenderer_;
+
+    bool isChangeNextScene_;
 };
 

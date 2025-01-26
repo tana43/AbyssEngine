@@ -29,6 +29,9 @@ namespace AbyssEngine
 
         static GamePad& GetGamePad();
 
+        static const float& GetCameraRollSensitivity();
+        static void SetCameraRollSensitivity(const float& sensi);
+
     public:
         //ここで複雑な入力値や、アクションに対応する入力を定義していく
         struct GameSupport
@@ -37,6 +40,7 @@ namespace AbyssEngine
             static const Vector2 GetMoveVector();//キーボード、コントローラーの入力値からベクトルの取得
             static const bool GetMoveButtonDown();//移動キーのどれかが入力されたか
             static const bool GetDashButton();//ダッシュ操作
+            static const bool GetDashButtonDown();//ダッシュ操作
             static const bool GetDodgeButton();//回避操作
             static const Vector2 GetCameraRollVector();//カメラの回転操作
             static const bool GetJumpButton();///ジャンプボタン
@@ -57,6 +61,8 @@ namespace AbyssEngine
             static const bool GetDecideButton();
             static const bool GetStartButton();//スタートボタン
         };
+
+        
         
     private:
         GamePad gamePad_;

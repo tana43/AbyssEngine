@@ -12,7 +12,7 @@ float4 main(float4 position : SV_POSITION,float2 texcoord : TEXCOORD) : SV_TARGE
     [unroll]
     for (uint downsampledIndex = 0; downsampledIndex < downsampledCount; ++downsampledIndex)
     {
-        sampledColor += downsampledTextures[downsampledIndex].Sample(samplerStates[LINEAR_WRAP], texcoord).xyz;
+        sampledColor += downsampledTextures[downsampledIndex].Sample(samplerStates[LINEAR_CLAMP], texcoord).xyz;
     }
     return float4(sampledColor * bloomIntencity,1);
 }

@@ -14,6 +14,8 @@
 #include "ComputeParticleEmitter.h"
 #include "ComputeParticleSystem.h"
 #include "TrailRenderer.h"
+#include "SwordTrailRenderer.h"
+#include "ThrusterEffect.h"
 
 #include "Bloom.h"
 #include "Skybox.h"
@@ -307,8 +309,17 @@ void RenderManager::Add(const shared_ptr<TrailRenderer>& mRend)
 	rendererEffectList_.emplace_back(mRend);
 }
 
+void RenderManager::Add(const shared_ptr<SwordTrailRenderer>& mRend)
+{
+	rendererEffectList_.emplace_back(mRend);
+}
 
 void RenderManager::Add(const shared_ptr<ComputeParticleEmitter>& mRend)
+{
+	rendererEffectList_.emplace_back(mRend);
+}
+
+void RenderManager::Add(const shared_ptr<ThrusterEffect>& mRend)
 {
 	rendererEffectList_.emplace_back(mRend);
 }
@@ -345,9 +356,6 @@ void RenderManager::Render()
 	IBLSetResources();
 
 	CheckRenderer();
-
-	//エフェクト更新処理
-	EffectManager::Instance().Update(Time::GetDeltaTime());
 
 	for (auto& c : cameraList_)
 	{
@@ -390,6 +398,9 @@ void RenderManager::Render()
 
 				//影を描画
 				ShadowRender();
+
+				//エフェクト更新処理
+				EffectManager::Instance().Update(Time::GetDeltaTime());
 
 				//仮のライト
 				//bufferScene_.lightDirection_ = Vector4(0, 0, 1, 0);
@@ -677,6 +688,7 @@ void RenderManager::Render2D() const
 		for (auto& r : renderer2DList_)
 		{
 			const auto& pRend = r.lock();
+			
 			if (pRend->actor_->GetActiveInHierarchy())
 			{
 				if (pRend->GetEnabled())

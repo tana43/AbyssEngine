@@ -93,6 +93,8 @@ public:
 
     void SetCanJump(const bool& can) { canJump_ = can; }
 
+    const float& GetJumpPower() const { return jumpPower_; }
+
 private:
     void UpdateMove()override;
     void CameraRollUpdate();

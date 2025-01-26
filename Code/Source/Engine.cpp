@@ -29,6 +29,7 @@ unique_ptr<ScriptComponentManager>  Engine::scriptComManager_;
 unique_ptr<Input>                   Engine::inputManager_;
 unique_ptr<CollisionManager>        Engine::collisionManager_;
 unique_ptr<StageManager>            Engine::stageManager_;
+unique_ptr<AudioManager>            Engine::audioManager_;
 
 Engine::Engine()
 {
@@ -42,6 +43,7 @@ Engine::Engine()
     scriptComManager_   = make_unique<ScriptComponentManager>();
     inputManager_       = make_unique<Input>();
     stageManager_       = make_unique<StageManager>();
+    audioManager_       = make_unique<AudioManager>();
 
 #if _DEBUG
     //ImGui‰Šú‰»
@@ -92,6 +94,8 @@ void Engine::Update()
     sceneManager_->Update();
 
     renderManager_->Render();
+
+    audioManager_->Update();
 
     //////ImGui•`‰æ
     DrawDebug();

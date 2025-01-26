@@ -95,6 +95,8 @@ void SpriteRenderer::Render()
 
 void SpriteRenderer::RecalculateFrame()
 {
+	if (!actor_)return;
+
     if (!canRender_)return;
 
     //表示切替
@@ -171,7 +173,7 @@ void SpriteRenderer::RecalculateFrame()
 
 	//ピボットを反映させる
 	float pivotX = scaledSize.x * pivot_.x;
-	float pivotY = scaledSize.x * pivot_.y;
+	float pivotY = scaledSize.y * pivot_.y;
 	data_[0].pos_.x -= pivotX; data_[0].pos_.y -= pivotY;
 	data_[1].pos_.x -= pivotX; data_[1].pos_.y -= pivotY;
 	data_[2].pos_.x -= pivotX; data_[2].pos_.y -= pivotY;

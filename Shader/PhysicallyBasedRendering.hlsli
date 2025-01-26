@@ -19,7 +19,7 @@
 // [5] "KHR_materials_clearcoat"
 //     https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_clearcoat
 
-float4 PhysicallyBasedRendering(MaterialInfo materialInfo, float3 L, float3 V, float3 N, float3 P, float3 Li, float4x4 world, float4x4 viewProjection, float emissiveIntensity, float imageBasedLightingIntensity, float minAmbient)
+float4 PhysicallyBasedRendering(MaterialInfo materialInfo, float3 L, float3 V, float3 N, float3 P, float3 Li, float4x4 world, float4x4 viewProjection, float emissiveIntensity, float imageBasedLightingIntensity, float minAmbient,float maxAmbient)
 {
     float3 fSpecular = 0.0;
     float3 fDiffuse = 0.0;
@@ -61,9 +61,9 @@ float4 PhysicallyBasedRendering(MaterialInfo materialInfo, float3 L, float3 V, f
 	//float3 R = reflect(-L, N);
     float3 H = normalize(V + L);
     
-    float NoL = clamp(dot(N, L), minAmbient, 1.0);
-    float NoH = clamp(dot(N, H), minAmbient, 1.0);
-    float VoH = clamp(dot(V, H), minAmbient, 1.0);
+    float NoL = clamp(dot(N, L), minAmbient, maxAmbient);
+    float NoH = clamp(dot(N, H), minAmbient, maxAmbient);
+    float VoH = clamp(dot(V, H), minAmbient, maxAmbient);
 #if 0
 	float NoV = dot(N, V);
 #else

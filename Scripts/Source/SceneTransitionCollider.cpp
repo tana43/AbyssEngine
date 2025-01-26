@@ -12,8 +12,9 @@ void SceneTransitionCollider::Initialize(const std::shared_ptr<AbyssEngine::Acto
 {
     ScriptComponent::Initialize(actor);
 
-    spriteRenderer_ = actor_->AddComponent<SpriteRenderer>("./Assets/Images/Proto_Load_01.png");
+    spriteRenderer_ = actor_->AddComponent<SpriteRenderer>("./Assets/Images/NowLoading.png");
     spriteRenderer_->SetEnable(false);
+    spriteRenderer_->SetColorAlpha(0.0f);
 
     //このコライダーにヒットするとシーンが遷移する
     AddAttackCollider(Vector3::Zero,2.0f);
@@ -26,6 +27,20 @@ void SceneTransitionCollider::OnCollision(const std::shared_ptr<Collider>& colli
     {
         spriteRenderer_->SetEnable(true);
 
-        Engine::sceneManager_->SetNextScene(transSceneName_);
+        //Engine::sceneManager_->SetNextScene(transSceneName_);
+
+
+        isChangeNextScene_ = true;
+    }
+}
+
+void SceneTransitionCollider::Update()
+{
+    if (isChangeNextScene_)
+    {
+        if (spriteRenderer_->FadeIn(1.0f, 2.0f))
+        {
+            Engine::sceneManager_->SetNextScene(transSceneName_);
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace AbyssEngine
 {
     class Character;
     class AttackCollider;
+    class AudioSource;
 
     enum class StaggerType
     {
@@ -21,6 +22,7 @@ namespace AbyssEngine
     {
         float power_ = 0;//攻撃力
         float knockback_ = 0;//吹っ飛ばし力
+        float startTime_ = 0.0f;//攻撃判定を出始める時間
         float duration_ = 1.0f;//持続時間
         float staggerValue_ = 0;//スタッグ値（ひるみ値のようなもの）
         StaggerType staggerType_ = StaggerType::None;//どんな怯みをさせるか
@@ -37,8 +39,9 @@ namespace AbyssEngine
         std::vector<std::weak_ptr<AttackCollider>> attackColliderList_;
 
         //Game:ヒット音とかも入れるといいかも
+        std::weak_ptr<AudioSource> hitSound_;
 
-        AttackData& operator=(const AttackData& data);
+        //AttackData& operator=(const AttackData& data);
     };
 
     class AttackerSystem : public ScriptComponent

@@ -12,6 +12,7 @@
 #include "Input.h"
 #include "BillboardRenderer.h"
 #include "PlayerSoldier.h"
+#include "AudioSource.h"
 
 using namespace AbyssEngine;
 
@@ -33,7 +34,11 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     deceleration_ = 60.0f;
     speedingDecel_ = 200.0f;
     Gravity = -30.0f;
-    center_ = { 0,100,0 };
+    center_ = { 0,50,0 };
+    terrainRadius_ = 5.77f;
+    terrainCenterOffset_ = 3.03f;
+    terrainStepOffset_ = 7.7f;
+    pseudoLandingDist_ = 1.0f;
 
     isLimitSpeed_ = true;
 
@@ -112,8 +117,8 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     transform_->SetScaleFactor(35.0f);
 
-
-    model_->GetModel()->primitiveConstants_->data_.minAmbient = 0.4f;
+    //モデルを見えやすく
+    model_->GetModel()->primitiveConstants_->data_.minAmbient_ = 0.99f;
 
    /* const auto& coll = AddHitCollider(Vector3::Zero, 10.0f, "Collider_Chest");
     coll->AttachModel(model_, "spine_02");*/
@@ -124,8 +129,6 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //AI初期化
     BehaviorTreeInitialize();
 
-    //アタッカーシステム
-    AttackerSystemInitialize();
 
 
     //通常弾の設定
@@ -152,7 +155,7 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
         noramlHomingGunL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
         noramlHomingGunL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
-        noramlHomingGunL_->SetTerrainHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+        noramlHomingGunL_->SetTerrainHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Boss_Beam_Terrain_Hit"));
     }
 
     //強ホーミング弾の設定
@@ -179,8 +182,11 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         superHomingGunL_->GetBeamMuzzleFlashComponent()->SetColor(Vector4(0.1f, 1.0f, 0.0f, 1.0f));
         superHomingGunL_->GetBeamMuzzleFlashComponent()->SetIntensity(10.0f);
 
+        superHomingGunL_->SetBeamSoundVolume(0.15f);
+
         superHomingGunL_->SetHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Beam_Hit"));
         superHomingGunL_->SetHitFireParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("BossMech_Beam_Hit_Fire"));
+        superHomingGunL_->SetTerrainHitParticleParam(ComputeParticleEmitter::GetJsonEmitParamater("Boss_Beam_Terrain_Hit"));
     }
 
     //ミサイルの設定
@@ -190,13 +196,13 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         missileGunL_->SetTargetTag(Actor::Tag_Player);
         missileGunL_->SetBulletType(Gun::BulletType::Missile);
         missileGunL_->SetMissileColor(Vector4(1.0f, 0.5f, 0.0f, 1.0f));
-        missileGunL_->SetMissileParticleColor(Vector4(0.2f, 0.0f, 1.0f, 1.0f));
+        missileGunL_->SetMissileParticleColor(Vector4(0.5f, 0.5f, 0.5f, 0.5f));
         missileGunL_->SetMissileIntensity(1.88f);
         missileGunL_->SetMissileWidth(0.1f);
         missileGunL_->SetMissileScale(5.5f);
-        missileGunL_->SetMissileParticleIntensity(0.220f);
+        missileGunL_->SetMissileParticleIntensity(0.550f);
         missileGunL_->SetEnableMuzzleFlashParticleEffect(false);
-        missileGunL_->SetBulletSpeed(120.0f);
+        missileGunL_->SetBulletSpeed(120.0f);       
         missileGunL_->SetHomingStrength(2.0f);
         missileGunL_->SetColliderTag(Collider::Tag::Enemy);
         missileGunL_->SetActiveRateOfFire(true);
@@ -225,11 +231,18 @@ void BossMech::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
         }
     }
 
+    //ヒット音
+    meleeAtkHitSound_ = actor->AddComponent<AudioSource>();
+    meleeAtkHitSound_->SetAssetAudioIndex(AudioIndex::Melee_Hit_01);
+    meleeAtkHitSound_->SetRangeOfSound(100.0f);
 
+
+    //アタッカーシステム
+    AttackerSystemInitialize();
 
     actor->ReplaceTag(Actor::Tag_Enemy);
 
-    
+    aiTree_->SetActive(false);
 }
 
 void BossMech::Update()
@@ -443,15 +456,15 @@ void BossMech::ColliderInitialize()
 
             AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Head",           model_, "head"),
 
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Shoulder_R",     model_, "clavicle_r"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Upperarm_R",     model_, "upperarm_r"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Lowerarm_R",     model_, "lowerarm_r"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Hand_R",         model_, "hand_r"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Shoulder_R",     model_, "clavicle_r"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Upperarm_R",     model_, "upperarm_r"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Lowerarm_R",     model_, "lowerarm_r"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Hand_R",         model_, "hand_r"),
 
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Shoulder_L",     model_, "clavicle_l"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Upperarm_L",     model_, "upperarm_l"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Lowerarm_L",     model_, "lowerarm_l"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Hand_L",         model_, "hand_l"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Shoulder_L",     model_, "clavicle_l"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Upperarm_L",     model_, "upperarm_l"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Lowerarm_L",     model_, "lowerarm_l"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Hand_L",         model_, "hand_l"),
 
             AddAttackCollider(Vector3::Zero, 7.0f, "Collider_Hip",            model_, "pelvis"),
 
@@ -459,14 +472,14 @@ void BossMech::ColliderInitialize()
             AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Thigh_R",         model_, "thigh_r"),
             AddAttackCollider(Vector3(0.2f,0,0),  7.0f, "Collider_Lowthing_R",          model_, "thigh_r"),
             AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Knee_R",          model_, "calf_r"),
-            AddAttackCollider(Vector3(0.3f,0,0),  7.0f, "Collider_Downknee_R",          model_, "calf_r"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Foot_R",          model_, "foot_r"),
+            AddAttackCollider(Vector3(0.3f,0,0),  9.0f, "Collider_Downknee_R",          model_, "calf_r"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Foot_R",          model_, "foot_r"),
 
             AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Thigh_L",         model_, "thigh_l"),
             AddAttackCollider(Vector3(-0.2f,0,0),  7.0f, "Collider_Lowthing_L",          model_, "thigh_l"),
             AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Knee_L",          model_, "calf_l"),
-            AddAttackCollider(Vector3(-0.3f,0,0),  7.0f, "Collider_Downknee_L",          model_, "calf_l"),
-            AddAttackCollider(Vector3::Zero,  7.0f, "Collider_Foot_L",          model_, "foot_l")
+            AddAttackCollider(Vector3(-0.3f,0,0),  9.0f, "Collider_Downknee_L",          model_, "calf_l"),
+            AddAttackCollider(Vector3::Zero,  9.0f, "Collider_Foot_L",          model_, "foot_l")
         };
 
         //タグを設定
@@ -539,7 +552,6 @@ void BossMech::BehaviorTreeInitialize()
     //死亡
     aiTree_->AddNode("Root", "Die", -1, Ai_SelectRule::Non, new MechDieJudgment(this), new MechDieAction(this));
 
-
     //戦闘
     aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new MechBattleJudgment(this), nullptr);
     {
@@ -575,7 +587,7 @@ void BossMech::BehaviorTreeInitialize()
                 }
                 //隙を作っとく
                 aiTree_->AddNode("Shot", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
-                aiTree_->AddNode("Shot", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
+                //aiTree_->AddNode("Shot", "FlyIdle", 0, Ai_SelectRule::Non, nullptr, new MechFlyIdleAction(this));
             }
 
 
@@ -594,10 +606,6 @@ void BossMech::BehaviorTreeInitialize()
         aiTree_->AddNode("Scout", "Idle", 1, Ai_SelectRule::Non, new MechGroundJudgment(this), new MechIdleAction(this));
         aiTree_->AddNode("Scout", "FlyIdle", 1, Ai_SelectRule::Non, new MechFlyJudgment(this), new MechFlyIdleAction(this));
     }
-
-
-    
-
 
 #else// デバッグ用
     //戦闘
@@ -666,6 +674,7 @@ void BossMech::AttackerSystemInitialize()
         atkData.hitStopOutTime_ = 0.0f;
         atkData.knockback_ = 400.0f;
         atkData.staggerType_ = StaggerType::Middle;
+        atkData.hitSound_ = meleeAtkHitSound_;
 
         attackerSystem_->RegistAttackData("Rush", atkData);
     }
@@ -698,6 +707,7 @@ void BossMech::AttackerSystemInitialize()
         atkData.knockback_ = 300.0f;
         atkData.isHitRotate_ = true;//攻撃がヒットした時にすぐにその方向へ相手を回転させる
         atkData.staggerType_ = StaggerType::Middle;
+        atkData.hitSound_ = meleeAtkHitSound_;
 
         attackerSystem_->RegistAttackData("Combo_01", atkData);
     }
@@ -727,6 +737,7 @@ void BossMech::AttackerSystemInitialize()
         atkData.knockback_ = 400.0f;
         atkData.isHitRotate_ = true;//攻撃がヒットした時にすぐにその方向へ相手を回転させる
         atkData.staggerType_ = StaggerType::Middle;
+        atkData.hitSound_ = meleeAtkHitSound_;
 
         attackerSystem_->RegistAttackData("Combo_02", atkData);
     }
@@ -751,13 +762,14 @@ void BossMech::AttackerSystemInitialize()
         }
         atkData.power_ = 10.0f;
         atkData.duration_ = 1.0f;
-        atkData.maxHits_ = 1.0f;
+        atkData.maxHits_ = 1;
         atkData.staggerValue_ = 1.0f;
         atkData.hitStopDuration_ = 0.0f;
         atkData.hitStopOutTime_ = 0.0f;
         atkData.knockback_ = 400.0f;
         atkData.isHitRotate_ = true;//攻撃がヒットした時にすぐにその方向へ相手を回転させる
         atkData.staggerType_ = StaggerType::Middle;
+        atkData.hitSound_ = meleeAtkHitSound_;
 
         attackerSystem_->RegistAttackData("Combo_03", atkData);
     }

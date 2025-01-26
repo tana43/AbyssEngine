@@ -12,6 +12,7 @@ namespace AbyssEngine
     class Input;
     class CollisionManager;
     class StageManager;
+    class AudioManager;
 
     class Engine
     {
@@ -32,6 +33,7 @@ namespace AbyssEngine
         static std::unique_ptr<Input> inputManager_;
         static std::unique_ptr<CollisionManager> collisionManager_;
         static std::unique_ptr<StageManager> stageManager_;
+        static std::unique_ptr<AudioManager> audioManager_;
 
     private:
         static void DrawDebug();

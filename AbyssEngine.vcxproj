@@ -24,6 +24,9 @@
     <ClInclude Include="Code\Header\Animation.h" />
     <ClInclude Include="Code\Header\Animator.h" />
     <ClInclude Include="Code\Header\AssetManager.h" />
+    <ClInclude Include="Code\Header\Audio.h" />
+    <ClInclude Include="Code\Header\AudioManager.h" />
+    <ClInclude Include="Code\Header\AudioSource.h" />
     <ClInclude Include="Code\Header\BaseEnemy.h" />
     <ClInclude Include="Code\Header\BehaviorTree.h" />
     <ClInclude Include="Code\Header\Bloom.h" />
@@ -34,6 +37,8 @@
     <ClInclude Include="Code\Header\CollisionHelper.h" />
     <ClInclude Include="Code\Header\ComboAttack.h" />
     <ClInclude Include="Code\Header\ComboSystem.h" />
+    <ClInclude Include="Code\Header\ComboNode.h" />
+    <ClInclude Include="Code\Header\ComboSystemInterface.h" />
     <ClInclude Include="Code\Header\ComputeParticleEmitter.h" />
     <ClInclude Include="Code\Header\ComputeParticleSystem.h" />
     <ClInclude Include="Code\Header\EffectEditScene.h" />
@@ -86,12 +91,14 @@
     <ClInclude Include="Code\Header\StateMachine.h" />
     <ClInclude Include="Code\Header\StaticMesh.h" />
     <ClInclude Include="Code\Header\StaticMeshBatching.h" />
+    <ClInclude Include="Code\Header\SwordTrailRenderer.h" />
     <ClInclude Include="Code\Header\SystemFunction.h" />
     <ClInclude Include="Code\Header\TestScene.h" />
     <ClInclude Include="Code\Header\Texture.h" />
     <ClInclude Include="Code\Header\BillboardRenderer.h" />
     <ClInclude Include="Code\Header\TrailRenderer.h" />
     <ClInclude Include="Code\Header\Transform.h" />
+    <ClInclude Include="Code\Header\VitesseComboNode.h" />
     <ClInclude Include="External\imgui\imconfig.h" />
     <ClInclude Include="External\imgui\imgui.h" />
     <ClInclude Include="External\imgui\ImGuiCtrl.h" />
@@ -139,6 +146,9 @@
     <ClCompile Include="Code\Source\Animation.cpp" />
     <ClCompile Include="Code\Source\Animator.cpp" />
     <ClCompile Include="Code\Source\AssetManager.cpp" />
+    <ClCompile Include="Code\Source\Audio.cpp" />
+    <ClCompile Include="Code\Source\AudioManager.cpp" />
+    <ClCompile Include="Code\Source\AudioSource.cpp" />
     <ClCompile Include="Code\Source\BaseEnemy.cpp" />
     <ClCompile Include="Code\Source\Bloom.cpp" />
     <ClCompile Include="Code\Source\Camera.cpp" />
@@ -193,12 +203,14 @@
     <ClCompile Include="Code\Source\SpriteRenderer.cpp" />
     <ClCompile Include="Code\Source\StaticMesh.cpp" />
     <ClCompile Include="Code\Source\StaticMeshBatching.cpp" />
+    <ClCompile Include="Code\Source\SwordTrailRenderer.cpp" />
     <ClCompile Include="Code\Source\SystemFunction.cpp" />
     <ClCompile Include="Code\Source\TestScene.cpp" />
     <ClCompile Include="Code\Source\Texture.cpp" />
     <ClCompile Include="Code\Source\BillboardRenderer.cpp" />
     <ClCompile Include="Code\Source\TrailRenderer.cpp" />
     <ClCompile Include="Code\Source\Transform.cpp" />
+    <ClCompile Include="Code\Source\VitesseComboNode.cpp" />
     <ClCompile Include="External\imgui\imgui.cpp" />
     <ClCompile Include="External\imgui\ImGuiCtrl.cpp" />
     <ClCompile Include="External\imgui\imgui_demo.cpp" />
@@ -538,6 +550,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\SwordTrailRendererPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\SwordTrailRendererVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\ToneMapPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -581,6 +605,7 @@
     <None Include="Shader\PlaneBillboard.hlsli" />
     <None Include="Shader\PrimitiveRenderer.hlsli" />
     <None Include="Shader\ShapeRenderer.hlsli" />
+    <None Include="Shader\SwordTrailRenderer.hlsli" />
     <None Include="Shader\TrailRenderer.hlsli" />
   </ItemGroup>
   <ItemGroup>

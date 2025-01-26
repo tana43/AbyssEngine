@@ -49,7 +49,12 @@ namespace AbyssEngine
         virtual bool ApplyDamage(const AttackParameter& param,DamageResult* damageResult = nullptr);
 
         //死亡
-        void Die();
+        void Die() { isDead_ = true; }
+
+        //被ダメ時に呼ばれる関数
+        virtual void OnDamaged() {}
+        //死亡時に呼ばれる処理
+        virtual void OnDead() {}
         
         //ヒットストップ　持続時間とフェード開始時間
         void HitStop(float duration,float blendOutTime);
@@ -69,6 +74,10 @@ namespace AbyssEngine
         void SetVelocityX(const float& x) { velocity_.x = x; }
         void SetVelocityY(const float& y) { velocity_.y = y; }
         void SetVelocityZ(const float& z) { velocity_.z = z; }
+
+        const float& GetHealth() const { return health_; }
+        const float& GetMaxHealth() const { return Max_Health; }
+
 
         const float& GetMaxHorizontalSpeed() const { return Max_Horizontal_Speed; }
         void SetMaxHorizontalSpeed(const float& speed) { Max_Horizontal_Speed = speed; }
@@ -129,7 +138,9 @@ namespace AbyssEngine
         float terrainCenterOffset_ = 0.3f;//中心
         float terrainSkinWidth_ = 0.05f;//キャスト量加算値
 
-        float slopeLimit = 60.0f;//スロープ角度制限
+        float slopeLimit_ = 50.0f;//スロープ角度制限
+
+        float wallCrashDotLimit_ = -0.3f;//壁に衝突したとみなす内積値
 
         Vector3 moveVec_;//移動方向
         Vector3 velocity_;//速度
@@ -172,11 +183,15 @@ namespace AbyssEngine
         float hitStopDuration_ = 0;//持続時間
         float hitStopOutTime_ = 0;//いつからフェードアウトしていくか
         float hitStopTimer_ = 100;//時間計測用
+        float hitStopTimeScale_ = 0.12f;
 
         bool isDead_ = false;
 
         //着地しているとみなす地面までの距離 ※着地判定が曖昧でガタガタしないようにするため
         float pseudoLandingDist_ = 0.01f;
+
+        //速度制限が大きく上回っていないかを判定するための値
+        float speedOver_ = 1.0f;
         
     };
 }

@@ -47,6 +47,7 @@ void Camera::DrawImGui()
 
         ImGui::DragFloat("Arm Length", &armLength_, 0.01f, 0.1f);
         ImGui::DragFloat3("Camera Lag Speed", &cameraLagSpeed_.x, 0.01f,0.001f);
+        ImGui::DragFloat("Camera Lag Speed Factor", &cameraLagSpeedFactor_, 0.1f,0.001f);
         ImGui::Checkbox("Enable Camera Lag", &enableCameraLag_);
         ImGui::DragFloat3("Socket Offset", &socketOffset_.x, 0.01f);
         ImGui::DragFloat3("Target Offset", &targetOffset_.x, 0.01f);
@@ -201,13 +202,19 @@ void Camera::Update()
                 Vector3 playerToHit = hitPosition - viewTarget_->GetTransform()->GetPosition();
                 playerToHit.Normalize();
 
-                //ビューターゲットよりも手前でヒットしたか
-                if (focusToEye.Dot(playerToHit) > 0)
+                //逆向きの壁とぶつかっていないか
+                float wallJudge = focusToEye.Dot(hitNormal);
+                if (wallJudge < 0.7f)
                 {
-                    //カメラの位置を変更
-                    Vector3 focusToHit = hitPosition - focus_;
-                    float newLength = focusToHit.Length() - excessLength_;
-                    eye_ = focus_ + focusToEye * newLength;
+                    //ビューターゲットよりも手前でヒットしたか
+                    float playerFrontJudge = focusToEye.Dot(playerToHit);
+                    if (playerFrontJudge > 0)
+                    {
+                        //カメラの位置を変更
+                        Vector3 focusToHit = hitPosition - focus_;
+                        float newLength = focusToHit.Length() - excessLength_;
+                        eye_ = focus_ + focusToEye * newLength;
+                    }
                 }
             }
         }
@@ -573,11 +580,19 @@ void Camera::CameraLagUpdate()
             std::lerp(0.0f,localMoveVec.y,1.0f / cameraLagSpeed_.y),
             std::lerp(0.0f,localMoveVec.z,1.0f / cameraLagSpeed_.z)
         };*/
+
         Vector3 moveVecNormal = {
             std::lerp(0.0f,localMoveVecNormal.x,1.0f / cameraLagSpeed_.x),
             std::lerp(0.0f,localMoveVecNormal.y,1.0f / cameraLagSpeed_.y),
             std::lerp(0.0f,localMoveVecNormal.z,1.0f / cameraLagSpeed_.z)
         };
+
+        //カメラの後ろ方向への遅延のみ少なくする
+        if (moveVecNormal.z < 0)
+        {
+            moveVecNormal.z *= 10.0f;
+            moveVecNormal.z = max(moveVecNormal.z, localMoveVecNormal.z);
+        }
 
         //ワールド空間へ戻す
         //Vector3 worldMoveVec = Vector3::TransformNormal(moveVec, mat);
@@ -585,13 +600,16 @@ void Camera::CameraLagUpdate()
 
         Vector3 velocity = worldMoveVecNormal * dist;
         //velocity *= 0.333333f;
-        velocity *= actor_->GetDeltaTime() * 10.0f;
+        velocity *= actor_->GetDeltaTime() * cameraLagSpeedFactor_;
 
-        //速度制限
-        /*if (fabsf(velocity.x) > fabsf(vec.x))velocity.x = vec.x;
-        if (fabsf(velocity.y) > fabsf(vec.y))velocity.y = vec.y;
-        if (fabsf(velocity.z) > fabsf(vec.z))velocity.z = vec.z;*/
-         
+        Vector3 clampMove = { fabsf(vec.x),fabsf(vec.y),fabsf(vec.z) };
+
+        velocity = {
+            std::clamp(velocity.x, -clampMove.x,clampMove.x),
+            std::clamp(velocity.y, -clampMove.y,clampMove.y),
+            std::clamp(velocity.z, -clampMove.z,clampMove.z)
+        };
+
         cameraPos += velocity;
         transform_->SetPosition(cameraPos);
     }
@@ -838,22 +856,4 @@ void Camera::CameraShakeAssetCreation(CameraShakeParameters param, const std::st
     writingFile.open(filename, ios::out);
     writingFile << mJson.dump() << endl;
     writingFile.close();
-}
-
-Camera::CameraShakeParameters Camera::CameraShakeParameters::operator=(const CameraShakeParameters& param)
-{
-    position_.amplitude_ = param.position_.amplitude_;
-    position_.amplitudeMultiplier_ = param.position_.amplitudeMultiplier_;
-    position_.frequency_ = param.position_.frequency_;
-    position_.frequencyMultiplier_ = param.position_.frequencyMultiplier_;
-
-    rotation_.amplitude_ = param.rotation_.amplitude_;
-    rotation_.amplitudeMultiplier_ = param.rotation_.amplitudeMultiplier_;
-    rotation_.frequency_ = param.rotation_.frequency_;
-    rotation_.frequencyMultiplier_ = param.rotation_.frequencyMultiplier_;
-
-    timing_.duration_ = param.timing_.duration_;
-    timing_.blendInTime_ = param.timing_.blendInTime_;
-    timing_.blendOutTime_ = param.timing_.blendOutTime_;
-    return *this;
 }

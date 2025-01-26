@@ -36,9 +36,12 @@ void TestScene::Initialize()
     Scene::Initialize();
 
     //ポストエフェクト設定
+    Engine::renderManager_->GetBufferScene().data_.lightDirection_ = { 0.23f,-0.87f,1.43f };
     Engine::renderManager_->GetBufferScene().data_.exposure_ = 1.0f;
     Engine::renderManager_->GetBufferEffects().data_.shadowFilterRadius_ = 4.0f;
     Engine::renderManager_->GetBufferEffects().data_.shadowColor_ = 0.25f;
+    Engine::renderManager_->GetBufferEffects().data_.radialBlurSampleCount_ = 1;
+    Engine::renderManager_->GetBufferEffects().data_.radialBlurStrength_ = 0.0f;
     Engine::renderManager_->GetBloom()->bloomIntensity_ = 0.29f;
     Engine::renderManager_->GetBloom()->bloomExtractionThreshold_ = 0.56f;
     Engine::renderManager_->SetCriticalDepthValue(10000.0f);
@@ -49,120 +52,48 @@ void TestScene::Initialize()
     Camera::ChangeMainCamera(cameraCom.get());
     //camera_->GetTransform()->SetPosition(Vector3(0, 3, -10));
 
-    //テスト用のオブジェクト
-    /*const auto& p0 = InstanceActor("testModel");
-    p0->AddComponent<SkeltalMesh>("./Assets/Models/nico.fbx");*/
+    //ステージ
+    {
+        //当たり判定有
+        const auto& stageActor = InstanceActor("Test_Stage");
+        //const auto& stageCom = stageActor->AddComponent<Stage>();
+        const auto& stageCom = stageActor->AddComponent<Stage>();
 
-    //テスト用のオブジェクト
-    //const auto& stage_00 = InstanceActor("Stage");
-    //stage_00->AddComponent<StaticMesh>(
-    //    //"./Assets/Models/UE/LV_Soul_Slum.glb"
-    //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base.glb"
-    //    //"./Assets/Models/UE/Prewiev_Sci_fi_Base_Retopo.glb"
-    //    "./Assets/Models/UE/Stage_Retopo.glb"
-    //    //"./Assets/Models/UE/TestMap.glb"
-    //    //"./Assets/Models/UE/AssetsvilleTown.glb"
-    //);
-    //const auto& stage_01 = InstanceActor("Stage_00");
-    //stage_01->AddComponent<StaticMesh>(
-    //    "./Assets/Models/Stage/Skyscraper_001.glb"
-    //);
+        const auto& lunar = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Lunar/LunarSurface.gltf");
+        lunar->GetTransform()->SetLocalScaleFactor(4.45f);
+        lunar->GetComponent<StaticMesh>()->SetIBLIntensity(0.05f);
+        Engine::stageManager_->SetStage(stageCom);
 
-#if 0
-    const float scale = 0.2f;
-    //高層ビル
-    for (int i = 0; i < 10; i++)
-    {
-        std::string name = "Skyscraper_";
-        name += std::to_string(i);
-        const auto& skyscraper = InstanceActor(name);
-        skyscraper->GetTransform()->SetScaleFactor(scale);
-        skyscraper->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_001.glb");
-        skyscraper->AddComponent<MeshCollider>("./Assets/Models/Stage/Skyscraper_001_Collision.glb");
-    }
-    //ビル
-    for (int i = 0; i < 10; i++) 
-    {
-        std::string name = "Building_";
-        name += std::to_string(i);
-        const auto& building = InstanceActor(name);
-        //building->AddComponent<StaticMesh>("./Assets/Models/Stage/Building_001.glb");
-        //building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_002.glb");
-        building->GetTransform()->SetScaleFactor(scale);
-        building->AddComponent<StaticMesh>("./Assets/Models/Stage/Skyscraper_003.glb");
-        building->AddComponent<MeshCollider>("./Assets/Models/Stage/Skyscraper_003_Collision.glb");
-    }
-    //木
-    //for (int i = 0; i < 30; i++) 
-    //{
-    //    std::string name = "Tree_";
-    //    name += std::to_string(i);
-    //    const auto& tree = InstanceActor(name);
-    //    tree->AddComponent<StaticMesh>("./Assets/Models/Stage/Tree_001.glb");
-    //    //tree->GetTransform()->SetScaleFactor(scale);
-    //}
+        //判定無し
+        const auto& station = InstanceActor("Space_Station");
+        const auto& m = station->AddComponent<StaticMesh>("./Assets/Models/Stage/SpaceStation/Space_Station_Modules.gltf");
+        m->SetEmissiveIntensity(83.0f);
 
-    //アスファルト
-    for (int i = 0; i < 9; i++) 
-    {
-        std::string name = "Asphalt_";
-        name += std::to_string(i);
-        const auto& asphalt = InstanceActor(name);
-        asphalt->AddComponent<StaticMesh>("./Assets/Models/Stage/Asphalt.glb");
-        //asphalt->GetTransform()->SetScaleFactor(30.0f);
-    }
-#else
-    const auto& stageActor = InstanceActor("Test_Stage");
-    //const auto& stageCom = stageActor->AddComponent<Stage>();
-    const auto& stageCom = stageActor->AddComponent<Stage>();
-
-    /*for (int i = 0; i < 10; i++)
-    {
-        std::string name_ = "Skyscraper_001_";
-        name_ += std::to_string(i);
-        stageCom->AddStageModel(name_, "./Assets/Models/Stage/Skyscraper_001.glb");
-    }
-    for (int i = 0; i < 10; i++)
-    {
-        std::string name_ = "Skyscraper_002_";
-        name_ += std::to_string(i);
-        stageCom->AddStageModel(name_, "./Assets/Models/Stage/Skyscraper_002.glb");
-    }
-    for (int i = 0; i < 10; i++)
-    {
-        std::string name_ = "Office_001_";
-        name_ += std::to_string(i);
-        stageCom->AddStageModel(name_, "./Assets/Models/Stage/Office_001.glb");
-    }*/
-    /*int gridSize = 12;
-    for (int x = 0; x < gridSize; x++)
-    {
-        for (int z = 0; z < gridSize; z++)
+        for (size_t i = 0; i < 5; i++)
         {
-            float scale = 30.0f;
-            float oneGrid = scale * 2;
-
-            std::string name_ = "Asphalt_";
-            name_ += std::to_string(x * gridSize + z);
-            const auto& asp = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Asphalt.glb");
-            asp->GetTransform()->SetLocalScaleFactor(scale);
-            asp->GetTransform()->SetLocalPositionX((-(gridSize / 2) * oneGrid) + x * oneGrid);
-            asp->GetTransform()->SetLocalPositionZ((-(gridSize / 2) * oneGrid) + z * oneGrid);
-            asp->GetComponent<MeshCollider>()->Transform();
+            const auto& debris = InstanceActor("Debris");
+            const auto& m2 = debris->AddComponent<StaticMesh>("./Assets/Models/Stage/Other/Debris/Debris.gltf");
         }
-    }*/
-    /*const auto& asp = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Asphalt.glb");
-    asp->GetTransform()->SetLocalScaleFactor(5000.0f);
-    asp->GetComponent<StaticMesh>()->SetIBLIntensity(0.05f);
-    stageCom->RegisterTriangles();
-    Engine::stageManager_->SetStage(stageCom);*/
 
-    const auto& lunar = stageCom->AddStageModel(name_, "./Assets/Models/Stage/Lunar/LunarSurface.gltf");
-    lunar->GetTransform()->SetLocalScaleFactor(4.45f);
-    lunar->GetComponent<StaticMesh>()->SetIBLIntensity(0.05f);
-    stageCom->RegisterTriangles();
-    Engine::stageManager_->SetStage(stageCom);
-#endif // 0
+        const auto& tower = InstanceActor("Tower");
+        const auto& m3 = tower->AddComponent<StaticMesh>("./Assets/Models/Stage/Other/Tower/Terraforming_Tower.gltf");
+
+        //山
+        {
+            const auto& parent = InstanceActor("Mountains");
+            for (int i = 0; i < 8; i++)
+            {
+                const auto& mou = stageCom->AddStageModel("Mountain", "./Assets/Models/Stage/Other/Mountain/Mountain_01.gltf");
+                mou->SetParent(parent);
+                mou->GetComponent<StaticMesh>()->GetModel()->primitiveConstants_->data_.maxAmbient_ = 0.95f;
+                //const auto& mou = InstanceActor("Mountain");
+                //const auto& m4 = mou->AddComponent<StaticMesh>("./Assets/Models/Stage/Other/Mountain/Mountain_01.gltf");
+            }
+        }
+
+        //当たり判定更新
+        stageCom->RegisterTriangles();
+    }
     
 
 #if 1//ヴィテスモデル仮生成
@@ -193,6 +124,7 @@ void TestScene::Initialize()
     const auto& ui = InstanceActor("GameUI");
     const auto& uiCom = ui->AddComponent<GameUIAdmin>();
     uiCom->SetPlayer(pc);
+    uiCom->SetBoss(bc);
 
     //const auto& staticPlayer = InstanceActor("Player_Static");
     //staticPlayer->AddComponent<StaticMesh>("./Assets/Models/Soldier/Sci_Fi_Soldier_03_Idle.glb");
@@ -200,10 +132,13 @@ void TestScene::Initialize()
     //コントローラー振動
     //Input::GetGamePad().SetVibration(0.5f,0.5f);
 
+#if _DEBUG
     const auto& effectEmitter = InstanceActor("Effect");
     //effectEmitter->AddComponent<ParticleEmitter>();
     effectEmitter->AddComponent<ComputeParticleEmitter>();
+#endif // DEBUG
 
+    
     //空間パーティクル作成
     const auto& spaceParticleEmitter = InstanceActor("SpaceParticleEmitter");
     spaceParticleEmitter->AddComponent<SpaceParticleEffect>();
@@ -212,6 +147,19 @@ void TestScene::Initialize()
     const auto& host = InstanceActor("GameHost");
     const auto& gh = host->AddComponent<GameHost>();
     gh->SetBoss(bc);
+
+    //画面をフェードインさせる用のスプライト
+    const auto& fadeOut = InstanceActor("ScreenFadeOutSprite");
+    fadeOutSprite_ = fadeOut->AddComponent<SpriteRenderer>("./Assets/Images/NowLoading.png");
+
+    //BGM再生
+    const auto& speaker = InstanceActor("BGM_Player");
+    const auto& audio = speaker->AddComponent<AudioSource>();
+    audio->SetAssetAudioIndex(AudioIndex::Game);
+    audio->SetIsLoop(true);//ループオン
+    audio->SetActiveDistanceAttenuation(false);//距離減衰オフ
+    audio->SetIsDestroyedAudioStop(true);
+    audio->Play();
 }
 
 void TestScene::Update()
@@ -219,6 +167,12 @@ void TestScene::Update()
     /*Vector3 hit;
     Vector3 hitn;
     stageCom->RayCast(Vector3(0, 10, 0), Vector3(0, -10, 0), hit, hitn);*/
+
+    //画面をフェードインさせるためにスプライトをフェードアウト
+    if (const auto& p = fadeOutSprite_.lock())
+    {
+        p->FadeOut(0.0f, 0.4f);
+    }
 
     //仮でシーン遷移
     if (Keyboard::GetKeyDown(DirectX::Keyboard::F1))

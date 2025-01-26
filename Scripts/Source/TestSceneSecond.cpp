@@ -6,6 +6,7 @@
 #include "ParticleEmitter.h"
 #include "ComputeParticleEmitter.h"
 #include "TrailRenderer.h"
+#include "SwordTrailRenderer.h"
 
 using namespace AbyssEngine;
 
@@ -23,6 +24,9 @@ void TestSceneSecond::Initialize()
     //effectEmitter->AddComponent<ParticleEmitter>();
     effectEmitter->AddComponent<ComputeParticleEmitter>();
     
-    const auto& trail = InstanceActor("Trail");
-    trail->AddComponent<TrailRenderer>("./Assets/Effects/TrailTexture/Beam.png");
+    //const auto& trail = InstanceActor("Trail");
+    //trail->AddComponent<TrailRenderer>("./Assets/Effects/TrailTexture/Beam.png");
+
+    const auto& swordTrail = InstanceActor("SwordTrail");
+    swordTrail->AddComponent<SwordTrailRenderer>("./Assets/Effects/TrailTexture/SwordTrail_03.png");
 }

@@ -21,6 +21,7 @@ struct PrimitiveConstants
     float emissiveIntensity;//エミッシブ
     float imageBasedLightingIntensity;//IBL
     float minAmbient;//影になる部分の最低値
+    float maxAmbient;//影になる部分の最高値
 };
 cbuffer primitiveConstants : register(b0)
 {

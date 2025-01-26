@@ -8,6 +8,8 @@ namespace AbyssEngine
 {
     class Projectile;
     class BillboardRenderer;
+
+    class AudioSource;
 }
 
 class Gun : public AbyssEngine::ScriptComponent
@@ -93,11 +95,17 @@ public:
 
     void SetBulletLifespan(const float& lifespan) { bulletLifespan_ = lifespan; }
 
+    void SetBullletAttackPoint(const float& ap) { bulletAttackPoint_ = ap; }
+
     void SetTargetTransform(const std::shared_ptr<AbyssEngine::Transform>& transform) { targetTransform_ = transform; }
 
     void SetHitParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { hitParticleParam_ = param; }
     void SetHitFireParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { hitFireParticleParam_ = param; }
     void SetTerrainHitParticleParam(AbyssEngine::ComputeParticleEmitter::EmitParameter param) { terrainHitParticleParam_ = param; }
+
+    const std::shared_ptr<AbyssEngine::AudioSource>& GetShotSound() { return shotSound_; }
+
+    void SetBeamSoundVolume(const float& v) { beamSoundVolume = v; }
 
 private:
     //ADS(スコープを覗いているか)
@@ -128,7 +136,7 @@ private:
     //ADS時の精度
     float adsPrecision = 0.01f;
 
-    //マズルフラッシュ用の画像
+    //マズルフラッシュ用の画像6
     std::shared_ptr<AbyssEngine::BillboardRenderer> muzzleFlashComponent_;
     std::shared_ptr<AbyssEngine::BillboardRenderer> beamMuzzleFlashComponent_;
     
@@ -200,5 +208,13 @@ private:
     AbyssEngine::ComputeParticleEmitter::EmitParameter hitParticleParam_;
     AbyssEngine::ComputeParticleEmitter::EmitParameter hitFireParticleParam_;
     AbyssEngine::ComputeParticleEmitter::EmitParameter terrainHitParticleParam_;
+
+    //音
+    std::shared_ptr<AbyssEngine::AudioSource> shotSound_;
+
+    float beamSoundVolume = 1.0f;
+
+    //弾丸の攻撃力
+    float bulletAttackPoint_ = 1.0f;
 };
 

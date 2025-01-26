@@ -5,6 +5,8 @@ namespace AbyssEngine
 {
     class SphereCollider;
     class AttackCollider;
+    class ComputeParticleEmitter;
+    class TrailRenderer;
 }
 
 class Bullet : public AbyssEngine::Projectile
@@ -14,6 +16,8 @@ public:
     void Update()override;
 
     void OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, AbyssEngine::Collision::IntersectionResult result)override;
+
+    void HitTerrain()override;
 
 public:
     const float& GetAttackPoint() const { return attackPoint_; }
@@ -27,5 +31,14 @@ private:
 
     //球攻撃判定
     std::shared_ptr<AbyssEngine::AttackCollider> attackCollider_;
+
+    //敵にヒットした際のエフェクト
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> hitEffect_;
+
+    //トレイル
+    std::shared_ptr<AbyssEngine::TrailRenderer> trailRenderer_;
+
+    //地形に着弾時に生成されるパーティクル
+    std::shared_ptr<AbyssEngine::ComputeParticleEmitter> terrainHitParticleEmitter_;
 };
 

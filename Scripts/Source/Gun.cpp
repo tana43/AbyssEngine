@@ -14,6 +14,8 @@
 
 #include "GameCollider.h"
 
+#include "AudioSource.h"
+
 using namespace AbyssEngine;
 
 void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
@@ -47,6 +49,10 @@ void Gun::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     hitParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Hit");
     hitFireParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Hit_Fire");
     terrainHitParticleParam_ = ComputeParticleEmitter::GetJsonEmitParamater("Vitesse_Beam_Terrain_Hit");
+
+    shotSound_ = actor->AddComponent<AudioSource>();
+    shotSound_->SetRangeOfSound(100.0f);
+    shotSound_->SetAssetAudioIndex(AudioIndex::Beam_Shot_Enemy);
 }
 
 void Gun::DrawImGui()
@@ -169,6 +175,7 @@ bool Gun::Shot(Vector3 shootingDirection,Vector3* terrainHitPosition)
             proj->SetDirection(shootingDirection);
             proj->SetSpeed(bulletSpeed_);
             proj->SetLifespan(bulletLifespan_);
+            proj->SetAttackPoint(bulletAttackPoint_);
 
             if (terrainHitPosition)
             {
@@ -209,6 +216,8 @@ bool Gun::Shot(Vector3 shootingDirection,Vector3* terrainHitPosition)
             proj->GetHitParticleEmitter()->SetEmitParamater(hitParticleParam_);
             proj->GetHitFireParticleEmitter()->SetEmitParamater(hitFireParticleParam_);
             proj->GetTerrainHitParticleEmitter()->SetEmitParamater(terrainHitParticleParam_);
+            proj->GetAlwaysSound()->SetVolume(beamSoundVolume);
+            proj->GetHitSound()->SetVolume(beamSoundVolume);
 
             if (!isHoming_)
             {
@@ -261,7 +270,7 @@ bool Gun::Shot(Vector3 shootingDirection,Vector3* terrainHitPosition)
             proj->SetLifespan(bulletLifespan_);
             proj->SetParticleIntensity(missileParticleIntensity_);
             proj->GetHitParticleEmitter()->SetEmitParamater(hitParticleParam_);
-            proj->GetHitFireParticleEmitter()->SetEmitParamater(hitFireParticleParam_);
+            //proj->GetHitFireParticleEmitter()->SetEmitParamater(hitFireParticleParam_);
             proj->GetTerrainHitParticleEmitter()->SetEmitParamater(terrainHitParticleParam_);
 
             if (!isHoming_)
@@ -300,7 +309,8 @@ bool Gun::Shot(Vector3 shootingDirection,Vector3* terrainHitPosition)
 
         rateTimer_ = rateOfFire_;
 
-        
+        //SE
+        shotSound_->Play();
     }
     else return false;
     

@@ -21,6 +21,7 @@ void VitesseCameraController::Initialize(const std::shared_ptr<AbyssEngine::Acto
     camera_->SetArmLength(18.0f);
     camera_->SetBaseArmLength(18.0f);
     camera_->SetActiveZoomTargetOffset(false);
+    camera_->SetExcessLength(4.0f);
     targetTransform_ = camera_->GetViewTarget()->GetTransform();
 }
 
@@ -29,6 +30,8 @@ void VitesseCameraController::UpdateEnd()
     //ビューポート座標からターゲットが画面中央にいているか判定処理
     //現在、カメラのどちら側に寄せるように設定されているかを確認し、
     //左から右へ動けば構図が左右入れ替わるように処理をする
+
+    if (!camera_->GetIsMainCamera())return;
 
     targetOffset_ = camera_->GetTargetOffset();
 

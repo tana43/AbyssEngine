@@ -42,6 +42,8 @@ void Character::DrawImGui()
         ImGui::SliderFloat("Accel", &acceleration_, 0.0f, 100.0f);
         ImGui::SliderFloat("Decel", &deceleration_, 0.0f, 100.0f);
 
+        ImGui::DragFloat("Over Speed", &speedOver_, 0.1f);
+
         ImGui::Checkbox("Enable Auto Turn", &enableAutoTurn_);
 
         ImGui::SliderFloat("Rot Speed", &baseRotSpeed_, 0.0f, 1000.0f);
@@ -56,6 +58,8 @@ void Character::DrawImGui()
             ImGui::DragFloat("Terrain Center Offset", &terrainCenterOffset_, 0.01f, 0.0f);
             ImGui::DragFloat("Terrain Step Offset", &terrainStepOffset_, 0.01f, 0.0f);
             ImGui::DragFloat("Terrain Landing Dist", &pseudoLandingDist_, 0.01f, 0.0f);
+
+            ImGui::DragFloat("Slope Limit", &slopeLimit_, 0.01f);
 
             ImGui::TreePop();
         }
@@ -182,7 +186,7 @@ void AbyssEngine::Character::TurnY(Vector3 dir, const float& speed, bool smooth)
     //内積値から最終的に向きたい角度を計算する
     float dot = forward.Dot(dir);
     if (dot > 0.999f)return;
-    float rotAmount = DirectX::XMConvertToDegrees(acosf(dot));
+    float rotAmount = DirectX::XMConvertToDegrees(acosf(std::clamp(dot,-1.0f,1.0f)));
 
     float rotSpeed = 0;
 
@@ -236,21 +240,22 @@ bool Character::ApplyDamage(const AttackParameter& param, DamageResult* damageRe
     if (health_ < 0)
     {
         health_ = 0;
+
         Die();
+
+        OnDead();
+
         if (damageResult)*damageResult = DamageResult::FinalBlow;
     }
     else
     {
+
+        OnDamaged();
+
         if (damageResult)*damageResult = DamageResult::Success;
     }
 
     return true;
-}
-
-void Character::Die()
-{
-    //actor_->Destroy(actor_);
-    isDead_ = true;
 }
 
 void AbyssEngine::Character::HitStop(float duration, float blendOutTime)
@@ -289,22 +294,26 @@ void Character::UpdateVelocity()
             }
 
             //速度制限
-            //速度をある程度越えている場合、減速させていく
+            //最大速度をある程度越えている場合、減速させていく
             Vector2 velocityXZ = { velocity_.x,velocity_.z };
             float spd = velocityXZ.Length();
             if (spd > Max_Horizontal_Speed)
             {
-                velocityXZ.Normalize();
-                if (spd - Max_Horizontal_Speed < 0.1f)
+                //空中にいるときは速度制限をかけないしない
+                //if (onGround_)
                 {
-                    //そのまま最大速度を代入
-                    velocityXZ = velocityXZ * Max_Horizontal_Speed;
-                }
-                else
-                {
-                    //減速させる
-                    float newSpeed = spd - speedingDecel_ * actor_->GetDeltaTime();
-                    velocityXZ = velocityXZ * newSpeed;
+                    velocityXZ.Normalize();
+                    if (spd - Max_Horizontal_Speed < speedOver_)
+                    {
+                        //そのまま最大速度を代入
+                        velocityXZ = velocityXZ * Max_Horizontal_Speed;
+                    }
+                    else
+                    {
+                        //減速させる
+                        float newSpeed = spd - speedingDecel_ * actor_->GetDeltaTime();
+                        velocityXZ = velocityXZ * newSpeed;
+                    }
                 }
 
                 velocity_.x = velocityXZ.x;
@@ -420,7 +429,7 @@ void Character::UpdateHorizontalMove()
         if (distance > 0.000001f)
         {
             //  壁より少し手前で止まってほしいので、キャスト量を増やす(skinWidth)
-            distance += terrainSkinWidth_;
+            //distance += terrainSkinWidth_;
 
             Vector3 origin = transform_->GetPosition() + centerOffset;
             Vector3 direction = moveVector.Normalize();
@@ -432,16 +441,21 @@ void Character::UpdateHorizontalMove()
                 origin, direction, terrainRadius_, distance, hitPosition, hitNormal, true))
             {
                 //  キャスト量を増やした分だけ減らす(skinWidth)
-                distance -= terrainSkinWidth_;
+                //distance -= terrainSkinWidth_;
 
                 //移動
-                moved = pos + direction * distance;
+                Vector3 vec = direction * distance;
+                moved = pos + vec;
 
                 //滑り処理
                 {
                     //  次回移動が壁に沿うよう移動ベクトルを算出
                     float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(hitNormal, moveVector));
-                    const Vector3 move = moveVector - hitNormal * dot;
+                    Vector3 move = moveVector - hitNormal * dot;
+
+                    //移動した量を減らす
+                    //move -= vec;
+
                     moved = pos + move;
                 }
 
@@ -449,6 +463,30 @@ void Character::UpdateHorizontalMove()
                 if (hitNormal.Dot(Vector3(0, 1, 0)) > 0.8f)
                 {
                     hitWall_ = true;
+                }
+
+
+                //当たった壁が進行方向とどの程度衝突するかを判定し、速度を落とす
+                {
+                    Vector3 moveVec;
+                    velocity_.Normalize(moveVec);
+
+                    //-1に近づくほど正面衝突している
+                    float dot = hitNormal.Dot(moveVec);
+
+                    if (dot < wallCrashDotLimit_)
+                    {
+                        //どの程度衝突しているかを0~1の値で算出
+                        float a = 1.0f + wallCrashDotLimit_;
+                        float b = dot + 1.0f;
+
+                        float weight = b / a;
+                        weight -= 0.4f;//オフセット値
+                        weight = std::clamp(weight, 0.0f, 1.0f);
+
+                        //衝突度合いに応じて速度を落とす
+                        velocity_ *= weight;
+                    }
                 }
             }
         }
@@ -512,8 +550,9 @@ void Character::UpdateHorizontalMove()
     }
 
     //座標更新
-    transform_->SetPositionX(moved.x);
-    transform_->SetPositionZ(moved.z);
+    //transform_->SetPositionX(moved.x);
+    //transform_->SetPositionZ(moved.z);
+    transform_->SetPosition(moved);
 }
 
 void Character::UpdateVerticalMove()
@@ -562,23 +601,31 @@ void Character::UpdateVerticalMove()
                 //スロープ角度を算出
                 DirectX::XMVECTOR Up = DirectX::XMVectorSet(0, 1, 0, 0);
                 float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(Up, hitNormal));
-                float angle = DirectX::XMConvertToDegrees(acosf(dot));
+                float angle = DirectX::XMConvertToDegrees(acosf(std::clamp(dot, -1.0f, 1.0f)));
 
                 //着地した
                 Landing();
                 distance -= terrainStepOffset_;
                 //distance += pseudoLandingDist_;
-                moved.y = pos.y + direction.y * distance;
+                //moved.y = pos.y + direction.y * distance;
+                Vector3 vec = direction * distance;
+                moved = pos + vec;
 
-                //  制限角度以内なら滑る処理はスキップ
-                if (angle > slopeLimit)
+                //制限角度以内なら滑る処理はスキップ
+                if (angle > slopeLimit_)
                 {
                     Vector3 move = { 0, moveY, 0 };
+                    move.Normalize();
 
                     //  次回移動が壁に沿うよう移動ベクトルを算出
                     float dot = DirectX::XMVectorGetX(DirectX::XMVector3Dot(hitNormal,move));
-                    move = DirectX::XMVectorSubtract(move, DirectX::XMVectorScale(hitNormal, dot));
+                    move = DirectX::XMVectorSubtract(vec, DirectX::XMVectorScale(hitNormal, dot));
                     moved = pos + move;
+
+                    //先に移動した分減らす
+                    //moved -= vec;
+
+                    onGround_ = false;
                 }
             }
             else
@@ -672,7 +719,7 @@ void Character::UpdateHitStop()
     else
     {
         //停止させる
-        actor_->SetTimeScale(0.0f);
+        actor_->SetTimeScale(hitStopTimeScale_);
     }
 
     //ワールドの経過時間で加算していく

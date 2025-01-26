@@ -1,142 +1,167 @@
 #pragma once
 
 #include "ScriptComponent.h"
-#include "ComboAttack.h"
-#include "Animation.h"
+#include "ComboNode.h"
 
 #include "imgui/imgui.h"
+#include <memory>
 
-#include <vector>
-#include <string>
-
-namespace AbyssEngine
+template <class T>
+class ComboSystem : public AbyssEngine::ScriptComponent
 {
-    template <class T>
-    class ComboSystem : public ScriptComponent
+public:
+    ComboSystem() {}
+    ~ComboSystem() {}
+
+    void AddComboNode(
+        std::string parentName, 
+        std::string entryName, 
+        ComboSystemInterface::InputDirection input,
+        const std::shared_ptr<ComboNode<T>>& node);
+
+    // 更新処理
+    void UpdateBefore()override;
+
+    // ノード実行
+    const std::shared_ptr<ComboNode<T>>& Run(const std::shared_ptr<ComboNode<T>>& actionNode);
+
+    void DrawImGui()override;
+
+    //コンボが終了しているか
+    bool IsComboFinished();
+
+    //コンボ開始
+    void StartCombo();
+
+    //コンボは終わったか
+    const bool& GetComboFinished() { return !activeNode_; }
+
+    void SetOwner(const std::shared_ptr<T>& owner) { owner_ = owner; }
+
+private:
+    std::shared_ptr<ComboNode<T>> root_;
+    std::shared_ptr<ComboNode<T>> activeNode_;
+    std::weak_ptr<T> owner_;
+
+    //一度だけ呼ばれる初期化
+    bool initOnce_ = false;
+};
+
+template<class T>
+inline void ComboSystem<T>::AddComboNode(std::string parentName, std::string entryName, ComboSystemInterface::InputDirection input,const std::shared_ptr<ComboNode<T>>& node)
+{
+    //ノードに名前、判定入力情報、オーナーを設定
+    node->SetName(entryName);
+    node->SetInput(input);
+    node->SetOwner(owner_.lock());//ここでエラーが出るときはおそらくownerが外から設定されていない
+
+    //親の名前が設定されてるか
+    if (parentName != "")
     {
-    public:
-        ComboSystem() {};
-        ~ComboSystem();
+        const auto& parentNode = root_->SearchNode(parentName);
 
-        void UpdateBefore()override; // 更新処理
-
-        void DrawImGui()override;               // ImGui用
-
-        void SetCombo(int newCombo);     // コンボ変更
-        void ChangeCombo(int newCombo);     // コンボ変更
-        void RegisterCombo(T* combo);       // コンボ登録
-
-    public:// 取得・設定
-        int GetCurrentComboIndex();                // 現在のステート番号取得
-        T* GetCurrentCombo() { return currentState_; } // 現在のステート取得
-
-    private:
-        T* currentCombo_;            // 現在のステート
-        std::vector<T*> comboList_;  // 各ステートを保持する配列
-    };
-
-    template<class T>
-    inline ComboSystem<T>::~ComboSystem()
-    {
-        // 登録したステートを削除する
-        for (T* combo : comboList_)
+        if (parentNode != nullptr)
         {
-            delete combo;
+            parentNode->AddChild(node);
+
+            //ルート直下の初動コンボは無条件で発動させる
+            if (parentNode == root_)node->SetActiveJudgment(false);
         }
-        comboList_.clear();
-    }
-
-    template<class T>
-    inline void ComboSystem<T>::UpdateBefore()
-    {
-        currentCombo_->Update();
-    }
-
-    //template<class T>
-    //inline void StateMachine<T>::Update()
-    //{
-    //    currentState_->Update();
-    //}
-
-    template<class T>
-    inline void ComboSystem<T>::DrawImGui()
-    {
-        if (ImGui::TreeNode("ComboSystem"))
+        else
         {
-            ImGui::Text(currentCombo_->GetName());
-
-            float temp = currentCombo_->GetTimer();
-            ImGui::DragFloat("time", &temp);
-
-            //ここからコンボを変更できるように
-            static int index = 0;
-            ImGui::SliderInt("comboIndex", &index, 0, comboList_.size() - 1);
-            std::string setComboName_ = comboList_.at(index)->name_;
-            if (ImGui::Button("Set Combo"))
-            {
-                ChangeCombo(index);
-            }
-
-            //各コンボのパラメータもいじれるように
-            ImGui::Text("------Combo Datas------");
-
-            for (T* combo : comboList_)
-            {
-                if (ImGui::TreeNode(combo->GetName()))
-                {
-                    if (const auto& anim = combo->animation_.lock())
-                    {
-                        anim->DrawImGui();
-                    }
-
-                    ImGui::DragFloat("Attack",&combo->attack_,0.1f);
-                    ImGui::DragFloat("Atk Start Time",&combo->attackTime_[0], 0.1f);
-                    ImGui::DragFloat("Atk End Time",&combo->attackTime_[1], 0.1f);
-                    ImGui::DragFloat("Input Buffering Time",&combo->inputBufferingTime_,0.01f);
-                    ImGui::DragFloat("Cancel Time",&combo->cancelTime_,0.01f);
-                }
-            }
-
-            ImGui::TreePop();
+            _ASSERT_EXPR(false, "親ノードが見つかりません");
         }
     }
-
-    template<class T>
-    inline void ComboSystem<T>::SetCombo(int newCombo)
+    else
     {
-        currentCombo_ = comboList_.at(newCombo);
-        currentCombo_->PlayAnimation();
-        currentCombo_->Begin();
-    }
-
-    template<class T>
-    inline void ComboSystem<T>::ChangeCombo(int newCombo)
-    {
-        currentCombo_->Finalize();
-        SetCombo(newCombo);
-    }
-
-    template<class T>
-    inline void ComboSystem<T>::RegisterCombo(T* combo)
-    {
-        comboList_.emplace_back(combo);
-    }
-
-    template<class T>
-    inline int ComboSystem<T>::GetCurrentComboIndex()
-    {
-        int i = 0;
-        for (T* state : comboList_)
+        if (root_ == nullptr)
         {
-            if (state == currentState_)
-            {
-                // i番号目のステートをリターン
-                return i;
-            }
-            ++i;
+            //されていない場合はこのノードをルートとして追加
+            root_ = node;
         }
-
-        // ステートが見つからなかったとき
-        return -1;
     }
 }
+
+template<class T>
+inline void ComboSystem<T>::UpdateBefore()
+{
+    // コンボが始まっているか
+    if (activeNode_ == nullptr)return;
+
+    // 現在のコンボノードを実行
+    const auto& node = Run(activeNode_);
+
+    //ノードに変更があった
+    if (activeNode_ != node)
+    {
+        //終了処理
+        activeNode_->Finalize();
+
+        activeNode_ = node;
+
+        //nullでなければ初期化処理
+        if(activeNode_)activeNode_->Initialize();
+    }
+}
+
+template<class T>
+inline const std::shared_ptr<ComboNode<T>>& ComboSystem<T>::Run(const std::shared_ptr<ComboNode<T>>& actionNode)
+{
+    //実行ノードがルートノードなら次のノードを検索する
+    if (actionNode == root_)
+    {
+        auto node = actionNode->SerachDerivedNode();
+
+        return node;
+    }
+
+    // ノード実行
+    ComboSystemInterface::State state = actionNode->Run();
+
+    //タイマー更新
+    actionNode->TimerUpdate();
+
+    //正常終了
+    if (state == ComboSystemInterface::State::Complete)
+    {
+        return nullptr;
+    }
+
+    //キャンセル可能か
+    if (state == ComboSystemInterface::State::Cancellation)
+    {
+        //次のコンボノードへ派生するか
+        auto node = actionNode->SerachDerivedNode();
+
+        if (node)
+        {
+            //タイマーリセット
+            node->TimerReset();
+
+            return node;
+        }
+    }
+
+    //現状維持
+    return actionNode;
+}
+
+template<class T>
+inline void ComboSystem<T>::DrawImGui()
+{
+}
+
+template<class T>
+inline bool ComboSystem<T>::IsComboFinished()
+{
+    if (activeNode_)return true;
+    else return false;
+}
+
+template<class T>
+inline void ComboSystem<T>::StartCombo()
+{
+    //ルートノードからコンボを開始
+    activeNode_ = root_;
+}
+

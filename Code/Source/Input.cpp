@@ -18,6 +18,31 @@ void Input::Update()
     mouse_->Update();
     gamePad_.Update();
 
+    //O押しながら８，９で感度調整
+    if (keyboard_->GetKeyState().O)
+    {
+        if (keyboard_->GetKeyDown(DirectX::Keyboard::D9))
+        {
+            cameraRollSensitivity_ += 0.1f;
+        }
+        if (keyboard_->GetKeyDown(DirectX::Keyboard::D8))
+        {
+            cameraRollSensitivity_ -= 0.1f;
+        }
+    }
+    else//カメラ操作のリバース切り替え
+    {
+        if (keyboard_->GetKeyDown(DirectX::Keyboard::D9))
+        {
+            reverseAxisRY_ = !reverseAxisRY_;
+        }
+        if (keyboard_->GetKeyDown(DirectX::Keyboard::D8))
+        {
+            reverseAxisRX_ = !reverseAxisRX_;
+        }
+    }
+    
+
     //最後に入力されたデバイスの検出
     {
         auto currPtr = reinterpret_cast<const uint32_t*>(&keyboard_->GetKeyState());
@@ -54,6 +79,16 @@ void Input::DrawImGui()
 GamePad& Input::GetGamePad()
 {
     return Engine::inputManager_->gamePad_;
+}
+
+const float& AbyssEngine::Input::GetCameraRollSensitivity()
+{
+    return Engine::inputManager_->cameraRollSensitivity_;
+}
+
+void AbyssEngine::Input::SetCameraRollSensitivity(const float& sensi)
+{
+    Engine::inputManager_->cameraRollSensitivity_ = sensi;
 }
 
 const Vector2 Input::GameSupport::GetMoveVector()
@@ -113,6 +148,22 @@ const bool Input::GameSupport::GetDashButton()
         input = true;
     }
     
+    return input;
+}
+
+const bool AbyssEngine::Input::GameSupport::GetDashButtonDown()
+{
+    bool input = false;
+    auto& i = Engine::inputManager_;
+    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::LeftShift) ||
+        (i->gamePad_.GetButtonDown() & GamePad::BTN_X) ||
+        (i->gamePad_.GetButtonDown() & GamePad::BTN_RIGHT_SHOULDER) ||
+        (i->gamePad_.GetButtonDown() & GamePad::BTN_LEFT_SHOULDER)
+        )
+    {
+        input = true;
+    }
+
     return input;
 }
 
@@ -232,7 +283,8 @@ const bool AbyssEngine::Input::GameSupport::GetMeleeAttackButton()
     }
 #else
     if (i->keyboard_->GetKeyDown(DirectX::Keyboard::E) ||
-        i->gamePad_.GetButton() & GamePad::BTN_Y)
+        (i->gamePad_.GetButton() & GamePad::BTN_Y) ||
+        (i->gamePad_.GetButton() & GamePad::BTN_LEFT_TRIGGER))
     {
         return true;
     }
@@ -280,7 +332,13 @@ const bool AbyssEngine::Input::GameSupport::GetDecideButton()
 const bool AbyssEngine::Input::GameSupport::GetStartButton()
 {
     auto& i = Engine::inputManager_;
-    if (i->keyboard_->GetKeyDown(DirectX::Keyboard::Enter) ||
+    if (
+#if _DEBUG
+        i->keyboard_->GetKeyDown(DirectX::Keyboard::Z) ||
+#else
+        i->keyboard_->GetKeyDown(DirectX::Keyboard::Enter) ||
+#endif // _DEBUG
+
         i->gamePad_.GetButtonDown() & GamePad::BTN_START)
     {
         return true;

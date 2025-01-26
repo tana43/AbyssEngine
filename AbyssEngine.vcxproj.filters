@@ -403,9 +403,6 @@
     <ClInclude Include="Scripts\Header\BossMech.h">
       <Filter>Script\Header\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\GameCollider.h">
-      <Filter>Code\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Code\Header\ComboSystem.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
@@ -442,16 +439,38 @@
     <ClInclude Include="Scripts\Header\GameHost.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Scripts\Header\VitesseCameraController.h">
-      <Filter>Script\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Scripts\Header\SpaceParticleEffect.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
     <ClInclude Include="Code\Header\ComboAttack.h">
       <Filter>Script\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\Missile.h" />
+    <ClInclude Include="Scripts\Header\VitesseCameraController.h">
+      <Filter>Script\Header\Vitesse</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\GameCollider.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\AudioManager.h">
+      <Filter>Code\Header\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Missile.h">
+      <Filter>Script\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\AudioSource.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\Audio.h">
+      <Filter>Code\Header\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\SwordTrailRenderer.h">
+      <Filter>Code\Header\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ComboNode.h" />
+    <ClInclude Include="Code\Header\VitesseComboNode.h" />
+    <ClInclude Include="Code\Header\ComboSystemInterface.h">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Source\Engine.cpp">
@@ -718,9 +737,6 @@
     <ClCompile Include="Scripts\Source\BossMech.cpp">
       <Filter>Script\Source\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\GameCollider.cpp">
-      <Filter>Code\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Source\ParticleEmitter.cpp">
       <Filter>Code\Source\Effect</Filter>
     </ClCompile>
@@ -760,7 +776,25 @@
     <ClCompile Include="Scripts\Source\VitesseCameraController.cpp">
       <Filter>Script\Source\VItesse</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\Missile.cpp" />
+    <ClCompile Include="Code\Source\GameCollider.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\AudioManager.cpp">
+      <Filter>Code\Source\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Missile.cpp">
+      <Filter>Script\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\AudioSource.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\Audio.cpp">
+      <Filter>Code\Source\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\SwordTrailRenderer.cpp">
+      <Filter>Code\Source\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Source\VitesseComboNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">
@@ -913,6 +947,12 @@
     <FxCompile Include="Shader\TrailRendererPS.hlsl">
       <Filter>Shader\Trail</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\SwordTrailRendererPS.hlsl">
+      <Filter>Shader\Trail</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SwordTrailRendererVS.hlsl">
+      <Filter>Shader\Trail</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">
@@ -974,6 +1014,9 @@
       <Filter>Shader\Particle</Filter>
     </None>
     <None Include="Shader\TrailRenderer.hlsli">
+      <Filter>Shader\Trail</Filter>
+    </None>
+    <None Include="Shader\SwordTrailRenderer.hlsli">
       <Filter>Shader\Trail</Filter>
     </None>
   </ItemGroup>

@@ -9,11 +9,16 @@ namespace AbyssEngine
     class BillboardRenderer;
     class TrailRenderer;
     //class ComputeParticleEmitter;
+
+    class AudioSource;
 }
 
 class Missile : public AbyssEngine::Projectile
 {
 public:
+    Missile() {}
+    ~Missile();
+
     void Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)override;
     void Update()override;
 
@@ -66,4 +71,11 @@ private:
     AbyssEngine::ComputeParticleEmitter::EmitParameter straightParticleEmitPrameter_;
     float particleSpeed_ = 20.0f;
     float particleAmplitude_ = 9.0f;//パーティクルの散らばり
+
+    //常時鳴らす進行音
+    std::shared_ptr<AbyssEngine::AudioSource> alwaysSound_;
+    //ヒットした際に鳴らす爆発音
+    std::shared_ptr<AbyssEngine::AudioSource> hitSound_;
+
+    
 };

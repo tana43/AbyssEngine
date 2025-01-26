@@ -3,6 +3,8 @@
 #include "Character.h"
 #include "GameCollider.h"
 #include "Actor.h"
+#include "AudioSource.h"
+
 #include "imgui/imgui.h"
 
 using namespace AbyssEngine;
@@ -36,6 +38,7 @@ void AttackerSystem::DrawImGui()
             {
                 auto& atk = data.second;
                 ImGui::DragFloat("Power", &atk.power_, 0.1f);
+                ImGui::DragFloat("Start Time", &atk.startTime_, 0.01f);
                 ImGui::DragFloat("Duration", &atk.duration_, 0.01f);
                 ImGui::DragInt("Max Hit", &atk.maxHits_,1,0);
                 ImGui::DragFloat("Hit Interval", &atk.hitInterval_, 0.01f);
@@ -157,6 +160,12 @@ void AbyssEngine::AttackerSystem::ApplyDamage(const std::shared_ptr<Character>& 
 
         //怯み
         target->Flinch(currentAttack_.staggerType_);
+
+        //ヒット音再生
+        if (const auto& p = currentAttack_.hitSound_.lock())
+        {
+            p->Play();
+        }
     }
 }
 
@@ -165,9 +174,12 @@ void AbyssEngine::AttackerSystem::AttackEnabledUpdate()
     //更新前の値
     bool cachedEnabled = attackEnabled_;
 
+    float duration = currentAttack_.duration_ + currentAttack_.startTime_;
+
     //攻撃が有効な状態か判定
     if (hit_ || /*一度攻撃がヒットしたフレームか*/
-        durationTimer_ > currentAttack_.duration_ ||/*持続時間を越えていないか*/
+        durationTimer_ < currentAttack_.startTime_ ||/*攻撃が開始しているか*/
+        durationTimer_ > duration ||/*持続時間を越えていないか*/
         hitCount_ >= currentAttack_.maxHits_ || /*連続攻撃の最大ヒット数を越えていないか*/
         hitIntervalTimer_ < currentAttack_.hitInterval_)/*ヒット後のインターバル中か*/
     {
@@ -190,19 +202,21 @@ void AbyssEngine::AttackerSystem::AttackEnabledUpdate()
         }
     }
 }
-
-AttackData& AbyssEngine::AttackData::operator=(const AttackData& data)
-{
-    power_              = data.power_;
-    knockback_          = data.knockback_;
-    duration_           = data.duration_;
-    staggerValue_       = data.staggerValue_;
-    maxHits_            = data.maxHits_;
-    hitInterval_        = data.hitInterval_;
-    hitStopDuration_    = data.hitStopDuration_;
-    hitStopOutTime_     = data.hitStopOutTime_;
-    attackColliderList_ = data.attackColliderList_;
-    staggerType_        = data.staggerType_;
-    isHitRotate_        = data.isHitRotate_;
-    return *this;
-}
+//
+//AttackData& AbyssEngine::AttackData::operator=(const AttackData& data)
+//{
+//    power_              = data.power_;
+//    knockback_          = data.knockback_;
+//    startTime_          = data.startTime_;
+//    duration_           = data.duration_;
+//    staggerValue_       = data.staggerValue_;
+//    maxHits_            = data.maxHits_;
+//    hitInterval_        = data.hitInterval_;
+//    hitStopDuration_    = data.hitStopDuration_;
+//    hitStopOutTime_     = data.hitStopOutTime_;
+//    attackColliderList_ = data.attackColliderList_;
+//    staggerType_        = data.staggerType_;
+//    isHitRotate_        = data.isHitRotate_;
+//    hitSound_           = data.hitSound_.lock();
+//    return *this;
+//}

@@ -24,13 +24,15 @@ namespace AbyssEngine
             DirectX::BoundingBox	boundingBox;
             std::vector<int>		triangleIndices;
         };
-        std::vector<Area> areas;
+        std::vector<Area> areas_;
 
         bool RayCast(
             const AbyssEngine::Vector3& start,
             const AbyssEngine::Vector3& end,
             AbyssEngine::Vector3& hitPosition,
-            AbyssEngine::Vector3& hitNormal);
+            AbyssEngine::Vector3& hitNormal,
+            bool spaceDivision = true
+        );
 
         bool SphereCast(
             const AbyssEngine::Vector3& origin,
@@ -39,6 +41,7 @@ namespace AbyssEngine
             float& distance,
             AbyssEngine::Vector3& hitPosition,
             AbyssEngine::Vector3& hitNormal,
+            bool spaceDivision = false,
             bool drawDebug = false
         );
 
@@ -49,17 +52,11 @@ namespace AbyssEngine
         void RegisterTriangles();
     protected:
 
-        //空間分割
-        void SpaceDivision();
-
         //配置するモデルを登録しておくためのベクター変数
         std::vector<std::weak_ptr<AbyssEngine::MeshCollider>> meshColliders_;
 
         //各モデルの三角形をまとめて管理
         std::vector <AbyssEngine::Collider::Triangle > triangles_;
-
-        //空間分割オン、オフ
-        bool spaceDivisionEnabled_ = false;
 
         //現在レイが飛ばされたエリア
         int currentArea_;

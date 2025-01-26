@@ -10,6 +10,8 @@
 #include "BehaviorTree.h"
 #include "ActionDerived.h"
 #include "SphereCollider.h"
+#include "ComputeParticleEmitter.h"
+#include "GameUIAdmin.h"
 
 #include <memory>
 
@@ -24,16 +26,23 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     //初期化
     BaseEnemy::Initialize(actor);
 
+    //HP設定
+    Max_Health = 5.0f;
+    health_ = Max_Health;
+
     //スケルタルメッシュを追加
-    model_ = actor->AddComponent<SkeletalMesh>("./Assets/Models/Enemy/Bot_Idle.glb");
+    model_ = actor->AddComponent<SkeletalMesh>("./Assets/Models/Enemy/Bot/Bot_Idle.gltf");
+    model_->GetModel()->primitiveConstants_->data_.minAmbient_ = 0.65f;
+    model_->GetModel()->primitiveConstants_->data_.imageBasedLightingIntensity_ = 200.0f;
+
     model_->GetAnimator()->AppendAnimations(
         {
-            "./Assets/Models/Enemy/Bot_Rolling.glb",
-            "./Assets/Models/Enemy/Bot_Walk.glb",
-            "./Assets/Models/Enemy/Bot_Jump.glb",
-            "./Assets/Models/Enemy/Bot_Search.glb",
-            "./Assets/Models/Enemy/Bot_Attack.glb",
-            "./Assets/Models/Enemy/Bot_Attack_Assult.glb"
+            "./Assets/Models/Enemy/Bot/Bot_Rolling.gltf",
+            "./Assets/Models/Enemy/Bot/Bot_Walk.gltf",
+            "./Assets/Models/Enemy/Bot/Bot_Jump.gltf",
+            "./Assets/Models/Enemy/Bot/Bot_Search.gltf",
+            "./Assets/Models/Enemy/Bot/Bot_Attack.gltf",
+            "./Assets/Models/Enemy/Bot/Bot_Attack_Assult.gltf"
         },
         {
             "Rolling","Walk","Jump","Search","Attack","Attack_Assult"
@@ -70,6 +79,10 @@ void BotEnemy::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 
     //当たり判定初期化
     ColliderInitialize();
+
+    //エフェクト
+    destroyEffect_ = actor_->AddComponent<ComputeParticleEmitter>();
+    destroyEffect_->SetEmitParamater("Bot_Destroy");
 }
 
 void BotEnemy::BehaviorTreeInitialize()
@@ -80,20 +93,25 @@ void BotEnemy::BehaviorTreeInitialize()
 
     //BehaviorTreeを構築
     aiTree_->AddNode("", "Root", 0, Ai_SelectRule::Priority,nullptr,nullptr);
+    {
 
-    //戦闘
-    aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new BotBattleJudgment(this), nullptr);
-    //偵察
-    aiTree_->AddNode("Root", "Scout",  1, Ai_SelectRule::Sequence, nullptr, nullptr);
+        //戦闘
+        aiTree_->AddNode("Root", "Battle", 0, Ai_SelectRule::Sequence, new BotBattleJudgment(this), nullptr);
+        {
+            //戦闘ノード
+            aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new AttackJudgment(this), new BotAttackAction(this));
+            aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, nullptr, new BotSideDodgeAction(this));
+            //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
+        }
 
-    //戦闘ノード
-    aiTree_->AddNode("Battle", "Attack", 0, Ai_SelectRule::Non, new AttackJudgment(this), new BotAttackAction(this));
-    aiTree_->AddNode("Battle", "Dodge",  1, Ai_SelectRule::Non, nullptr, new BotSideDodgeAction(this));
-    //aiTree_->AddNode("Battle", "Dodge", 1, Ai_SelectRule::Non, new DodgeJudgment(this), new BotSideDodgeAction(this));
-
-    //偵察ノード
-    aiTree_->AddNode("Scout", "Wonder", 0, Ai_SelectRule::Non, nullptr, new BotWonderActioin(this));
-    aiTree_->AddNode("Scout", "Idle",   1, Ai_SelectRule::Non, nullptr, new BotIdleAction(this));
+        //偵察
+        aiTree_->AddNode("Root", "Scout", 1, Ai_SelectRule::Sequence, nullptr, nullptr);
+        {
+            //偵察ノード
+            aiTree_->AddNode("Scout", "Wonder", 0, Ai_SelectRule::Non, nullptr, new BotWonderActioin(this));
+            aiTree_->AddNode("Scout", "Idle", 1, Ai_SelectRule::Non, nullptr, new BotIdleAction(this));
+        }
+    }
 }
 
 void BotEnemy::Update()
@@ -232,6 +250,23 @@ void BotEnemy::ColliderInitialize()
 {
     //collider_ = AddHitCollider(Vector3(0, 0.2f, 0), 0.3f);
     hitCollider_ = AddHitCollider(Vector3(0, 0.2f, 0), 0.3f);
+}
+
+void BotEnemy::OnDead()
+{
+    destroyEffect_->EmitParticle();
+    
+    Engine::sceneManager_->GetActiveScene().DestroyActor(actor_);
+}
+
+void BotEnemy::OnDamaged()
+{
+    //ダメージを与えられたことをUIに表示
+    const auto& actor = Engine::sceneManager_->GetActiveScene().Find("GameUI");
+    if (const auto& p = actor.lock())
+    {
+        p->GetComponent<GameUIAdmin>()->BulletHit();
+    }
 }
 
 const std::shared_ptr<AbyssEngine::Animator>& BotEnemy::GetAnimator() const

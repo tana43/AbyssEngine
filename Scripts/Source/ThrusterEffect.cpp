@@ -3,6 +3,7 @@
 #include "EffectManager.h"
 #include "SkeletalMesh.h"
 #include "Engine.h"
+#include "RenderManager.h"
 
 #include "AssetManager.h"
 
@@ -49,6 +50,9 @@ void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor
         Engine::assetManager_->cacheEffect_[path.c_str()] = effectEmitter_;
     }
 
+    //マネージャーに登録
+    Engine::renderManager_->Add(std::static_pointer_cast<ThrusterEffect>(shared_from_this()));
+
     //Jsonファイル読み込み、書き出し
     {
         //ファイルの読み込み
@@ -74,6 +78,11 @@ void ThrusterEffect::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor
             actor_->WritingJsonFile(mJson);
         }
     }
+}
+
+void ThrusterEffect::RecalculateFrame()
+{
+    UpdateTransform();
 }
 
 void ThrusterEffect::DrawImGui()
@@ -263,7 +272,7 @@ void ThrusterEffect::Fire(const float normalPower)
         m->StopEffect(effekseerHandle_);
         effekseerHandle_ = effectEmitter_->Play();
 
-        UpdateTransform();
+        //UpdateTransform();
     }
 }
 

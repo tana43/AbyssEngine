@@ -50,6 +50,9 @@ namespace AbyssEngine
         const Vector2& GetPivot() const { return pivot_; }
 
         void SetScale(const Vector2& sca) { scale_ = sca; }
+        void SetScale(const float& x,const float& y) { scale_.x = x;scale_.y = y; }
+        void SetScaleX(const float& sca) { scale_.x = sca; }
+        void SetScaleY(const float& sca) { scale_.y = sca; }
         const Vector2& GetScale() const { return scale_; }
 
         void SetAngle(const float& angle) { angle_ = angle; }

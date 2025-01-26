@@ -306,6 +306,8 @@ ActionBase<BossMech>::State MechShotNormalBeamAction::Run(float deltaTime)
 		owner_->GetAnimator()->PlayAnimation("Skill_01");
 		owner_->ToFlightMode();
 
+		owner_->SetEnableAutoTurn(false);
+
 		timer_ = 0.0f;
 
 		step++;
@@ -335,10 +337,14 @@ ActionBase<BossMech>::State MechShotNormalBeamAction::Run(float deltaTime)
 		//終了化
 		step = 0;
 
+		owner_->SetEnableAutoTurn(true);
+
 		return ActionBase::State::Complete;
 
 		break;
 	}
+
+	owner_->TurnToVitesse();
 
 	timer_ += deltaTime;
 
@@ -353,6 +359,9 @@ ActionBase<BossMech>::State MechFlyIdleAction::Run(float deltaTime)
 		owner_->GetAnimator()->PlayAnimation("Fly_Idle");
 		owner_->ToFlightMode();
 
+		//自動回転制御を停止
+		owner_->SetEnableAutoTurn(false);
+
 		timer_ = 0.0f;
 
 		step++;
@@ -363,6 +372,9 @@ ActionBase<BossMech>::State MechFlyIdleAction::Run(float deltaTime)
 		if (timer_ > Time)
 		{
 			step = 0;
+
+			//自動回転制御を停止
+			owner_->SetEnableAutoTurn(true);
 
 			//待機完了
 			return ActionBase::State::Complete;
@@ -568,6 +580,8 @@ ActionBase<BossMech>::State MechShotSuperHomingBeamAction::Run(float deltaTime)
 		owner_->GetAnimator()->PlayAnimation("Skill_01");
 		owner_->ToFlightMode();
 
+		owner_->SetEnableAutoTurn(false);
+
 		timer_ = 0.0f;
 
 		step++;
@@ -594,6 +608,8 @@ ActionBase<BossMech>::State MechShotSuperHomingBeamAction::Run(float deltaTime)
 			//終了化
 			step = 0;
 
+			owner_->SetEnableAutoTurn(true);
+
 			return ActionBase::State::Complete;
 		}
 		
@@ -601,6 +617,8 @@ ActionBase<BossMech>::State MechShotSuperHomingBeamAction::Run(float deltaTime)
 	}
 
 	timer_ += deltaTime;
+
+	owner_->TurnToVitesse();
 
 	return ActionBase::State::Run;
 }
@@ -615,6 +633,8 @@ ActionBase<BossMech>::State MechShotMissileAction::Run(float deltaTime)
 		//初期化
 		owner_->GetAnimator()->PlayAnimation("Skill_01");
 		owner_->ToFlightMode();
+
+		owner_->SetEnableAutoTurn(false);
 
 		timer_ = 0.0f;
 
@@ -642,17 +662,20 @@ ActionBase<BossMech>::State MechShotMissileAction::Run(float deltaTime)
 			//終了化
 			step = 0;
 
+			owner_->SetEnableAutoTurn(true);
+
 			return ActionBase::State::Complete;
 		}
 
 		break;
 	}
 
+	owner_->TurnToVitesse();
+
 	timer_ += deltaTime;
 
 	return ActionBase::State::Run;
 }
-
 
 ActionBase<BossMech>::State MechDieAction::Run(float deltaTime)
 {
@@ -692,22 +715,15 @@ ActionBase<BossMech>::State MechSideMoveAction::Run(float deltaTime)
 
 		if (const auto& target = owner_->GetTargetVitesse().lock())
 		{
-			const Vector3 ownerPos = owner_->GetTransform()->GetPosition();
-			const Vector3 targetPos = target->GetTransform()->GetPosition();
-			Vector3 toTarget = targetPos - ownerPos;
-			Vector3 dirToTarget;
-			toTarget.Normalize(dirToTarget);
-
 			//上ベクトルとターゲットまでとのベクトルから移動すべき横方向を算出
-			Vector3 moveVec = DirectX::XMVector3Normalize(Vector3::Up.Cross(dirToTarget));
-			moveVec.Normalize();
+			Vector3 moveVec = owner_->GetTransform()->GetRight();
 
 			//移動ベクトルセット
 			if (!isMoveRight_)moveVec = -moveVec;
-			owner_->SetMoveVec(moveVec);
+			owner_->SetVelocity(moveVec * owner_->GetMaxHorizontalSpeed());
 
 			//回転
-			owner_->TurnY(dirToTarget);
+			owner_->TurnToVitesse();
 		}
 
 		if (timer_ > moveTime_)
@@ -754,7 +770,6 @@ void MechBackToVitesseAction::Finalize()
 	moveTimer_ = 0;
 
 }
-
 
 ActionBase<BossMech>::State MechBackToVitesseAction::Run(float deltaTime)
 {

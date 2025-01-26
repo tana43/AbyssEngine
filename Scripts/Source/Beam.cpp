@@ -5,8 +5,14 @@
 //#include "ComputeParticleEmitter.h"
 #include "TrailRenderer.h"
 #include "BillboardRenderer.h"
+#include "AudioSource.h"
 
 using namespace AbyssEngine;
+
+Beam::~Beam()
+{
+    alwaysSound_->Stop();
+}
 
 void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
 {
@@ -35,6 +41,18 @@ void Beam::Initialize(const std::shared_ptr<AbyssEngine::Actor>& actor)
     straightParticleEmitPrameter_.scaleInit_ = { 0.4f,0.4f };
     straightParticleEmitPrameter_.rotationAmplitude_ = { 0,0,180.0f };
     //particleEmitter_->SetEmitParamater(particleEmitPrameter_);
+
+    //常に鳴らす音
+    alwaysSound_ = actor->AddComponent<AudioSource>();
+    alwaysSound_->SetAssetAudioIndex(AudioIndex::Beam_Always);
+    alwaysSound_->SetIsLoop(true);
+    alwaysSound_->Play();
+    alwaysSound_->SetRangeOfSound(60.0f);
+
+    //ヒット音
+    hitSound_ = actor->AddComponent<AudioSource>();
+    hitSound_->SetAssetAudioIndex(AudioIndex::Beam_Hit);
+    hitSound_->SetRangeOfSound(80.0f);
 }
 
 void Beam::Update()
@@ -59,6 +77,9 @@ void Beam::OnCollision(const std::shared_ptr<AbyssEngine::Collider>& collision, 
             //パーティクルヒットエフェクト再生
             hitFireParticleEmitter_->EmitParticle();
             hitParticleEmitter_->EmitParticle();
+
+            //効果音再生
+            hitSound_->Play();
 
             Actor::Destroy(actor_);
         }
@@ -105,4 +126,8 @@ void Beam::HitTerrain()
 {
     //エフェクト生成
     terrainHitParticleEmitter_->EmitParticle();
+
+    //効果音再生
+    hitSound_->Play();
 }
+

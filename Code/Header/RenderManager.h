@@ -8,6 +8,8 @@
 #include "Renderer.h"
 #include "ConstantBuffer.h"
 
+class ThrusterEffect;
+
 namespace AbyssEngine
 {
     class SpriteRenderer;
@@ -27,11 +29,13 @@ namespace AbyssEngine
     class PrimitiveRenderer;
     class ShapeRenderer;
     class TrailRenderer;
+    class SwordTrailRenderer;
 
     class ParticleSystem;
     class ParticleEmitter;
     class ComputeParticleEmitter;
     class ComputeParticleSystem;
+
 
     class Texture;
 
@@ -58,6 +62,8 @@ namespace AbyssEngine
         void Add(const std::shared_ptr<ParticleEmitter>& mRend);
         void Add(const std::shared_ptr<ComputeParticleEmitter>& mRend);
         void Add(const std::shared_ptr<TrailRenderer>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<SwordTrailRenderer>& mRend);//マネージャーにレンダラーを登録する
+        void Add(const std::shared_ptr<ThrusterEffect>& mRend);//マネージャーにレンダラーを登録する
         void Add(const std::shared_ptr<Camera>& camera);//マネージャーにカメラを登録する
 
         void Render(); //描画実行
@@ -112,7 +118,7 @@ namespace AbyssEngine
             Matrix inverseView_;
             Matrix inverseProjection_;
             Matrix inverseViewProjection_;
-            Vector4 lightDirection_ = {0.23f,-0.87f,1.43f,0};
+            Vector4 lightDirection_ = {0.5f,-0.5f,0.5f,0};
             Vector4 lightColor_ = {1.0f,1.0f,1.0f,1.0f};
             Vector4 eyePosition_;
             Vector4 focusPosition_;

@@ -16,5 +16,8 @@ private:
 
 private:
     std::weak_ptr<AbyssEngine::SpriteRenderer> loadSprite_;
+    std::weak_ptr<AbyssEngine::SpriteRenderer> startSprite_;
+
+    bool isChangeScene_ = false;
 };
 
