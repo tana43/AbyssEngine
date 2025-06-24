@@ -179,6 +179,8 @@ void Camera::Update()
     //カメラシェイクを反映
     eye_ += shakePosition_;
 
+
+
     if (viewTarget_)
     {
         //ステージが存在するならレイキャスト、当たった地点に移動

@@ -466,10 +466,14 @@
     <ClInclude Include="Code\Header\SwordTrailRenderer.h">
       <Filter>Code\Header\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Header\ComboNode.h" />
-    <ClInclude Include="Code\Header\VitesseComboNode.h" />
     <ClInclude Include="Code\Header\ComboSystemInterface.h">
       <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\VitesseComboNode.h">
+      <Filter>Script\Header\Vitesse</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Header\ComboNode.h">
+      <Filter>Script\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -794,7 +798,9 @@
     <ClCompile Include="Code\Source\SwordTrailRenderer.cpp">
       <Filter>Code\Source\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Code\Source\VitesseComboNode.cpp" />
+    <ClCompile Include="Code\Source\VitesseComboNode.cpp">
+      <Filter>Script\Source\VItesse</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpritePS.hlsl">

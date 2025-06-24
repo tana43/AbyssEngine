@@ -215,6 +215,22 @@ AnimBlendSpace2D::AnimBlendSpace2D(SkeletalMesh* model, const std::string& name_
     secondBlendAnimNodes_ = animatedNodes_;
 }
 
+//BlendSpace2Dではブレンド値という概念を用いてモーションを算出する
+//イメージ
+    //  * : 各アニメーション
+    //  + : 自機のブレンド値
+    //                           |
+    //                           *(0,1)
+    //                           |      (0.7,0.5) 左と下のモーションをブレンドし、さらにそれと中央の待機モーションをブレンド
+    //                           |      +
+    //               (-1,0)      |          (1,0)
+    //----------------*----------*----------*------------------
+    //                           |
+    //                           |
+    //                           |
+    //                           *(0,-1)
+    //                           |
+
 std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkeletalMesh* model, bool* animationFinished)
 {
     //ブレンドスペースは必ずループ再生なのでアニメーションの再生は終わらない
@@ -223,16 +239,18 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
         *animationFinished = false;
     }
     
+    //タイマー更新
     UpdateTime();
 
-    //ブレンドの速度制限
+    //１フレームで変化するブレンド値を算出
+    //こうすることで急激にモーションが変化しないようにしている
     const float blendMaxSpeed = 5.0f * animator_->GetActor()->GetDeltaTime();
     const Vector2 blendSpeed = {
         std::clamp(blendWeight_.x - lastBlendWeight_.x, -blendMaxSpeed, blendMaxSpeed),
         std::clamp(blendWeight_.y - lastBlendWeight_.y, -blendMaxSpeed, blendMaxSpeed)
     };
 
-    //ブレンド値の算出
+    //先ほどの値から実際に変化した後のブレンド値を算出
     Vector2 nextBlendWeight = {
         std::clamp(lastBlendWeight_.x + blendSpeed.x, minWeight_.x, maxWeight_.x),
         std::clamp(lastBlendWeight_.y + blendSpeed.y, minWeight_.y, maxWeight_.y)
@@ -243,7 +261,7 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
     float weightLength = nextBlendWeight.Length();
     if (weightLength > 1.0f)
     {
-        //値を正規化し長さを１に抑える
+        //値を正規化する
         nextBlendWeight.Normalize();
         weightLength = 1.0f;
     }
@@ -271,8 +289,9 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
     BlendAnimData animDatas[2];
     BlendSituation blendSituation;
     {
+        //何回モーションブレンドをする必要があるか判定する(ゴリ押し)
 
-        //どの程度ブレンドをするべき状態かも判定する
+        //x,yが０の場合は待機モーションでいいのでブレンドする必要はない
         if (nextBlendWeight.x == 0 && nextBlendWeight.y == 0)
         {
             blendSituation = BlendSituation::None;
@@ -340,7 +359,7 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
     case BlendSituation::Twice:
         //斜め移動モーション
 
-        //１回目のブレンド値の算出
+        //１回目のブレンドの重さを算出
         //2つのモーションデータから見た本来のブレンド値までの距離の比を使う
         float _weightLength[2] =
         {
@@ -352,6 +371,8 @@ std::vector<GeometricSubstance::Node> AnimBlendSpace2D::UpdateAnimation(GltfSkel
         model->Animate(animDatas[0].index_, timeStamp_, blendAnimNodes_[0]);
         model->Animate(animDatas[1].index_, timeStamp_, blendAnimNodes_[1]);
         model->BlendAnimations(blendAnimNodes_[0], blendAnimNodes_[1], firstWeight, secondBlendAnimNodes_);
+
+        //最初の方に算出したweightLengthを重さとして使用し、モーション算出
         model->Animate(blendAnimDatas_[static_cast<int>(State::Idle)].index_, timeStamp_, blendAnimNodes_[0]);
         model->BlendAnimations(blendAnimNodes_[0], secondBlendAnimNodes_, weightLength, animatedNodes_);
         break;
